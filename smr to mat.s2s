@@ -1,0 +1,55 @@
+var list%[33], nrOfChans%;
+var dir$, fileNames$[1000],fileNam$,tempDir$; 
+var err%, i%, vh%,writeErr%, yes%;
+var Poll%;
+'var outputDir$;
+
+'outputDir$ := "D:\\Spike2\\MSNT120402\\temp\\"; 
+err% := FilePathSet(dir$, 0, 1);
+if err% < 0 then
+    message ("Error you need to select a folder");
+    halt;
+endif
+tempDir$ := FilePath$(0);
+err% := fileList(fileNames$[],0);
+if err% < 1 then
+    message ("Error you need to select a folder");
+    halt;
+endif
+
+Poll% := Query("Do you want to be asked for each file you convert?");
+
+for i% := 0 to err% do
+    vh% := FileOpen(fileNames$[i%],0,0);
+    if vh% < 0 then
+        message("Error, file problem ", fileNames$[i%]);
+        halt;
+    endif;
+    View(vh%);
+    'fileNam$ := outputDir$+FileName$(3)+FileName$(4)+".mat";
+    fileNam$ := FileName$(1)+FileName$(2)+FileName$(3)+FileName$(4)+".mat";
+    nrOfChans% := ChanList(list%[], 1+2+4+8+32+64+16384);
+    printlog(list%[]);
+    ExportChanList(1); 'Initialise the channel list
+    ExportChanList(0, MaxTime(),list%[]);
+    writeErr% := FileSaveAs(fileNam$,100,0,"",0,
+    "UseSName=0|UseCName=1|WaveTimes=0|BinFreq=0|BinTimes=0|WaveData=1|MarkAs=1|TMarkAs=2|RMarkAs=2|RMarkData=1|WaveMarkAs=2|WaveMarkData=1|Compatability=0"); 'Export (string args)
+    if writeErr% < 0 then
+        yes% := Query("Error can't write file "+ fileNames$[i%]+ " do you wish to continue converting other files?");
+        if yes% = 0 then
+            halt;
+        endif;
+    endif;
+    
+    if Poll% = 1 then
+        yes% := Query("printed "+ fileNames$[i%]+ " do you wish to continue converting other files?");
+        if yes% = 0 then
+                halt;
+        endif;
+    endif;
+    
+    view(vh%);
+    FileClose(0,-1);
+next;
+    
+    

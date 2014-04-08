@@ -15,6 +15,8 @@ function obj = sc(varargin)
 %   c) When the experiment file is opened, the experiment protocol can be
 %   parsed and all comments can be included in each file. This can be done
 %   any time once the file is created.
+%   
+%   SC -NEWADQ create experiment file from .adq-files
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se

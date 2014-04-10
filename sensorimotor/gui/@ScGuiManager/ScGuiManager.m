@@ -14,6 +14,7 @@ classdef ScGuiManager < handle
         state_ = ScGuiState.spike_detection;
         signal_
         no_trigger_ = false
+        triggerparent_
         trigger_
         ampl_
         
@@ -29,16 +30,17 @@ classdef ScGuiManager < handle
         
         zoom_on_ = false
         pan_on_ = false
-
+        
     end
     
     %setters and getters
     properties (Dependent)
         state
         signal
-
+        
         ampl
         no_trigger
+        triggerparent
         trigger
         
         experiment
@@ -55,7 +57,7 @@ classdef ScGuiManager < handle
         pan_on
     end
     
-    methods  
+    methods
         
         function val = get.experiment(obj)
             val = obj.experiment_;
@@ -63,7 +65,7 @@ classdef ScGuiManager < handle
         
         function set.experiment(obj,val)
             if isempty(obj.experiment) && isempty(val)
-                obj.file = [];    
+                obj.file = [];
             elseif isempty(val) || val.n == 0
                 obj.file = [];
             elseif isempty(obj.experiment) || obj.experiment.n == 0
@@ -77,7 +79,7 @@ classdef ScGuiManager < handle
                 %todo: check for unsaved changes
                 obj.experiment.sc_clear();
             end
-            obj.experiment_ = val;    
+            obj.experiment_ = val;
         end
         
         function val = get.file(obj)
@@ -139,14 +141,10 @@ classdef ScGuiManager < handle
                 obj.signal = val.signals.get(patchnbr);
             end
             %Set trigger
-            if isempty(val) || ~val.gettriggers(val.tmin,val.tmax).n
-                obj.trigger = [];
-            elseif isempty(obj.sequence) || ~obj.sequence.gettriggers(obj.tmin,obj.tmax).n
-                obj.trigger = val.gettriggers(val.tmin,val.tmax).get(1);
-            elseif obj.sequence == val && val.gettriggers(obj.tmin,obj.tmax).contains(obj.trigger)
-                obj.trigger = obj.trigger;
+            if isempty(val) || ~val.gettriggerparents(val.tmin,val.tmax).n
+                obj.triggerparent = [];
             else
-                obj.trigger = val.gettriggers(val.tmin,val.tmax).get(1);
+                obj.triggerparent = val.gettriggerparents(val.tmin,val.tmax).get(1);
             end
             obj.sequence_ = val;
         end
@@ -169,8 +167,9 @@ classdef ScGuiManager < handle
                 signal = obj.ampl.parent_signal;
             end
         end
-                     
+        
         function set.signal(obj, val)
+            %Update waveform
             if isempty(val) || ~val.waveforms.n
                 obj.waveform = [];
             elseif isempty(obj.signal) || ~obj.signal.waveforms.n
@@ -182,6 +181,7 @@ classdef ScGuiManager < handle
             end
             obj.signal_ = val;
             if obj.state == ScGuiState.ampl_analysis
+                %Call ampl listeners
                 obj.ampl = obj.ampl;
             end
         end
@@ -198,22 +198,42 @@ classdef ScGuiManager < handle
             obj.ampl_ = val;
         end
         
+        function val = get.triggerparent(obj)
+            if obj.state == ScGuiState.ampl_analysis
+                val = [];
+            else
+                val = obj.triggerparent_;
+            end
+        end
+        
+        function set.triggerparent(obj,val)
+            if isempty(val) || ~val.triggers.n
+                obj.trigger = [];
+            else
+                obj.trigger = val.triggers.get(1);
+            end
+            obj.triggerparent_ = val;
+        end
+        
         function val = get.no_trigger(obj)
             if obj.state == ScGuiState.ampl_analysis
-                val = 0;
+                val = false;
             else
                 val = obj.no_trigger_;
             end
         end
-
+        
         function set.no_trigger(obj,val)
             obj.no_trigger_ = val;
+            if ~val
+                obj.triggerparent = obj.triggerparent;
+            end
         end
         
         function val = get.trigger(obj)
             if obj.state == ScGuiState.ampl_analysis
                 val = obj.ampl;
-            elseif obj.state == ScGuiState.spike_detection
+            else
                 val = obj.trigger_;
             end
         end
@@ -318,7 +338,7 @@ classdef ScGuiManager < handle
         waveformpanel
         histogrampanel
         savepanel
-                
+        
         %Axes
         stimaxes
         signalaxes
@@ -347,26 +367,26 @@ classdef ScGuiManager < handle
         t_offset
         plot_raw = false
         %sweeps = 1
-%         zoom_on = false
-%         pan_on = false
+        %         zoom_on = false
+        %         pan_on = false
         
         
         hist_pretrigger = -.1
         hist_posttrigger = .1
         hist_binwidth = 1e-2
         
-%         xmin
-%         xmax
-%         ymin
-%         ymax
+        %         xmin
+        %         xmax
+        %         ymin
+        %         ymax
         
         %Misc constants
         max_array_size = 1e9
         show_triggers
         
         %Function handles
-%        resize_fcn
-%        update_triggerpanel_fcn
+        %        resize_fcn
+        %        update_triggerpanel_fcn
         load_sequence_fcn
         update_plotpanel_fcn
         update_histogrampanel_fcn
@@ -416,7 +436,7 @@ classdef ScGuiManager < handle
         
         function show(obj)
             obj.current_view = gcf;
-%                 set(obj.current_view,'windowstyle','modal');
+            %                 set(obj.current_view,'windowstyle','modal');
             clf(obj.current_view,'reset');
             show_experiment(obj);
         end
@@ -459,11 +479,11 @@ classdef ScGuiManager < handle
         
         function disable_all(obj,disable_on)
             global DEBUG
-%             if disable_on
-%                 visible = 'off';
-%             else
-%                 visible = 'on';
-%             end
+            %             if disable_on
+            %                 visible = 'off';
+            %             else
+            %                 visible = 'on';
+            %             end
             if disable_on
                 obj.text = 'Computing, if program freezes write ''close'' command in command prompt to shut down';
             else
@@ -472,35 +492,35 @@ classdef ScGuiManager < handle
             if ~DEBUG
                 enableDisableFig(obj.current_view, ~disable_on);
             end
-%             if disable_on
-%                 axes(obj.stimaxes);
-%             end
-%             set(obj.filepanel,'visible',visible);
-%             if isempty(obj.sequence)
-%                 set(obj.triggerpanel,'Visible','off');
-%             else
-%                 set(obj.triggerpanel,'visible',visible);
-%             end
-%             if isempty(obj.signal) || isempty(obj.triggertimes)
-%                 set(obj.plotpanel,'Visible','off');
-%             else
-%                 set(obj.plotpanel,'visible',visible);
-%             end
-%             if isempty(obj.waveform)
-%                 set(obj.waveformpanel,'visible','off');
-%             else
-%                 set(obj.waveformpanel,'visible',visible);
-%             end
-%             if isempty(obj.waveform)
-%                 set(obj.histogrampanel,'visible','off');
-%             else
-%                 set(obj.histogrampanel,'visible',visible);
-%             end
-%             set(obj.savepanel,'visible',visible);
-%             if disable_on
-%                 axes(obj.signalaxes);
-%             end
+            %             if disable_on
+            %                 axes(obj.stimaxes);
+            %             end
+            %             set(obj.filepanel,'visible',visible);
+            %             if isempty(obj.sequence)
+            %                 set(obj.triggerpanel,'Visible','off');
+            %             else
+            %                 set(obj.triggerpanel,'visible',visible);
+            %             end
+            %             if isempty(obj.signal) || isempty(obj.triggertimes)
+            %                 set(obj.plotpanel,'Visible','off');
+            %             else
+            %                 set(obj.plotpanel,'visible',visible);
+            %             end
+            %             if isempty(obj.waveform)
+            %                 set(obj.waveformpanel,'visible','off');
+            %             else
+            %                 set(obj.waveformpanel,'visible',visible);
+            %             end
+            %             if isempty(obj.waveform)
+            %                 set(obj.histogrampanel,'visible','off');
+            %             else
+            %                 set(obj.histogrampanel,'visible',visible);
+            %             end
+            %             set(obj.savepanel,'visible',visible);
+            %             if disable_on
+            %                 axes(obj.signalaxes);
+            %             end
         end
-
+        
     end
 end

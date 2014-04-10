@@ -3,27 +3,6 @@ function panel = get_plotpanel(obj)
 savenbr = 1;
 
 panel = uipanel('title','Plot');
-if obj.state == ScGuiState.spike_detection
-    sc_addlistener(obj,'signal_',@signal_listener,panel);
-elseif obj.state == ScGuiState.ampl_analysis
-    sc_addlistener(obj,'ampl_',@ampl_listener,panel);
-end
-
-    function signal_listener(~,~)
-        if isempty(obj.signal)
-            set(obj.plotpanel,'visible','off');
-        else
-            set(obj.plotpanel,'visible','on');
-        end
-    end
-
-    function ampl_listener(~,~)   
-        if isempty(obj.ampl)
-            set(obj.plotpanel,'visible','off');
-        else
-            set(obj.plotpanel,'visible','on');
-        end
-    end
 
 obj.plotpanel = panel;
 mgr = ScLayoutManager(panel);
@@ -37,37 +16,14 @@ mgr.add(getuitext('s     (leave empty to disable)'),140);
 
 mgr.newline(20);
 ui_trigger_time = mgr.add(sc_ctrl('text',[]),200);
-%ui_trigger_time = mgr.add(getuitext(''),180);
-sc_addlistener(obj,'sweep_',@sweep_listener,ui_trigger_time);
 
 mgr.newline(20);
 mgr.add(getuitext('Sweeps'),50);
 ui_sweep = mgr.add(uicontrol('style','edit','string',num2str(obj.sweep),...
     'callback',@plot_callback),190);
-sc_addlistener(obj,'sweep_',@sweep_listener,ui_sweep);
-
-    function sweep_listener(~,~)
-        if numel(obj.sweep) && numel(obj.triggertimes)
-            set(ui_trigger_time,'string',...
-                sprintf('trigger time: %0.2f s',obj.triggertimes(obj.sweep(1))),...
-                'HorizontalAlignment','left');
-            if numel(obj.v)
-                set(ui_sweep,'string',num2str(obj.sweep));
-                obj.plot_fcn();
-            end
-        else
-            set(ui_trigger_time,'string',[]);
-            cla(obj.signalaxes);
-        end
-    end
 
 ui_nbr_of_stims = mgr.add(getuitext(['(' num2str(numel(obj.triggertimes)) ')']),...
     40);
-sc_addlistener(obj,'trigger_',@trigger_listener,ui_nbr_of_stims);
-
-    function trigger_listener(~,~)
-        set(ui_nbr_of_stims,'string',sprintf('(%i)',numel(obj.triggertimes)));
-    end
 
 mgr.newline(20);
 ui_previous = mgr.add(uicontrol('style','pushbutton','string','Previous',...
@@ -80,10 +36,10 @@ ui_increment = mgr.add(uicontrol('style','edit','string',1),70);
 mgr.newline(20);
 ui_zoom = mgr.add(uicontrol('style','pushbutton','string','Zoom',...
     'callback',@zoom_on_callback),70);
-sc_addlistener(obj,'zoom_on_',@zoom_on_listener,ui_zoom);
+
 ui_pan = mgr.add(uicontrol('style','pushbutton','string','Pan',...
     'callback',@pan_on_callback),70);
-sc_addlistener(obj,'pan_on_',@pan_on_listener,ui_pan);
+
 mgr.add(uicontrol('style','pushbutton','string','Reset',...
     'callback',@reset_callback),70);
 mgr.add(uicontrol('style','pushbutton','string','Y zoom out',...
@@ -119,6 +75,7 @@ mgr.newline(2);
 mgr.trim;
 
 %Add function handles
+%todo: replace by listeners as much as possible
 obj.plot_stims_fcn = @plot_stims;
 obj.default_plot_fcn = @default_plot_fcn;
 obj.update_plotpanel_fcn = @update_plot_fcn;
@@ -361,6 +318,41 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
         set(obj.signalaxes,'ylim',2*yl);
     end
 
+%Add listeners
+if obj.state == ScGuiState.spike_detection
+    sc_addlistener(obj,'signal_',@signal_listener,panel);
+elseif obj.state == ScGuiState.ampl_analysis
+    sc_addlistener(obj,'ampl_',@ampl_listener,panel);
+end
+    function signal_listener(~,~)
+        if isempty(obj.signal)
+            set(obj.plotpanel,'visible','off');
+        else
+            set(obj.plotpanel,'visible','on');
+        end
+    end
+
+    function ampl_listener(~,~)   
+        if isempty(obj.ampl)
+            set(obj.plotpanel,'visible','off');
+        else
+            set(obj.plotpanel,'visible','on');
+        end
+    end
+
+sc_addlistener(obj,'pan_on_',@pan_on_listener,panel);
+
+    function pan_on_listener(~,~)
+        if obj.pan_on
+            set(ui_pan,'fontweight','bold');
+            pan(obj.signalaxes,'on');
+        else
+            set(ui_pan,'fontweight','normal');
+            pan(obj.signalaxes,'off');
+        end 
+    end
+
+sc_addlistener(obj,'zoom_on_',@zoom_on_listener,panel);
 
     function zoom_on_listener(~,~)
         if obj.zoom_on
@@ -372,13 +364,27 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
         end 
     end
 
-    function pan_on_listener(~,~)
-        if obj.pan_on
-            set(ui_pan,'fontweight','bold');
-            pan(obj.signalaxes,'on');
-        else
-            set(ui_pan,'fontweight','normal');
-            pan(obj.signalaxes,'off');
-        end 
+sc_addlistener(obj,'trigger_',@trigger_listener,panel);
+
+    function trigger_listener(~,~)
+        set(ui_nbr_of_stims,'string',sprintf('(%i)',numel(obj.triggertimes)));
     end
+
+sc_addlistener(obj,'sweep_',@sweep_listener,panel);
+
+    function sweep_listener(~,~)
+        if numel(obj.sweep) && numel(obj.triggertimes)
+            set(ui_trigger_time,'string',...
+                sprintf('trigger time: %0.2f s',obj.triggertimes(obj.sweep(1))),...
+                'HorizontalAlignment','left');
+            if numel(obj.v)
+                set(ui_sweep,'string',num2str(obj.sweep));
+                obj.plot_fcn();
+            end
+        else
+            set(ui_trigger_time,'string',[]);
+            cla(obj.signalaxes);
+        end
+    end
+
 end

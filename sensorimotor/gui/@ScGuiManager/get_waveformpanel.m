@@ -4,15 +4,6 @@ function panel = get_waveformpanel(obj)
 t0 = []; v0 = []; tabs = []; vabs = []; lower = []; upper = [];
 
 panel = uipanel('title','Waveform');
-sc_addlistener(obj,'waveform',@waveform_listener,panel);
-
-    function waveform_listener(~,~)
-        if isempty(obj.waveform)
-            set(panel,'visible','off')
-        else
-            set(panel,'visible','on')
-        end
-    end
 
 obj.waveformpanel = panel;
 mgr = ScLayoutManager(panel);
@@ -37,6 +28,17 @@ ui_added_done = mgr.add(uicontrol('style','pushbutton','String',...
 
 mgr.newline(2);
 mgr.trim;
+
+%Add listeners
+sc_addlistener(obj,'waveform',@waveform_listener,panel);
+
+    function waveform_listener(~,~)
+        if isempty(obj.waveform)
+            set(panel,'visible','off')
+        else
+            set(panel,'visible','on')
+        end
+    end
 
     function added_done_callback(~,~)
         obj.disable_all(1);
@@ -288,7 +290,7 @@ mgr.trim;
         set(obj.triggerpanel,'Visible',visible);
         set(obj.histogrampanel,'Visible',visible);
         set(ui_define_thresholds,'Visible',visible);
-        if obj.waveform.n
+        if ~isempty(obj.waveform) && obj.waveform.n
             set(ui_remove_thresholds,'Visible',visible);
         else
             set(ui_remove_thresholds,'Visible','off');

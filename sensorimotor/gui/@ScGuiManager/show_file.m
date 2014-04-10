@@ -187,7 +187,6 @@ set(h.current_view,'ResizeFcn',@resize_fcn);
     function load_callback(~,~)
         clf(h.current_view);
         h.file.sc_clearsignals();
-  %      h.sequence.sc_loadsignals(h.tmin,h.tmax);
         show_sequence(h);
     end
 

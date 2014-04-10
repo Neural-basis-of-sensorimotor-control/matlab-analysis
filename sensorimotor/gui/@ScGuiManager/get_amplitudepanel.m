@@ -1,14 +1,12 @@
 function panel = get_amplitudepanel(obj)
 
 panel = uipanel('title','Amplitude');
-sc_addlistener(obj,'ampl_',@amplitude_listener,panel);
 obj.waveformpanel = panel;
 mgr = ScLayoutManager(panel);
 mgr.newline(15);
 
 mgr.newline(20);
 ui_clear_sweep = mgr.add(sc_ctrl('pushbutton','Clear sweep',@clear_sweep_callback),100);
-sc_addlistener(obj,'mouse_press_',@mouse_press_listener,ui_clear_sweep);
 
     function clear_sweep_callback(~,~)
         obj.has_unsaved_changes = true;
@@ -67,6 +65,11 @@ ui_filename = mgr.add(sc_ctrl('edit','filename','',...
 
 mgr.newline(2);
 mgr.trim;
+
+%Add listeners
+
+sc_addlistener(obj,'mouse_press_',@mouse_press_listener,panel);
+sc_addlistener(obj,'ampl_',@amplitude_listener,panel);
 
     function amplitude_listener(~,~)
         if isempty(obj.ampl)

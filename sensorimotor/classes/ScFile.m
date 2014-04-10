@@ -238,38 +238,33 @@ classdef ScFile < ScList
             end
         end
         
-        %Triggerchannel = channel that can be trigged on, or that is the
-        %parent of objects that can be trigged on
-        function triggerchannels = gettriggerchannels(obj,tmin,tmax)
-            triggerchannels = ScCellList();
+        %Triggerparent = a channel with child object that can be triggered
+        %on
+        function triggerparents = gettriggerparents(obj,tmin,tmax)
+            triggerparents = ScCellList();
             for i=1:obj.signals.n
                 channel = obj.signals.get(i);
                 for j=1:channel.waveforms.n
                     if numel(channel.waveforms.get(j).gettimes(tmin,tmax))
-                        triggerchannels.add(channel);
+                        triggerparents.add(channel);
                         break;
                     end
                 end
             end
-            for i=1:obj.stims.n
-                stim = obj.stims.get(i);
-                if stim.istrigger && numel(stim.gettimes(tmin,tmax))
-                    triggerchannels.add(stim);
-                else
-                    stimtriggers = obj.stims.get(i).triggers;
-                    for j=1:stimtriggers.n
-                        if numel(stimtriggers.get(j).gettimes(tmin,tmax))
-                            triggerchannels.add(obj.stims.get(i));
-                            break;
-                        end
+            for i=1:obj.stims.n                
+                stimtriggers = obj.stims.get(i).triggers;
+                for j=1:stimtriggers.n
+                    if numel(stimtriggers.get(j).gettimes(tmin,tmax))
+                        triggerparents.add(obj.stims.get(i));
+                        break;
                     end
-                end    
+                end
             end
             for i=1:obj.textchannels.n
                 textchannel = obj.textchannels.get(i);
                 for j=1:textchannel.triggers.n
                     if numel(textchannel.triggers.get(j).gettimes(tmin,tmax))
-                        triggerchannels.add(textchannel);
+                        triggerparents.add(textchannel);
                         break;
                     end
                 end

@@ -48,8 +48,8 @@ classdef ScSequence < ScListElement
             fdir = obj.parent.fdir;
         end
         
-        function triggerchannels = gettriggerchannels(obj,tmin,tmax)
-            triggerchannels = obj.parent.gettriggerchannels(tmin,tmax);
+        function triggerparents = gettriggerparents(obj,tmin,tmax)
+            triggerparents = obj.parent.gettriggerparents(tmin,tmax);
         end
         
         function triggers = gettriggers(obj,tmin,tmax)

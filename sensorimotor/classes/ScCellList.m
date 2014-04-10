@@ -38,6 +38,16 @@ classdef ScCellList < handle
             end
         end
         
+        function index = indexof(obj,item)
+            index = -1;   
+            for k=1:obj.n
+                if obj.get(k)==item
+                    index = k;
+                    return
+                end
+            end
+        end
+        
         function exists = contains(obj,item)
             exists = false;
             for k = obj.cell_list

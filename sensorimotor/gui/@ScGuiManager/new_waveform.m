@@ -22,7 +22,10 @@ dlgmgr.add(uicontrol('style','pushbutton','string',...
         if ~isempty(tag) && ~obj.signal.waveforms.has('tag',tag)
             obj.signal.waveforms.add(ScWaveform(obj.signal,tag,[]));
             set(obj.waveformpanel,'Visible','on');
-            signal_callback;
+            if obj.plot_waveform_shapes
+                set_visible(0);
+            end
+            obj.signal = obj.signal;
             obj.has_unsaved_changes = true;
             resize_fcn = get(obj.current_view,'ResizeFcn');
             resize_fcn();

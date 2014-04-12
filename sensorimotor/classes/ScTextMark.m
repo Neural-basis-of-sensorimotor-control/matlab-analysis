@@ -1,4 +1,3 @@
-%Klar
 classdef ScTextMark < ScChannel & ScTriggerParent
     
     methods
@@ -11,6 +10,7 @@ classdef ScTextMark < ScChannel & ScTriggerParent
             end
         end
 
+        %Load digital channel values
         function sc_loadtimes(obj)
             obj.triggers = ScList;
             d = load(obj.parent.filepath,obj.channelname);

@@ -1,25 +1,28 @@
 classdef ScFile < ScList
-    
+%One for each spike2 / adq file
+%children: ScSequence
     properties
-        parent
-        filename
+        parent      %ScExperiment
+        filename    %name of .mat / .adq file
         comment
-        spikefiles
+        spikefiles  %extra files with spike data imported from Spike2
         
-        signals
-        stims
-        textchannels
+        signals         %List of analog channels (ScSignal)
+        stims           %List of digital channels (ScStim)
+        textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
     end
     
     properties (Dependent)
-        is_adq_file
-        tag
-        filepath
-        fdir
-        channels
+        is_adq_file     
+        tag             
+        filepath        
+        fdir          
+        channels        
     end
     
     methods
+        %ScFile
+        %   filename    either .mat or .adq
         function obj = ScFile(parent, filename)
             obj.parent = parent;
             obj.filename = filename;
@@ -36,10 +39,12 @@ classdef ScFile < ScList
             filepath = fullfile(obj.parent.fdir,obj.filename);
         end
         
+        %Parse experimental protocol (.txt)
         function update_from_protocol(obj, protocolfile)
             obj.parse_protocol(protocolfile);
         end
         
+        %todo: change access to private
         function parse_protocol(obj, protocolfile)
             fid = fopen(protocolfile);
             while 1
@@ -77,9 +82,6 @@ classdef ScFile < ScList
                         obj.comment = sprintf([obj.comment '\n' line]);
                     end
                 elseif checkForEvent(line)                    
-%                     if ~isempty(sequence)
-%                         obj.add(sequence);
-%                     end
                     pos = find(line==' ',2);
                     tmin = str2double(line(pos(1):pos(2)));
                     tag = line(1);
@@ -104,7 +106,7 @@ classdef ScFile < ScList
             end
         end
         
-        %Load all spiketimes, but not analogue signals
+        %Load all spiketimes + digital channels, but not analog channels
         function success = sc_loadtimes(obj)
             success = obj.check_fdir;
             if ~success, return;    end
@@ -119,7 +121,7 @@ classdef ScFile < ScList
             end
         end
         
-        %Load analogue signals
+        %Load analog signals
         function sc_loadsignals(obj)
             for i=1:obj.signals.n
                 obj.signals.get(i).sc_loadsignal();
@@ -140,6 +142,7 @@ classdef ScFile < ScList
             end
         end
 
+        %Check that raw data file exists on hard drive
         function success = check_fdir(obj)
             success = false;
             if exist(obj.filepath, 'file') == 2
@@ -225,6 +228,7 @@ classdef ScFile < ScList
             end
         end
         
+        %channels = all channels from raw data file
         function channels = get.channels(obj)
             channels = ScCellList();
             for i=1:obj.signals.n
@@ -240,6 +244,8 @@ classdef ScFile < ScList
         
         %Triggerparent = a channel with child object that can be triggered
         %on
+        %implements istrigger (return false), and triggers (return all
+        %children that are triggers)
         function triggerparents = gettriggerparents(obj,tmin,tmax)
             triggerparents = ScCellList();
             for i=1:obj.signals.n
@@ -279,6 +285,7 @@ classdef ScFile < ScList
             saved = obj.parent.sc_save(varargin{:});
         end
         
+        %File is either adq file or spike2 file
         function is_adq_file = get.is_adq_file(obj)
             [~,~,ext] = fileparts(obj.filename);
             is_adq_file = strcmpi(ext,'.adq');
@@ -376,14 +383,17 @@ classdef ScFile < ScList
     end
 end
 
+%Return true if end of protocol file is reached
 function [stopParsing] = checkForEof(line)
 stopParsing = ~isempty(line) && ((isnumeric(line) && line == -1) || (length(line) > 2 && strcmp(line(1:2),'¤¤')));
 end
 
+%Return true if line contains a new event
 function [newEvent] = checkForEvent(line)
 newEvent = length(line) > 2 && strcmpi(line(end-1:end),'##');
 end
 
+%return true if line contains a new neuron
 function [newCell] = checkForCell(line)
 newCell = length(line) > 2 && strcmpi(line(1:2),'%%');
 end

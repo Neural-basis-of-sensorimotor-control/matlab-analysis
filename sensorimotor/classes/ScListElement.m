@@ -1,4 +1,6 @@
 classdef ScListElement < handle
+    %todo: incorporate in ScList and ScCellList
+    %index can be replaced by ScList->indexof() in parent class
     properties
         parent
     end

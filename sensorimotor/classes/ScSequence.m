@@ -1,11 +1,12 @@
 classdef ScSequence < ScListElement
-    
+%Certain time range of a file
+
     properties
         tag
         comment
         tmin
         tmax
-        ampl_list
+        ampl_list   %list of ScAmplitude objects
     end
     
     properties (Dependent)
@@ -29,6 +30,7 @@ classdef ScSequence < ScListElement
             obj.ampl_list = ScList();
         end
         
+        %clear all transient data
         function sc_clear(obj)
             ch = obj.channels;
             for i=1:ch.n
@@ -74,7 +76,9 @@ classdef ScSequence < ScListElement
     end
     
     methods (Static)
+        %called before class is created
         function obj = loadobj(obj)
+            %ensure backwards compatibility
             if isempty(obj.ampl_list)
                 obj.ampl_list = ScList();
             end

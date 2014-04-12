@@ -1,5 +1,8 @@
 function show_sequence(obj)
-
+%todo: this function could be split up into several functions, one for each
+%possible value of obj.state
+%Or ScGuiManager is made an inheritable abstract class, and one
+%implementation is used for each state
 if ~isempty(obj.current_view)
     clf(obj.current_view,'reset');
     set(obj.current_view,'ToolBar','None');
@@ -7,7 +10,6 @@ end
 
 set(obj.current_view,'CloseRequestFcn',@(src,evt) sc_close_request(src,evt,obj),...
     'menubar','none','Color',[0 0 0]);
-%obj.resize_fcn = @resize_fcn;
 
 mgr = ScLayoutManager(obj.current_view);
 
@@ -35,16 +37,10 @@ obj.disable_all(1);
 set(obj.current_view,'ResizeFcn',@resize_fcn);
 
 resize_fcn;
-%obj.update_triggerpanel_fcn();
 obj.sequence = obj.sequence;
 obj.disable_all(0);
 obj.text = 'Choose ''Spike detection'' or ''Amplitude analysis''';
 
-%set(obj.current_view,'Units','normalized','Position',[0 0 1 1]);
-% global DEBUG
-% if DEBUG
-%     obj.load_sequence_fcn();
-% end
     function add_to_left_panel(panel)
         setwidth(panel,obj.leftpanelwidth);
         mgr.newline(getheight(panel));

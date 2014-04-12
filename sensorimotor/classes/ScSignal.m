@@ -1,9 +1,10 @@
 classdef ScSignal < ScChannel
+    %Analog imported channel
     properties
-        dt
-        waveforms
-        filter
-        N
+        dt          %time resolution (1x1 double)
+        waveforms   %ScWaveform
+        filter      %ScFilter
+        N           %nbr of data points (1x1 double)
     end
     
     properties (Dependent)
@@ -52,21 +53,6 @@ classdef ScSignal < ScChannel
             end
         end
         
-        %         %Clear transient properties
-        %         function sc_clearsignal(obj)
-        %             obj.v = [];
-        %             obj.v_raw = [];
-        %         end
-        
-        %         function v_full = sc_load_full_signal(obj)
-        %             d = load(obj.parent.filepath,obj.channelname);
-        %             %todo :check that vector i Nx1, not 1xN
-        %             v_full = obj.filter.filt(d.(obj.channelname).values,0,inf);
-        %             if size(v_full,2)>1
-        %                 v_full = v_full';
-        %             end
-        %         end
-        
         function istrigger = get.istrigger(~)
             istrigger = false;
         end
@@ -78,13 +64,5 @@ classdef ScSignal < ScChannel
         function t = get.t(obj)
             t = (0:obj.N-1)'*obj.dt;
         end
-        
-        %         function t = get_t(obj,tmin)
-        %             t = tmin + (0:obj.N-1)'*obj.dt;
-        %         end
-        %
-        %         function t = gettimes(obj,tmin)
-        %             t = tmin + (0:obj.N-1)'*obj.dt;
-        %         end
     end
 end

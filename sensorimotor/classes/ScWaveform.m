@@ -1,18 +1,18 @@
 classdef ScWaveform < ScTrigger & ScList
+    %Response from particular neuron
+    %children: ScThreshold
     properties
-        parent
-        spike2filename
+        parent                  %ScFile
+        spike2filename          %applicable when there are extra files with 
+                                %spiketimes from Spike2
         tag
-        detected_spiketimes
-        imported_spiketimes
-        predefined_spiketimes
+        detected_spiketimes     %spiketimes that are given by ScThreshold children
+        imported_spiketimes     %imported from Spike2
+        predefined_spiketimes   %e.g userdefined spiketimes
                 
-        min_isi = 1e-3
+        min_isi = 1e-3          %min inter-spike interval (s)
     end
-    
-%     properties (Dependent)
-%         times
-%     end
+
     
     methods
         function obj = ScWaveform(parent, tag, spike2filename)
@@ -21,22 +21,10 @@ classdef ScWaveform < ScTrigger & ScList
             obj.spike2filename = spike2filename;
         end
         
-%         function add(obj,thresholds,v)
-%             add@ScList(obj,thresholds);
-%             spiketimes = obj.parent.t(thresholds.match(v));
-%             obj.detected_spiketimes = [obj.detected_spiketimes; spiketimes];
-%         end
-%         
-%         function sc_clear(obj)    
-%             obj.times = [];
-%         end
-        
+        %Load spike times from separate Spike2 file
         function sc_loadtimes(obj)
             if ~isempty(obj.spike2filename)
                 d = load(fullfile(obj.parent.fdir,obj.spike2filename));
-%                 spiketimes = d.spikes.times;
-%                 obj.imported_spiketimes = spiketimes(spiketimes>=obj.parent.tmin & ...
-%                     spiketimes < obj.parent.tmax);
                 obj.imported_spiketimes = d.spikes.times;
             end
         end
@@ -46,6 +34,13 @@ classdef ScWaveform < ScTrigger & ScList
             obj.imported_spiketimes = [];
         end
         
+        %match waveforms in ScThreshold list to vector v that is contained in
+        %handle h. h must have field v, that is a Nx1 double
+        %Using a handle to reduce RAM requirement
+        %Returns:
+        %   - spikepos  = positions in w with a match
+        %   - wfarea    = Nx1 logical array with true for all points in v
+        %   that are covered by a waveform
         function [spikepos,wfarea] = match_handle(obj, h)
             if size(h.v,2)>size(h.v,1), 
                 h.v=h.v';   
@@ -66,6 +61,14 @@ classdef ScWaveform < ScTrigger & ScList
             spikepos = spikepos(1:pos);
         end
         
+        %same as match_handle but v is passed as a vector, thus it is
+        %unsuitable for large vectors as it may challenge memory
+        %availability
+        %Returns
+        %   - spikepos   
+        %   - spikeindex = Nx1 double where value is 0 if no match and otherwise 
+        %index from 1...:(nbr of ScThreshold) that shows which waveform is
+        %covered
         function [spikepos, spikeindex] = match(obj,v)
             if size(v,2)>size(v,1), v=v';   end
             spikepos = nan(ceil(numel(v)/100),1);
@@ -81,17 +84,14 @@ classdef ScWaveform < ScTrigger & ScList
             spikepos = spikepos(1:pos);
         end
         
-%         function times = get.times(obj)  
-%            times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
-%                obj.predefined_spiketimes]),obj.min_isi);
-%         end
-
+        %Return all spike times between tmin and tmax
         function times = gettimes(obj,tmin,tmax)
                times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
                    obj.predefined_spiketimes]),obj.min_isi);
                times = times(times>=tmin & times<tmax);
         end
         
+        %Run through v and redo all thresholding
         function recalculate_spiketimes(obj,v,dt)
             obj.detected_spiketimes = obj.match(v)*dt;
         end

@@ -7,26 +7,12 @@ classdef ScChannel < handle
     end
     
     properties (Dependent)
-%         tmin
-%         tmax
         fdir
         is_adq_file
     end
     
     methods
-        
-%         function tag = get.tag(obj)
-%             tag = obj.channelname;
-%         end
-        
-%         function tmin = get.tmin(obj)
-%             tmin = obj.parent.tmin;
-%         end
-%         
-%         function tmax = get.tmax(obj)
-%             tmax = obj.parent.tmax;
-%         end
-        
+                
         function fdir = get.fdir(obj)
             fdir = obj.parent.fdir;
         end
@@ -38,7 +24,9 @@ classdef ScChannel < handle
     end
     
     methods (Static = true)
+        %called before object is created from saved file
         function obj = loadobj(a)
+            %to ensure backwards compatibility
             if ~a.is_adq_file() && isempty(a.tag)
                 a.tag = a.channelname;
             end

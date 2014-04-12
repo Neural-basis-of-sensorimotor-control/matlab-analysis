@@ -331,6 +331,8 @@ classdef ScGuiManager < handle
         has_unsaved_changes = false
         
         %GUI components
+        %to do - replace hardcoded panels (e.g. filepanel etc) with dynamic
+        %list
         current_view
         filepanel
         triggerpanel
@@ -340,57 +342,43 @@ classdef ScGuiManager < handle
         savepanel
         
         %Axes
+        %to do - replace hardcoded axes (e.g. filepanel etc) with dynamic
+        %list
         stimaxes
         signalaxes
         extrasignalaxes
         histogramaxes
-        
-        %Experiment variables
-        %waveform
-        %trigger
         
         %Plot constants
         leftpanelwidth = 300
         borderwidth = 50
         plotheight = 200
         
-        %Plot variables that requires reloading of plot panel
-        %pretrigger = -.1
-        %posttrigger = .1
+        %Plot variables that require reloading of plot panel
         plot_waveform_shapes = false
-        %waveform_indexes
         wfpos
         v
         v_raw
+        plot_raw = false
         
         %Plot variables that can be applied on the fly
-        t_offset
-        plot_raw = false
-        %sweeps = 1
-        %         zoom_on = false
-        %         pan_on = false
-        
+        t_offset        
         
         hist_pretrigger = -.1
         hist_posttrigger = .1
         hist_binwidth = 1e-2
-        
-        %         xmin
-        %         xmax
-        %         ymin
-        %         ymax
         
         %Misc constants
         max_array_size = 1e9
         show_triggers
         
         %Function handles
-        %        resize_fcn
-        %        update_triggerpanel_fcn
+        %todo: as far as possible, replace with callbacks from GUI
+        %components and listeners that listen to ScGuiManager properties
         load_sequence_fcn
         update_plotpanel_fcn
         update_histogrampanel_fcn
-        update_savepanel_fcn %todo: apply
+        update_savepanel_fcn
         
         %Plot function handles
         %variable function that is called whenever the plot is updated
@@ -416,6 +404,9 @@ classdef ScGuiManager < handle
         function obj = ScGuiManager(experiment)
             obj.experiment = experiment;
             obj.extrasignalaxes = ScList;
+            %the sequence listener keep track of which digital channels
+            %that should be displayed. this solution is very much ad hoc,
+            %and should probably be replaced by a dependent function
             addlistener(obj,'sequence_','PostSet',@sequence_listener);
             
             function sequence_listener(~,~)
@@ -436,16 +427,15 @@ classdef ScGuiManager < handle
         
         function show(obj)
             obj.current_view = gcf;
-            %                 set(obj.current_view,'windowstyle','modal');
             clf(obj.current_view,'reset');
             show_experiment(obj);
         end
-        
+
+        %The GUI requires trigger times to plot the data around
         function triggertimes = get.triggertimes(obj)
             if isempty(obj.trigger) || isempty(obj.signal)
                 triggertimes = [];
             else
-                %t = obj.signal.t;
                 triggertimes = obj.trigger.gettimes(obj.tmin,obj.tmax);
                 triggertimes = triggertimes(triggertimes>obj.tmin-obj.pretrigger & ...
                     triggertimes<obj.tmax-obj.posttrigger);
@@ -477,13 +467,10 @@ classdef ScGuiManager < handle
             end
         end
         
+        %Freezes the panel to stop the user from calling more than one
+        %callback at the time. Only used for time-consuming callbacks
         function disable_all(obj,disable_on)
             global DEBUG
-            %             if disable_on
-            %                 visible = 'off';
-            %             else
-            %                 visible = 'on';
-            %             end
             if disable_on
                 obj.text = 'Computing, if program freezes write ''close'' command in command prompt to shut down';
             else
@@ -491,35 +478,7 @@ classdef ScGuiManager < handle
             end
             if ~DEBUG
                 enableDisableFig(obj.current_view, ~disable_on);
-            end
-            %             if disable_on
-            %                 axes(obj.stimaxes);
-            %             end
-            %             set(obj.filepanel,'visible',visible);
-            %             if isempty(obj.sequence)
-            %                 set(obj.triggerpanel,'Visible','off');
-            %             else
-            %                 set(obj.triggerpanel,'visible',visible);
-            %             end
-            %             if isempty(obj.signal) || isempty(obj.triggertimes)
-            %                 set(obj.plotpanel,'Visible','off');
-            %             else
-            %                 set(obj.plotpanel,'visible',visible);
-            %             end
-            %             if isempty(obj.waveform)
-            %                 set(obj.waveformpanel,'visible','off');
-            %             else
-            %                 set(obj.waveformpanel,'visible',visible);
-            %             end
-            %             if isempty(obj.waveform)
-            %                 set(obj.histogrampanel,'visible','off');
-            %             else
-            %                 set(obj.histogrampanel,'visible',visible);
-            %             end
-            %             set(obj.savepanel,'visible',visible);
-            %             if disable_on
-            %                 axes(obj.signalaxes);
-            %             end
+            end    
         end
         
     end

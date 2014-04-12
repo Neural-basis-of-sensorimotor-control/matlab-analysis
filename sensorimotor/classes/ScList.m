@@ -1,4 +1,6 @@
 classdef ScList < handle
+    %List structture with extra features. Can only contain a single type of
+    %objects. For a list of arbitray objects, see ScCellList
     properties (SetObservable)
         list
     end
@@ -9,11 +11,11 @@ classdef ScList < handle
     
     methods
         
-        function add(obj, val)
+        function add(obj, item)
             if ~obj.n
-                obj.list = val;
+                obj.list = item;
             else
-                obj.list(obj.n+1) = val;
+                obj.list(obj.n+1) = item;
             end
         end
         
@@ -21,6 +23,11 @@ classdef ScList < handle
             obj.list(obj.indexof(item)) = [];
         end
         
+        %if nargin == 2
+        %   index   index in list
+        %if nargin == 3
+        %   index   property name (string)
+        %   val     desired value of property
         function listobject = get(obj,index, val)
             if nargin==2
                 listobject = obj.list(index);
@@ -49,6 +56,7 @@ classdef ScList < handle
             end
         end
         
+        %get all values of a specific property, as a cell array
         function vals = values(obj, property)
             if isempty(obj.list)
                 vals = {};

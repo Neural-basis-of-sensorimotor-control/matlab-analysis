@@ -6,7 +6,9 @@ classdef ScThreshold < handle
         lower_tolerance
         upper_tolerance
         
-        max_matrix_size = 1e7;
+        max_matrix_size = 1e7   %can be changed to optimize speed and memory
+                                %usage, optimal value depends on available
+                                %RAM
     end
     
     properties (Dependent)
@@ -16,7 +18,6 @@ classdef ScThreshold < handle
     
     methods
         function obj = ScThreshold(position_offset, v_offset, lower_tolerance, upper_tolerance)
-            %[position_offset,ind] = sort(position_offset);
             obj.position_offset = position_offset;
             obj.v_offset = v_offset;%(ind);
             obj.lower_tolerance = lower_tolerance;%(ind);
@@ -36,6 +37,7 @@ classdef ScThreshold < handle
             obj.upper_tolerance(2:end) = obj.upper_tolerance(ind+1);
         end
 
+        %see ScWaveform for explanation
         function [spikepos, wfarea] = match_handle(obj,h,min_isi)
             if size(h.v,2) > 1
                 h.v = h.v';
@@ -75,6 +77,7 @@ classdef ScThreshold < handle
             spikepos = sc_separate(spikepos,obj.width);
         end
         
+        %see ScWaveform for explanation
         function [spikepos, wfarea] = match(obj,v,min_isi)
             h.v = v;
             clear v;
@@ -83,25 +86,6 @@ classdef ScThreshold < handle
             else
                 [spikepos,wfarea] = obj.match_handle(h,min_isi);
             end
-%             if size(v,2)>size(v,1)
-%                 v=v';
-%             end
-%             spikepos = 1:(numel(v)-max(obj.position_offset));
-%             for i=1:obj.n
-%                 vtemp = v(spikepos+obj.position_offset(i)) - v(spikepos) - obj.v_offset(i);
-%                 spikepos = spikepos(vtemp >= obj.lower_tolerance(i) & vtemp <= obj.upper_tolerance(i));
-%             end
-%             
-%             if nargout>=2
-%                 wfarea = false(size(v))';
-%                 batchsize = round(obj.max_matrix_size/obj.width);
-%                 for startpos = 1:batchsize:numel(spikepos)
-%                     endpos = min(startpos+batchsize,numel(spikepos));
-%                     wfs = bsxfun(@plus,spikepos(startpos:endpos)',0:(obj.width-1));
-%                     wfarea(wfs(:)) = true(size(wfs(:)));
-%                 end
-%             end
-%             spikepos = sc_separate(spikepos,obj.width);
         end
         
         function n = get.n(obj)

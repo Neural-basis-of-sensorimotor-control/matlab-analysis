@@ -21,8 +21,9 @@ function obj = sc(varargin)
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 
-global DEBUG
+global DEBUG FREEZESCREEN
 DEBUG = 0;
+FREEZESCREEN = 1;
 addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\
 
 if DEBUG

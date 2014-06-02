@@ -85,7 +85,7 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
     function plot_waveform_shapes(sweeps,v,btn_down_fcn)
         
         if obj.plot_waveform_shapes
-            [wfpos,time] = sc_get_sweeps(obj.wfpos,obj.tmin, ...
+            [wfpos,time] = sc_get_sweeps(obj.wfpos,0, ...
                 obj.triggertimes(sweeps),obj.pretrigger,obj.posttrigger,obj.signal.dt);
             if obj.no_trigger,    time = time + obj.triggertimes(sweeps(1));  end
             for i=1:size(v,2)
@@ -113,7 +113,7 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
         
         for i=1:obj.extrasignalaxes.n
             sah = obj.extrasignalaxes.get(i);
-            [v,time] = sc_get_sweeps(sah.signal.v,obj.tmin, ...
+            [v,time] = sc_get_sweeps(sah.signal.v,0, ...
                 obj.triggertimes(sweep),obj.pretrigger,obj.posttrigger,sah.signal.dt);
             if obj.no_trigger && numel(sweep)
                 time = time+obj.triggertimes(obj.sweep(1));
@@ -272,7 +272,7 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
                 obj.plot_fcn(1:numel(obj.triggertimes));
             case ui_plot_avg
                 obj.plot_fcn(1:numel(obj.triggertimes));
-                [v,time] = sc_get_sweeps(obj.v,obj.tmin, ...
+                [v,time] = sc_get_sweeps(obj.v,0, ...
                     obj.triggertimes(1:numel(obj.triggertimes)),obj.pretrigger,...
                     obj.posttrigger,obj.signal.dt);
                 plot(obj.signalaxes,time,mean(v,2),'LineWidth',4,'Color',[1 0.6471 0]);
@@ -282,7 +282,7 @@ obj.plot_waveform_shapes_fcn = @plot_waveform_shapes;
             case ui_plot_std   
                 cla(obj.signalaxes);
                 hold(obj.signalaxes,'on')
-                [v,time] = sc_get_sweeps(obj.v,obj.tmin, ...
+                [v,time] = sc_get_sweeps(obj.v,0, ...
                     obj.triggertimes(1:numel(obj.triggertimes)),obj.pretrigger,...
                     obj.posttrigger,obj.signal.dt);
                 plot(obj.signalaxes,time,mean(v,2),'LineWidth',4,'Color',[1 0.6471 0]);
@@ -337,6 +337,7 @@ end
             set(obj.plotpanel,'visible','off');
         else
             set(obj.plotpanel,'visible','on');
+            set(ui_nbr_of_stims,'String',sprintf('(%i)',numel(obj.triggertimes)));
         end
     end
 

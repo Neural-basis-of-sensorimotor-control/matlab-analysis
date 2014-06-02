@@ -22,7 +22,7 @@ end
     obj.posttrigger, obj.signal.dt);
 
 if obj.no_trigger && numel(sweeps)
-    time = time+obj.triggertimes(obj.sweeps(1));
+    time = time+obj.triggertimes(obj.sweep(1));
 end
 if ~isempty(obj.t_offset)
     [~,ind] = min(abs(time-obj.t_offset));
@@ -55,17 +55,14 @@ for i=1:size(v,2)
         text(obj.signalaxes,0,double(v(ind,i)),'start','HorizontalAlignment','center','Color',...
             [0 1 0]);
         triggertime = obj.triggertimes(obj.sweep(1));
-        val = obj.ampl.get_data(triggertime,[1 3]);
-        t1 = val(1); t2 = val(2);
-        if isfinite(t1)
-            [~,ind] = min(abs(time-t1));
-            plot(obj.signalaxes,t1,double(v(ind,i)),'g+','MarkerSize',12,'LineWidth',4);
+        val = obj.ampl.get_data(triggertime,1:4);
+        if isfinite(val(1))
+            plot(obj.signalaxes,val(1),val(2),'g+','MarkerSize',12,'LineWidth',4);
         end
-        if isfinite(t2)
-            [~,ind] = min(abs(time-t2));
-            plot(obj.signalaxes,t2,double(v(ind,i)),'b+','MarkerSize',12,'LineWidth',4);
+        if isfinite(val(3))
+            plot(obj.signalaxes,val(3),double(val(4)),'b+','MarkerSize',12,'LineWidth',4);
         end
-        set(plothandle,'ButtonDownFcn',@define_amplitude_btndown);
+        set(obj.signalaxes,'ButtonDownFcn',@define_amplitude_btndown);
     end
 end
 

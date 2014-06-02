@@ -40,33 +40,31 @@ if 0
 end
 
 mgr.newline(20);
-mgr.add(uicontrol('style','pushbutton','String','Spike detection','Callback',...
-    @spike_detection_callback),obj.leftpanelwidth/2);
 
-    function spike_detection_callback(~,~)
-        obj.state = ScGuiState.spike_detection;
-        load_callback();
-        obj.text = {'Choose signal, trigger, waveform etc. Then press ''Load signal'',',...
-            'or use histogram panel below'};
+mgr.add(sc_ctrl('text','State'),100);
+[~,str] = enumeration('ScGuiState');
+ui_state = mgr.add(sc_ctrl('popupmenu',str,@state_callback),100);
+set(ui_state,'Value',find(cellfun(@(x) strcmp(x,char(obj.state)), get(ui_state,'String'))))
+mgr.add(sc_ctrl('pushbutton','Update',@update_state_callback),95);
+
+    function state_callback(~,~)
+        popupstr = get(ui_state,'String');
+        popupval = popupstr{get(ui_state,'Value')};
+        obj.setvisible(strcmp(char(obj.state),popupval));
     end
 
-mgr.add(uicontrol('style','pushbutton','String','Amplitude analysis','Callback',...
-    @ampl_analysis_callback),obj.leftpanelwidth/2);
-
-    function ampl_analysis_callback(~,~)
-        obj.state = ScGuiState.ampl_analysis;
-        load_callback();
-        obj.text = 'Choose Amplitude or create new. Then press ''Load signal''';
+    function update_state_callback(~,~)
+        [enum_states,str_states] = enumeration('ScGuiState');
+        popupstr = get(ui_state,'String');
+        popupval = popupstr{get(ui_state,'Value')};
+        obj.state = enum_states(cellfun(@(x) strcmp(x,popupval), ...
+            str_states));
+        show_sequence(obj);
+        obj.text = [];
     end
 
 mgr.newline(2);
 mgr.trim;
-
-    function load_callback(~,~)
-    %    clf(h.current_view);
-    %    h.state = h.state;
-        show_sequence(obj);
-    end
 
     function select_sequence_callback(~,~)
         clf(obj.current_view,'reset');

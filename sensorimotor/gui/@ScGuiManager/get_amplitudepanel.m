@@ -45,7 +45,7 @@ mgr.add(sc_ctrl('pushbutton','Save to file',@save_to_file_callback),100);
             time_to_peak = data(:,3) - data(:,1);
             fid = fopen(get(ui_filename,'string'),'w');
             if fid ~= -1
-                fprintf(fid,'%.2f,%.0f,%.0f\n',[response_time 1000*v_diff 1000*time_to_peak]);
+                fprintf(fid,'%.2f,%.2f,%.2f\n',[1000*response_time v_diff 1000*time_to_peak]);
                 if fclose(fid)
                     msgbox('File did not close properly');
                 end

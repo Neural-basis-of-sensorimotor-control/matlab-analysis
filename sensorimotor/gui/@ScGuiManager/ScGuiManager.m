@@ -470,13 +470,13 @@ classdef ScGuiManager < handle
         %Freezes the panel to stop the user from calling more than one
         %callback at the time. Only used for time-consuming callbacks
         function disable_all(obj,disable_on)
-            global DEBUG
+            global DEBUG FREEZESCREEN
             if disable_on
                 obj.text = 'Computing, if program freezes write ''close'' command in command prompt to shut down';
             else
                 obj.text = '';
             end
-            if ~DEBUG
+            if ~DEBUG && FREEZESCREEN
                 enableDisableFig(obj.current_view, ~disable_on);
             end    
         end

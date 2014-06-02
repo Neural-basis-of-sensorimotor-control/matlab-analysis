@@ -179,7 +179,7 @@ end
 
 obj.load_sequence_fcn = @load_callback;
 %sc_addlistener(obj,'trigger_',@trigger_listener,panel);
-
+signal_listener();
 layout_done = true;
 
     function extrasignal_callback(src,i)
@@ -263,7 +263,14 @@ layout_done = true;
             obj.wfpos = [];
         end
         maxsweeps = numel(obj.triggertimes);
-        obj.sweep = obj.sweep(obj.sweep<=maxsweeps);
+        if maxsweeps
+            if isempty(obj.sweep)
+                obj.sweep = 1;
+            end
+            obj.sweep = obj.sweep(obj.sweep<=maxsweeps);
+        else
+            obj.sweep = [];
+        end
         obj.update_plotpanel_fcn();
         obj.update_histogrampanel_fcn();
         obj.update_savepanel_fcn();
@@ -271,7 +278,6 @@ layout_done = true;
         obj.plot_fcn();
         obj.disable_all(0);
         set_visible(1);
-        obj.sweep = 1;
     end
 
 %Inactivate other panels to stop user from causing a crash by pressing

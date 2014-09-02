@@ -20,7 +20,11 @@ classdef ScList < handle
         end
         
         function remove(obj, item)
-            obj.list(obj.indexof(item)) = [];
+            index = obj.indexof(item);
+            if index==-1
+                index = item;
+            end
+            obj.list(index) = [];
         end
         
         %if nargin == 2

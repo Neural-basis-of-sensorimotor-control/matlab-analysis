@@ -93,7 +93,18 @@ sc_addlistener(obj,'pan_on',@(~,~) toggle_button('pan_on',ui_pan),panel);
     end
 
     function reset_callback(~,~)
-        
+        obj.xlimits = [obj.pretrigger obj.posttrigger];
+        obj.zoom_on = false;
+        obj.pan_on = false;
+    end
+
+    function y_zoom_out_callback(~,~)
+        ylimits = ylim(obj.main_axes);
+        ydiff = diff(ylimits);
+        ylimits = ylimits + [-ydiff/2 ydiff/2];
+        ylim(obj.main_axes,ylimits);
+        obj.zoom_on = false;
+        obj.pan_on = false;
     end
 
     function update_listener(~,~)

@@ -64,9 +64,10 @@ classdef SequenceViewer < handle
             obj.sequence = sequence;
             obj.panels = ScList();
             obj.plot_axes = ScList();
-            addlistener(obj,'main_axes','PostSet',@main_axes_listener);
-            addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
-            addlistener(obj,'pan_on','PostSet',@pan_on_listener);
+            sc_addlistener(obj,'main_axes',@main_axes_listener,obj.main_axes);
+            %addlistener(obj,'main_axes','PostSet',@main_axes_listener);
+            sc_addlistener(obj,'zoom_on',@zoom_on_listener,obj.main_axes);
+            sc_addlistener(obj,'pan_on',@pan_on_listener,obj.main_axes);
             
             function main_axes_listener(~,~)
                 if ~isempty(obj.main_axes)
@@ -77,7 +78,7 @@ classdef SequenceViewer < handle
                 end
                 
                 function xaxis_listener(~,~)
-                    obj.xlimits = xlim(obj.main_axis);%obj.main_axes);
+                    obj.xlimits = xlim(gca);%obj.main_axes);
                     if obj.xlimits(1) < obj.pretrigger
                         obj.pretrigger = obj.xlimits(1);
                     end

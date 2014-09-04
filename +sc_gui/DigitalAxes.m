@@ -2,11 +2,11 @@ classdef DigitalAxes < sc_gui.ChannelAxes
     
     methods
         function obj = DigitalAxes(gui)
-            obj = obj@sc_gui.ChannelAxes(gui);
+            obj@sc_gui.ChannelAxes(gui);
             digch = obj.sequence.gettriggers(obj.gui.tmin,...
                 obj.gui.tmax);
             setheight(obj.ax,digch.n*15);
-            addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             
             function xlimits_listener(~,~)
                 if obj.gui.xlimits(1)<obj.gui.xlimits(2)

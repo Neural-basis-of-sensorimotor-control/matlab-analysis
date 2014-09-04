@@ -13,9 +13,10 @@ classdef AnalogAxes < sc_gui.ChannelAxes
             obj@sc_gui.ChannelAxes(gui);
             if obj.ax == obj.gui.main_axes
                 addlistener(obj.ax,'xlim','PostSet',@xlim_listener);
-            else
-                addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
             end
+            %else
+                addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            %end
             obj.signal = signal;
             setheight(obj.ax,250);
             plot_raw = 0;

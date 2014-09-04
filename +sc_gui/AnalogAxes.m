@@ -11,7 +11,11 @@ classdef AnalogAxes < sc_gui.ChannelAxes
     methods
         function obj = AnalogAxes(gui,signal,varargin)            
             obj@sc_gui.ChannelAxes(gui);
-            
+            if obj.ax == obj.gui.main_axes
+                addlistener(obj.ax,'xlim','PostSet',@xlim_listener);
+            else
+                addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            end
             obj.signal = signal;
             setheight(obj.ax,250);
             plot_raw = 0;
@@ -22,6 +26,16 @@ classdef AnalogAxes < sc_gui.ChannelAxes
                 end
             end
             obj.update_v(plot_raw);
+            
+            function xlim_listener(~,~)
+                obj.gui.xlimits = xlim(obj.ax);
+            end
+            
+            function xlimits_listener(~,~)
+                if obj.gui.xlimits(1) < obj.gui.xlimits(2)
+                    xlim(obj.ax,obj.gui.xlimits);
+                end
+            end
         end
         
         function update_v(obj,plot_raw)

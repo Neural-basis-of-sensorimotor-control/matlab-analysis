@@ -77,7 +77,7 @@ classdef SequenceViewer < handle
                 end
                 
                 function xaxis_listener(~,~)
-                    obj.xlimits = xlim(gca);%obj.main_axes);
+                    obj.xlimits = xlim(obj.main_axis);%obj.main_axes);
                     if obj.xlimits(1) < obj.pretrigger
                         obj.pretrigger = obj.xlimits(1);
                     end

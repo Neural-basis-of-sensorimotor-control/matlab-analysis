@@ -28,8 +28,8 @@ mgr.add(sc_ctrl('text','Plot mode'),100);
 ui_plot_mode = mgr.add(sc_ctrl('popupmenu',str_,@plot_mode_callback),100);
 
 mgr.newline(20);
-mgr.add(sc_ctrl('pushbutton','Zoom',@zoom_callback),100);
-mgr.add(sc_ctrl('pushbutton','Pan',@pan_callback),100);
+ui_zoom = mgr.add(sc_ctrl('pushbutton','Zoom',@zoom_callback),100);
+ui_pan = mgr.add(sc_ctrl('pushbutton','Pan',@pan_callback),100);
 mgr.newline(20);
 mgr.add(sc_ctrl('pushbutton','Reset',@reset_callback),100);
 mgr.add(sc_ctrl('pushbutton','Y zoom out',@y_zoom_out_callback),100);
@@ -43,7 +43,8 @@ obj.panels.add(panel);
 
 sc_addlistener(obj,'sweep',@sweep_listener,panel);
 sc_addlistener(obj,'update',@update_listener,panel);
-
+sc_addlistener(obj,'zoom_on',@(~,~) toggle_button('zoom_on',ui_zoom),panel);
+sc_addlistener(obj,'pan_on',@(~,~) toggle_button('pan_on',ui_pan),panel);
 
     function pretrigger_callback(~,~)
         obj.pretrigger = str2double(get(ui_pretrigger,'string'));
@@ -91,8 +92,20 @@ sc_addlistener(obj,'update',@update_listener,panel);
         set(ui_sweep,'string',obj.sweep);
     end
 
+    function reset_callback(~,~)
+        
+    end
+
     function update_listener(~,~)
         obj.plot_channels();
+    end
+
+    function toggle_button(property, button)
+        if obj.(property)
+            set(button,'FontWeight','bold');
+        else
+            set(button,'FontWeight','normal');
+        end
     end
 
 end

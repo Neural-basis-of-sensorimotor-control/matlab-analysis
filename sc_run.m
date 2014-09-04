@@ -9,6 +9,7 @@ end
 clearclasses = 0;
 clf('reset')
 if clearclasses
+    close all
     clear classes
 else
     clear

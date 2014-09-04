@@ -9,7 +9,7 @@ classdef DigitalAxes < sc_gui.ChannelAxes
             addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
             
             function xlimits_listener(~,~)
-                if obj.xlimits(1)<obj.xlimits(2)
+                if obj.gui.xlimits(1)<obj.gui.xlimits(2)
                     xlim(obj.ax,obj.gui.xlimits);
                 end
             end

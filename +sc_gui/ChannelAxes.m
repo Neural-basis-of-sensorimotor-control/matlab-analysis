@@ -46,5 +46,6 @@ classdef ChannelAxes < handle
             hold(obj.ax,'on');
             xlim(obj.ax,obj.gui.xlimits);
         end
+        
     end
 end

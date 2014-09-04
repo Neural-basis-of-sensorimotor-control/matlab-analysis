@@ -28,11 +28,11 @@ mgr.add(sc_ctrl('text','Plot mode'),100);
 ui_plot_mode = mgr.add(sc_ctrl('popupmenu',str_,@plot_mode_callback),100);
 
 mgr.newline(20);
-mgr.add(sc_ctrl('pushbutton','Zoom',[]),100);
-mgr.add(sc_ctrl('pushbutton','Pan',[]),100);
+mgr.add(sc_ctrl('pushbutton','Zoom',@zoom_callback),100);
+mgr.add(sc_ctrl('pushbutton','Pan',@pan_callback),100);
 mgr.newline(20);
-mgr.add(sc_ctrl('pushbutton','Reset',[]),100);
-mgr.add(sc_ctrl('pushbutton','Y zoom out',[]),100);
+mgr.add(sc_ctrl('pushbutton','Reset',@reset_callback),100);
+mgr.add(sc_ctrl('pushbutton','Y zoom out',@y_zoom_out_callback),100);
 
 mgr.newline(20);
 mgr.add(sc_ctrl('pushbutton','Update',@update_listener),200);
@@ -47,10 +47,12 @@ sc_addlistener(obj,'update',@update_listener,panel);
 
     function pretrigger_callback(~,~)
         obj.pretrigger = str2double(get(ui_pretrigger,'string'));
+        obj.xlimits(1) = obj.pretrigger;
     end
 
     function posttrigger_callback(~,~)
         obj.posttrigger = str2double(get(ui_posttrigger,'string'));
+        obj.xlimits(2) = obj.posttrigger;
     end
 
     function increment_callback(~,~)
@@ -75,6 +77,14 @@ sc_addlistener(obj,'update',@update_listener,panel);
         [enum,enum_str] = enumeration('sc_gui.PlotModes');
         ind = cellfun(@(x) strcmp(x,str{val}),enum_str);
         obj.plotmode = enum(ind);
+    end
+
+    function zoom_callback(~,~)
+        obj.zoom_on = ~obj.zoom_on;
+    end
+
+    function pan_callback(~,~)
+        obj.pan_on = ~obj.pan_on;
     end
 
     function sweep_listener(~,~)

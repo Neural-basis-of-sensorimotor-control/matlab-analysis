@@ -21,25 +21,25 @@ mgr.trim();
 
 obj.panels.add(panel);
 
-sc_addlistener(obj,'main_channel',@main_channel_listener,panel);
+sc_addlistener(obj,'main_signal',@main_signal_listener,panel);
 addlistener(panel,'Visible','PostSet',@visible_listener);
 
 %% Callbacks
 
     function smoothing_width_callback(~,~)
-        obj.main_channel.filter.smoothing_width = str2double(get(ui_smoothing_width,'string'));
+        obj.main_signal.filter.smoothing_width = str2double(get(ui_smoothing_width,'string'));
         obj.disable_panels(panel);
     end
 
     function artifact_width_callback(~,~)
-        obj.main_channel.filter.artifact_width = str2double(get(ui_artifact_width,'string'));
+        obj.main_signal.filter.artifact_width = str2double(get(ui_artifact_width,'string'));
         obj.disable_panels(panel);
     end
 
     function update_callback(~,~)
         for k=1:obj.plot_axes.n
             ax = obj.plot_axes.get(k);
-            if isfield(ax,'signal') &&  ax.signal == obj.main_channel
+            if isfield(ax,'signal') &&  ax.signal == obj.main_signal
                 ax.update_v(obj.plot_raw);
             end
         end
@@ -47,9 +47,9 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
     end
 
 %% Listeners
-    function main_channel_listener(~,~)
-        set(ui_artifact_width,'string',obj.main_channel.filter.artifact_width);
-        set(ui_smoothing_width,'string',obj.main_channel.filter.smoothing_width);
+    function main_signal_listener(~,~)
+        set(ui_artifact_width,'string',obj.main_signal.filter.artifact_width);
+        set(ui_smoothing_width,'string',obj.main_signal.filter.smoothing_width);
     end
 
     function visible_listener(~,~)

@@ -6,6 +6,14 @@ classdef DigitalAxes < sc_gui.ChannelAxes
             digch = obj.sequence.gettriggers(obj.gui.tmin,...
                 obj.gui.tmax);
             setheight(obj.ax,digch.n*15);
+            addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            
+            function xlimits_listener(~,~)
+                if obj.xlimits(1)<obj.xlimits(2)
+                    xlim(obj.ax,obj.gui.xlimits);
+                end
+            end
+            
         end
         
         function plotch(obj,varargin)
@@ -38,6 +46,7 @@ classdef DigitalAxes < sc_gui.ChannelAxes
             else
                 cla(obj.ax);
             end
+            %    xlim(obj.ax,obj.gui.xlimits);
         end
     end
 end

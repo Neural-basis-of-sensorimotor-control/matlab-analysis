@@ -14,8 +14,8 @@ end
 %Select main channel
 mgr.newline(20);
 mgr.add(sc_ctrl('text','Main channel'),100);
-ui_main_channel = mgr.add(sc_ctrl('popupmenu',[],...
-    @main_channel_callback,'visible','off'),100);
+ui_main_signal = mgr.add(sc_ctrl('popupmenu',[],...
+    @main_signal_callback,'visible','off'),100);
 mgr.newline(5);
 
 mgr.newline(20);
@@ -49,11 +49,11 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
         msgbox('To be implemented');
     end
 
-    function main_channel_callback(~,~)
-        val = get(ui_main_channel,'value');
-        str = get(ui_main_channel,'string');
+    function main_signal_callback(~,~)
+        val = get(ui_main_signal,'value');
+        str = get(ui_main_signal,'string');
         signal = obj.sequence.signals.get('tag',str{val});
-        obj.main_channel = signal;
+        obj.main_signal = signal;
         obj.disable_panels(panel);
     end
 
@@ -62,13 +62,15 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
     end
 
     function update_callback(~,~)
-        main_channel_callback();
+        main_signal_callback();
         obj.plot_axes = ScCellList();
         if obj.display_digital_channels
             obj.plot_axes.add(sc_gui.DigitalAxes(obj));
         end
-        obj.plot_axes.add(sc_gui.AnalogAxes(obj,obj.main_channel,...
-            'plot_raw',obj.plot_raw));
+        main_channel = sc_gui.AnalogAxes(obj,obj.main_signal,...
+            'plot_raw',obj.plot_raw);
+        obj.main_axes = main_channel.ax;
+        obj.plot_axes.add(main_channel);
         
         for i=1:ui_extra_channels.n
             val = get(ui_extra_channels.get(i),'value');
@@ -83,7 +85,7 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
 
     function update_listener(~,~)
         str_tags = obj.signals.values('tag');
-        set(ui_main_channel,'string',str_tags,'visible','on');
+        set(ui_main_signal,'string',str_tags,'visible','on');
         val = [];
         if ~isempty(obj.temporary_signal_tags)
             val = find(cellfun(@(x) strcmp(x,obj.temporary_signal_tags{1}), ...
@@ -96,7 +98,7 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
                 val = 1;
             end
         end
-        set(ui_main_channel,'value',val);       
+        set(ui_main_signal,'value',val);       
         for i=1:ui_extra_channels.n
             val = [];
             if ~isempty(obj.temporary_signal_tags)
@@ -109,7 +111,7 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
             end
             set(ui_extra_channels.get(i),'string',str_tags,'value',val,'visible','on');
         end
-        main_channel_callback();
+        main_signal_callback();
         obj.disable_panels(panel);
     end
 

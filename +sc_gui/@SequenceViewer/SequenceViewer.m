@@ -17,14 +17,18 @@ classdef SequenceViewer < handle
         has_unsaved_changes = 0
         sequence
         help
-        main_channel
+        main_axes
+        main_signal
         pretrigger = -.1
         posttrigger = .1
-        xlimits = [-.1 .1]
+        xlimits = [-.1 .1]              %xlim value
         set_v_to_zero_for_t             %leave empty to disable
         sweep = 1
         sweep_increment = 1
         plotmode = sc_gui.PlotModes.default
+        
+        zoom_on = 0
+        pan_on = 0
     end
     
     properties (Dependent)
@@ -53,12 +57,52 @@ classdef SequenceViewer < handle
     
     methods
         function obj = SequenceViewer(sequence)
-            if sequence.parent.check_fdir
-                obj.sequence = sequence;
-                obj.panels = ScList();
-                obj.plot_axes = ScList();
-            else
+            if ~sequence.parent.check_fdir
                 msgbox('Warning: file could not be found. Aborting program');
+                return;
+            end
+            obj.sequence = sequence;
+            obj.panels = ScList();
+            obj.plot_axes = ScList();
+            addlistener(obj,'main_axes','PostSet',@main_axes_listener);
+            addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
+            addlistener(obj,'pan_on','PostSet',@pan_on_listener);
+            
+            function main_axes_listener(~,~)
+                if ~isempty(obj.main_axes)
+                    z = zoom(obj.main_axes);
+                    set(z,'ActionPostCallback',@xaxis_listener);
+                    p = pan(obj.current_view);
+                    set(p,'ActionPostCallback',@xaxis_listener);
+                end
+                
+                function xaxis_listener(~,~)
+                    obj.xlimits = xlim(gca);%obj.main_axes);
+                    if obj.xlimits(1) < obj.pretrigger
+                        obj.pretrigger = obj.xlimits(1);
+                    end
+                    if obj.xlimits(2) > obj.posttrigger
+                        obj.posttrigger = obj.xlimits(2);
+                    end
+                end
+            end
+            
+            function zoom_on_listener(~,~)
+                if obj.zoom_on
+                    obj.pan_on = 0;
+                    zoom(obj.main_axes,'on');
+                else
+                    zoom(obj.main_axes,'off');
+                end
+            end
+            
+            function pan_on_listener(~,~)
+                if obj.pan_on
+                    obj.zoom_on = 0;
+                    pan(obj.main_axes,'on');
+                else
+                    pan(obj.main_axes,'off');
+                end
             end
         end
         
@@ -115,7 +159,7 @@ classdef SequenceViewer < handle
                     sety(obj.panels.get(i),y);
                 end
                 y = getheight(obj.current_view);
-                axeswidth = getwidth(obj.current_view)- (obj.panel_width + 2*obj.margin);
+                axeswidth = getwidth(obj.current_view)- (obj.panel_width + 3*obj.margin);
                 for i=1:obj.plot_axes.n
                     ax_ = obj.plot_axes.get(i);
                     if i==1
@@ -127,8 +171,6 @@ classdef SequenceViewer < handle
                     if axeswidth>0,    setwidth(ax_,axeswidth);   end
                     setx(ax_, obj.panel_width + 2*obj.margin);
                 end
-                
-                
             end
         end
 
@@ -138,6 +180,7 @@ classdef SequenceViewer < handle
             end
         end
         
+        %Set all below input panel to invisible
         function disable_panels(obj, panel)
             index = obj.panels.indexof(panel);
             if obj.panels.n>index
@@ -148,6 +191,7 @@ classdef SequenceViewer < handle
             end
         end
         
+        %Set all below input panel to visible
         function enable_panels(obj,panel)
             index = obj.panels.indexof(panel);
             if obj.panels.n>=index+1

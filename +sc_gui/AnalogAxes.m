@@ -10,7 +10,8 @@ classdef AnalogAxes < sc_gui.ChannelAxes
     
     methods
         function obj = AnalogAxes(gui,signal,varargin)            
-            obj = obj@sc_gui.ChannelAxes(gui);
+            obj@sc_gui.ChannelAxes(gui);
+            
             obj.signal = signal;
             setheight(obj.ax,250);
             plot_raw = 0;
@@ -56,6 +57,7 @@ classdef AnalogAxes < sc_gui.ChannelAxes
             else
                 cla(obj.ax);
             end
+     %       xlim(obj.ax,obj.gui.xlimits);
         end
         
         function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn)

@@ -58,7 +58,7 @@ classdef AnalogAxes < sc_gui.ChannelAxes
                         obj.btn_down_fcn = varargin{k+1};
                 end
             end
-            sweep = obj.setup_axes();
+            sweep = obj.setup_axes(obj);
             xlabel(obj.ax,'Time [s]');
             ylabel(obj.ax,obj.signal.tag);
             set(obj.ax,'XColor',[1 1 1],'YColor',[1 1 1],'Color',[0 0 0],...
@@ -95,16 +95,8 @@ classdef AnalogAxes < sc_gui.ChannelAxes
                     obj.gui.plotmode == sc_gui.PlotModes.plot_avg_selected || ...
                     obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_all || ...
                     obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_selected
-                avg = mean(v_signal,2);
-                plot(obj.ax,time,avg,'Color',[0 1 0],...
-                    'LineWidth',2);
-            end
-            if obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_all || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_selected
-                stddev = std(v_signal,0,2);
-                plot(obj.ax,time,avg+stddev,'Color',[0 0 1],'LineWidth',2);
-                plot(obj.ax,time,avg-stddev,'Color',[0 0 1],'LineWidth',2);
-            end
+                plot(obj.ax,time,mean(v_signal),'Color',[0 1 0],...
+                    )
         end        
     end
 end

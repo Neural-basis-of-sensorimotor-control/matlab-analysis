@@ -35,7 +35,7 @@ classdef ChannelAxes < handle
         end
         
         function sweep = setup_axes(obj)%,varargin)
-            switch obj.gui.plotmode
+            switch obj.gui.plogmode
                 case {sc_gui.PlotModes.default sc_gui.PlotModes.plot_avg_selected ...
                         sc_gui.PlotModes.plot_avg_std_selected}
                     sweep = obj.gui.sweep;

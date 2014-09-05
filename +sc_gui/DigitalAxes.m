@@ -16,8 +16,8 @@ classdef DigitalAxes < sc_gui.ChannelAxes
             
         end
         
-        function plotch(obj,varargin)
-            sweep = obj.setup_axes(obj,varargin{:});
+        function plotch(obj)%,varargin)
+            sweep = obj.setup_axes();%,varargin{:});
             
             if ~isempty(sweep)
                 digch = obj.sequence.gettriggers(obj.gui.tmin,...

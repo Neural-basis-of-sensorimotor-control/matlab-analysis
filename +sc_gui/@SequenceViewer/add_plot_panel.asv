@@ -128,15 +128,11 @@ sc_addlistener(obj,'plotmode',@plotmode_listener,panel);
         end
         if obj.plotmode == sc_gui.PlotModes.plot_all || ...
                 obj.plotmode == sc_gui.PlotModes.plot_avg_std_all
-            set(ui_sweep,'enable','off');
-            set(ui_increment,'enable','off');
-            set(ui_next,'enable','off');
-            set(ui_previous,'enable','off');
+            set(ui_sweep,'string','N/A','enable','inactive');
+            set(ui_next,'
         else
+            sweep_listener();
             set(ui_sweep,'enable','on');
-            set(ui_increment,'enable','on');
-            set(ui_next,'enable','on');
-            set(ui_previous,'enable','on');
         end
     end
 end

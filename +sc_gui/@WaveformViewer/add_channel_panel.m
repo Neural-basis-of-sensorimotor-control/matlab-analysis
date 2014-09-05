@@ -35,6 +35,13 @@ for k=2:obj.nbr_of_analog_channels
 end
 
 mgr.newline(20);
+mgr.add(sc_ctrl('text','Waveform'),100);
+ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.disable_panels(panel),'visible','off'),100);
+
+mgr.newline(20);
+mgr.add(sc_ctrl('pushbutton','Add waveform',@(~,~) obj.create_new_waveform),200);
+
+mgr.newline(20);
 mgr.add(sc_ctrl('pushbutton','Update',@update_callback),200);
 
 mgr.newline(2);
@@ -43,6 +50,7 @@ mgr.trim();
 obj.panels.add(panel);
 
 sc_addlistener(obj,'update',@update_listener,panel);
+sc_addlistener(obj,'waveform',@waveform_listener,panel);
 addlistener(panel,'Visible','PostSet',@visible_listener);
 
     function show_hide_channels_callback(~,~)
@@ -54,6 +62,20 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
         str = get(ui_main_signal,'string');
         signal = obj.sequence.signals.get('tag',str{val});
         obj.main_signal = signal;
+        if obj.main_signal.waveforms.n
+            if ~isempty(obj.waveform)
+                str = obj.main_signal.waveforms.values('tag');
+                ind = find(cellfun(@(x) strcmp(x,obj.waveform.tag), str));
+                if isempty(ind),    ind = 1;    end
+            else
+                ind = 1;
+            end
+            set(ui_waveforms,'string',str,'value',ind,'visible','on');
+            obj.waveform = obj.main_signal.waveforms.get(ind);
+        else
+            set(ui_waveforms,'visible','off');
+            obj.waveform = [];
+        end
         obj.disable_panels(panel);
     end
 
@@ -67,10 +89,9 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
         if obj.display_digital_channels
             obj.plot_axes.add(sc_gui.DigitalAxes(obj));
         end
-        main_channel = sc_gui.AnalogAxes(obj,obj.main_signal,...
+        obj.main_channel = sc_gui.AnalogAxes(obj,obj.main_signal,...
             'plot_raw',obj.plot_raw);
-        obj.main_axes = main_channel.ax;
-        obj.plot_axes.add(main_channel);
+        obj.plot_axes.add(obj.main_channel);
         
         for i=1:ui_extra_channels.n
             val = get(ui_extra_channels.get(i),'value');
@@ -98,7 +119,7 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
                 val = 1;
             end
         end
-        set(ui_main_signal,'value',val);       
+        set(ui_main_signal,'value',val);
         for i=1:ui_extra_channels.n
             val = [];
             if ~isempty(obj.temporary_signal_tags)
@@ -114,6 +135,19 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
         main_signal_callback();
         obj.disable_panels(panel);
     end
+
+    function waveform_listener(~,~)
+        
+        if ~isempty(obj.waveform)
+            str = obj.main_signal.waveforms.values('tag');
+            ind = find(cellfun(@(x) strcmp(x,obj.waveform.tag), str));
+            if isempty(ind),    ind = 1;    end
+            set(ui_waveforms,'string',str,'value',ind,'visible','on');
+        else
+            set(ui_waveforms,'visible','off');
+        end
+    end
+
 
     function visible_listener(~,~)
         visible  = get(panel,'Visible');

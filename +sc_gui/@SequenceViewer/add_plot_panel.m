@@ -46,6 +46,7 @@ sc_addlistener(obj,'update',@update_listener,panel);
 sc_addlistener(obj,'zoom_on',@(~,~) toggle_button('zoom_on',ui_zoom),panel);
 sc_addlistener(obj,'pan_on',@(~,~) toggle_button('pan_on',ui_pan),panel);
 sc_addlistener(obj,'plotmode',@plotmode_listener,panel);
+addlistener(panel,'Visible','PostSet',@visible_listener);
 
     function pretrigger_callback(~,~)
         obj.pretrigger = str2double(get(ui_pretrigger,'string'));
@@ -137,6 +138,15 @@ sc_addlistener(obj,'plotmode',@plotmode_listener,panel);
             set(ui_increment,'enable','on');
             set(ui_next,'enable','on');
             set(ui_previous,'enable','on');
+        end
+    end
+
+    function visible_listener(~,~)
+        visible  = get(panel,'Visible');
+        if strcmp(visible,'on')
+            obj.enable_panels(panel);
+        else
+            obj.disable_panels(panel);
         end
     end
 end

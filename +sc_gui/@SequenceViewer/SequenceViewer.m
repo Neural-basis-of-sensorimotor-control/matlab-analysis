@@ -17,8 +17,9 @@ classdef SequenceViewer < handle
         has_unsaved_changes = 0
         sequence
         help
-        main_axes
+        main_channel
         main_signal
+        main_axes
         pretrigger = -.1
         posttrigger = .1
         xlimits = [-.1 .1]              %xlim value
@@ -31,7 +32,7 @@ classdef SequenceViewer < handle
         pan_on = 0
     end
     
-    properties (Dependent)
+    properties (Dependent)        
         tmin
         tmax
         signals
@@ -64,12 +65,18 @@ classdef SequenceViewer < handle
             obj.sequence = sequence;
             obj.panels = ScList();
             obj.plot_axes = ScList();
-            sc_addlistener(obj,'main_axes',@main_axes_listener,obj.main_axes);
-            %addlistener(obj,'main_axes','PostSet',@main_axes_listener);
+            sc_addlistener(obj,'main_channel',@main_channel_listener,obj.main_axes);
             sc_addlistener(obj,'zoom_on',@zoom_on_listener,obj.main_axes);
             sc_addlistener(obj,'pan_on',@pan_on_listener,obj.main_axes);
             
-            function main_axes_listener(~,~)
+            function main_channel_listener(~,~)
+                if ~isempty(obj.main_channel)
+                    obj.main_signal = obj.main_channel.signal;
+                    obj.main_axes = obj.main_channel.ax;
+                else
+                    obj.main_signal = [];
+                    obj.main_axes = [];
+                end
                 if ~isempty(obj.main_axes)
                     z = zoom(obj.main_axes);
                     set(z,'ActionPostCallback',@xaxis_listener);
@@ -175,9 +182,14 @@ classdef SequenceViewer < handle
             end
         end
 
-        function plot_channels(obj)
+        function plot_channels(obj,btndownfcn)
+            if nargin<2,    btndownfcn = [];    end
             for k=1:obj.plot_axes.n
-                obj.plot_axes.get(k).plotch();
+                if obj.plot_axes.get(k).ax == obj.main_axes
+                    obj.plot_axes.get(k).plotch(btndownfcn);
+                else
+                    obj.plot_axes.get(k).plotch();
+                end 
             end
         end
         
@@ -200,6 +212,22 @@ classdef SequenceViewer < handle
             end
         end
         
+        %Change visibility of all panels except input panel
+        function set_visibility(obj, visible, panel)
+            if isnumeric(visible) || islogical(visible)
+                if visible
+                    visible = 'on';
+                else
+                    visible = 'off';
+                end
+            end
+            for k=1:obj.panels.n
+                if obj.panels.get(k) ~= panel
+                    set(obj.panels.get(k),'visible',visible);
+                end
+            end
+        end
+        
         function tmin = get.tmin(obj)
             tmin = obj.sequence.tmin;
         end
@@ -211,6 +239,6 @@ classdef SequenceViewer < handle
         function signals = get.signals(obj)
             signals = obj.sequence.signals;
         end
-        
+    
     end
 end

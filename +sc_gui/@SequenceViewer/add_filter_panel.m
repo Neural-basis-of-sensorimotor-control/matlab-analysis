@@ -21,7 +21,7 @@ mgr.trim();
 
 obj.panels.add(panel);
 
-sc_addlistener(obj,'main_signal',@main_signal_listener,panel);
+sc_addlistener(obj,'main_channel',@main_signal_listener,panel);
 addlistener(panel,'Visible','PostSet',@visible_listener);
 
 %% Callbacks

@@ -57,11 +57,11 @@ mgr.add(getuitext('bins (0 = off)'),80);
 
 mgr.newline(20);
 if obj.state == ScGuiState.spike_detection
-    mgr.add(sc_ctrl('text','Waveform','HorizontalAlignment','left'),100);
+    mgr.add(sc_ctrl('text','Waveform',[],'HorizontalAlignment','left'),100);
     ui_waveform = mgr.add(sc_ctrl('popupmenu',[],@waveform_callback,'visible','off'),100);
     ui_new_waveform = mgr.add(sc_ctrl('pushbutton','New waveform',@new_waveform_callback),100);
 elseif obj.state == ScGuiState.ampl_analysis
-    mgr.add(sc_ctrl('text','Amplitudes','HorizontalAlignment','left'),100);
+    mgr.add(sc_ctrl('text','Amplitudes',[],'HorizontalAlignment','left'),100);
     ui_ampl = mgr.add(sc_ctrl('popupmenu',[],@ampl_callback,'visible','off'),100);
     ui_new_ampl = mgr.add(sc_ctrl('pushbutton','New amplitude',@new_ampl_callback),100);
 end

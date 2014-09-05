@@ -6,7 +6,7 @@ for k=0:openeditors.size-1
     openeditors.get(k).save
 end
 
-clearclasses = 1;
+clearclasses = 1;%0;%
 clf('reset')
 if clearclasses
     close all

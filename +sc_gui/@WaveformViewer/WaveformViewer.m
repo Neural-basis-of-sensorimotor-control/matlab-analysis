@@ -2,6 +2,7 @@ classdef WaveformViewer < sc_gui.SequenceViewer
     properties (SetObservable)
         triggerparent
         trigger
+        waveform
     end
     
     properties (Dependent)
@@ -19,6 +20,15 @@ classdef WaveformViewer < sc_gui.SequenceViewer
     methods
         function obj = WaveformViewer(sequence)
             obj@sc_gui.SequenceViewer(sequence);
+            addlistener(obj,'main_channel','PostSet',@main_signal_listener);
+            
+            function main_signal_listener(~,~)
+                if obj.main_signal.waveforms.n
+                    obj.waveform = obj.main_signal.waveforms.get(1);
+                else
+                    obj.waveform = [];
+                end
+            end
         end
         
         function add_panels(obj)
@@ -27,6 +37,7 @@ classdef WaveformViewer < sc_gui.SequenceViewer
             obj.add_filter_panel();
             obj.add_trigger_panel();
             obj.add_plot_panel();
+            obj.add_waveform_panel();
             
         end
         
@@ -34,7 +45,7 @@ classdef WaveformViewer < sc_gui.SequenceViewer
             obj.sweep = mod(sweep-1,numel(obj.triggertimes))+1;
             obj.plot_channels();
         end
-               
+        
         function triggerparents = get.triggerparents(obj)
             triggerparents = obj.sequence.gettriggerparents(obj.tmin, obj.tmax);
         end

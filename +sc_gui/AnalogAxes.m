@@ -11,11 +11,8 @@ classdef AnalogAxes < sc_gui.ChannelAxes
     methods
         function obj = AnalogAxes(gui,signal,varargin)            
             obj@sc_gui.ChannelAxes(gui);
-            if obj.ax == obj.gui.main_axes
-                addlistener(obj.ax,'xlim','PostSet',@xlim_listener);
-            end
-            %else
-                addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
+            sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             %end
             obj.signal = signal;
             setheight(obj.ax,250);
@@ -29,7 +26,9 @@ classdef AnalogAxes < sc_gui.ChannelAxes
             obj.update_v(plot_raw);
             
             function xlim_listener(~,~)
-                obj.gui.xlimits = xlim(obj.ax);
+                if obj.ax == obj.gui.main_axes
+                    obj.gui.xlimits = xlim(obj.ax);
+                end
             end
             
             function xlimits_listener(~,~)
@@ -50,14 +49,7 @@ classdef AnalogAxes < sc_gui.ChannelAxes
             end
         end
         
-        function plotch(obj,varargin)
-            btn_down_fcn = [];
-            for k=1:2:numel(varargin)
-                switch varargin{k}
-                    case 'btn_down_fcn'
-                        obj.btn_down_fcn = varargin{k+1};
-                end
-            end
+        function plotch(obj,btn_down_fcn)
             sweep = obj.setup_axes();
             xlabel(obj.ax,'Time [s]');
             ylabel(obj.ax,obj.signal.tag);

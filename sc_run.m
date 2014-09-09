@@ -1,12 +1,12 @@
 clc
+% 
+% edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
+% openeditors = edhandle.getOpenEditors;
+% for k=0:openeditors.size-1
+%     openeditors.get(k).save
+% end
 
-edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
-openeditors = edhandle.getOpenEditors;
-for k=0:openeditors.size-1
-    openeditors.get(k).save
-end
-
-clearclasses = 1;%0;%
+clearclasses = 0;%1;%
 clf('reset')
 if clearclasses
     close all
@@ -27,3 +27,4 @@ d=load(fname);
 sequence = d.obj.get(1).get(1);
 mgr = sc_gui.WaveformViewer(sequence);
 mgr.show();
+set(gcf,'units','normalized','position',[0 0 1 1]);

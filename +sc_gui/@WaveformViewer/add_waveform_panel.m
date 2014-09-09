@@ -27,6 +27,7 @@ ui_added_done = mgr.add(sc_ctrl('pushbutton','Done',...
 
 sc_addlistener(obj,'waveform',@waveform_listener,panel);
 sc_addlistener(obj,'plotmode',@plotmode_listener,panel);
+sc_addlistener(obj,'update',@update_listener,panel);
 addlistener(panel,'Visible','PostSet',@visible_listener);
 
 mgr.newline(2);
@@ -51,7 +52,7 @@ obj.panels.add(panel);
             vabs-v0,lower,upper);
         obj.waveform.add(threshold);
         min_isi = round(obj.waveform.min_isi/obj.main_signal.dt);
-        spiketimes = threshold.match_handle(obj,min_isi)*obj.main_signal.dt;
+        spiketimes = threshold.match_handle(obj.main_channel,min_isi)*obj.main_signal.dt;
         obj.waveform.detected_spiketimes = sort([obj.waveform.detected_spiketimes; spiketimes]);
 %         if obj.plot_waveform_shapes
 %             t = (0:(numel(obj.v)-1))';
@@ -89,6 +90,7 @@ obj.panels.add(panel);
         %obj.plot_fcn();
         %obj.disable_all(0);
         define_threshold_plothandle();
+        set(panel,'visible','on');
     end
 
     function define_threshold_plothandle
@@ -139,6 +141,7 @@ obj.panels.add(panel);
             else
                 return
             end
+            define_threshold_plothandle();
             %obj.plot_fcn();
         end
         
@@ -171,7 +174,7 @@ obj.panels.add(panel);
                         upper(endpoint_index) = p(1,2) - vabs(endpoint_index);
                 end
                 %obj.plot_fcn();
-                obj.plot_channels(btn_down_fcn);
+                define_threshold_plothandle();
             end
         end
     end
@@ -202,7 +205,7 @@ obj.panels.add(panel);
             set(ui_undo_last,'Visible','on');
         end
         %obj.plot_fcn();
-        obj.plot_channels();
+        define_threshold_plothandle();
     end
 
     function remove_threshold_plotfcn(~)    
@@ -305,16 +308,13 @@ obj.panels.add(panel);
     end
 
     function visible_listener(~,~)
-        index = obj.panels.indexof(panel);
-        if strcmp(get(obj.panels.get(index-1),'visible'),'off')
-            %set(panel,'visible','off');
-        else
-            if ~isempty(obj.waveform) && obj.waveform.n
-                set(ui_remove_thresholds,'Visible',visible);
-            else
-                set(ui_remove_thresholds,'Visible','off');
-            end
-        end
+%         index = obj.panels.indexof(panel);
+%         if strcmp(get(obj.panels.get(index-1),'visible'),'off')
+%             %set(panel,'visible','off');
+%         else
+%             
+%         end
+        update_listener();
     end
 
     function plotmode_listener(~,~)
@@ -322,6 +322,14 @@ obj.panels.add(panel);
             set(panel,'visible','on');
         else
             set(panel,'visible','off');
+        end
+    end
+
+    function update_listener(~,~)
+        if ~isempty(obj.waveform) && obj.waveform.n
+            set(ui_remove_thresholds,'Visible',visible);
+        else
+            set(ui_remove_thresholds,'Visible','off');
         end
     end
 end

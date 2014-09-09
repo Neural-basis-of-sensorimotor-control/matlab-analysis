@@ -3,6 +3,13 @@ classdef WaveformViewer < sc_gui.SequenceViewer
         triggerparent
         trigger
         waveform
+        
+        hist_pretrigger = -.1
+        hist_posttrigger = .1
+        hist_binwidth = .01
+        hist_type = sc_gui.HistogramType.default
+        
+        histogram_channel
     end
     
     properties (Dependent)
@@ -38,7 +45,7 @@ classdef WaveformViewer < sc_gui.SequenceViewer
             obj.add_trigger_panel();
             obj.add_plot_panel();
             obj.add_waveform_panel();
-            
+            obj.add_histogram_panel();
         end
         
         function set_sweep(obj,sweep)

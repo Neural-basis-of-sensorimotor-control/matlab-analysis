@@ -1,37 +1,8 @@
-classdef ChannelAxes < handle
-    
-    properties
-        ax
-        gui
-    end
-    
-    properties (Dependent)
-        sequence
-    end
-    
-    methods (Abstract)
-        plotch(obj,varargin)
-    end
+classdef ChannelAxes < sc_gui.GuiAxes
     
     methods
         function obj = ChannelAxes(gui)
-            obj.ax = axes;
-            obj.gui = gui;
-        end
-        
-        function set(obj,varargin)
-            set(obj.ax,varargin{:});
-        end
-        
-        function varargout = get(obj,varargin)
-            varargout = get(obj.ax,varargin{:});
-            if numel(varargout)
-                varargout = {varargout};
-            end
-        end
-        
-        function sequence = get.sequence(obj)
-            sequence = obj.gui.sequence;
+            obj@sc_gui.GuiAxes(gui);
         end
         
         function sweep = setup_axes(obj)%,varargin)

@@ -99,6 +99,8 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
             signal = obj.sequence.signals.get('tag',str{val});
             obj.plot_axes.add(sc_gui.AnalogAxes(obj,signal));
         end
+        obj.histogram_channel = sc_gui.HistogramChannel(obj);
+        obj.plot_axes.add(obj.histogram_channel);
         visible_listener();
         fcn = get(obj.current_view,'ResizeFcn');
         fcn();

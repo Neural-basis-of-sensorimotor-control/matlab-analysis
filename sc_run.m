@@ -1,12 +1,12 @@
 clc
-% 
-% edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
-% openeditors = edhandle.getOpenEditors;
-% for k=0:openeditors.size-1
-%     openeditors.get(k).save
-% end
 
-clearclasses = 0;%1;%
+edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
+openeditors = edhandle.getOpenEditors;
+for k=0:openeditors.size-1
+    openeditors.get(k).save
+end
+
+clearclasses = 1;%
 clf('reset')
 if clearclasses
     close all

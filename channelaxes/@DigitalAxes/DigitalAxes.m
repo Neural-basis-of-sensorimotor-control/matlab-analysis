@@ -1,8 +1,8 @@
-classdef DigitalAxes < sc_gui.ChannelAxes
+classdef DigitalAxes < ChannelAxes
     
     methods
         function obj = DigitalAxes(gui)
-            obj@sc_gui.ChannelAxes(gui);
+            obj@ChannelAxes(gui);
             digch = obj.sequence.gettriggers(obj.gui.tmin,...
                 obj.gui.tmax);
             setheight(obj.ax,digch.n*15);
@@ -14,6 +14,22 @@ classdef DigitalAxes < sc_gui.ChannelAxes
                 end
             end
             
+            sc_addlistener(obj.gui,'sequence',@sequence_listener,obj.ax);
+            
+            function sequence_listener(~,~)
+                if ~isempty(obj.gui.sequence)
+                    digch_ = obj.sequence.gettriggers(obj.gui.tmin,...
+                        obj.gui.tmax);
+                    setheight(obj.ax,digch_.n*15);
+                end
+            end
+            
+        end
+        
+        function load_data(~)
+        end
+        
+        function clear_data(~)
         end
         
         function plotch(obj)%,varargin)

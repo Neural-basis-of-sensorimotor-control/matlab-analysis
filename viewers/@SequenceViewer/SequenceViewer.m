@@ -4,7 +4,10 @@ classdef SequenceViewer < handle
         
         current_view
         panels    
-        plots
+        
+        digital_channels
+        analog_channels
+        histogram
     end
     
     properties (SetObservable)
@@ -16,8 +19,15 @@ classdef SequenceViewer < handle
         show_histogram = true
         
         has_unsaved_changes
+        
+        main_signal
+        main_channel
 
         nbr_of_analog_channels
+    end
+    
+    properties (Dependent)
+        plots
     end
     
     properties (Constant)
@@ -36,7 +46,7 @@ classdef SequenceViewer < handle
     
     methods
         function obj = SequenceViewer()
-            obj.plots = ScList();
+            obj.plots = ScCellList();
             obj.setup_listeners();  
         end
         

@@ -18,7 +18,7 @@ if clearclasses
 else
     clear
 end
-% 
+
 % sc -addpath
 % clear
 % [~, user_name] = system('echo %USERDOMAIN%\%USERNAME%');

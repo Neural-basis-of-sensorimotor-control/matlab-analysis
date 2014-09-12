@@ -1,6 +1,8 @@
 classdef AnalogAxes < sc_gui.ChannelAxes
     properties
+        data_loaded = false
         signal
+        plot_raw
     end
     
     properties (Transient)
@@ -9,21 +11,23 @@ classdef AnalogAxes < sc_gui.ChannelAxes
     end
     
     methods
-        function obj = AnalogAxes(gui,signal,varargin)            
+        function obj = AnalogAxes(gui,signal)%,varargin)            
             obj@sc_gui.ChannelAxes(gui);
             addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
             sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             %end
-            obj.signal = signal;
-            setheight(obj.ax,250);
-            plot_raw = 0;
-            for k=1:2:numel(varargin)
-                switch varargin{k}
-                    case 'plot_raw'
-                        plot_raw = varargin{k+1};
-                end
+            if nargin>1
+                obj.signal = signal;
             end
-            obj.update_v(plot_raw);
+            setheight(obj.ax,250);
+%             plot_raw = 0;
+%             for k=1:2:numel(varargin)
+%                 switch varargin{k}
+%                     case 'plot_raw'
+%                         plot_raw = varargin{k+1};
+%                 end
+%             end
+            %obj.update_v(plot_raw);
             
             function xlim_listener(~,~)
                 if obj.ax == obj.gui.main_axes
@@ -38,8 +42,15 @@ classdef AnalogAxes < sc_gui.ChannelAxes
             end
         end
         
-        function update_v(obj,plot_raw)
-            if plot_raw
+        function clear_data(obj)
+            obj.data_loaded = false;
+            obj.v = [];
+            obj.v_raw = [];
+        end
+        
+        function load_data(obj)%,plot_raw)
+            obj.data_loaded = true;
+            if obj.plot_raw
                 obj.v_raw = obj.signal.sc_loadsignal();
                 obj.v = obj.signal.filter.filt(obj.v_raw,0,inf);
             else

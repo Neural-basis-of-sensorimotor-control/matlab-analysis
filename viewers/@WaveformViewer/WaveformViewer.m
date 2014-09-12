@@ -7,6 +7,11 @@ classdef WaveformViewer < SequenceViewer
     end
     
     methods
+        function obj = WaveformViewer(varargin)
+            obj@SequenceViewer(varargin{:});
+            obj.main_channel = AnalogAxes(obj);
+        end
+        
         function add_panels(obj)
             obj.panels.add(InfoPanel(obj));
             %obj.panels.add(

@@ -7,6 +7,8 @@ classdef GuiAxes < handle
         sequence
     end
     methods (Abstract)
+        load_data(obj)
+        clear_data(obj)
         plotch(obj,varargin)
     end
     methods

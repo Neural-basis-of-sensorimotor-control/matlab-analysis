@@ -2,6 +2,10 @@ function setup_listeners(obj)
 
 addlistener(obj,'experiment','PostSet',@experiment_listener);
 addlistener(obj,'file','PostSet',@file_listener);
+addlistener(obj,'main_signal','PostSet',@main_signal_listener);
+addlistener(obj,'main_channel','PostSet',@main_channel_listener);
+addlistener(obj,'show_digital_channels','PostSet',@show_digital_channel_listener);
+addlistener(obj,'show_histogram','PostSet',@show_histogram_listener);
 % addlistener(obj,'nbr_of_analog_channels','PostSet',@set_nbr_of_analog_channels_listener);
 % addlistener(obj,'nbr_of_analog_channels','PreGet',@get_nbr_of_analog_channels_listener);
 
@@ -37,6 +41,37 @@ addlistener(obj,'file','PostSet',@file_listener);
         end
     end
 
+    function main_channel_listener(~,~)
+        obj.main_signal = obj.main_channel.signal;
+    end
+
+    function main_signal_listener(~,~)
+        obj.main_channel.clear_data();
+        obj.main_channel.signal = obj.main_signal;
+        if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
+            obj.waveform = obj.waveform;
+        elseif obj.main_signal.waveforms.n
+            obj.waveform = obj.main_signal.get(1);
+        else
+            obj.waveform = [];
+        end
+    end
+
+    function show_digital_channel_listener(~,~)
+        if obj.show_digital_channel && isempty(obj.digital_channels)
+            obj.digital_channels = DigitalAxes(obj.gui);
+        elseif ~obj.show_digital_channel && ~isempty(obj.digital_channels)
+            obj.digital_channels = [];
+        end
+    end
+
+    function show_histogram_listener(~,~)
+        if obj.show_histogram && isempty(obj.histogram)
+            obj.histogram = HistogramChannel(obj.gui);
+        elseif ~obj.show_histogram && ~isempty(obj.histogram)
+            obj.histogram = [];
+        end
+    end
 %     function set_nbr_of_analog_channels_listener(~,~)
 %         nbr = obj.plots.n;
 %         if obj.show_digital_channels

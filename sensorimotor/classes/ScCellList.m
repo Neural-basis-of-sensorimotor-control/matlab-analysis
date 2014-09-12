@@ -71,6 +71,31 @@ classdef ScCellList < handle
             end 
         end
         
+        function remove(obj, item)
+            index = obj.indexof(item);
+            obj.list(index) = [];
+        end
+        
+        function insert_at(obj, index, item)
+            newlist = cell(obj.n+1,1);
+            for k=1:index-1
+                newlist{k} = obj.remove_at(1);
+            end
+            newlist(index) = {item};
+            for k=1:obj.n
+                newlist(index+k) = obj.remove_at(1);
+            end
+            obj.list = newlist;
+        end
+        
+        
+        function item = remove_at(obj,index)
+            item = obj.list{index};
+            for k=index:obj.n-1
+                obj.list(k) = obj.list(k+1);
+            end
+            obj.list = obj.list(1:obj.n-1);
+        end
     end
 end
 

@@ -1,4 +1,4 @@
-classdef ChannelAxes < sc_gui.GuiAxes
+classdef ChannelAxes < GuiAxes
     
     methods
         function obj = ChannelAxes(gui)

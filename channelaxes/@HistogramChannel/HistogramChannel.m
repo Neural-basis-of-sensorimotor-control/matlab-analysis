@@ -1,7 +1,7 @@
-classdef HistogramChannel < sc_gui.GuiAxes
+classdef HistogramChannel < GuiAxes
     methods
         function obj = HistogramChannel(gui)
-            obj@sc_gui.GuiAxes(gui);
+            obj@GuiAxes(gui);
             setheight(obj.ax,250);
         end
         

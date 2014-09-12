@@ -1,28 +1,25 @@
-classdef InfoPanel < Panel & MainPanel & SequenceTextBox & UpdateButton & ChannelOptions
+classdef InfoPanel < Panel
     methods
         function obj = InfoPanel(gui)
             panel = uipanel('Parent',gui.current_view,'Title','Main');
             obj@Panel(gui,panel);
-            obj@MainPanel(gui,panel);
-            obj@SequenceTextBox(gui);
-            obj@UpdateButton(gui);
-            obj@ChannelOptions(gui,panel);
+            obj.layout();
         end
         
-        function populate_panel(obj,mgr)
-            populate_panel@UpdateButton(obj,mgr);
-            populate_panel@MainPanel(obj,mgr);
-            populate_panel@SequenceTextBox(obj,mgr);
-            populate_panel@ChannelOptions(obj,mgr);
-        end
-        
-        function initialize_panel(obj)
-            initialize_panel@MainPanel(obj);
-            initialize_panel@SequenceTextBox(obj);
-            initialize_panel@ChannelOptions(obj);
+        function setup_components(obj)   
+            obj.gui_components.add(UpdateButton(obj));
+            obj.gui_components.add(SaveLoadButton(obj));
+            obj.gui_components.add(ModeSelection(obj));
+            obj.gui_components.add(MainPanel(obj));
+            obj.gui_components.add(SequenceOptions(obj));
+            obj.gui_components.add(SequenceTextBox(obj));
+            obj.gui_components.add(ChannelOptions(obj));
         end
         
         function update_panel(obj)
+            update_panel@Panel(obj);
+            obj.gui.show();
         end
+        
     end
 end

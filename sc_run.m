@@ -43,8 +43,9 @@ end
 d=load(fname);
 
 addpath viewers panels
-v = SequenceViewer()
+guimgr = GuiManager();
+v = WaveformViewer();
 v.experiment = d.obj;
-v.show();
-
+guimgr.viewer = v;
+guimgr.show();
 %pause

@@ -1,5 +1,7 @@
 classdef SequenceViewer < handle
     properties
+        parent
+        
         current_view
         panels    
         plots
@@ -13,16 +15,24 @@ classdef SequenceViewer < handle
         show_digital_channels = true
         show_histogram = true
         
-    %    text
-    end
-    
-    properties (SetObservable, GetObservable)
+        has_unsaved_changes
+
         nbr_of_analog_channels
     end
     
     properties (Constant)
-        panel_width = 200
+        panel_width = 205;
+        margin = 40
     end
+    
+    methods (Abstract)
+        add_panels(obj)
+    end
+    
+    methods (Abstract, Static)
+        mode            %see ScGuiState enums
+    end
+    
     
     methods
         function obj = SequenceViewer()
@@ -36,9 +46,8 @@ classdef SequenceViewer < handle
             set(obj.current_view,'ToolBar','None');
             set(obj.current_view,'Color',[0 0 0]);
             obj.panels = CascadeList();
-            panel = InfoPanel(obj);
-            panel.layout();
-            obj.panels.add(panel);
+            obj.add_panels();
+            obj.panels.get(1).enabled = true;
             mgr = ScLayoutManager(obj.current_view);
             for k=1:obj.panels.n
                 panel = obj.panels.get(k);
@@ -50,18 +59,46 @@ classdef SequenceViewer < handle
             for k=1:obj.panels.n
                 obj.panels.get(k).initialize_panel();
             end
+            set(obj.current_view,'ResizeFcn',@resize_figure);
+            resize_figure();
             
+            function resize_figure(~,~)
+                y = getheight(obj.current_view);
+                for i=1:obj.panels.n
+                    y = y - getheight(obj.panels.get(i));
+                    sety(obj.panels.get(i),y);
+                end
+                y = getheight(obj.current_view);
+                axeswidth = getwidth(obj.current_view)- (obj.panel_width + 3*obj.margin);
+                for i=1:obj.plots.n
+                    ax_ = obj.plots.get(i);
+                    if i==1
+                        y = y - (getheight(ax_) + 10);
+                    else
+                        y = y - (getheight(ax_) + obj.margin);
+                    end
+                    sety(ax_,y);
+                    if axeswidth>0,    setwidth(ax_,axeswidth);   end
+                    setx(ax_, obj.panel_width + 2*obj.margin);
+                end
+            end
             
         end
         
-        %Set all below input panel to invisible
         function disable_panels(obj, panel)
             index = obj.panels.indexof(panel);
             if obj.panels.n>index
-                set(obj.panels.get(index+1),'visible','off');
+                obj.panels.get(index+1).enabled = false;
             end
             for k=1:obj.plots.n
                 cla(obj.plots.get(k).ax);
+            end
+        end
+        
+        function enable_panels(obj,panel)
+            index = obj.panels.indexof(panel);
+            if obj.panels.n>=index+1
+                obj.panels.get(index+1).enabled = true;
             end
         end
     end

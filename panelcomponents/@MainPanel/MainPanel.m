@@ -1,4 +1,4 @@
-classdef MainPanel < UiWrapper & GuiComponent
+classdef MainPanel < PanelComponent
     properties
         ui_experiment
         ui_file
@@ -6,12 +6,11 @@ classdef MainPanel < UiWrapper & GuiComponent
     end
     
     methods
-        function obj = MainPanel(gui,panel)
-            obj@GuiComponent(gui);
-            obj@UiWrapper(panel);
+        function obj = MainPanel(panel)
+            obj@PanelComponent(panel);
         end
         
-        function populate_panel(obj, mgr)
+        function populate(obj, mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Experiment:'),100);
             obj.ui_experiment = mgr.add(sc_ctrl('text',[]),100);
@@ -29,15 +28,12 @@ classdef MainPanel < UiWrapper & GuiComponent
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);
         end
         
-        function initialize_panel(obj)
+        function initialize(obj)
             obj.experiment_listener();
             obj.file_listener();
             obj.sequence_listener();
         end
         
-        function update_panel(obj)
-            obj.gui.sequence
-        end
     end
     
     methods (Access = 'private')
@@ -82,14 +78,16 @@ classdef MainPanel < UiWrapper & GuiComponent
         end
         
         function file_callback(obj)
-            obj.gui.disable_panels(obj);
+          %  obj.gui.disable_panels(obj);
+            obj.show_panels(false);
             str = get(obj.ui_file,'string');
             val = get(obj.ui_file,'value');
             obj.gui.file = obj.gui.experiment.get('tag',str{val});
         end
         
         function sequence_callback(obj)            
-            obj.gui.disable_panels(obj);
+        %    obj.gui.disable_panels(obj);
+            obj.show_panels(true);
             str = get(obj.ui_sequence,'string');
             val = get(obj.ui_sequence,'value');
             obj.gui.sequence = obj.gui.file.get('tag',str{val});

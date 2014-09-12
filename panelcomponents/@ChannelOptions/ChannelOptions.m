@@ -1,4 +1,4 @@
-classdef ChannelOptions < GuiComponent & UiWrapper
+classdef ChannelOptions < PanelComponent
     properties
         ui_show_digital_channels
         ui_nbr_of_channels
@@ -6,12 +6,11 @@ classdef ChannelOptions < GuiComponent & UiWrapper
     end
     
     methods
-        function obj = ChannelOptions(gui,panel)
-            obj@GuiComponent(gui);
-            obj@UiWrapper(panel);
+        function obj = ChannelOptions(panel)
+            obj@PanelComponent(panel);
         end
         
-        function populate_panel(obj,mgr)
+        function populate(obj,mgr)
             mgr.newline(20);
             obj.ui_show_digital_channels = mgr.add(sc_ctrl('checkbox',...
                 'Show digital channels',@show_digital_channels_callback),...
@@ -40,16 +39,16 @@ classdef ChannelOptions < GuiComponent & UiWrapper
             end
         end
         
-        function initialize_panel(obj)
+        function initialize(obj)
             set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
             obj.sequence_listener();
             set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
         end
         
-        function updated = update_panel(obj)
-            obj.show_digital_channels = get(obj.ui_show_digital_channels,'value');
-            obj.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
-            obj.show_histogram = get(obj.ui_show_histogram,'value');
+        function updated = update(obj)
+            obj.gui.show_digital_channels = get(obj.ui_show_digital_channels,'value');
+            obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
+            obj.gui.show_histogram = get(obj.ui_show_histogram,'value');
             updated = true;
         end
         

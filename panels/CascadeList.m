@@ -21,6 +21,16 @@ classdef CascadeList < handle
             item = obj.list{index};
         end
         
+        function index = indexof(obj,item)
+            index = -1;   
+            for k=1:obj.n
+                if obj.get(k)==item
+                    index = k;
+                    return
+                end
+            end
+        end
+        
         function initialize(obj)
             for k=1:obj.n
                 obj.get(k).initalize();
@@ -30,6 +40,7 @@ classdef CascadeList < handle
         function n = get.n(obj)
             n = numel(obj.list);
         end
+        
         
         function item = get.last_enabled_item(obj)
             item = [];

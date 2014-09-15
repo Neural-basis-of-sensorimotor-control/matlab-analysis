@@ -1,5 +1,7 @@
 % clc
 % 
+sc -addpath 
+addpath viewers\ panelcomponents\ panels\ channelaxes\
 clc
 close all
 clear classes
@@ -19,7 +21,7 @@ else
     clear
 end
 
-% sc -addpath
+% 
 % clear
 % [~, user_name] = system('echo %USERDOMAIN%\%USERNAME%');
 % if strcmp(deblank(user_name),'HAMO\Hannes')
@@ -41,11 +43,7 @@ else
     fname = 'C:\Users\hamo\Documents\MATLAB_minus_one\BBNR_sc.mat';
 end
 d=load(fname);
-
-addpath viewers panels
 guimgr = GuiManager();
-v = WaveformViewer();
-v.experiment = d.obj;
-guimgr.viewer = v;
+guimgr.viewer.experiment = d.obj;
 guimgr.show();
 %pause

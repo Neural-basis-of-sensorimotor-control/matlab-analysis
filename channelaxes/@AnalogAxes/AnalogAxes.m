@@ -1,8 +1,9 @@
-classdef AnalogAxes < sc_gui.ChannelAxes
+classdef AnalogAxes < ChannelAxes
     properties
         data_loaded = false
         signal
-        plot_raw
+        plot_raw = false
+        plot_waveforms = false
     end
     
     properties (Transient)
@@ -12,7 +13,7 @@ classdef AnalogAxes < sc_gui.ChannelAxes
     
     methods
         function obj = AnalogAxes(gui,signal)%,varargin)            
-            obj@sc_gui.ChannelAxes(gui);
+            obj@ChannelAxes(gui);
             addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
             sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             %end

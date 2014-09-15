@@ -3,9 +3,9 @@ classdef DigitalAxes < ChannelAxes
     methods
         function obj = DigitalAxes(gui)
             obj@ChannelAxes(gui);
-            digch = obj.sequence.gettriggers(obj.gui.tmin,...
-                obj.gui.tmax);
-            setheight(obj.ax,digch.n*15);
+%             digch = obj.sequence.gettriggers(obj.gui.tmin,...
+%                 obj.gui.tmax);
+%             setheight(obj.ax,digch.n*15);
             sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             
             function xlimits_listener(~,~)

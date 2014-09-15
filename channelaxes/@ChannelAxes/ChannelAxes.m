@@ -2,7 +2,7 @@ classdef ChannelAxes < GuiAxes
     
     methods
         function obj = ChannelAxes(gui)
-            obj@sc_gui.GuiAxes(gui);
+            obj@GuiAxes(gui);
         end
         
         function sweep = setup_axes(obj)%,varargin)

@@ -43,8 +43,9 @@ classdef ChannelOptions < PanelComponent
             set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
             str = cell(obj.gui.sequence.signals.n,1);
             for k=1:numel(str), str(k) = {num2str(k)}; end
-            obj.gui.nbr_of_analog_channels = obj.analog_channels.n;
-            set(obj.ui_nbr_of_analog_channels,'string',str,'value',obj.gui.nbr_of_analog_channels);
+            obj.gui.nbr_of_analog_channels = obj.gui.analog_channels.n;
+            set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
+                'on');
             set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
         end
         
@@ -61,15 +62,14 @@ classdef ChannelOptions < PanelComponent
     methods (Access = 'private')
         function sequence_listener(obj)
             for k=1:obj.gui.nbr_of_analog_channels
-                if k>obj.analog_channels.n
-                    obj.analog_channels.add(AnalogAxes(obj.gui,obj.gui.signal.get(k)));
-                elseif  ~obj.gui.sequence.signals.contains(obj.gui.analog_axes.get(k))
-                    obj.gui.analog_axes.remove_at(k);
-                    obj.gui.analog_axes.insert_at(k,obj.gui.sequence.signals.get(k));
+                if k>obj.gui.analog_channels.n
+                    obj.gui.analog_channels.add(AnalogAxes(obj.gui,obj.gui.sequence.signals.get(k)));
+                elseif  ~obj.gui.sequence.signals.contains(obj.gui.analog_channels.get(k).signal)
+                    obj.gui.analog_channels.get(k).signal = obj.gui.sequence.signals.get(k);
                 end
             end
-            for k=obj.nbr_of_analog_channels+1:obj.analog_channels.n
-                obj.analog_channels.remove_at(obj.nbr_of_analog_channels+1);
+            for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_channels.n
+                obj.gui.analog_channels.remove_at(obj.gui.nbr_of_analog_channels+1);
             end
         end
     end

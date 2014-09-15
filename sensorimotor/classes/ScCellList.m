@@ -14,11 +14,12 @@ classdef ScCellList < handle
         end
         
         function listobject = get(obj,index, val)    
+       %     fprintf('Entering %s\\get\n',mfilename);
             if nargin==2
                 listobject = obj.cell_list{index};
             else
                 property = index;
-                index = find(cellfun(@(x) compare_fcn(x, property, val), obj.cell_list));
+                index = cellfun(@(x) compare_fcn(x, property, val), obj.cell_list);
                 listobject = obj.cell_list{index};
             end
         end
@@ -73,7 +74,7 @@ classdef ScCellList < handle
         
         function remove(obj, item)
             index = obj.indexof(item);
-            obj.list(index) = [];
+            obj.cell_list(index) = [];
         end
         
         function insert_at(obj, index, item)
@@ -85,16 +86,16 @@ classdef ScCellList < handle
             for k=1:obj.n
                 newlist(index+k) = obj.remove_at(1);
             end
-            obj.list = newlist;
+            obj.cell_list = newlist;
         end
         
         
         function item = remove_at(obj,index)
-            item = obj.list{index};
+            item = obj.cell_list{index};
             for k=index:obj.n-1
-                obj.list(k) = obj.list(k+1);
+                obj.cell_list(k) = obj.cell_list(k+1);
             end
-            obj.list = obj.list(1:obj.n-1);
+            obj.cell_list = obj.cell_list(1:obj.n-1);
         end
     end
 end

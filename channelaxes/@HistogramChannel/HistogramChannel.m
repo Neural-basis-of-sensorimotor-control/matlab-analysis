@@ -5,6 +5,9 @@ classdef HistogramChannel < GuiAxes
             setheight(obj.ax,250);
         end
         
+        function clear_data(~), end
+        function load_data(~), end
+        
         function plotch(obj,varargin)
             cla(obj.ax);
             switch obj.gui.hist_type

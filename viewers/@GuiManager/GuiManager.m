@@ -10,7 +10,7 @@ classdef GuiManager < handle
     
     methods
         function obj = GuiManager()
-     %       obj.viewer = WaveformViewer();
+           obj.viewer = WaveformViewer(obj);
         end
         
         function show(obj)
@@ -21,9 +21,11 @@ classdef GuiManager < handle
         function set.viewer(obj,new_viewer)
             if ~isempty(obj.viewer)
                 obj.viewer.copy_attributes(new_viewer);
+                for k=1:new_viewer.plots.n
+                    new_viewer.plots.get(k).gui = obj.viewer.plots.get(k).gui;
+                end
             end
             obj.viewer_ = new_viewer;
-            new_viewer.parent = obj;
         end
         
         function viewer = get.viewer(obj)
@@ -33,9 +35,9 @@ classdef GuiManager < handle
         function set.mode(obj,mode)
             switch mode
                 case ScGuiState.spike_detection
-                    newobj = WaveformViewer();
+                    newobj = WaveformViewer(obj);
                 case ScGuiState.ampl_analysis
-                    newobj = AmplitudeViewer();
+                    newobj = AmplitudeViewer(obj);
             end
             obj.viewer = newobj;
         end

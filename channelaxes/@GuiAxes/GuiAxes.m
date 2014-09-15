@@ -1,10 +1,15 @@
 classdef GuiAxes < handle
-    properties
+    properties (SetAccess = 'private', GetAccess = 'private')
+        gui_manager
+    end
+    
+    properties (SetObservable)
         ax
         gui
     end
     properties (Dependent)
         sequence
+        
     end
     methods (Abstract)
         load_data(obj)
@@ -16,9 +21,11 @@ classdef GuiAxes < handle
             obj.ax = axes;
             obj.gui = gui;
         end
+        
         function sequence = get.sequence(obj)
             sequence = obj.gui.sequence;
         end
+        
         function set(obj,varargin)
             set(obj.ax,varargin{:});
         end

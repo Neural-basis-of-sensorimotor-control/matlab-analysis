@@ -12,9 +12,9 @@ if ~isempty(AllFig)
    set(AllFig, 'CloseRequestFcn', '', 'DeleteFcn', '');
    delete(AllFig);
 end
-% EDITED: Initialize the default rand stream:
-s = RandStream('mt19937ar', 'seed', 0);
-RandStream.setDefaultStream(s);
+% % EDITED: Initialize the default rand stream:
+% s = RandStream('mt19937ar', 'seed', 0);
+% RandStream.setDefaultStream(s);
 % Clear loaded functions:
 % (I avoid "clear all" here for educational reasons)
 clear('functions');
@@ -50,6 +50,7 @@ for iprop = 1:length(propname)
    set(0, propname{iprop}, 'remove');
 end
 % EDITED: Change to 1st user path to find "startup.m":
+userpath = 'C:\Users\Hannes\Documents\GitHub\matlab-analysis';
 cd(strtok(userpath, pathsep));
 % Restore original <Default>Properties of root,
 % load default PATH, run STARTUP.m:

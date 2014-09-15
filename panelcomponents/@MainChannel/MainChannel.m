@@ -16,9 +16,9 @@ classdef MainChannel < PanelComponent
             
             function channel_callback(~,~)
                 obj.show_panels(false);
-                val = get(obj.channel,'value');
+                val = get(obj.ui_channel,'value');
                 str = get(obj.ui_channel,'string');
-                obj.main_signal = obj.gui.sequence.signals.get('tag',str{val});
+                obj.gui.main_signal = obj.gui.sequence.signals.get('tag',str{val});
             end
         end
         

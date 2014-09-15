@@ -1,16 +1,16 @@
 % clc
 % 
+clc
+
+% edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
+% openeditors = edhandle.getOpenEditors;
+% for k=0:openeditors.size-1
+%     openeditors.get(k).save
+% end
+
+%reset_all
 sc -addpath 
 addpath viewers\ panelcomponents\ panels\ channelaxes\
-clc
-close all
-clear classes
-
-edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
-openeditors = edhandle.getOpenEditors;
-for k=0:openeditors.size-1
-    openeditors.get(k).save
-end
 
 clearclasses = 1;%
 clf('reset')

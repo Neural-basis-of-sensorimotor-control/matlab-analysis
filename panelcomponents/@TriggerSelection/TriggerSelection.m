@@ -26,40 +26,62 @@ classdef TriggerSelection < PanelComponent
             mgr.newline(20);
             obj.ui_nbr_of_sweeps = mgr.add(sc_ctrl('text',[]),200);
             
-            sc_addlistener(obj.gui,'triggerparent',@triggerparent_listener,obj.uihandle);
-            sc_addlistener(obj.gui,'trigger',@trigger_listener,obj.uihandle);
+            sc_addlistener(obj.gui,'triggerparent',@(~,~) obj.triggerparent_listener,obj.uihandle);
+            sc_addlistener(obj.gui,'trigger',@(~,~) obj.trigger_listener,obj.uihandle);
 
         end
         
         function triggerparent_callback(obj)
+            obj.dbg_in(mfilename,'triggerparent_callback');
             val = get(obj.ui_trigger_parent,'value');
             str = get(obj.ui_trigger_parent,'string');
             obj.gui.triggerparent = obj.gui.triggerparents.get('tag',str{val});
             obj.show_panels(false);
+            obj.dbg_out(mfilename,'triggerparent_callback');
         end
         
         function trigger_callback(obj)
+            obj.dbg_in(mfilename,'trigger_callback');
             val = get(obj.ui_trigger,'value');
             str = get(obj.ui_trigger,'string');
             obj.gui.trigger = obj.gui.triggers.get('tag',str{val});
             obj.show_panels(false);
+            obj.dbg_out(mfilename,'trigger_callback');
         end
         
-        function triggerparent_listener(~,~)
-            set(obj.ui_trigger,'string',obj.gui.triggerparent.triggers.values('tag'),...
-                'visible','on');
-            trigger_callback();
+        function triggerparent_listener(obj)
+            obj.dbg_in(mfilename,'triggerparent_listener');
+            if isempty(obj.gui.triggerparent)
+                set(obj.ui_trigger,'visible','off');
+            else
+                str = obj.gui.triggerparent.triggers.values('tag');
+                val = 1;
+                set(obj.ui_trigger,'string',str,'value',val,'visible','on');
+            end
+            obj.dbg_out(mfilename,'triggerparent_listener');
         end
         
-        function trigger_listener(~,~)
-            set(obj.ui_nbr_of_sweeps,'string',sprintf('Total nbr of sweeps: %i',...
-                numel(obj.gui.triggertimes)));
+        function trigger_listener(obj)
+            obj.dbg_in(mfilename,'trigger_listener');
+            if isempty(obj.gui.trigger)
+                set(obj.ui_trigger,'visible','off');
+                set(obj.ui_nbr_of_sweeps,'string','No triggers to show');
+            else
+                str = obj.gui.triggerparent.triggers.values('tag');
+                trigger = obj.gui.trigger.tag;
+                val = find(cellfun(@(x) strcmp(trigger,x),str));
+                set(obj.ui_trigger_parent,'string',str,'value',val,'visible','on');
+                set(obj.ui_nbr_of_sweeps,'string',sprintf('Total nbr of sweeps: %i',...
+                    numel(obj.gui.triggertimes)));
+            end
+            obj.dbg_out(mfilename,'trigger_listener');
         end
         
         function initialize(obj)
-            set(obj.ui_trigger_parent,'string',obj.gui.triggerparents.values('tag'),...
-                'value',1,'visible','on');
-            obj.triggerparent_callback();
+            obj.dbg_in(mfilename,'initialize\n');
+            obj.triggerparent_listener();
+            obj.trigger_listener();
+            obj.dbg_out(mfilename,'initialize\n');
         end
         
         function updated = update(obj)

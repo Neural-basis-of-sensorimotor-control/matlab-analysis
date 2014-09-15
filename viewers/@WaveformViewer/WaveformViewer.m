@@ -21,7 +21,9 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
+            obj.dbg_in(mfilename,'WaveformViewer()');
             addlistener(obj,'main_signal','PostSet',@main_signal_listener);
+            addlistener(obj,'sequence','PostSet',@sequence_listener); 
             
             function main_signal_listener(~,~)
                 if ~isempty(obj.main_signal) && obj.main_signal.waveforms.n
@@ -30,7 +32,28 @@ classdef WaveformViewer < SequenceViewer
                     obj.waveform = [];
                 end
             end
-            %obj.main_channel = AnalogAxes(obj);
+            
+            function sequence_listener(~,~)
+                obj.dbg_in(mfilename,'sequence_listener');
+                if isempty(obj.sequence) || ~obj.triggerparents.n
+                    obj.triggerparent = [];
+                else
+                    obj.triggerparent = obj.triggerparents.get(1);
+                    addlistener(obj,'triggerparent','PostSet',@triggerparent_listener);
+                end
+                obj.dbg_out(mfilename,'sequence_listener');
+            end
+            
+            function triggerparent_listener(~,~)
+                obj.dbg_in(mfilename,'triggerparent_listener\n');
+                if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
+                    obj.trigger = [];
+                else
+                    obj.trigger = obj.triggerparent.triggers.get(1);
+                end
+                obj.dbg_out(mfilename,'triggerparent_listener\n');
+            end
+            obj.dbg_out(mfilename,'WaveformViewer()');
         end
         
         function add_panels(obj)
@@ -44,7 +67,11 @@ classdef WaveformViewer < SequenceViewer
         end
         
         function triggerparents = get.triggerparents(obj)
-            triggerparents = obj.sequence.gettriggerparents(obj.tmin, obj.tmax);
+            if isempty(obj.sequence)
+                triggerparents = [];
+            else
+                triggerparents = obj.sequence.gettriggerparents(obj.tmin,obj.tmax);
+            end
         end
         
         function triggers = get.triggers(obj)

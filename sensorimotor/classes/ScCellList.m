@@ -14,7 +14,6 @@ classdef ScCellList < handle
         end
         
         function listobject = get(obj,index, val)    
-       %     fprintf('Entering %s\\get\n',mfilename);
             if nargin==2
                 listobject = obj.cell_list{index};
             else

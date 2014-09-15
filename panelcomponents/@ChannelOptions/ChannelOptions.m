@@ -27,14 +27,17 @@ classdef ChannelOptions < PanelComponent
                 obj.uihandle);
             
             function show_digital_channels_callback(~,~)
+                obj.show_panels(false);
                 obj.gui.show_digital_channels = get(obj.ui_show_digital_channels,'value');
             end
             
             function nbr_of_channels_callback(~,~)
+                obj.show_panels(false);
                 obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
             end
             
             function show_histogram_callback(~,~)
+                obj.show_panels(false);
                 obj.gui.show_histogram = get(obj.ui_show_histogram,'value');
             end
         end

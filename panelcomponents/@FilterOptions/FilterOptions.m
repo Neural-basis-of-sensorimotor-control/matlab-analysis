@@ -9,7 +9,7 @@ classdef FilterOptions < PanelComponent
         end
         
         function populate(obj,mgr)
-            fprintf('Entering %s\\populate\n',mfilename);
+            obj.dbg_in(mfilename,'populate');
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Smoothing width'),100);
             obj.ui_smoothing_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.smoothing_width_callback,...
@@ -20,7 +20,7 @@ classdef FilterOptions < PanelComponent
                 'Artifact width in bins (0 = off))'),100);
             
             sc_addlistener(obj.gui,'main_signal',@(~,~) obj.main_signal_listener,obj.uihandle);
-            fprintf('\tExiting %s\\populate\n',mfilename);
+            obj.dbg_out(mfilename,'populate');
         end
         
         function initialize(obj)

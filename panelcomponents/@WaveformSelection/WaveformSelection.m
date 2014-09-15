@@ -15,7 +15,7 @@ classdef WaveformSelection < PanelComponent
             mgr.newline(5)
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','Add waveform',@(~,~) obj.gui.create_new_waveform),100);
-            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Add waveform',@remove_waveform_callback),100);
+            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove waveform',@remove_waveform_callback),100);
             
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);
             
@@ -34,7 +34,6 @@ classdef WaveformSelection < PanelComponent
             if ~isempty(obj.gui.waveform)
                 str = obj.gui.main_signal.waveforms.values('tag');
                 ind = find(cellfun(@(x) strcmp(x,obj.gui.waveform.tag), str));
-              %  if isempty(ind),    ind = 1;    end
                 set(obj.ui_waveforms,'string',str,'value',ind,'visible','on');
             else
                 set(obj.ui_waveforms,'visible','off');

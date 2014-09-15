@@ -36,6 +36,8 @@ classdef SequenceViewer < handle
         
         zoom_on = 0
         pan_on = 0
+        
+        debug_indent = 0
     end
     
     properties (Dependent)
@@ -59,6 +61,30 @@ classdef SequenceViewer < handle
     
     
     methods
+        function dbg_in(obj,varargin)
+            for k=1:obj.debug_indent
+                fprintf('\t');
+            end
+            fprintf('Entering ');
+            for k=1:nargin-1
+                fprintf('%s\\',varargin{k});
+            end
+            fprintf('\n');
+            obj.debug_indent = obj.debug_indent + 1;
+        end
+        
+        function dbg_out(obj,varargin)            
+            obj.debug_indent = obj.debug_indent - 1;
+            for k=1:obj.debug_indent
+                fprintf('\t');
+            end
+            fprintf('Exiting ');
+            for k=1:nargin-1
+                fprintf('%s\\',varargin{k});
+            end
+            fprintf('\n');
+        end
+        
         function obj = SequenceViewer(guimanager)
             obj.parent = guimanager;
             obj.current_view = gcf;

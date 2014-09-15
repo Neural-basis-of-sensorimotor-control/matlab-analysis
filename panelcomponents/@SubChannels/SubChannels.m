@@ -21,9 +21,10 @@ classdef SubChannels < PanelComponent
         end
         
         function initialize(obj)
+            obj.dbg_in(mfilename,'initialize');
             str = obj.gui.sequence.signals.values('tag');
             for k=1:obj.ui_extra_channels.n
-                signal = obj.gui.analog_axes.get(k+1).signal;
+                signal = obj.gui.analog_channels.get(k+1).signal;
                 if isempty(signal)
                     val = k+1;
                 else
@@ -37,6 +38,7 @@ classdef SubChannels < PanelComponent
                 set(obj.ui_extra_channels.get(k),'string',str,'value',val,...
                     'visible','on');
             end
+            obj.dbg_out(mfilename,'initialize');
         end
         
         

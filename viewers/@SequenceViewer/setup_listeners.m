@@ -47,7 +47,7 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
     end
 
     function sequence_listener(~,~)
-        fprintf('Entering %s\\sequence_listener\n',mfilename);
+        obj.dbg_in(mfilename,'sequence_listener');
         if ~isempty(obj.sequence)
             for k=1:obj.analog_channels.n
                 signal = obj.analog_channels.get(k).signal;
@@ -61,14 +61,14 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
                 end
             end
         end
-        fprintf('\tExiting %s\\sequence_listener\n',mfilename);
+        obj.dbg_out(mfilename,'sequence_listener');
     end
 
     function main_channel_listener(~,~)
-        fprintf('Entering %s\\main_channel_listener\n',mfilename);
+        obj.dbg_in(mfilename,'main_channel_listener');
         obj.main_signal = obj.main_channel.signal;
         obj.main_axes = obj.main_channel.ax;
-        fprintf('\tExiting %s\\main_channel_listener\n',mfilename);
+        obj.dbg_out(mfilename,'main_channel_listener');
     end
 
     function main_signal_listener(~,~)
@@ -103,21 +103,25 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
     end
 
     function zoom_on_listener(~,~)
+        obj.dbg_in(mfilename,'zoom_on_listener\n');
         if obj.zoom_on
             obj.pan_on = 0;
             zoom(obj.main_axes,'on');
         else
             zoom(obj.main_axes,'off');
         end
+        obj.dbg_out(mfilename,'zoom_on_listener\n');
     end
 
     function pan_on_listener(~,~)
+        obj.dbg_in(mfilename,'pan_on_listener');
         if obj.pan_on
             obj.zoom_on = 0;
-            pan(obj.main_axes,'on');
+            pan(obj.current_view,'on');%obj.main_axes,'on');
         else
-            pan(obj.main_axes,'off');
+            pan(obj.current_view,'off');%pan(obj.main_axes,'off');
         end
+        obj.dbg_out(mfilename,'pan_on_listener');
     end
 
     function show_digital_channels_listener(~,~)

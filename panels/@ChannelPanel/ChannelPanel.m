@@ -17,7 +17,7 @@ classdef ChannelPanel < Panel
         
         function update_panel(obj)
             update_panel@Panel(obj);
-            obj.enabled = false;
+         %   obj.enabled = false;
         end
     end
 end

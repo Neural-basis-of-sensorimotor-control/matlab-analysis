@@ -1,4 +1,5 @@
 classdef ModeSelection < PanelComponent
+    %Select viewer
     properties
         ui_mode
     end
@@ -11,7 +12,7 @@ classdef ModeSelection < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Mode'),100);
-            obj.ui_mode = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.show_panels(false),'visible','off'),100);
+            obj.ui_mode = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.viewer_callback(),'visible','off'),100);
             mgr.newline(5);
         end
         
@@ -31,6 +32,13 @@ classdef ModeSelection < PanelComponent
             if mode ~= obj.gui.parent.mode
                 obj.gui.parent.mode = mode;
             end
+        end
+    end
+    
+    methods (Access = 'protected')
+        function viewer_callback(obj)
+           % obj.show_panels(false);
+            msgbox('To be implemented');
         end
     end
 end

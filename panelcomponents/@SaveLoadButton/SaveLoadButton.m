@@ -1,4 +1,5 @@
 classdef SaveLoadButton < PanelComponent
+    %Save and Load experiment data 
     properties
         ui_save
         ui_load

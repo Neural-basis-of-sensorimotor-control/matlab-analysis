@@ -1,4 +1,5 @@
 classdef ChannelOptions < PanelComponent
+    %Select nbr of channels etc
     properties
         ui_show_digital_channels
         ui_nbr_of_channels

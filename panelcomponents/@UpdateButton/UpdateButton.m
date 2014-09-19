@@ -1,4 +1,5 @@
 classdef UpdateButton < PanelComponent
+    %Update GUI
     properties
         ui_update
     end

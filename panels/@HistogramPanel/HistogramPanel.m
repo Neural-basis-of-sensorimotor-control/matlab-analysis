@@ -18,7 +18,13 @@ classdef HistogramPanel < Panel
         end
     end
     
-    methods (Access = 'private')
+    methods (Access = 'protected')
+        function enabled_listener(obj)
+            obj.dbg_in(mfilename','HistogramPanel','enabled_listener','enabled = ',obj.enabled);
+            
+            obj.dbg_out(mfilename','HistogramPanel','enabled_listener');
+        end
+
         function histogram_listener(obj)
             if isempty(obj.gui.histogram)
                 obj.enabled = false;

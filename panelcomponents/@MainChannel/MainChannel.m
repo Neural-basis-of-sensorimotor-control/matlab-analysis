@@ -1,4 +1,4 @@
-classdef MainChannel < PanelComponent
+ classdef MainChannel < PanelComponent
     %Select main panel
     properties
         ui_channel

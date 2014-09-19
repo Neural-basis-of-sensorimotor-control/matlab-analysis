@@ -8,6 +8,7 @@ classdef AnalogAxes < ChannelAxes
     end
     
     properties (Transient)
+        b_highlighted
         v_raw
         v
     end
@@ -48,6 +49,7 @@ classdef AnalogAxes < ChannelAxes
             obj.data_loaded = false;
             obj.v = [];
             obj.v_raw = [];
+            obj.b_highlighted = [];
         end
         
         function load_data(obj)%,plot_raw)
@@ -59,6 +61,14 @@ classdef AnalogAxes < ChannelAxes
                 obj.v_raw = [];
                 obj.v = obj.signal.sc_loadsignal();
                 obj.v = obj.signal.filter.filt(obj.v,0,inf);
+            end
+            if obj.plot_waveforms
+                obj.b_highlighted = false(size(obj.v));
+                if ~isempty(obj.gui.waveform)
+                    for k=1:obj.gui.waveform.n
+                        [~,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    end
+                end
             end
         end
         

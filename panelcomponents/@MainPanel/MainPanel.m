@@ -11,6 +11,7 @@ classdef MainPanel < PanelComponent
         end
         
         function populate(obj, mgr)
+            obj.dbg_in(mfilename,'populate');
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Experiment:'),100);
             obj.ui_experiment = mgr.add(sc_ctrl('text',[]),100);
@@ -23,9 +24,22 @@ classdef MainPanel < PanelComponent
             obj.ui_sequence = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.sequence_callback,...
                 'visible','off'),100);
             
+            
+            %DEBUGGING CODE:
+            
+            addlistener(obj.ui_sequence,'BeingDeleted','PostSet',@debuglistener);
+            
+            function debuglistener(~,~)
+                obj.dbg_in(mfilename,'debuglistener','BeingDeleted=',obj.ui_sequence.BeingDeleted);
+                obj.dbg_out(mfilename,'debuglistener');
+            end
+            
+            
+            
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);
+            obj.dbg_out(mfilename,'populate');
         end
         
         function initialize(obj)
@@ -36,7 +50,7 @@ classdef MainPanel < PanelComponent
         
     end
     
-    methods (Access = 'private')
+    methods (Access = 'protected')
         
         function experiment_listener(obj,~,~)
             if ~isempty(obj.gui.experiment)
@@ -85,12 +99,13 @@ classdef MainPanel < PanelComponent
             obj.gui.file = obj.gui.experiment.get('tag',str{val});
         end
         
-        function sequence_callback(obj)            
-        %    obj.gui.disable_panels(obj);
-            obj.show_panels(true);
+        function sequence_callback(obj)  
+            obj.dbg_in(mfilename,'sequence_callback');
+            obj.show_panels(false);
             str = get(obj.ui_sequence,'string');
             val = get(obj.ui_sequence,'value');
             obj.gui.sequence = obj.gui.file.get('tag',str{val});
+            obj.dbg_out(mfilename,'sequence_callback');
         end
         
     end

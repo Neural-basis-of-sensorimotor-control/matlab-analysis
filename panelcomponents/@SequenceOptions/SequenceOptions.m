@@ -1,4 +1,5 @@
 classdef SequenceOptions < PanelComponent
+    %Buttons for adding and editing sequences
     properties
         ui_parse_protocol
         ui_add_sequence
@@ -24,6 +25,7 @@ classdef SequenceOptions < PanelComponent
                 @affect_sequence_callback),100);
             
             function parse_protocol_callback(~,~)
+                obj.show_panels(false);
                 set(obj.gui.current_view,'Visible','off');
                 [protocolfile, pdir] = uigetfile('*.txt','Select protocol file');
                 if isnumeric(protocolfile), return; end
@@ -35,6 +37,7 @@ classdef SequenceOptions < PanelComponent
             end
             
             function affect_sequence_callback(src,~)
+                obj.show_panels(false);
                 dlg = figure();
                 set(dlg,'windowStyle','modal','Name','Add sequence');
                 setwidth(dlg,355);

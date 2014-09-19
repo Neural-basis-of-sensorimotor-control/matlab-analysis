@@ -67,7 +67,11 @@ classdef SequenceViewer < handle
             end
             fprintf('Entering ');
             for k=1:nargin-1
-                fprintf('%s\\',varargin{k});
+                if ischar(varargin{k})
+                    fprintf('%s\\',varargin{k});
+                else
+                    fprintf('%g\\',varargin{k});
+                end
             end
             fprintf('\n');
             obj.debug_indent = obj.debug_indent + 1;
@@ -129,6 +133,7 @@ classdef SequenceViewer < handle
                 mgr.add(obj.plots.get(k));
             end
             
+            obj.sequence = obj.sequence;
             for k=1:obj.panels.n
                 obj.panels.get(k).initialize_panel();
             end
@@ -159,19 +164,24 @@ classdef SequenceViewer < handle
         end
         
         function disable_panels(obj, panel)
+            obj.dbg_in(mfilename,'disable_panels');
             index = obj.panels.indexof(panel);
-            if obj.panels.n>index
-                obj.panels.get(index+1).enabled = false;
+            for k=index+1:obj.panels.n
+                obj.panels.get(k).enabled = false;
             end
             for k=1:obj.plots.n
                 cla(obj.plots.get(k).ax);
             end
+            obj.dbg_out(mfilename,'disable_panels');
         end
         
         function enable_panels(obj,panel)
             index = obj.panels.indexof(panel);
-            if obj.panels.n>=index+1
-                obj.panels.get(index+1).enabled = true;
+            for k=index:obj.panels.n
+                obj.panels.get(k).update_panel();
+                if ~obj.panels.get(k).enabled
+                    break;
+                end
             end
         end
         

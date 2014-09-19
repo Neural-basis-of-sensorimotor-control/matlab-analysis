@@ -14,15 +14,7 @@ classdef Panel < GuiComponent
     methods
         function obj = Panel(gui, panel)
             obj@GuiComponent(gui,panel);
-            addlistener(obj,'enabled','PostSet',@enabled_listener);
-            
-            function enabled_listener(~,~)
-                if obj.enabled
-                    set(obj.uihandle,'Visible','on');
-                else
-                    set(obj.uihandle,'Visible','off');
-                end
-            end
+            addlistener(obj,'enabled','PostSet',@(~,~) obj.enabled_listener);
         end
         
         function layout(obj)
@@ -44,12 +36,23 @@ classdef Panel < GuiComponent
         end
         
         function update_panel(obj)
-            updated = true;            
+            updated = true;
             for k=1:obj.gui_components.n
                 updated = updated & obj.gui_components.get(k).update();
             end
             obj.enabled = updated;
         end
-
+    end
+    
+    methods (Access = 'protected')
+        function enabled_listener(obj)
+            obj.dbg_in(mfilename','Panel','enabled_listener','enabled = ',obj.enabled);
+            if obj.enabled
+                set(obj.uihandle,'Visible','on');
+            else
+                set(obj.uihandle,'Visible','off');
+            end
+            obj.dbg_out(mfilename','Panel','enabled_listener');
+        end
     end
 end

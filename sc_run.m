@@ -1,7 +1,7 @@
 % clc
 % 
 clc
-
+fprintf('to do: add listener for obj.ui_triggerparent->string in TriggerOptions\n');
 % edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
 % openeditors = edhandle.getOpenEditors;
 % for k=0:openeditors.size-1

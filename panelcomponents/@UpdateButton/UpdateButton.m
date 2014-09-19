@@ -14,6 +14,7 @@ classdef UpdateButton < PanelComponent
                 'FontWeight','bold'),200);
             
             function update_callback(~,~)
+                clc
                 obj.gui.panels.last_enabled_item.update_panel();
             end
         end

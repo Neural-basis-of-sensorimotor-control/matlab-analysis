@@ -1,4 +1,5 @@
 classdef MainChannel < PanelComponent
+    %Select main panel
     properties
         ui_channel
     end
@@ -29,7 +30,7 @@ classdef MainChannel < PanelComponent
         end
         
         function updated = update(obj)
-            obj.main_channel.load_data();
+            obj.gui.main_channel.load_data();
             updated = true;
         end
         

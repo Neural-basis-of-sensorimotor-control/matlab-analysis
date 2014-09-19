@@ -14,7 +14,7 @@ classdef WaveformSelection < PanelComponent
             obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.show_panels(false),'visible','off'),100);
             mgr.newline(5)
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','Add waveform',@(~,~) obj.gui.create_new_waveform),100);
+            mgr.add(sc_ctrl('pushbutton','New waveform',@(~,~) obj.gui.create_new_waveform),100);
             obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove waveform',@remove_waveform_callback),100);
             
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);

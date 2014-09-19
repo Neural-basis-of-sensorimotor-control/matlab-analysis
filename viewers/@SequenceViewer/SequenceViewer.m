@@ -1,5 +1,5 @@
 classdef SequenceViewer < handle
-    properties
+    properties (SetObservable)
         parent
         
         current_view
@@ -97,7 +97,11 @@ classdef SequenceViewer < handle
         end
         
         function show(obj)
-            clf(obj.current_view,'reset');
+            if ishandle(obj.current_view)
+                clf(obj.current_view,'reset');
+            else
+                obj.current_view = gcf;
+            end
             set(obj.current_view,'ToolBar','None');
             set(obj.current_view,'Color',[0 0 0]);
             obj.panels = CascadeList();

@@ -14,5 +14,10 @@ classdef ChannelPanel < Panel
             obj.gui_components.add(PlotOptions(obj));
             obj.gui_components.add(WaveformSelection(obj));
         end
+        
+        function update_panel(obj)
+            update_panel@Panel(obj);
+            obj.enabled = false;
+        end
     end
 end

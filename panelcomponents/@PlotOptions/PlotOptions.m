@@ -14,7 +14,7 @@ classdef PlotOptions < PanelComponent
                 'value',obj.gui.main_channel.plot_raw),200);
             mgr.newline(5);
             mgr.newline(20);
-            obj.ui_plot_waveforms = mgr.add(sc_ctrl('checkbox','Waveforms',@plot_waveforms_callback,...
+            obj.ui_plot_waveforms = mgr.add(sc_ctrl('checkbox','Plot waveforms',@plot_waveforms_callback,...
                 'value',obj.gui.main_channel.plot_waveforms),200);
             mgr.newline(5);
             

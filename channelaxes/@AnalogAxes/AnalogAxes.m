@@ -1,9 +1,10 @@
 classdef AnalogAxes < ChannelAxes
-    properties
+    properties (SetObservable)
         data_loaded = false
         signal
         plot_raw = false
         plot_waveforms = false
+        v_equals_zero_for_t     %leave empty to disable
     end
     
     properties (Transient)

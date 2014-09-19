@@ -13,11 +13,13 @@ classdef FilterOptions < PanelComponent
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Smoothing width'),100);
             obj.ui_smoothing_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.smoothing_width_callback,...
-                'ToolTipString','Smoothing width in bins (1 = off))'),100);
+                'ToolTipString','Smoothing width in bins (1 = off))'),80);
+            mgr.add(sc_ctrl('text','bins'),20);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Artifact width'),100);
             obj.ui_artifact_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_width_callback,'ToolTipString',...
-                'Artifact width in bins (0 = off))'),100);
+                'Artifact width in bins (0 = off))'),80);
+            mgr.add(sc_ctrl('text','bins'),20);
             
             sc_addlistener(obj.gui,'main_signal',@(~,~) obj.main_signal_listener,obj.uihandle);
             obj.dbg_out(mfilename,'populate');

@@ -89,7 +89,8 @@ classdef TriggerSelection < PanelComponent
                     str(k) = {obj.gui.triggerparents.get(k).tag};
                 end
                 obj.dbg_in(mfilename,'sequence_listener_loop',str{:});
-                obj.dbg_out(mfilename,'sequence_listener_loop');
+                str = obj.gui.triggerparents.values('tag');
+                obj.dbg_out(mfilename,'sequence_listener_loop',str{:});
             end
             obj.dbg_out(mfilename,'sequence_listener');
         end
@@ -100,7 +101,10 @@ classdef TriggerSelection < PanelComponent
                 set(obj.ui_triggerparent,'visible','off');
                 set(obj.ui_trigger,'visible','off');
             else
-                set(obj.ui_triggerparent,'visible','on');
+                str = obj.gui.triggerparents.values('tag');
+                val = find(cellfun(@(x) strcmp(x,obj.gui.triggerparent.tag),str));
+                set(obj.ui_triggerparent,'string',str,'value', val,...
+                    'visible','on');
                 str = obj.gui.triggerparent.triggers.values('tag');
                 val = 1;
                 set(obj.ui_trigger,'string',str,'value',val,'visible','on');
@@ -117,7 +121,7 @@ classdef TriggerSelection < PanelComponent
                 str = obj.gui.triggerparent.triggers.values('tag');
                 trigger = obj.gui.trigger.tag;
                 val = find(cellfun(@(x) strcmp(trigger,x),str));
-                set(obj.ui_triggerparent,'string',str,'value',val,'visible','on');
+                set(obj.ui_trigger,'string',str,'value',val,'visible','on');
                 set(obj.ui_nbr_of_sweeps,'string',sprintf('Total nbr of sweeps: %i',...
                     numel(obj.gui.triggertimes)));
             end

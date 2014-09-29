@@ -48,7 +48,7 @@ classdef SequenceViewer < handle
     
     properties (Constant)
         panel_width = 205;
-        margin = 40
+        margin = 0%40
     end
     
     methods (Abstract)
@@ -84,7 +84,11 @@ classdef SequenceViewer < handle
             end
             fprintf('Exiting ');
             for k=1:nargin-1
-                fprintf('%s\\',varargin{k});
+                if ischar(varargin{k})
+                    fprintf('%s\\',varargin{k});
+                else
+                    fprintf('%g\\',varargin{k});
+                end
             end
             fprintf('\n');
         end
@@ -130,7 +134,9 @@ classdef SequenceViewer < handle
             end
             mgr = ScLayoutManager(obj.current_view);
             for k=1:obj.plots.n
-                mgr.add(obj.plots.get(k));
+                plotaxes = obj.plots.get(k);
+                mgr.newline(getheight(plotaxes));
+                mgr.add(plotaxes);
             end
             
             obj.sequence = obj.sequence;
@@ -151,7 +157,7 @@ classdef SequenceViewer < handle
                 for i=1:obj.plots.n
                     ax_ = obj.plots.get(i);
                     if i==1
-                        y = y - (getheight(ax_) + 10);
+                        y = y - (getheight(ax_));% + 10);
                     else
                         y = y - (getheight(ax_) + obj.margin);
                     end

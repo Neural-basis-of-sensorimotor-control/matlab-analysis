@@ -2,6 +2,7 @@ classdef FilterOptions < PanelComponent
     properties
         ui_smoothing_width
         ui_artifact_width
+        ui_artifact_nbr_of_samples
     end
     methods
         function obj = FilterOptions(panel)
@@ -13,13 +14,19 @@ classdef FilterOptions < PanelComponent
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Smoothing width'),100);
             obj.ui_smoothing_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.smoothing_width_callback,...
-                'ToolTipString','Smoothing width in bins (1 = off))'),80);
-            mgr.add(sc_ctrl('text','bins'),20);
+                'ToolTipString','Smoothing width in bins (1 = off))'),50);
+            mgr.add(sc_ctrl('text','bins'),50);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Artifact width'),100);
             obj.ui_artifact_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_width_callback,'ToolTipString',...
-                'Artifact width in bins (0 = off))'),80);
-            mgr.add(sc_ctrl('text','bins'),20);
+                'Artifact width in bins (0 = off))'),50);
+            mgr.add(sc_ctrl('text','bins'),50);
+            
+            mgr.newline(20);
+            mgr.add(sc_ctrl('text','Moving avg width'),100);
+            obj.ui_artifact_nbr_of_samples = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_samples_callback,'ToolTipString',...
+                'Nbr of samples for moving average (empty = all)'),50);
+            mgr.add(sc_ctrl('text','samples'),50);
             
             sc_addlistener(obj.gui,'main_signal',@(~,~) obj.main_signal_listener,obj.uihandle);
             obj.dbg_out(mfilename,'populate');
@@ -28,7 +35,9 @@ classdef FilterOptions < PanelComponent
         function initialize(obj)
             obj.main_signal_listener();
         end
-        
+    end
+    
+    methods (Access = 'protected')
         function main_signal_listener(obj)
             set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
             set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
@@ -41,6 +50,12 @@ classdef FilterOptions < PanelComponent
         
         function artifact_width_callback(obj)
             obj.gui.main_signal.filter.artifact_width = str2double(get(obj.ui_artifact_width,'string'));
+            obj.show_panels(false);
+        end
+        
+        
+        function artifact_samples_callback(obj)
+          msgbox('to be implemented');
             obj.show_panels(false);
         end
 

@@ -30,8 +30,10 @@
         end
         
         function updated = update(obj)
+            obj.dbg_in(mfilename,'update');
             obj.gui.main_channel.load_data();
             updated = true;
+            obj.dbg_out(mfilename,'update');
         end
         
     end

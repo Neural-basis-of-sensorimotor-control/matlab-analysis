@@ -53,6 +53,7 @@ classdef AnalogAxes < ChannelAxes
         end
         
         function load_data(obj)%,plot_raw)
+            obj.dbg_in(mfilename,'load_data');
             obj.data_loaded = true;
             if obj.plot_raw
                 obj.v_raw = obj.signal.sc_loadsignal();
@@ -70,9 +71,11 @@ classdef AnalogAxes < ChannelAxes
                     end
                 end
             end
+            obj.dbg_out(mfilename,'load_data');
         end
         
         function plotch(obj,btn_down_fcn)
+            if nargin<=1,   btn_down_fcn = [];  end
             sweep = obj.setup_axes();
             xlabel(obj.ax,'Time [s]');
             ylabel(obj.ax,obj.signal.tag);
@@ -93,8 +96,8 @@ classdef AnalogAxes < ChannelAxes
             [v_signal,time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
                 obj.gui.pretrigger, obj.gui.posttrigger, ...
                 obj.signal.dt);
-            if ~isempty(obj.gui.set_v_to_zero_for_t)
-                [~,ind] = min(abs(time-obj.gui.set_v_to_zero_for_t));
+            if ~isempty(obj.v_equals_zero_for_t)
+                [~,ind] = min(abs(time-obj.v_equals_zero_for_t));
                 for i=1:size(v_signal,2)
                     v_signal(:,i) = v_signal(:,i) - v_signal(ind,i);
                 end

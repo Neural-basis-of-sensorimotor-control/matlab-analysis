@@ -24,17 +24,14 @@ classdef MainPanel < PanelComponent
             obj.ui_sequence = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.sequence_callback,...
                 'visible','off'),100);
             
-            
-            %DEBUGGING CODE:
-            
-            addlistener(obj.ui_sequence,'BeingDeleted','PostSet',@debuglistener);
-            
-            function debuglistener(~,~)
-                obj.dbg_in(mfilename,'debuglistener','BeingDeleted=',obj.ui_sequence.BeingDeleted);
-                obj.dbg_out(mfilename,'debuglistener');
-            end
-            
-            
+%             %DEBUGGING CODE:
+%             
+%             addlistener(obj.ui_sequence,'BeingDeleted','PostSet',@debuglistener);
+%             
+%             function debuglistener(~,~)
+%                 obj.dbg_in(mfilename,'debuglistener','BeingDeleted=',obj.ui_sequence.BeingDeleted);
+%                 obj.dbg_out(mfilename,'debuglistener');
+%             end
             
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);

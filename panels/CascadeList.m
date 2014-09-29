@@ -45,10 +45,11 @@ classdef CascadeList < handle
         function item = get.last_enabled_item(obj)
             item = [];
             for k=1:obj.n
-                if ~obj.get(k).enabled
+                item = obj.get(k);
+                if ~item.enabled
+                    item.dbg_in(mfilename,'get.last_enabled_item',class(item));
+                    item.dbg_out(mfilename,'get.last_enabled_item');
                     return
-                else
-                    item = obj.get(k);
                 end
             end
         end

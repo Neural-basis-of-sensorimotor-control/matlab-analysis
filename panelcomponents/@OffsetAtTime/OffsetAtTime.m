@@ -1,6 +1,6 @@
 classdef OffsetAtTime < PanelComponent
     properties
-        ui_checkbox
+    %    ui_checkbox
         ui_value
     end
     
@@ -12,7 +12,8 @@ classdef OffsetAtTime < PanelComponent
         
         function populate(obj,mgr)
             mgr.newline(20);
-            obj.ui_checkbox = mgr.add(sc_ctrl('checkbox','Set v = for t = ',@(~,~) obj.checkbox_callback),100);
+            %obj.ui_checkbox = mgr.add(sc_ctrl('checkbox','Set v = for t = ',@(~,~) obj.checkbox_callback),100);
+            mgr.add(sc_ctrl('text','Set v = for t = '),100);
             obj.ui_value = mgr.add(sc_ctrl('edit',[],@(~,~) obj.value_callback),80);
             mgr.add(sc_ctrl('text','(s)'),20);
         end
@@ -32,24 +33,27 @@ classdef OffsetAtTime < PanelComponent
         end
         
         function offset_listener(obj)
-            if isempty(obj.gui.main_channel.v_equals_zero_for_t)
-                set(obj.ui_checkbox,'value',0);
+            if isempty(obj.gui.main_channel.v_equals_zero_for_t) || ~isfinite(obj.gui.main_channel.v_equals_zero_for_t)
+           %     set(obj.ui_checkbox,'value',0);
+                set(obj.ui_value,'string',[]);
             else
-                set(obj.ui_checkbox,'value',1);
-                set(obj.ui_value,'Enable','on','string',obj.gui.main_channel.v_equals_zero_for_t);
+       %         set(obj.ui_checkbox,'value',1);
+                set(obj.ui_value,'string',obj.gui.main_channel.v_equals_zero_for_t);
             end
         end
         
-        function checkbox_callback(obj)
-            if get(obj.ui_checkbox,'value')
-                obj.value_callback();
-            else
-                obj.gui.main_channel.v_equals_zero_for_t = [];
-            end
-        end
+%         function checkbox_callback(obj)
+%             if get(obj.ui_checkbox,'value')
+%                 set(obj.ui_value,'Enable','on');
+%                 obj.value_callback();
+%             else
+%                 obj.gui.main_channel.v_equals_zero_for_t = [];
+%                 set(obj.ui_value,'Enable','off');
+%             end
+%         end
         
         function value_callback(obj)
-            val = str2double(get(obj.ui_value,'value'));
+            val = str2double(get(obj.ui_value,'string'));
             if isnumeric(val)
                 obj.gui.main_channel.v_equals_zero_for_t = val;
             else

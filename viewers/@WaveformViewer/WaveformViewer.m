@@ -57,6 +57,7 @@ classdef WaveformViewer < SequenceViewer
         end
         
         function add_panels(obj)
+            obj.panels.add(UpdatePanel(obj));
             obj.panels.add(InfoPanel(obj));
             obj.panels.add(ChannelPanel(obj));
             obj.panels.add(PlotPanel(obj));

@@ -6,7 +6,7 @@ classdef Panel < GuiComponent
     properties
         gui_components
     end
-    
+        
     methods (Abstract)
         setup_components(obj);
     end
@@ -21,7 +21,7 @@ classdef Panel < GuiComponent
             obj.gui_components = ScCellList();
             obj.setup_components();
             mgr = ScLayoutManager(obj.uihandle);
-            mgr.newline(15);
+            mgr.newline(obj.upper_margin());
             for k=1:obj.gui_components.n
                 obj.gui_components.get(k).populate(mgr);
             end
@@ -41,6 +41,13 @@ classdef Panel < GuiComponent
                 updated = updated & obj.gui_components.get(k).update();
             end
             obj.enabled = updated;
+        end
+    end
+    
+    
+    methods (Static)
+        function val = upper_margin()
+            val = 15;
         end
     end
     

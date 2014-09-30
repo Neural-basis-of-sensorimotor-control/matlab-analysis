@@ -22,7 +22,7 @@ classdef AnalogAxes < ChannelAxes
             if nargin>1
                 obj.signal = signal;
             end
-            setheight(obj.ax,250);
+%            setheight(obj.ax,250);
 %             plot_raw = 0;
 %             for k=1:2:numel(varargin)
 %                 switch varargin{k}

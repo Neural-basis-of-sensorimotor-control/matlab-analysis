@@ -1,7 +1,7 @@
 classdef ChannelPanel < Panel
     methods
         function obj = ChannelPanel(gui)            
-            panel = uipanel('Parent',gui.current_view,'Title','Main');
+            panel = uipanel('Parent',gui.current_view,'Title','Channel selection');
             obj@Panel(gui,panel);
             obj.layout();
         end

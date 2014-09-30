@@ -6,6 +6,11 @@ addlistener(obj,'sequence','PostSet',@sequence_listener);
 addlistener(obj,'main_channel','PostSet',@main_channel_listener);
 addlistener(obj,'show_digital_channels','PostSet',@show_digital_channels_listener);
 addlistener(obj,'show_histogram','PostSet',@show_histogram_listener);
+addlistener(obj,'digital_channels','PreSet',@digital_channels_listener_pre);
+addlistener(obj,'digital_channels','PostSet',@digital_channels_listener_post);
+addlistener(obj,'histogram','PreSet',@histogram_listener_pre);
+addlistener(obj,'histogram','PostSet',@histogram_listener_post);
+deletechannel = [];
 addlistener(obj,'main_axes','PostSet',@main_axes_listener);
 addlistener(obj,'main_signal','PostSet',@main_signal_listener);
 addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
@@ -132,6 +137,21 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
         end
     end
 
+    function digital_channels_listener_pre(~,~)
+        if ~isempty(obj.digital_channels)
+            deletechannel = obj.digital_channels;
+        else
+            deletechannel = [];
+        end
+    end
+
+    function digital_channels_listener_post(~,~)
+        if ~isempty(deletechannel) && isobject(deletechannel) && ...
+                (isempty(obj.digital_channels) || obj.digital_channels ~= deletechannel)
+            delete(deletechannel.ax);
+        end
+    end
+
     function show_histogram_listener(~,~)
         if obj.show_histogram && isempty(obj.histogram)
             obj.histogram = HistogramChannel(obj);
@@ -139,6 +159,26 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
             obj.histogram = [];
         end
     end
+
+    function histogram_listener_pre(~,~)
+        if ~isempty(obj.histogram)
+            deletechannel = obj.histogram;
+        else
+            deletechannel = [];
+        end
+    end
+
+    function histogram_listener_post(~,~)
+        obj.dbg_in(mfilename,'histogram_listener_post');
+        if ~isempty(deletechannel) && isobject(deletechannel) && ...
+                (isempty(obj.histogram) || obj.histogram ~= deletechannel)
+            obj.dbg_in(mfilename,'histogram_listener_post','deleted');
+            delete(deletechannel.ax);
+            obj.dbg_out(mfilename,'histogram_listener_post','deleted');
+        end
+        obj.dbg_out(mfilename,'histogram_listener_post');
+    end
+
 %     function set_nbr_of_analog_channels_listener(~,~)
 %         nbr = obj.plots.n;
 %         if obj.show_digital_channels

@@ -172,7 +172,7 @@ classdef SequenceViewer < handle
         function disable_panels(obj, panel)
             obj.dbg_in(mfilename,'disable_panels');
             index = obj.panels.indexof(panel);
-            for k=index+1:obj.panels.n
+            for k=index:obj.panels.n
                 obj.panels.get(k).enabled = false;
             end
             for k=1:obj.plots.n

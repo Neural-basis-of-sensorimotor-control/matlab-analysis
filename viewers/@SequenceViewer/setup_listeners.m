@@ -74,6 +74,12 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
         obj.dbg_in(mfilename,'main_channel_listener');
         obj.main_signal = obj.main_channel.signal;
         obj.main_axes = obj.main_channel.ax;
+        obj.addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
+        
+        function main_channel_signal_listener(~,~)
+            obj.main_signal = obj.main_channel.signal;
+        end
+        
         obj.dbg_out(mfilename,'main_channel_listener');
     end
 

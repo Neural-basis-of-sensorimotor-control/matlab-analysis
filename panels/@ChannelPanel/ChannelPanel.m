@@ -12,7 +12,7 @@ classdef ChannelPanel < Panel
             obj.gui_components.add(TriggerSelection(obj));
             obj.gui_components.add(FilterOptions(obj));
             obj.gui_components.add(PlotOptions(obj));
-            obj.gui_components.add(WaveformSelection(obj));
+        %    obj.gui_components.add(WaveformSelection(obj));
         end
         
         function update_panel(obj)
@@ -26,6 +26,8 @@ classdef ChannelPanel < Panel
             if obj.gui.show_histogram
                 obj.gui.histogram.load_data();
             end
+            obj.gui.main_signal = obj.gui.main_channel.signal;
+            obj.gui.main_axes = obj.gui.main_channel.ax;
          %   obj.enabled = false;
         end
     end

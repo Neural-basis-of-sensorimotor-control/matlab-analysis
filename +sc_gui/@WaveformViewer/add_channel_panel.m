@@ -61,7 +61,7 @@ addlistener(panel,'Visible','PostSet',@visible_listener);
         val = get(ui_main_signal,'value');
         str = get(ui_main_signal,'string');
         signal = obj.sequence.signals.get('tag',str{val});
-        obj.main_signal = signal;
+        obj.main_channel.signal = signal;
         if obj.main_signal.waveforms.n
             if ~isempty(obj.waveform)
                 str = obj.main_signal.waveforms.values('tag');

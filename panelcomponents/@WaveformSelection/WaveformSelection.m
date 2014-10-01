@@ -24,7 +24,7 @@ classdef WaveformSelection < PanelComponent
                     obj.gui.waveform.tag));
                 if strmp(answer,'Yes')
                     obj.gui.main_signal.waveforms.remove(obj.waveform);
-                    obj.main_signal = obj.main_signal;
+                    obj.main_channel.signal = obj.main_signal;
                 end
             end
             

@@ -84,8 +84,8 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
     end
 
     function main_signal_listener(~,~)
-        obj.main_channel.clear_data();
-        obj.main_channel.signal = obj.main_signal;
+   %     obj.main_channel.clear_data();
+   %     obj.main_channel.signal = obj.main_signal;
         if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
             obj.waveform = obj.waveform;
         elseif obj.main_signal.waveforms.n

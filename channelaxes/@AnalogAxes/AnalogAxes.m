@@ -47,10 +47,12 @@ classdef AnalogAxes < ChannelAxes
         end
         
         function clear_data(obj)
+            obj.dbg_in(mfilename,'clear_data');
             obj.data_loaded = false;
             obj.v = [];
             obj.v_raw = [];
             obj.b_highlighted = [];
+            obj.dbg_out(mfilename,'clear_data');
         end
         
         function load_data(obj)%,plot_raw)

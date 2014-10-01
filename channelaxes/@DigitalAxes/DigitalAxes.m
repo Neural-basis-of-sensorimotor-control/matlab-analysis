@@ -3,24 +3,23 @@ classdef DigitalAxes < ChannelAxes
     methods
         function obj = DigitalAxes(gui)
             obj@ChannelAxes(gui);
-%             digch = obj.sequence.gettriggers(obj.gui.tmin,...
-%                 obj.gui.tmax);
-%             setheight(obj.ax,digch.n*15);
-            sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
+            sequence_listener();
+            addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
+            addlistener(obj.gui,'sequence','PostSet',@sequence_listener);
             
             function xlimits_listener(~,~)
                 if obj.gui.xlimits(1)<obj.gui.xlimits(2)
                     xlim(obj.ax,obj.gui.xlimits);
                 end
             end
-            
-            sc_addlistener(obj.gui,'sequence',@sequence_listener,obj.ax);
-            
+%             
             function sequence_listener(~,~)
                 if ~isempty(obj.gui.sequence)
                     digch_ = obj.sequence.gettriggers(obj.gui.tmin,...
                         obj.gui.tmax);
-                    setheight(obj.ax,digch_.n*15);
+                    height_ = max(15,digch_.n*15);
+                    setheight(obj.ax,height_);
+                    obj.height = height_;
                 end
             end
             
@@ -60,9 +59,9 @@ classdef DigitalAxes < ChannelAxes
                     1:digch.n,'YTickLabel',digch.values('tag'),...
                     'YColor',[1 1 1],'XColor',[0 0 0],'Color',[0 0 0]);
             else
-                cla(obj.ax);
+                cla(obj.ax,'reset');
             end
-            %    xlim(obj.ax,obj.gui.xlimits);
+            xlim(obj.ax,obj.gui.xlimits);
         end
     end
 end

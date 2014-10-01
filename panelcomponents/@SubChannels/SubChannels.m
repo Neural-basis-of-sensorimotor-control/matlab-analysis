@@ -9,7 +9,7 @@ classdef SubChannels < PanelComponent
         
         function populate(obj,mgr)
             obj.ui_extra_channels = ScList();
-            for k=2:obj.gui.analog_channels.n
+            for k=2:obj.gui.analog_ch.n
                 mgr.newline(20);
                 mgr.add(sc_ctrl('text',sprintf('Channel #%i',k)),100);
                 ui_channel = mgr.add(sc_ctrl('popupmenu',...
@@ -24,7 +24,7 @@ classdef SubChannels < PanelComponent
             obj.dbg_in(mfilename,'initialize');
             str = obj.gui.sequence.signals.values('tag');
             for k=1:obj.ui_extra_channels.n
-                signal = obj.gui.analog_channels.get(k+1).signal;
+                signal = obj.gui.analog_ch.get(k+1).signal;
                 if isempty(signal)
                     val = k+1;
                 else
@@ -44,14 +44,15 @@ classdef SubChannels < PanelComponent
         
         function updated = update(obj)
             updated = true;
-            signals = obj.gui.sequence.signals.values('tag');
+            signals = obj.gui.sequence.signals;%.values('tag');
             for k=1:obj.ui_extra_channels.n
                 h = obj.ui_extra_channels.get(k);
                 val = get(h,'value');
                 str = get(h,'string');
-                obj.analog_channels.get(k).signal = signals.get('tag',str{val});
-                obj.analog_channels.get(k).load_data();
-            end     
+                obj.gui.analog_subch.get(k).signal = signals.get('tag',str{val});
+              %  obj.gui.analog_ch.get(k).signal = signals.get('tag',str{val});
+             %   obj.analog_ch.get(k).load_data();
+            end
         end
     end
 end

@@ -54,15 +54,16 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
     function sequence_listener(~,~)
         obj.dbg_in(mfilename,'sequence_listener');
         if ~isempty(obj.sequence)
-            for k=1:obj.analog_channels.n
-                signal = obj.analog_channels.get(k).signal;
+            for k=1:obj.analog_ch.n
+                signal = obj.analog_ch.get(k).signal;
                 if isempty(signal) || ~obj.sequence.signals.contains(signal)
-                    obj.analog_channels.get(k).signal = obj.sequence.signals.get(k);
+                    obj.analog_ch.get(k).signal = obj.sequence.signals.get(k);
                 end
             end
-            if obj.analog_channels.n
+            if obj.analog_ch.n
                 if isempty(obj.main_channel)
-                    obj.main_channel = obj.analog_channels.get(1);
+                    warning('quirky behavior in setup_listeners');
+                    obj.main_channel = obj.analog_ch.get(1);
                 end
             end
         end

@@ -32,7 +32,7 @@ classdef GuiAxes < handle
             
             obj.gui = gui;
             obj.ax = axes;
-            setheight(obj.ax,obj.height);
+            %setheight(obj.ax,obj.height);
             
             function ax_listener_pre(~,~)
                 obj.dbg_in(mfilename,'ax_listener_pre')
@@ -50,6 +50,7 @@ classdef GuiAxes < handle
             function ax_listener_post(~,~)
                 obj.dbg_in(mfilename,'ax_listener_post')
                 if ~isempty(obj.ax)
+                    set(obj.ax,'ActivePositionProperty','position');
                     setheight(obj.ax,obj.height);
                     obj.postset_listener = addlistener(obj.ax,'BeingDeleted','PostSet',@being_deleted_listener);
                 end

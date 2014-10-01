@@ -35,6 +35,7 @@ classdef SweepOptions < PanelComponent
             obj.ui_increment = mgr.add(sc_ctrl('edit',[],@(~,~) obj.increment_callback),100);
             mgr.newline(20);
             obj.ui_previous = mgr.add(sc_ctrl('pushbutton','Previous',@(~,~) obj.previous_callback),100);
+
             obj.ui_next = mgr.add(sc_ctrl('pushbutton','Next',@(~,~) obj.next_callback),100);
         end
         

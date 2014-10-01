@@ -19,22 +19,27 @@
                 obj.show_panels(false);
                 val = get(obj.ui_channel,'value');
                 str = get(obj.ui_channel,'string');
-                obj.gui.main_signal = obj.gui.sequence.signals.get('tag',str{val});
+                %obj.gui.main_signal = obj.gui.sequence.signals.get('tag',str{val});
+                obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
             end
         end
         
         function initialize(obj)
             str = obj.gui.sequence.signals.values('tag');
+            %quick fix
+            obj.gui.main_signal = obj.gui.main_channel.signal;
+            obj.gui.main_axes = obj.gui.main_channel.ax;
+            %end of quick fix
             val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
             set(obj.ui_channel,'string',str,'value',val,'visible','on');
         end
         
-        function updated = update(obj)
-            obj.dbg_in(mfilename,'update');
-            obj.gui.main_channel.load_data();
-            updated = true;
-            obj.dbg_out(mfilename,'update');
-        end
+%         function updated = update(obj)
+%             obj.dbg_in(mfilename,'update');
+%             obj.gui.main_channel.load_data();
+%             updated = true;
+%             obj.dbg_out(mfilename,'update');
+%         end
         
     end
 end

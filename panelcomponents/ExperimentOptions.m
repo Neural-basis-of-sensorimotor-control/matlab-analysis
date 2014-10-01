@@ -1,4 +1,4 @@
-classdef MainPanel < PanelComponent
+classdef ExperimentOptions < PanelComponent
     properties
         ui_experiment
         ui_file
@@ -6,7 +6,7 @@ classdef MainPanel < PanelComponent
     end
     
     methods
-        function obj = MainPanel(panel)
+        function obj = ExperimentOptions(panel)
             obj@PanelComponent(panel);
         end
         

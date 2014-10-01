@@ -27,6 +27,7 @@ classdef PlotPanel < Panel
                     obj.gui.plots.get(k).plotch();
                 end
             end
+            obj.enabled = false;
             obj.dbg_out(mfilename,'update_panel','enabled = ',obj.enabled);
         end
     end

@@ -16,7 +16,16 @@ classdef ChannelPanel < Panel
         end
         
         function update_panel(obj)
-            update_panel@Panel(obj);
+            update_panel@Panel(obj);   
+            if obj.gui.show_digital_channels
+                obj.gui.digital_channels.load_data();
+            end
+            for k=1:obj.gui.analog_ch.n
+                obj.gui.analog_ch.get(k).load_data();
+            end
+            if obj.gui.show_histogram
+                obj.gui.histogram.load_data();
+            end
          %   obj.enabled = false;
         end
     end

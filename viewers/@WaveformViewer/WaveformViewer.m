@@ -64,6 +64,14 @@ classdef WaveformViewer < SequenceViewer
             obj.panels.add(HistogramPanel(obj));
         end
         
+        function show(obj,enable_main_panel)
+            if nargin<2
+                enable_main_panel = 0;
+            end
+            show@SequenceViewer(obj);
+            obj.panels.get(2).enabled = enable_main_panel;
+        end
+        
         function set_sweep(obj,sweep)
             obj.sweep = mod(sweep-1,numel(obj.triggertimes))+1;
             obj.plot_channels();

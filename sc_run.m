@@ -1,3 +1,4 @@
+%function sc_run(clearclasses)
 % clc
 % 
 clc
@@ -12,11 +13,14 @@ fprintf('to do: add listener for obj.ui_triggerparent->string in TriggerOptions\
 sc -addpath 
 addpath viewers\ panelcomponents\ panels\ channelaxes\
 
-clearclasses = 1;%
+%if nargin==0
+    clearclasses = 1;%
+%end
 clf('reset')
 if clearclasses
     close all
     clear classes
+    set(gcf,'unit','normalized','Position',[0 0  1 1]);
 else
     clear
 end

@@ -47,7 +47,7 @@ classdef ChannelOptions < PanelComponent
             set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
             str = cell(obj.gui.sequence.signals.n,1);
             for k=1:numel(str), str(k) = {num2str(k)}; end
-            obj.gui.nbr_of_analog_channels = obj.gui.analog_channels.n;
+            obj.gui.nbr_of_analog_channels = obj.gui.analog_ch.n;
             set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
                 'on');
             set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
@@ -58,6 +58,15 @@ classdef ChannelOptions < PanelComponent
             obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
             obj.gui.show_histogram = get(obj.ui_show_histogram,'value');
             obj.sequence_listener();
+%             if obj.gui.show_digital_channels
+%                 obj.gui.digital_channels.load_data();
+%             end
+%             for k=1:obj.gui.analog_ch.n
+%                 obj.gui.analog_ch.get(k).load_data();
+%             end
+%             if obj.gui.show_histogram
+%                 obj.gui.histogram.load_data();
+%             end
             updated = true;
         end
         
@@ -66,14 +75,14 @@ classdef ChannelOptions < PanelComponent
     methods (Access = 'private')
         function sequence_listener(obj)
             for k=1:obj.gui.nbr_of_analog_channels
-                if k>obj.gui.analog_channels.n
-                    obj.gui.analog_channels.add(AnalogAxes(obj.gui,obj.gui.sequence.signals.get(k)));
-                elseif  ~obj.gui.sequence.signals.contains(obj.gui.analog_channels.get(k).signal)
-                    obj.gui.analog_channels.get(k).signal = obj.gui.sequence.signals.get(k);
+                if k>obj.gui.analog_ch.n
+                    obj.gui.analog_subch.add(AnalogAxes(obj.gui,obj.gui.sequence.signals.get(k)));
+                elseif  ~obj.gui.sequence.signals.contains(obj.gui.analog_ch.get(k).signal)
+                    obj.gui.analog_ch.get(k).signal = obj.gui.sequence.signals.get(k);
                 end
             end
-            for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_channels.n
-                obj.gui.analog_channels.remove_at(obj.gui.nbr_of_analog_channels+1);
+            for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_ch.n
+                obj.gui.analog_subch.remove_at(obj.gui.nbr_of_analog_channels);
             end
         end
     end

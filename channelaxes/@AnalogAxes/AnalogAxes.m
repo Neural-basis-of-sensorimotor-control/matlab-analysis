@@ -16,6 +16,7 @@ classdef AnalogAxes < ChannelAxes
     methods
         function obj = AnalogAxes(gui,signal)%,varargin)            
             obj@ChannelAxes(gui);
+          %  obj.height = 450;
             addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
             sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             %end

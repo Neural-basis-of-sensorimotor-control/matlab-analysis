@@ -26,22 +26,22 @@ classdef HistogramChannel < GuiAxes
                         if ~isempty(spiketimes)
                             edges = (obj.pretrigger:obj.binwidth:obj.posttrigger)';
                             firing = histc(spiketimes,edges)/(numel(obj.gui.triggertimes) * obj.binwidth);
-                            bar(obj.gui.histogram_channel.ax,edges,firing,'EdgeColor',[1 0 0]);
-                            xlabel(obj.gui.histogram_channel.ax,'Time [s]','Color',[1 1 1])
-                            ylabel(obj.gui.histogram_channel.ax,'Firing [Hz]')
+                            bar(obj.gui.histogram.ax,edges,firing,'EdgeColor',[1 0 0]);
+                            xlabel(obj.gui.histogram.ax,'Time [s]','Color',[1 1 1])
+                            ylabel(obj.gui.histogram.ax,'Firing [Hz]')
                         end
-                        set(obj.gui.histogram_channel.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
+                        set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
                     case sc_gui.HistogramType.ISI_pdf
                         isi = diff(obj.gui.waveform.gettimes(obj.gui.tmin,obj.gui.tmax));
                         if ~isempty(isi)
                             edges = (obj.pretrigger:obj.binwidth:obj.posttrigger)';
                             isi_pdf = histc(isi,edges)/numel(isi);
-                            plot(obj.gui.histogram_channel.ax,edges,isi_pdf,'Color',[1 0 0],'LineWidth',4);
-                            xlabel(obj.gui.histogram_channel.ax,'ISI time [s]')
-                            ylabel(obj.gui.histogram_channel.ax,'pdf')
+                            plot(obj.gui.histogram.ax,edges,isi_pdf,'Color',[1 0 0],'LineWidth',4);
+                            xlabel(obj.gui.histogram.ax,'ISI time [s]')
+                            ylabel(obj.gui.histogram.ax,'pdf')
                         end
-                        set(obj.gui.histogram_channel.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
+                        set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
                     case sc_gui.HistogramType.raster
                         rasterplot_fig = figure(obj.gui.current_view+1);
@@ -79,7 +79,7 @@ classdef HistogramChannel < GuiAxes
                                 end
                             end
                         end
-                        axis(obj.gui.histogram_channel.ax,'tight');
+                        axis(obj.gui.histogram.ax,'tight');
                 end
             end
         end

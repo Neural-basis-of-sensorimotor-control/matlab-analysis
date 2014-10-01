@@ -51,10 +51,16 @@ classdef Panel < GuiComponent
         end
     end
     
-    methods (Access = 'protected')
+    methods %(Access = 'protected')
         function enabled_listener(obj)
             obj.dbg_in(mfilename','Panel','enabled_listener','enabled = ',obj.enabled);
-            if obj.enabled
+            index = obj.gui.panels.indexof(obj);
+            if index<2 || obj.gui.panels.get(index-1).enabled
+                previous_enabled = true;
+            else
+                previous_enabled = false;
+            end
+            if obj.enabled || previous_enabled
                 set(obj.uihandle,'Visible','on');
             else
                 set(obj.uihandle,'Visible','off');

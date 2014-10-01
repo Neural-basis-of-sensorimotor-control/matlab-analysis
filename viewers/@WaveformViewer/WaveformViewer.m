@@ -22,16 +22,8 @@ classdef WaveformViewer < SequenceViewer
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
             obj.dbg_in(mfilename,'WaveformViewer()');
-            addlistener(obj,'main_signal','PostSet',@main_signal_listener);
-            addlistener(obj,'sequence','PostSet',@sequence_listener); 
-            
-            function main_signal_listener(~,~)
-                if ~isempty(obj.main_signal) && obj.main_signal.waveforms.n
-                    obj.waveform = obj.main_signal.waveforms.get(1);
-                else
-                    obj.waveform = [];
-                end
-            end
+           
+            addlistener(obj,'sequence','PostSet',@sequence_listener);
             
             function sequence_listener(~,~)
                 obj.dbg_in(mfilename,'sequence_listener');

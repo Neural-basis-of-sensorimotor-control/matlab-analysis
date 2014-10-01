@@ -93,6 +93,7 @@ classdef AnalogAxes < ChannelAxes
             else
                 cla(obj.ax);
             end
+            xlim(obj.ax,obj.gui.xlimits);
         end
         
         function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn)
@@ -112,16 +113,16 @@ classdef AnalogAxes < ChannelAxes
                     set(plothandle,'ButtonDownFcn',btn_down_fcn);
                 end
             end
-            if obj.gui.plotmode == sc_gui.PlotModes.plot_avg_all || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_selected || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_all || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_selected
+            if obj.gui.plotmode == PlotModes.plot_avg_all || ...
+                    obj.gui.plotmode == PlotModes.plot_avg_selected || ...
+                    obj.gui.plotmode == PlotModes.plot_avg_std_all || ...
+                    obj.gui.plotmode == PlotModes.plot_avg_std_selected
                 avg = mean(v_signal,2);
                 plot(obj.ax,time,avg,'Color',[0 1 0],...
                     'LineWidth',2);
             end
-            if obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_all || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_selected
+            if obj.gui.plotmode == PlotModes.plot_avg_std_all || ...
+                    obj.gui.plotmode == PlotModes.plot_avg_std_selected
                 stddev = std(v_signal,0,2);
                 plot(obj.ax,time,avg+stddev,'Color',[0 0 1],'LineWidth',2);
                 plot(obj.ax,time,avg-stddev,'Color',[0 0 1],'LineWidth',2);

@@ -11,7 +11,7 @@ fprintf('to do: add listener for obj.ui_triggerparent->string in TriggerOptions\
 
 %reset_all
 sc -addpath 
-addpath viewers\ panelcomponents\ panels\ channelaxes\
+addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\
 
 %if nargin==0
     clearclasses = 1;%

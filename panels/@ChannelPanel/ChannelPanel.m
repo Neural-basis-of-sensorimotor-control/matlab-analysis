@@ -26,8 +26,8 @@ classdef ChannelPanel < Panel
             if obj.gui.show_histogram
                 obj.gui.histogram.load_data();
             end
-            obj.gui.main_signal = obj.gui.main_channel.signal;
-            obj.gui.main_axes = obj.gui.main_channel.ax;
+%             obj.gui.main_signal = obj.gui.main_channel.signal;
+%             obj.gui.main_axes = obj.gui.main_channel.ax;
          %   obj.enabled = false;
         end
     end

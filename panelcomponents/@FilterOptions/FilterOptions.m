@@ -28,7 +28,7 @@ classdef FilterOptions < PanelComponent
                 'Nbr of samples for moving average (empty = all)'),50);
             mgr.add(sc_ctrl('text','samples'),50);
             
-            sc_addlistener(obj.gui,'main_signal',@(~,~) obj.main_signal_listener,obj.uihandle);
+            sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
             obj.dbg_out(mfilename,'populate');
         end
         
@@ -38,6 +38,10 @@ classdef FilterOptions < PanelComponent
     end
     
     methods (Access = 'protected')
+        function main_channel_listener(obj)
+            sc_addlistener(obj.gui.main_channel,'signal',@(~,~) obj.main_signal_listener,obj.uihandle);
+        end
+        
         function main_signal_listener(obj)
             set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
             set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);

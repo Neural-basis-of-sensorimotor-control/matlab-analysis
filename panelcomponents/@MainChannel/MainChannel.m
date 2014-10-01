@@ -16,20 +16,23 @@
             mgr.newline(5);
             
             function channel_callback(~,~)
-                obj.show_panels(false);
                 val = get(obj.ui_channel,'value');
                 str = get(obj.ui_channel,'string');
                 %obj.gui.main_signal = obj.gui.sequence.signals.get('tag',str{val});
                 obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
+                obj.show_panels(false);
             end
         end
         
         function initialize(obj)
             str = obj.gui.sequence.signals.values('tag');
-            %quick fix
-            obj.gui.main_signal = obj.gui.main_channel.signal;
-            obj.gui.main_axes = obj.gui.main_channel.ax;
-            %end of quick fix
+%             %quick fix
+%             obj.gui.main_signal = obj.gui.main_channel.signal;
+%             obj.gui.main_axes = obj.gui.main_channel.ax;
+%             %end of quick fix
+            if isempty(obj.gui.main_channel.signal)
+                obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
+            end
             val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
             set(obj.ui_channel,'string',str,'value',val,'visible','on');
         end

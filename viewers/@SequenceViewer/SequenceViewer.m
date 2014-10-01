@@ -22,8 +22,8 @@ classdef SequenceViewer < handle
         has_unsaved_changes
         
         main_channel
-        main_signal
-        main_axes
+%         main_signal
+%         main_axes
         
         nbr_of_analog_channels
         
@@ -33,7 +33,7 @@ classdef SequenceViewer < handle
         
         sweep = 1
         sweep_increment = 1
-        plotmode = sc_gui.PlotModes.default
+        plotmode = PlotModes.default
         
         zoom_on = 0
         pan_on = 0
@@ -46,8 +46,8 @@ classdef SequenceViewer < handle
         tmin
         tmax
         analog_ch
-%         main_signal
-%         main_axes
+        main_signal
+        main_axes
     end
     
     properties (Constant)
@@ -98,6 +98,8 @@ classdef SequenceViewer < handle
         end
         
         function obj = SequenceViewer(guimanager)
+            obj.setup_listeners();
+            
             obj.parent = guimanager;
             obj.current_view = gcf;
             obj.analog_subch = ScCellList();
@@ -105,7 +107,7 @@ classdef SequenceViewer < handle
             obj.digital_channels = DigitalAxes(obj);
             obj.histogram = HistogramChannel(obj);
             
-            obj.setup_listeners();
+            
         end
         
         function analog_ch = get.analog_ch(obj)
@@ -137,13 +139,13 @@ classdef SequenceViewer < handle
             tmax = obj.sequence.tmax;
         end
         
-%         function main_signal = get.main_signal(obj)
-%             main_signal = obj.main_channel.signal;
-%         end
-%         
-%         function main_axes = get.main_axes(obj)
-%             main_axes = obj.main_channel.ax;
-%         end
+        function main_signal = get.main_signal(obj)
+            main_signal = obj.main_channel.signal;
+        end
+        
+        function main_axes = get.main_axes(obj)
+            main_axes = obj.main_channel.ax;
+        end
 
     end
     

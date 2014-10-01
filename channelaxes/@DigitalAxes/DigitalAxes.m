@@ -38,7 +38,7 @@ classdef DigitalAxes < ChannelAxes
                 digch = obj.sequence.gettriggers(obj.gui.tmin,...
                     obj.gui.tmax);
                 switch obj.gui.plotmode
-                    case sc_gui.PlotModes.default
+                    case PlotModes.default
                         for k=1:digch.n
                             if isa(digch.get(k),'ScWaveform')
                                 plotcolor = [1 1 1];

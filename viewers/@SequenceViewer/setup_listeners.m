@@ -11,8 +11,6 @@ addlistener(obj,'digital_channels','PostSet',@digital_channels_listener_post);
 addlistener(obj,'histogram','PreSet',@histogram_listener_pre);
 addlistener(obj,'histogram','PostSet',@histogram_listener_post);
 deletechannel = [];
-addlistener(obj,'main_axes','PostSet',@main_axes_listener);
-addlistener(obj,'main_signal','PostSet',@main_signal_listener);
 addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
 addlistener(obj,'pan_on','PostSet',@pan_on_listener);
 
@@ -72,44 +70,38 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
 
     function main_channel_listener(~,~)
         obj.dbg_in(mfilename,'main_channel_listener');
-        obj.main_signal = obj.main_channel.signal;
-        obj.main_axes = obj.main_channel.ax;
         obj.addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
+        obj.addlistener(obj.main_channel,'axes','PostSet',@main_channel_ax_listener);
+        obj.dbg_out(mfilename,'main_channel_listener');
         
         function main_channel_signal_listener(~,~)
-            obj.main_signal = obj.main_channel.signal;
-        end
-        
-        obj.dbg_out(mfilename,'main_channel_listener');
-    end
-
-    function main_signal_listener(~,~)
-   %     obj.main_channel.clear_data();
-   %     obj.main_channel.signal = obj.main_signal;
-        if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
-            obj.waveform = obj.waveform;
-        elseif obj.main_signal.waveforms.n
-            obj.waveform = obj.main_signal.get(1);
-        else
-            obj.waveform = [];
-        end
-    end
-
-    function main_axes_listener(~,~)
-        if ~isempty(obj.main_axes)
-            z = zoom(obj.main_axes);
-            set(z,'ActionPostCallback',@xaxis_listener);
-            p = pan(obj.current_view);
-            set(p,'ActionPostCallback',@xaxis_listener);
-        end
-        
-        function xaxis_listener(~,~)
-            obj.xlimits = xlim(gca);%obj.main_axes);
-            if obj.xlimits(1) < obj.pretrigger
-                obj.pretrigger = obj.xlimits(1);
+            if ~isempty(obj.main_channel.signal)
+                if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
+                    obj.waveform = obj.waveform;
+                elseif obj.main_signal.waveforms.n
+                    obj.waveform = obj.main_signal.get(1);
+                else
+                    obj.waveform = [];
+                end
             end
-            if obj.xlimits(2) > obj.posttrigger
-                obj.posttrigger = obj.xlimits(2);
+        end
+        
+        function main_channel_ax_listener(~,~)
+            if ~isempty(obj.main_axes)
+                z = zoom(obj.main_axes);
+                set(z,'ActionPostCallback',@xaxis_listener);
+                p = pan(obj.current_view);
+                set(p,'ActionPostCallback',@xaxis_listener);
+            end
+            
+            function xaxis_listener(~,~)
+                obj.xlimits = xlim(gca);%obj.main_axes);
+                if obj.xlimits(1) < obj.pretrigger
+                    obj.pretrigger = obj.xlimits(1);
+                end
+                if obj.xlimits(2) > obj.posttrigger
+                    obj.posttrigger = obj.xlimits(2);
+                end
             end
         end
     end

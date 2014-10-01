@@ -1,4 +1,4 @@
-classdef CascadeItem < sc_gui.UiWrapper
+classdef CascadeItem < UiWrapper
     properties
         updated = false
         parent
@@ -15,7 +15,7 @@ classdef CascadeItem < sc_gui.UiWrapper
     
     methods
         function obj = CascadeItem(varargin)
-            obj@sc_gui.UiWrapper(varargin{:});
+            obj@UiWrapper(varargin{:});
         end
         
         function setvisible(obj,visible)

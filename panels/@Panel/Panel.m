@@ -56,11 +56,12 @@ classdef Panel < GuiComponent
             obj.dbg_in(mfilename','Panel','enabled_listener','enabled = ',obj.enabled);
             index = obj.gui.panels.indexof(obj);
             if index<2 || obj.gui.panels.get(index-1).enabled
-                previous_enabled = true;
+                previous_panel_enabled = true;
             else
-                previous_enabled = false;
+                previous_panel_enabled = false;
             end
-            if obj.enabled || previous_enabled
+            if obj.enabled || previous_panel_enabled
+                obj.initialize_panel();
                 set(obj.uihandle,'Visible','on');
             else
                 set(obj.uihandle,'Visible','off');

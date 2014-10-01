@@ -7,11 +7,11 @@ classdef ChannelAxes < GuiAxes
         
         function sweep = setup_axes(obj)%,varargin)
             switch obj.gui.plotmode
-                case {sc_gui.PlotModes.default sc_gui.PlotModes.plot_avg_selected ...
-                        sc_gui.PlotModes.plot_avg_std_selected}
+                case {PlotModes.default PlotModes.plot_avg_selected ...
+                        PlotModes.plot_avg_std_selected}
                     sweep = obj.gui.sweep;
-                case {sc_gui.PlotModes.plot_all sc_gui.PlotModes.plot_avg_all ...
-                        sc_gui.PlotModes.plot_avg_std_all}
+                case {PlotModes.plot_all PlotModes.plot_avg_all ...
+                        PlotModes.plot_avg_std_all}
                     sweep = 1:numel(obj.gui.triggertimes);
             end
 %             for k=1:2:numel(varargin)

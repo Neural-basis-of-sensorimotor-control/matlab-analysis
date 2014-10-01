@@ -1,7 +1,7 @@
 classdef HistogramChannel < GuiAxes
     
     properties
-        hist_type = sc_gui.HistogramType.default
+        hist_type = HistogramType.default
         pretrigger = -.1
         posttrigger = .1
         binwidth = 1e-2
@@ -20,7 +20,7 @@ classdef HistogramChannel < GuiAxes
             cla(obj.ax);
             if ~isempty(obj.gui.waveform)
                 switch obj.hist_type
-                    case sc_gui.HistogramType.default
+                    case HistogramType.default
                         spiketimes = obj.gui.waveform.perievent(obj.gui.triggertimes,...
                             obj.pretrigger,obj.posttrigger);
                         if ~isempty(spiketimes)
@@ -32,7 +32,7 @@ classdef HistogramChannel < GuiAxes
                         end
                         set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
-                    case sc_gui.HistogramType.ISI_pdf
+                    case HistogramType.ISI_pdf
                         isi = diff(obj.gui.waveform.gettimes(obj.gui.tmin,obj.gui.tmax));
                         if ~isempty(isi)
                             edges = (obj.pretrigger:obj.binwidth:obj.posttrigger)';
@@ -43,7 +43,7 @@ classdef HistogramChannel < GuiAxes
                         end
                         set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
-                    case sc_gui.HistogramType.raster
+                    case HistogramType.raster
                         rasterplot_fig = figure(obj.gui.current_view+1);
                         set(rasterplot_fig,'WindowStyle','modal','Name','Raster plot');
                         [t,sweep] = obj.gui.waveform.perievent(obj.gui.triggertimes, obj.gui.pretrigger, obj.gui.posttrigger);

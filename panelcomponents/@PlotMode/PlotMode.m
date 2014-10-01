@@ -13,13 +13,13 @@ classdef PlotMode < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Plot mode'),100);
-            [~,str_] = enumeration('sc_gui.PlotModes');
+            [~,str_] = enumeration('PlotModes');
             obj.ui_plot_mode = mgr.add(sc_ctrl('popupmenu',str_,@(~,~) obj.plot_mode_callback),100);
         end
         
         function initialize(obj)
-            [~,str_] = enumeration('sc_gui.PlotModes');
-            val = find(enumeration('sc_gui.PlotModes') == obj.gui.plot_mode);
+            [~,str_] = enumeration('PlotModes');
+            val = find(enumeration('PlotModes') == obj.gui.plot_mode);
             set(obj.ui_plot_mode,'string',str_,'value',val);
         end
         
@@ -29,7 +29,7 @@ classdef PlotMode < PanelComponent
         function plot_mode_callback(obj)
             str = get(obj.ui_plot_mode,'string');
             val = get(obj.ui_plot_mode,'value');
-            [enum,enum_str] = enumeration('sc_gui.PlotModes');
+            [enum,enum_str] = enumeration('PlotModes');
             ind = cellfun(@(x) strcmp(x,str{val}),enum_str);
             obj.gui.plotmode = enum(ind);
         end

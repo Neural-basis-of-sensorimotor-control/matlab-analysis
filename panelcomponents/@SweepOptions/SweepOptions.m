@@ -78,8 +78,8 @@ classdef SweepOptions < PanelComponent
         end
         
         function plot_mode_listener(obj)
-            if obj.gui.plotmode == sc_gui.PlotModes.plot_all || ...
-                    obj.gui.plotmode == sc_gui.PlotModes.plot_avg_std_all
+            if obj.gui.plotmode == PlotModes.plot_all || ...
+                    obj.gui.plotmode == PlotModes.plot_avg_std_all
                 set(obj.ui_sweep,'enable','off');
                 set(obj.ui_increment,'enable','off');
                 set(obj.ui_next,'enable','off');

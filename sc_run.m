@@ -1,8 +1,16 @@
+%to do - add close req fcn
+%       - when switching between sequences, ask to save unsaved changes
+%       - implementra och testa plot_raw / plot_higlighted
+%       - implemetera spikhöjdsanalys
+%       - lägg till spike removal
+%       - implement SavePlotOptions
+%       - implement HistogramPanel
+
+
 %function sc_run(clearclasses)
 % clc
 % 
 clc
-fprintf('to do: add listener for obj.ui_triggerparent->string in TriggerOptions\n');
 % edhandle = com.mathworks.mlservices.MLEditorServices.getEditorApplication;
 % openeditors = edhandle.getOpenEditors;
 % for k=0:openeditors.size-1
@@ -11,7 +19,7 @@ fprintf('to do: add listener for obj.ui_triggerparent->string in TriggerOptions\
 
 %reset_all
 sc -addpath 
-addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\
+addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 
 %if nargin==0
     clearclasses = 1;%
@@ -19,6 +27,8 @@ addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\
 clf('reset')
 if clearclasses
     close all
+    clear functions
+    clear all
     clear classes
     set(gcf,'unit','normalized','Position',[0 0  1 1]);
 else

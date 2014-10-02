@@ -70,8 +70,8 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
 
     function main_channel_listener(~,~)
         obj.dbg_in(mfilename,'main_channel_listener');
-        obj.addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
-        obj.addlistener(obj.main_channel,'axes','PostSet',@main_channel_ax_listener);
+        addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
+        addlistener(obj.main_channel,'ax','PostSet',@main_channel_ax_listener);
         obj.dbg_out(mfilename,'main_channel_listener');
         
         function main_channel_signal_listener(~,~)
@@ -79,7 +79,7 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
                 if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
                     obj.waveform = obj.waveform;
                 elseif obj.main_signal.waveforms.n
-                    obj.waveform = obj.main_signal.get(1);
+                    obj.waveform = obj.main_signal.waveforms.get(1);
                 else
                     obj.waveform = [];
                 end

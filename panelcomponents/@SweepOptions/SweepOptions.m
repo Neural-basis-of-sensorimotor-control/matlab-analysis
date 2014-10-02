@@ -21,22 +21,22 @@ classdef SweepOptions < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Pretrigger'),100);
-            obj.ui_pretrigger = mgr.add(sc_ctrl('edit',[],@(~,~) obj.pretrigger_callback),80);
+            obj.ui_pretrigger = mgr.add(sc_ctrl('edit',[],@(~,~) obj.btn_callbacks('pretrigger')),80);
             mgr.add(sc_ctrl('text','(s)'),20);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Postrigger'),100);
-            obj.ui_posttrigger = mgr.add(sc_ctrl('edit',[],@(~,~) obj.posttrigger_callback),80);
+            obj.ui_posttrigger = mgr.add(sc_ctrl('edit',[],@(~,~) obj.btn_callbacks('posttrigger')),80);
             mgr.add(sc_ctrl('text','(s)'),20);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Sweep'),100);
-            obj.ui_sweep = mgr.add(sc_ctrl('edit',[],@(~,~) obj.sweep_callback),100);
+            obj.ui_sweep = mgr.add(sc_ctrl('edit',[],@(~,~) obj.btn_callbacks('sweep')),100);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Increment'),100);
-            obj.ui_increment = mgr.add(sc_ctrl('edit',[],@(~,~) obj.increment_callback),100);
+            obj.ui_increment = mgr.add(sc_ctrl('edit',[],@(~,~) obj.btn_callbacks('increment')),100);
             mgr.newline(20);
-            obj.ui_previous = mgr.add(sc_ctrl('pushbutton','Previous',@(~,~) obj.previous_callback),100);
+            obj.ui_previous = mgr.add(sc_ctrl('pushbutton','Previous',@(~,~) obj.btn_callbacks('previous')),100);
 
-            obj.ui_next = mgr.add(sc_ctrl('pushbutton','Next',@(~,~) obj.next_callback),100);
+            obj.ui_next = mgr.add(sc_ctrl('pushbutton','Next',@(~,~) obj.btn_callbacks('next')),100);
         end
         
         function initialize(obj)
@@ -49,7 +49,7 @@ classdef SweepOptions < PanelComponent
         
     end
     
-    methods (Access = 'private')
+    methods (Access = 'protected')
         function pretrigger_listener(obj)
             set(obj.ui_pretrigger,'string',obj.gui.pretrigger);
         end
@@ -64,17 +64,24 @@ classdef SweepOptions < PanelComponent
         function increment_listener(obj)
             set(obj.ui_increment,'string',obj.gui.sweep_increment);
         end
-        function pretrigger_callback(obj)
-            obj.gui.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
-        end
-        function posttrigger_callback(obj)
-            obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
-        end
-        function sweep_callback(obj)
-            obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));
-        end
-        function increment_callback(~,~)
-            obj.gui.sweep_increment = str2double(get(obj.ui_increment,'string'));
+        
+        function btn_callbacks(obj,btn_id)
+            switch btn_id
+                case 'pretrigger'
+                    obj.gui.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
+                case 'posttrigger'
+                    obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
+                case 'sweep'
+                    obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));
+                case 'increment'
+                    obj.gui.sweep_increment = str2double(get(obj.ui_increment,'string'));
+                case 'next'
+                    obj.gui.set_sweep(obj.gui.sweep + obj.gui.sweep_increment);
+                case 'previous'
+                    obj.gui.set_sweep(obj.gui.sweep - obj.gui.sweep_increment);
+                otherwise
+                    warning(['id ' btn_id ' does not exist'])
+            end
         end
         
         function plot_mode_listener(obj)

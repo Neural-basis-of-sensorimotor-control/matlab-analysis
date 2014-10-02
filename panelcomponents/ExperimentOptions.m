@@ -23,16 +23,6 @@ classdef ExperimentOptions < PanelComponent
             mgr.add(sc_ctrl('text','Sequence:'),100);
             obj.ui_sequence = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.sequence_callback,...
                 'visible','off'),100);
-            
-%             %DEBUGGING CODE:
-%             
-%             addlistener(obj.ui_sequence,'BeingDeleted','PostSet',@debuglistener);
-%             
-%             function debuglistener(~,~)
-%                 obj.dbg_in(mfilename,'debuglistener','BeingDeleted=',obj.ui_sequence.BeingDeleted);
-%                 obj.dbg_out(mfilename,'debuglistener');
-%             end
-            
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);
@@ -89,19 +79,18 @@ classdef ExperimentOptions < PanelComponent
         end
         
         function file_callback(obj)
-          %  obj.gui.disable_panels(obj);
-            obj.show_panels(false);
             str = get(obj.ui_file,'string');
             val = get(obj.ui_file,'value');
             obj.gui.file = obj.gui.experiment.get('tag',str{val});
+            obj.show_panels(false);
         end
         
         function sequence_callback(obj)  
             obj.dbg_in(mfilename,'sequence_callback');
-            obj.show_panels(false);
             str = get(obj.ui_sequence,'string');
             val = get(obj.ui_sequence,'value');
             obj.gui.sequence = obj.gui.file.get('tag',str{val});
+            obj.show_panels(false);
             obj.dbg_out(mfilename,'sequence_callback');
         end
         

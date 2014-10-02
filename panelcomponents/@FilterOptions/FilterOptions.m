@@ -49,11 +49,13 @@ classdef FilterOptions < PanelComponent
         
         function smoothing_width_callback(obj)
             obj.gui.main_signal.filter.smoothing_width = str2double(get(obj.ui_smoothing_width,'string'));
+            obj.gui_has_unsaved_changes = true;
             obj.show_panels(false);
         end
         
         function artifact_width_callback(obj)
             obj.gui.main_signal.filter.artifact_width = str2double(get(obj.ui_artifact_width,'string'));
+            obj.gui_has_unsaved_changes = true;
             obj.show_panels(false);
         end
         

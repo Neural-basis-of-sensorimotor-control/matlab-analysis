@@ -2,7 +2,7 @@ classdef UpdatePanel < Panel
     
     methods
         function obj = UpdatePanel(gui)
-            panel = uipanel('Parent',gui.current_view);
+            panel = uipanel('Parent',gui.current_view,'Title','Update');
             obj@Panel(gui,panel);
             obj.layout();
             obj.enabled = true;
@@ -10,12 +10,13 @@ classdef UpdatePanel < Panel
         
         function setup_components(obj)   
             obj.gui_components.add(UpdateButton(obj));
+            obj.gui_components.add(HelpBox(obj));
         end
     end
     
-    methods (Static)
-        function val = upper_margin()
-            val = 2;
-        end
-    end
+%     methods (Static)
+%         function val = upper_margin()
+%             val = 2;
+%         end
+%     end
 end

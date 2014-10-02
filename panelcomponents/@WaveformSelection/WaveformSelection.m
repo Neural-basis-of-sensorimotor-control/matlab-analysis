@@ -20,8 +20,8 @@ classdef WaveformSelection < PanelComponent
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);
             
             function add_waveform_callback(~,~)
-                obj.show_panels(false);
                 obj.gui.create_new_waveform;
+                obj.show_panels(false);
             end
             
             function remove_waveform_callback(~,~)
@@ -31,10 +31,10 @@ classdef WaveformSelection < PanelComponent
                     prev_index = obj.gui.panels.indexof(obj.panel)-1;
                     prev_panel = obj.gui.panels.get(prev_index);
                     obj.gui.disable_panels(prev_panel);
-                    % obj.show_panels(false);
                     obj.gui.main_signal.waveforms.remove(obj.gui.waveform);
                     obj.gui.main_channel.signal = obj.gui.main_signal;
                     obj.gui.has_unsaved_changes = true;
+                    obj.show_panels(false);
                 end
             end
         end

@@ -8,16 +8,8 @@ classdef ZoomOptions < PanelComponent
         function obj = ZoomOptions(panel)
             obj@PanelComponent(panel);
             
-            sc_addlistener(obj.gui,'zoom_on',@(~,~) toggle_button('zoom_on',obj.ui_zoom),panel);
-            sc_addlistener(obj.gui,'pan_on',@(~,~) toggle_button('pan_on',obj.ui_pan),panel);
-            
-            function toggle_button(property, button)
-                if obj.gui.(property)
-                    set(button,'FontWeight','bold');
-                else
-                    set(button,'FontWeight','normal');
-                end
-            end
+            sc_addlistener(obj.gui,'zoom_on',@(~,~) obj.toggle_button('zoom_on',obj.ui_zoom),panel);
+            sc_addlistener(obj.gui,'pan_on',@(~,~) obj.toggle_button('pan_on',obj.ui_pan),panel);
             
         end
         
@@ -33,6 +25,15 @@ classdef ZoomOptions < PanelComponent
     end
     
     methods (Access = 'protected')
+        
+        function toggle_button(obj,property, button)
+            if obj.gui.(property)
+                set(button,'FontWeight','bold');
+            else
+                set(button,'FontWeight','normal');
+            end
+        end
+        
         function zoom_callback(obj)
             obj.gui.zoom_on = ~obj.gui.zoom_on;
         end
@@ -56,7 +57,7 @@ classdef ZoomOptions < PanelComponent
             obj.gui.pan_on = false;
         end
         
-
+        
     end
     
 end

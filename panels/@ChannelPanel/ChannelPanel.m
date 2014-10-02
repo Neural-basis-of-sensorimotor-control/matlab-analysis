@@ -9,10 +9,10 @@ classdef ChannelPanel < Panel
         function setup_components(obj)
             obj.gui_components.add(MainChannel(obj));
             obj.gui_components.add(SubChannels(obj));
+            obj.gui_components.add(SetAxesHeight(obj));
             obj.gui_components.add(TriggerSelection(obj));
             obj.gui_components.add(FilterOptions(obj));
             obj.gui_components.add(PlotOptions(obj));
-        %    obj.gui_components.add(WaveformSelection(obj));
         end
         
         function update_panel(obj)

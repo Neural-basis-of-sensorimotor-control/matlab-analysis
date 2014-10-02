@@ -16,6 +16,8 @@ classdef SequenceViewer < handle
         file
         sequence
         
+        help_text
+        
         show_digital_channels = true
         show_histogram = true
         

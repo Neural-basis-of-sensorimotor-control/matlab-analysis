@@ -50,8 +50,6 @@ classdef SubChannels < PanelComponent
                 val = get(h,'value');
                 str = get(h,'string');
                 obj.gui.analog_subch.get(k).signal = signals.get('tag',str{val});
-              %  obj.gui.analog_ch.get(k).signal = signals.get('tag',str{val});
-             %   obj.analog_ch.get(k).load_data();
             end
         end
     end

@@ -42,6 +42,16 @@ classdef Panel < GuiComponent
             end
             obj.enabled = updated;
         end
+        
+        function lock_panel(obj,do_lock)
+            if do_lock
+                enablestr = 'off';
+            else
+                enablestr = 'on';
+            end
+            children = get(obj.uihandle,'children');
+            set(children,'Enable',enablestr);
+        end
     end
     
     
@@ -65,6 +75,9 @@ classdef Panel < GuiComponent
                 set(obj.uihandle,'Visible','on');
             else
                 set(obj.uihandle,'Visible','off');
+            end
+            if obj.enabled && index > -1 && index < obj.gui.panels.n
+                set(obj.gui.panels.get(index+1),'Visible','on');
             end
             obj.dbg_out(mfilename','Panel','enabled_listener');
         end

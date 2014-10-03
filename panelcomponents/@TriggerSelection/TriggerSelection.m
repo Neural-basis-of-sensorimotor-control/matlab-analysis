@@ -76,23 +76,25 @@ classdef TriggerSelection < PanelComponent
         end
         
         function sequence_listener(obj)
-            str = {};
-            for k=1:obj.gui.triggerparents.n
-                str(k) = {obj.gui.triggerparents.get(k).tag};
-            end
-            obj.dbg_in(mfilename,'sequence_listener',str{:});
-            if ~isempty(obj.gui.sequence) && obj.gui.triggerparents.n
-                str = obj.gui.triggerparents.values('tag');
-                set(obj.ui_triggerparent,'string',str);
+            if ~isempty(obj.gui.sequence) 
                 str = {};
                 for k=1:obj.gui.triggerparents.n
                     str(k) = {obj.gui.triggerparents.get(k).tag};
                 end
-                obj.dbg_in(mfilename,'sequence_listener_loop',str{:});
-                str = obj.gui.triggerparents.values('tag');
-                obj.dbg_out(mfilename,'sequence_listener_loop',str{:});
+                obj.dbg_in(mfilename,'sequence_listener',str{:});
+                if obj.gui.triggerparents.n
+                    str = obj.gui.triggerparents.values('tag');
+                    set(obj.ui_triggerparent,'string',str);
+                    str = {};
+                    for k=1:obj.gui.triggerparents.n
+                        str(k) = {obj.gui.triggerparents.get(k).tag};
+                    end
+                    obj.dbg_in(mfilename,'sequence_listener_loop',str{:});
+                    str = obj.gui.triggerparents.values('tag');
+                    obj.dbg_out(mfilename,'sequence_listener_loop',str{:});
+                end
+                obj.dbg_out(mfilename,'sequence_listener');
             end
-            obj.dbg_out(mfilename,'sequence_listener');
         end
         
         function triggerparent_listener(obj)

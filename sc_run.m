@@ -2,12 +2,13 @@
 %       - make it chose patch channel by default
 %       - save as .dat files, with new name functionality
 %       - when switching between sequences, ask to save unsaved changes
-%       - implementra och testa plot_raw / plot_higlighted
+%       - implementra och testa plot_higlighted
 %       - implemetera spikhöjdsanalys
 %       - lägg till spike removal
 %       - implement SavePlotOptions
 %       - implement HistogramPanel
-
+%       - lägg till intelligent lock_screen för adding threhsolds
+%       - för lite plats!!!
 clc
 close all
 clear classes

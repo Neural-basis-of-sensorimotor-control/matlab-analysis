@@ -1,9 +1,5 @@
 classdef UpdateButton < PanelComponent
     %Update GUI
-    properties
-        ui_update
-    end
-    
     methods
         function obj = UpdateButton(panel)
             obj@PanelComponent(panel);
@@ -14,7 +10,8 @@ classdef UpdateButton < PanelComponent
             mgr.add(sc_ctrl('pushbutton','UPDATE',@(~,~) obj.update_callback,...
                 'FontWeight','bold'),200);
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);
+            ui_reset = mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);
+            addlistener(ui_reset,'Enable','PostSet',@(src,~) set(src,'Enable','on'));
         end
     end
     

@@ -4,8 +4,8 @@ classdef DigitalAxes < ChannelAxes
         function obj = DigitalAxes(gui)
             obj@ChannelAxes(gui);
             sequence_listener();
-            addlistener(obj.gui,'xlimits','PostSet',@xlimits_listener);
-            addlistener(obj.gui,'sequence','PostSet',@sequence_listener);
+            sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
+            sc_addlistener(obj.gui,'sequence',@sequence_listener,obj.ax);
             
             function xlimits_listener(~,~)
                 if obj.gui.xlimits(1)<obj.gui.xlimits(2)

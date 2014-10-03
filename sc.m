@@ -25,20 +25,19 @@ addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ 
     viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 
 args = varargin;
-guimgr = [];
 
 if ~numel(args)
     [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
-    if exist(fullfile(pname,fname),'file') == 2
-        d = load(fullfile(pname,fname));
-        guimgr = GuiManager();
-        guimgr.experiment = d.obj;
-        clear d;
+    filename = fullfile(pname,fname);
+    if exist(filename,'file') == 2
+        args = {filename};
     else
         msgbox('Could not detect file');
-        return;
+        return
     end
-elseif strcmpi(args{1},'-addpath')
+end
+
+if strcmpi(args{1},'-addpath')
     return
 elseif strcmpi(args{1},'-help')
     help(mfilename)
@@ -73,32 +72,27 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         msgbox('No data of requested type in directory. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
         return;
     else
-        guimgr.has_unsaved_changes = ~experiment.sc_save();
+        guimgr.viewer.has_unsaved_changes = ~experiment.sc_save();
     end
 elseif numel(args{1}) && args{1}(1) == '-'
     msgbox(['Illegal command : ' args{1}]);
     return;
 else
     if exist(args{1},'file') == 2
-        d = load(args{1});
-        experiment = d.obj;
-        clear d;
+        filename = args{1};
     else
         [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
-        if exist(fullfile(pname,fname),'file') == 2
-            d = load(fullfile(pname,fname));
-            experiment = d.obj;
-            clear d;
-        else
+        filename = fullfile(pname,fname);
+        if exist(filename,'file') ~= 2
             msgbox('Could not detect file');
             return;
         end
     end
     guimgr = GuiManager();
+    d = load(filename);
+    experiment = d.obj;
+    clear d
     guimgr.experiment = experiment;
-end
-
-if ~isempty(guimgr)    
     guimgr.show;
 end
 

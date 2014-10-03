@@ -34,6 +34,9 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
     end
 
     function file_listener(~,~)
+        if ~isempty(obj.file)
+            obj.file.sc_loadtimes();
+        end
         if ~isempty(obj.file) && obj.file.n
             if ~isempty(obj.sequence)
                 if obj.file.contains(obj.sequence)

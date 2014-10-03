@@ -18,6 +18,9 @@ classdef InfoPanel < Panel
         function update_panel(obj)
             update_panel@Panel(obj);
             obj.gui.show(obj.enabled);
+            if isempty(obj.gui.sequence)
+                obj.enabled = false;
+            end
         end
         
     end

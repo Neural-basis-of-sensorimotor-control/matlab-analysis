@@ -1,4 +1,7 @@
-function show(obj)
+function show(obj,enable_main_panel)
+if nargin<2
+    enable_main_panel = 0;
+end
 if ishandle(obj.current_view)
     clf(obj.current_view,'reset');
 else
@@ -22,7 +25,7 @@ if obj.show_digital_channels
     obj.digital_channels.ax = axes;
 end
 for k=1:obj.analog_ch.n
-    obj.analog_ch.get(k).ax = axes; 
+    obj.analog_ch.get(k).ax = axes;
 end
 if obj.show_histogram
     obj.histogram.ax = axes;
@@ -38,6 +41,12 @@ obj.sequence = obj.sequence;
 for k=1:obj.panels.n
     obj.panels.get(k).initialize_panel();
 end
-set(obj.current_view,'ResizeFcn',@(~,~) obj.resize_figure());
+obj.panels.get(2).enabled = enable_main_panel;
+first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
+for k=first_disabled:obj.panels.n
+    obj.panels.get(k).update_panel();
+end
+set(obj.current_view,'ResizeFcn',@(~,~) obj.resize_figure(),...
+    'CloseRequestFcn',@(src,evt) sc_close_request(src,evt,obj));
 obj.resize_figure();
 end

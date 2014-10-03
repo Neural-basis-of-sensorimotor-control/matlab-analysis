@@ -1,4 +1,6 @@
 %to do - add close req fcn
+%       - make it chose patch channel by default
+%       - save as .dat files, with new name functionality
 %       - when switching between sequences, ask to save unsaved changes
 %       - implementra och testa plot_raw / plot_higlighted
 %       - implemetera spikhöjdsanalys
@@ -6,7 +8,20 @@
 %       - implement SavePlotOptions
 %       - implement HistogramPanel
 
+clc
+close all
+clear classes
+sc
 
+
+
+
+
+
+
+
+
+return
 %function sc_run(clearclasses)
 % clc
 % 
@@ -19,7 +34,8 @@ clc
 
 %reset_all
 sc -addpath 
-addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
+addpath viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\ ...
+    viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 
 %if nargin==0
     clearclasses = 1;%

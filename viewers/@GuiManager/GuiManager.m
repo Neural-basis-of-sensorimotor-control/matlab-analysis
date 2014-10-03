@@ -2,6 +2,7 @@ classdef GuiManager < handle
     properties (Dependent)
         viewer
         mode
+        experiment
     end
     
     properties (SetAccess = 'private', GetAccess = 'private')
@@ -48,6 +49,10 @@ classdef GuiManager < handle
             else
                 mode = obj.viewer.mode;
             end
+        end
+        
+        function set.experiment(obj,experiment)
+            obj.viewer.experiment = experiment;
         end
     end
 end

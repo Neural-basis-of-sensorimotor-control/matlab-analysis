@@ -1,4 +1,4 @@
-function obj = sc(varargin)
+function sc(varargin)
 %SC View Spike2 or binary files from experiment
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
@@ -21,58 +21,35 @@ function obj = sc(varargin)
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 
-global DEBUG FREEZESCREEN
-DEBUG = 0;
-FREEZESCREEN = 1;
-addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\
+addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\ ...
+    viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 
-if DEBUG
-    d = load('C:\Users\hamo\Documents\sensorimotor_analysis\BBNR_sc.mat');%d = load('D:\MATLAB\BBNR_sc.mat');%d = load('C:\Users\hamo\Documents\MATLAB\test_sc.mat');
-    experiment = d.obj;
-    obj = experiment;
-    guimgr = ScGuiManager(experiment);
-    guimgr.show;
-    return
-end
-
-%to do:
-%implement for binary files - ??
-%generera filnamn automatiskt för save signal
-%save Calogero raster plot
-%funktion för att skapa sekvens som täcker hela filen
-%dumpa spiktider, stimtider kolumnvis med en headerline som säger kanalnamn
-%   för respektive sak
-%till pontus format
 args = varargin;
-
-if nargout
-    obj = [];
-end
+guimgr = [];
 
 if ~numel(args)
     [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
     if exist(fullfile(pname,fname),'file') == 2
         d = load(fullfile(pname,fname));
-        experiment = d.obj;
-        guimgr = ScGuiManager(experiment);
+        guimgr = GuiManager();
+        guimgr.experiment = d.obj;
         clear d;
     else
-        if nargout,     obj = [];   end
         msgbox('Could not detect file');
         return;
     end
 elseif strcmpi(args{1},'-addpath')
     return
 elseif strcmpi(args{1},'-help')
-    if nargout,     obj = [];   end
-    help sc
+    help(mfilename)
     return
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     fdir = uigetdir;
     if isnumeric(fdir), return, end
     
     experiment = ScExperiment('fdir',fdir);
-    guimgr = ScGuiManager(experiment);
+    guimgr = GuiManager();
+    guimgr.experiment = experiment;
     if strcmpi(args{1},'-newsp2')
         files = what(fdir);
         rawdatafiles = cellfun(@(x) cell2mat(regexp(x,'^[\w]{1,1}[A-Z]{3,3}[0-9]{4,4}\.mat.{0,0}','match')), files.mat, 'UniformOutput',false);
@@ -93,7 +70,6 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         experiment.add(file);
     end
     if ~experiment.n
-        if nargout, obj = experiment;   end
         msgbox('No data of requested type in directory. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
         return;
     else
@@ -114,18 +90,15 @@ else
             experiment = d.obj;
             clear d;
         else
-            if nargout,     obj = [];   end
             msgbox('Could not detect file');
             return;
         end
     end
-    guimgr = ScGuiManager(experiment);
+    guimgr = GuiManager();
+    guimgr.experiment = experiment;
 end
 
-if nargout
-    obj = experiment;
-end
-if ~isempty(experiment)    
+if ~isempty(guimgr)    
     guimgr.show;
 end
 

@@ -7,6 +7,7 @@
 %       - lägg till spike removal
 %       - implement SavePlotOptions
 %       - implement HistogramPanel
+%       - reset plot btn fnugerar ej
 
 clc
 close all

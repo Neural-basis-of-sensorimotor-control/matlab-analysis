@@ -18,7 +18,7 @@ classdef GuiManager < handle
             obj.viewer.show();
         end
         
-        %Important: must clear all referneces to previous viewer
+        %Important: must clear all references to previous viewer
         function set.viewer(obj,new_viewer)
             if ~isempty(obj.viewer)
                 obj.viewer.copy_attributes(new_viewer);
@@ -26,6 +26,7 @@ classdef GuiManager < handle
                     new_viewer.plots.get(k).gui = obj.viewer.plots.get(k).gui;
                 end
             end
+            delete(obj.viewer);
             obj.viewer_ = new_viewer;
         end
         

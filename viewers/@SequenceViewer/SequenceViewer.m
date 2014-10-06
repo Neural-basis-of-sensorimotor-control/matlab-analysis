@@ -6,7 +6,6 @@ classdef SequenceViewer < handle
         panels
         
         digital_channels
-    %    analog_channels
         analog_subch
         histogram
     end
@@ -24,8 +23,6 @@ classdef SequenceViewer < handle
         has_unsaved_changes
         
         main_channel
-%         main_signal
-%         main_axes
         
         nbr_of_analog_channels
         
@@ -68,6 +65,8 @@ classdef SequenceViewer < handle
     
     methods
         function dbg_in(obj,varargin)
+            global DEBUG
+            if DEBUG
             for k=1:obj.debug_indent
                 fprintf('\t');
             end
@@ -81,9 +80,12 @@ classdef SequenceViewer < handle
             end
             fprintf('\n');
             obj.debug_indent = obj.debug_indent + 1;
+            end
         end
         
         function dbg_out(obj,varargin)
+            global DEBUG
+            if DEBUG
             obj.debug_indent = obj.debug_indent - 1;
             for k=1:obj.debug_indent
                 fprintf('\t');
@@ -97,6 +99,7 @@ classdef SequenceViewer < handle
                 end
             end
             fprintf('\n');
+            end
         end
         
         function obj = SequenceViewer(guimanager)

@@ -20,7 +20,8 @@ function sc(varargin)
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
-
+global DEBUG
+DEBUG = 0
 addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\ ...
     viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 

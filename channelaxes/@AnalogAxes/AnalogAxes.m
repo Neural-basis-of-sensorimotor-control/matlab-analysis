@@ -76,7 +76,7 @@ classdef AnalogAxes < ChannelAxes
             grid(obj.ax,'on');
             if ~isempty(sweep)
                 if ~isempty(obj.v_raw)
-                    obj.plotv(obj.v_raw,sweep,[1 1 1],[],[]);
+                    obj.plotv(obj.v_raw,sweep,[1 1 1],[]);
                 end
                 obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn);
             else

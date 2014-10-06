@@ -4,12 +4,14 @@ classdef ScSignalFilter < handle
         smoothing_width = 5
         artifact_width = 1e3
         artifactchannels
+        remove_waveforms
     end
     
     methods
         function obj = ScSignalFilter(parent)
             obj.parent = parent;
             obj.artifactchannels = ScList();
+            obj.remove_waveforms = ScList();
         end
         
         %add all stim channels from parent file to artifact filter
@@ -40,6 +42,28 @@ classdef ScSignalFilter < handle
                     end
                 end
             end
+            for k=1:obj.remove_waveforms.n
+                wf = obj.remove_waveforms.get(k);
+                stimpos = round(wf.gettimes(0,inf)/obj.parent.dt);
+                below_one = find(stimpos<1);
+                above_max = find(stimpos>obj.parent.N);
+                stimpos(below_one) = ones(size(below_one));
+                stimpos(above_max) = obj.parent.N*ones(size(above_max));
+                v = sc_remove_artifacts(v,wf.width,stimpos);
+            end
+        end
+        
+        function add_waveform(obj,waveform)
+            obj.remove_waveforms_list.add(waveform);
+        end
+    end
+    
+    methods (Static)
+        function obj = loadobj(a)
+            if isempty(a.remove_waveforms)
+                a.remove_waveforms = ScList();
+            end
+            obj = a;
         end
     end
 end

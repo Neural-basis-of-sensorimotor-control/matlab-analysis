@@ -19,12 +19,18 @@ classdef ScList < handle
             end
         end
         
-        function remove(obj, item)
-            index = obj.indexof(item);
-            if index==-1
-                index = item;
-            end
-            obj.list(index) = [];
+        function remove(obj, item, value)
+            if nargin==2
+                index = obj.indexof(item);
+                if index==-1
+                    index = item;
+                end
+                obj.list(index) = [];
+            else
+                prop = item;
+                index = obj.indexof(prop,value);
+                obj.remove(index);
+            end 
         end
         
         %if nargin == 2
@@ -69,12 +75,22 @@ classdef ScList < handle
             end
         end
         
-        function index = indexof(obj,item)
+        function index = indexof(obj,item,value)
             index = -1;   
-            for k=1:obj.n
-                if obj.get(k)==item
-                    index = k;
-                    return
+            if nargin==2
+                for k=1:obj.n
+                    if obj.get(k)==item
+                        index = k;
+                        return
+                    end
+                end
+            else
+                prop = item;
+                for k=1:obj.n
+                    if compare_fcn(value,obj.get(k).(prop))
+                        index = k;
+                        return
+                    end
                 end
             end
         end

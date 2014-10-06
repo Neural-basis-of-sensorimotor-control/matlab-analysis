@@ -12,7 +12,10 @@ classdef ScWaveform < ScTrigger & ScList
                 
         min_isi = 1e-3          %min inter-spike interval (s)
     end
-
+    
+    properties (Dependent)
+        width
+    end
     
     methods
         function obj = ScWaveform(parent, tag, spike2filename)
@@ -94,6 +97,11 @@ classdef ScWaveform < ScTrigger & ScList
         %Run through v and redo all thresholding
         function recalculate_spiketimes(obj,v,dt)
             obj.detected_spiketimes = obj.match(v)*dt;
+        end
+        
+        %Get max width (in pixels) from ScThreshold object list
+        function width = get.width(obj)
+            width = max(cell2mat(obj.values('width')));
         end
     end
 end

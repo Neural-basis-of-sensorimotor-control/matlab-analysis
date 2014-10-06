@@ -14,6 +14,7 @@ classdef ChannelPanel < SequenceDependentPanel
             obj.gui_components.add(FilterOptions(obj));
             obj.gui_components.add(PlotOptions(obj));
             obj.gui_components.add(WaveformSelection(obj));
+            obj.gui_components.add(SpikeRemovalSelection(obj));
         end
         
         function update_panel(obj)

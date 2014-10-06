@@ -73,6 +73,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         return;
     else
         guimgr.viewer.has_unsaved_changes = ~experiment.sc_save();
+        guimgr.show;
     end
 elseif numel(args{1}) && args{1}(1) == '-'
     msgbox(['Illegal command : ' args{1}]);

@@ -33,7 +33,10 @@ classdef SequenceOptions < PanelComponent
                 obj.gui.experiment.update_from_protocol(protocolfile);
                 obj.gui.has_unsaved_changes = true;
                 set(obj.gui.current_view,'Visible','on');
-                obj.gui.file = obj.gui.file;
+       %         obj.gui.file = obj.gui.file;
+                if obj.gui.experiment.n
+                    obj.gui.file = obj.gui.experiment.get(1);
+                end
             end
             
             function affect_sequence_callback(src,~)
@@ -111,6 +114,7 @@ classdef SequenceOptions < PanelComponent
                         sequence = ScSequence(obj.gui.file,tag,tmin,tmax);
                         sequence.comment = '';
                         obj.gui.file.add(sequence);
+                        obj.gui.sequence = sequence;
                     elseif src==obj.ui_edit_sequence
                         obj.gui.sequence.tmin = tmin;
                         obj.gui.sequence.tmax = tmax;
@@ -120,7 +124,7 @@ classdef SequenceOptions < PanelComponent
                     close(dlg);
 %                     clf(obj.gui.current_view);
 %                     show_file(h);
-                    obj.gui.file = obj.gui.file;
+                   % obj.gui.file = obj.gui.file;
                 end
                 
                 function remove_sequence_callback(~,~)

@@ -29,7 +29,11 @@ else
 %         [offsetpos,~] = find(pos(rows,:));
 %         v(ind_all_width) = v(ind_all_width) - v_offset(offsetpos);
 %     end
-    [~,medianpos] = find(pos);
-    v(filterinput(pos)) = v(filterinput(pos)) - v_median(medianpos)';
+    if filterwidth == 1
+         v(filterinput(pos)) = v(filterinput(pos)) - ones(size(filterinput(pos)))*v_median;
+    else
+        [~,medianpos] = find(pos);
+        v(filterinput(pos)) = v(filterinput(pos)) - v_median(medianpos)';
+    end
 end
 end

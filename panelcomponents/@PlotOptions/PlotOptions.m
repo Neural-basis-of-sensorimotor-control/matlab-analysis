@@ -20,10 +20,12 @@ classdef PlotOptions < PanelComponent
             
             function plot_raw_callback(~,~)
                 obj.gui.main_channel.plot_raw = get(obj.ui_plot_raw,'value');
+                obj.show_panels(false);
             end
             
             function plot_waveforms_callback(~,~)
                 obj.gui.main_channel.plot_waveforms = get(obj.ui_plot_waveforms,'value');
+                obj.show_panels(false);
             end
         end
     end

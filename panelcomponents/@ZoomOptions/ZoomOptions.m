@@ -46,6 +46,7 @@ classdef ZoomOptions < PanelComponent
             obj.gui.xlimits = [obj.gui.pretrigger obj.gui.posttrigger];
             obj.gui.zoom_on = false;
             obj.gui.pan_on = false;
+            obj.gui.plot_channels();
         end
         
         function y_zoom_out_callback(obj)

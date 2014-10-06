@@ -52,10 +52,12 @@ for k=1:obj.panels.n
 end
 obj.dbg_in(mfilename,'SequenceViewer','show','9');obj.dbg_out();
 obj.panels.get(2).enabled = enable_main_panel;
-first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
-for k=first_disabled:obj.panels.n
-    obj.dbg_in(mfilename,'SequenceViewer','show','10',k);obj.dbg_out();
-    obj.panels.get(k).update_panel();
+if enable_main_panel
+    first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
+    for k=first_disabled:obj.panels.n
+        obj.dbg_in(mfilename,'SequenceViewer','show','10',k);obj.dbg_out();
+        obj.panels.get(k).update_panel();
+    end
 end
 set(obj.current_view,'ResizeFcn',@(~,~) obj.resize_figure(),...
     'CloseRequestFcn',@(src,evt) sc_close_request(src,evt,obj));

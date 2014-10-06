@@ -60,6 +60,7 @@ classdef SweepOptions < PanelComponent
             sweep = obj.gui.sweep;
             if size(sweep,1)>1, sweep = sweep'; end
             set(obj.ui_sweep,'string',num2str(sweep));
+            obj.gui.sweep_increment = numel(sweep);
         end
         function increment_listener(obj)
             set(obj.ui_increment,'string',obj.gui.sweep_increment);

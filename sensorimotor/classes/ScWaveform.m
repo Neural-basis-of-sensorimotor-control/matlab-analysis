@@ -45,7 +45,7 @@ classdef ScWaveform < ScTrigger & ScList
             if size(h.v,2)>size(h.v,1), 
                 h.v=h.v';   
             end
-            spikepos = nan(ceil(numel(v)/100),1);
+            spikepos = nan(ceil(numel(h.v)/100),1);
             pos = 0;
             wfarea = false(size(h.v));
             for k=1:obj.n

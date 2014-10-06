@@ -14,24 +14,13 @@ classdef AnalogAxes < ChannelAxes
     end
     
     methods
-        function obj = AnalogAxes(gui,signal)%,varargin)            
+        function obj = AnalogAxes(gui,signal)%,varargin)
             obj@ChannelAxes(gui);
-          %  obj.height = 450;
             addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
             sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
-            %end
             if nargin>1
                 obj.signal = signal;
             end
-%            setheight(obj.ax,250);
-%             plot_raw = 0;
-%             for k=1:2:numel(varargin)
-%                 switch varargin{k}
-%                     case 'plot_raw'
-%                         plot_raw = varargin{k+1};
-%                 end
-%             end
-            %obj.update_v(plot_raw);
             
             function xlim_listener(~,~)
                 if obj.ax == obj.gui.main_axes
@@ -69,9 +58,9 @@ classdef AnalogAxes < ChannelAxes
             if obj.plot_waveforms
                 obj.b_highlighted = false(size(obj.v));
                 if ~isempty(obj.gui.waveform)
-                    for k=1:obj.gui.waveform.n
-                        [~,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
-                    end
+                    %   for k=1:obj.gui.waveform.n
+                    [~,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    %    end
                 end
             end
             obj.dbg_out(mfilename,'load_data');
@@ -85,9 +74,9 @@ classdef AnalogAxes < ChannelAxes
             set(obj.ax,'XColor',[1 1 1],'YColor',[1 1 1],'Color',[0 0 0],...
                 'Box','off');
             grid(obj.ax,'on');
-            if ~isempty(sweep)   
+            if ~isempty(sweep)
                 if ~isempty(obj.v_raw)
-                    obj.plotv(obj.v_raw,sweep,[1 1 1],[]);
+                    obj.plotv(obj.v_raw,sweep,[1 1 1],[],[]);
                 end
                 obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn);
             else
@@ -100,6 +89,13 @@ classdef AnalogAxes < ChannelAxes
             [v_signal,time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
                 obj.gui.pretrigger, obj.gui.posttrigger, ...
                 obj.signal.dt);
+            if ~isempty(obj.b_highlighted)
+                b_signal = sc_get_sweeps(obj.b_highlighted, 0, obj.gui.triggertimes(sweep), ...
+                    obj.gui.pretrigger, obj.gui.posttrigger, ...
+                    obj.signal.dt);
+            else
+                b_signal = [];
+            end
             if ~isempty(obj.v_equals_zero_for_t)
                 [~,ind] = min(abs(time-obj.v_equals_zero_for_t));
                 for i=1:size(v_signal,2)
@@ -107,10 +103,27 @@ classdef AnalogAxes < ChannelAxes
                 end
             end
             
-            for i=1:size(v_signal,2)
-                plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor,'LineWidth',2);
-                if ~isempty(btn_down_fcn)
-                    set(plothandle,'ButtonDownFcn',btn_down_fcn);
+            if isempty(b_signal)
+                for i=1:size(v_signal,2)
+                    plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor,'LineWidth',2);
+                    if ~isempty(btn_down_fcn)
+                        set(plothandle,'ButtonDownFcn',btn_down_fcn);
+                    end
+                end
+            else
+                for i=1:size(v_signal,2)
+                    pos = b_signal(:,i);
+                    plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',[0 1 0],'LineWidth',2);
+                    if ~isempty(btn_down_fcn)
+                        set(plothandle,'ButtonDownFcn',btn_down_fcn);
+                    end
+                end
+                for i=1:size(v_signal,2)
+                    pos = ~b_signal(:,i);
+                    plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',plotcolor,'LineWidth',2);
+                    if ~isempty(btn_down_fcn)
+                        set(plothandle,'ButtonDownFcn',btn_down_fcn);
+                    end
                 end
             end
             if obj.gui.plotmode == PlotModes.plot_avg_all || ...
@@ -127,6 +140,6 @@ classdef AnalogAxes < ChannelAxes
                 plot(obj.ax,time,avg+stddev,'Color',[0 0 1],'LineWidth',2);
                 plot(obj.ax,time,avg-stddev,'Color',[0 0 1],'LineWidth',2);
             end
-        end        
+        end
     end
 end

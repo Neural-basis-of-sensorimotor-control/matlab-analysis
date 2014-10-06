@@ -7,13 +7,10 @@
 %       - lägg till spike removal
 %       - implement SavePlotOptions
 %       - implement HistogramPanel
-<<<<<<< HEAD
 %       - reset plot btn fnugerar ej
 
-=======
 %       - lägg till intelligent lock_screen för adding threhsolds
 %       - för lite plats!!!
->>>>>>> d266bca493507fc789a6aa02115cfcda73957c3c
 clc
 close all
 clear classes

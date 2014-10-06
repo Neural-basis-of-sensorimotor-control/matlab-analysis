@@ -61,6 +61,8 @@ classdef ThresholdOptions < PanelComponent
         function remove_thresholds_callback(obj)
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             obj.set_visible(0);
+            obj.gui.lock_screen(true,'Click on the waveform you want to delete');
+            set(obj.ui_cancel_thresholds,'Enable','on');
             obj.remove_threshold_plotfcn();
         end
         
@@ -70,6 +72,9 @@ classdef ThresholdOptions < PanelComponent
             %Reset waveform parameters
             obj.t0 = []; obj.v0 = []; obj.tabs = []; obj.vabs = []; obj.lower = []; obj.upper = [];
             obj.set_visible(0);
+            obj.gui.lock_screen(true,'Mark waveform by clicking in figure');
+            set(obj.ui_cancel_thresholds,'Enable','on');
+            set(obj.ui_added_done,'Enable','on');
             obj.define_threshold_plothandle();
             obj.dbg_out();
         end
@@ -102,6 +107,7 @@ classdef ThresholdOptions < PanelComponent
                 set(obj.ui_cancel_thresholds,'Visible','off');
                 set(obj.ui_undo_last,'Visible','off');
                 set(obj.ui_added_done,'Visible','off');
+                obj.gui.lock_screen(false);
             else
                 visible = 'off';
                 set(obj.ui_cancel_thresholds,'Visible','on');
@@ -112,6 +118,7 @@ classdef ThresholdOptions < PanelComponent
             else
                 set(obj.ui_remove_thresholds,'Visible','off');
             end
+            drawnow('expose')
         end
         
         function waveform_listener(obj)
@@ -138,7 +145,13 @@ classdef ThresholdOptions < PanelComponent
                 obj.vabs-obj.v0,obj.lower,obj.upper);
             obj.gui.waveform.add(threshold);
             min_isi = round(obj.gui.waveform.min_isi/obj.gui.main_signal.dt);
-            spiketimes = threshold.match_handle(obj.gui.main_channel,min_isi)*obj.gui.main_signal.dt;
+            if obj.gui.main_channel.plot_waveforms
+                [spiketimes, b_wf] = threshold.match_handle(obj.gui.main_channel,min_isi);
+                spiketimes = spiketimes*obj.gui.main_signal.dt;
+                obj.gui.main_channel.b_highlighted = obj.gui.main_channel.b_highlighted | b_wf;
+            else
+                spiketimes = threshold.match_handle(obj.gui.main_channel,min_isi)*obj.gui.main_signal.dt;
+            end
             obj.gui.waveform.detected_spiketimes = sort([obj.gui.waveform.detected_spiketimes; spiketimes]);
             obj.gui.has_unsaved_changes = true;
             obj.gui.plot_channels();
@@ -214,9 +227,9 @@ classdef ThresholdOptions < PanelComponent
             [v_remove,time_remove] = sc_get_sweeps(obj.gui.main_channel.v,0, ...
                 obj.gui.triggertimes(swps),obj.gui.pretrigger,obj.gui.posttrigger,...
                 obj.gui.main_signal.dt);
-            time_remove = time_remove+obj.gui.triggertimes(obj.gui.sweep(1));
-            if ~isempty(obj.gui.set_v_to_zero_for_t )
-                [~,ind] = min(abs(time_remove-obj.gui.set_v_to_zero_for_t ));
+           % time_remove = time_remove-obj.gui.triggertimes(obj.gui.sweep(1));
+            if ~isempty(obj.gui.main_channel.v_equals_zero_for_t )
+                [~,ind] = min(abs(time_remove-obj.gui.main_channel.v_equals_zero_for_t ));
                 for i=1:size(v_remove,2)
                     v_remove(:,i) = v_remove(:,i) - v_remove(ind,i);
                 end
@@ -244,8 +257,8 @@ classdef ThresholdOptions < PanelComponent
                         v_remove,colors));
                 end
             end
-            set(panel,'visible','on');
-            set_visible(0);
+            obj.show_panels(true);
+            obj.set_visible(0);
         end
         
         function btn_down_fcn_removal(obj,index,wfindex,ind,time_remove,v_remove,colors)

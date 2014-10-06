@@ -1,10 +1,10 @@
-classdef PlotPanel < Panel
+classdef PlotPanel < SequenceDependentPanel
     properties
     end
     methods
         function obj = PlotPanel(gui)
             panel = uipanel('Parent',gui.current_view,'Title','Plot options');
-            obj@Panel(gui,panel);
+            obj@SequenceDependentPanel(gui,panel);
             obj.layout();
         end
         
@@ -18,11 +18,13 @@ classdef PlotPanel < Panel
         
         function update_panel(obj)
             obj.dbg_in(mfilename,'update_panel','enabled = ',obj.enabled);
-            update_panel@Panel(obj);
+            update_panel@SequenceDependentPanel(obj);
             if obj.enabled
                 obj.enabled = false;
             end
-            obj.gui.plot_channels();
+            if ~isempty(obj.gui.sequence)
+                obj.gui.plot_channels();
+            end
             obj.dbg_out(mfilename,'update_panel','enabled = ',obj.enabled);
         end
     end

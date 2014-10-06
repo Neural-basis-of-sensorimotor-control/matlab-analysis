@@ -31,7 +31,7 @@ classdef ChannelOptions < PanelComponent
         
         function initialize(obj)
             set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
-            str = cell(obj.gui.sequence.signals.n,1);
+            str = cell(obj.gui.file.signals.n,1);
             for k=1:numel(str), str(k) = {num2str(k)}; end
             obj.gui.nbr_of_analog_channels = obj.gui.analog_ch.n;
             set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
@@ -54,9 +54,9 @@ classdef ChannelOptions < PanelComponent
         function update_nbr_of_analog_axes(obj)
             for k=1:obj.gui.nbr_of_analog_channels
                 if k>obj.gui.analog_ch.n
-                    obj.gui.analog_subch.add(AnalogAxes(obj.gui,obj.gui.sequence.signals.get(k)));
-                elseif  ~obj.gui.sequence.signals.contains(obj.gui.analog_ch.get(k).signal)
-                    obj.gui.analog_ch.get(k).signal = obj.gui.sequence.signals.get(k);
+                    obj.gui.analog_subch.add(AnalogAxes(obj.gui,obj.gui.file.signals.get(k)));
+                elseif  ~obj.gui.file.signals.contains(obj.gui.analog_ch.get(k).signal)
+                    obj.gui.analog_ch.get(k).signal = obj.gui.file.signals.get(k);
                 end
             end
             for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_ch.n

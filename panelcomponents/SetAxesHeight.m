@@ -15,13 +15,13 @@ classdef SetAxesHeight < PanelComponent
     
     methods (Access = 'protected')
         function setheights_callback(obj)
-            obj.fighandle = figure('WindowStyle','modal');
-            newpanel = uipanel('parent',obj.fighandle,'CloseRequestFcn',@(~,~) obj.close_req_fcn);
+            obj.fighandle = figure('WindowStyle','modal','CloseRequestFcn',@(~,~) obj.close_req_fcn);
+            newpanel = uipanel('parent',obj.fighandle);
             mgr = ScLayoutManager(newpanel,'panelwidth',205);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Plot type'),100);
             mgr.add(sc_ctrl('text','height'),100);
-            for k=1:obj.plots.n
+            for k=1:obj.gui.plots.n
                 thischannel = obj.gui.plots.get(k); 
                 mgr.newline(20);
                 mgr.add(sc_ctrl('text',class(thischannel)),100);

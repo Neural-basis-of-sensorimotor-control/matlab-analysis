@@ -1,8 +1,8 @@
-classdef HistogramPanel < Panel
+classdef HistogramPanel < SequenceDependentPanel
     methods
         function obj = HistogramPanel(gui)
             panel = uipanel('Parent',gui.current_view,'Title','Histogram');
-            obj@Panel(gui,panel);
+            obj@SequenceDependentPanel(gui,panel);
             obj.layout();
             
             sc_addlistener(gui,'histogram',@(~,~) obj.histogram_listener,panel);
@@ -13,7 +13,7 @@ classdef HistogramPanel < Panel
         end
         
         function update_panel(obj)
-            update_panel@Panel(obj);
+            update_panel@SequenceDependentPanel(obj);
             obj.histogram_listener();
         end
     

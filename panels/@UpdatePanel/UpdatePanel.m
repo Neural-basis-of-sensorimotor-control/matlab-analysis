@@ -14,9 +14,4 @@ classdef UpdatePanel < Panel
         end
     end
     
-%     methods (Static)
-%         function val = upper_margin()
-%             val = 2;
-%         end
-%     end
 end

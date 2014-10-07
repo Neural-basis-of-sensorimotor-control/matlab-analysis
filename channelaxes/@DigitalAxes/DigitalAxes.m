@@ -31,9 +31,11 @@ classdef DigitalAxes < ChannelAxes
         function clear_data(~)
         end
         
-        function plotch(obj)%,varargin)
+        function plotch(obj,btn_down_fcn)
+            if nargin==1
+                btn_down_fcn = [];
+            end
             sweep = obj.setup_axes();%,varargin{:});
-            
             if ~isempty(sweep)
                 digch = obj.sequence.gettriggers(obj.gui.tmin,...
                     obj.gui.tmax);
@@ -51,7 +53,7 @@ classdef DigitalAxes < ChannelAxes
                             plot(obj.ax,trange,[k k],'Color',plotcolor);
                             for j=1:numel(times)
                                 plot(obj.ax,times(j)*ones(2,1),k+[-.5 .5],'LineWidth',2,...
-                                    'color',plotcolor);
+                                    'color',plotcolor,'ButtonDownFcn',btn_down_fcn);
                             end
                         end
                 end

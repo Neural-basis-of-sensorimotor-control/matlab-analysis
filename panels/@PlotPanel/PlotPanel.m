@@ -13,6 +13,7 @@ classdef PlotPanel < SequenceDependentPanel
             obj.gui_components.add(SweepOptions(obj));
             obj.gui_components.add(ZoomOptions(obj));
             obj.gui_components.add(ThresholdOptions(obj));
+            obj.gui_components.add(ManualSpikeTimes(obj));
             obj.gui_components.add(SavePlotOptions(obj));
         end
         

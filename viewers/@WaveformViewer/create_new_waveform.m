@@ -15,6 +15,7 @@ ui_waveform_tag = dlgmgr.add(sc_ctrl('edit',[],[],'horizontalalignment','left'),
 dlgmgr.newline;
 dlgmgr.add(uicontrol('style','pushbutton','string','Add','callback',...
     @add_waveform_callback),100);
+uicontrol(ui_waveform_tag);
 
     function add_waveform_callback(~,~)
         tag = deblank(get(ui_waveform_tag,'string'));

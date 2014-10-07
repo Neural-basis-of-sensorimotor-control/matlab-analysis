@@ -16,22 +16,8 @@ classdef AnalogAxes < ChannelAxes
     methods
         function obj = AnalogAxes(gui,signal)%,varargin)
             obj@ChannelAxes(gui);
-            addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
-            sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
             if nargin>1
                 obj.signal = signal;
-            end
-            
-            function xlim_listener(~,~)
-                if obj.ax == obj.gui.main_axes
-                    obj.gui.xlimits = xlim(obj.ax);
-                end
-            end
-            
-            function xlimits_listener(~,~)
-                if obj.gui.xlimits(1) < obj.gui.xlimits(2)
-                    xlim(obj.ax,obj.gui.xlimits);
-                end
             end
         end
         
@@ -59,7 +45,8 @@ classdef AnalogAxes < ChannelAxes
                 obj.b_highlighted = false(size(obj.v));
                 if ~isempty(obj.gui.waveform)
                     %   for k=1:obj.gui.waveform.n
-                    [~,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    [spikepos,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    obj.gui.waveform.detected_spiketimes = spikepos*obj.gui.waveform.parent.dt;
                     %    end
                 end
             end
@@ -76,16 +63,16 @@ classdef AnalogAxes < ChannelAxes
             grid(obj.ax,'on');
             if ~isempty(sweep)
                 if ~isempty(obj.v_raw)
-                    obj.plotv(obj.v_raw,sweep,[1 1 1],[]);
+                    obj.plotv(obj.v_raw,sweep,[1 1 1],[],false);
                 end
-                obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn);
+                obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn,1);
             else
                 cla(obj.ax);
             end
             xlim(obj.ax,obj.gui.xlimits);
         end
         
-        function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn)
+        function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
             [v_signal,time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
                 obj.gui.pretrigger, obj.gui.posttrigger, ...
                 obj.signal.dt);
@@ -103,7 +90,7 @@ classdef AnalogAxes < ChannelAxes
                 end
             end
             
-            if isempty(b_signal)
+            if isempty(b_signal) || ~plothighlighted
                 for i=1:size(v_signal,2)
                     plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor,'LineWidth',2);
                     if ~isempty(btn_down_fcn)

@@ -53,15 +53,29 @@ classdef GuiAxes < handle
                     set(obj.ax,'ActivePositionProperty','position');
                     setheight(obj.ax,obj.height);
                     obj.postset_listener = addlistener(obj.ax,'BeingDeleted','PostSet',@being_deleted_listener);
+                    addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
+                    sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
                 end
                 obj.dbg_out(mfilename,'ax_listener_post')
-
+                
                 function being_deleted_listener(~,~)
                     obj.dbg_in(mfilename,'being_deleted_listener')
                     if get(obj.ax,'BeingDeleted')
                         obj.height = getheight(obj.ax);
                     end
                     obj.dbg_out(mfilename,'being_deleted_listener')
+                end
+                
+                function xlim_listener(~,~)
+                    if obj.ax == obj.gui.main_axes
+                        obj.gui.xlimits = xlim(obj.ax);
+                    end
+                end
+                
+                function xlimits_listener(~,~)
+                    if obj.gui.xlimits(1) < obj.gui.xlimits(2)
+                        xlim(obj.ax,obj.gui.xlimits);
+                    end
                 end
             end
         end

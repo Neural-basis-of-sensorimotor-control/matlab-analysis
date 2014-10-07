@@ -30,7 +30,10 @@ classdef WaveformViewer < SequenceViewer
                 if isempty(obj.sequence) || ~obj.triggerparents.n
                     obj.triggerparent = [];
                 else
-                    obj.triggerparent = obj.triggerparents.get(1);
+                    triggerparent_str = obj.triggerparents.values('tag');
+                    val = find(cellfun(@(x) strcmp(x,'DigMark'),triggerparent_str),1);
+                    if isempty(val),    val = 1;    end
+                    obj.triggerparent = obj.triggerparents.get(val);
                     addlistener(obj,'triggerparent','PostSet',@triggerparent_listener);
                 end
                 obj.dbg_out(mfilename,'sequence_listener');

@@ -4,8 +4,8 @@ addlistener(obj,'experiment','PostSet',@experiment_listener);
 addlistener(obj,'file','PostSet',@file_listener);
 addlistener(obj,'sequence','PostSet',@sequence_listener);
 addlistener(obj,'main_channel','PostSet',@main_channel_listener);
-addlistener(obj,'show_digital_channels','PostSet',@show_digital_channels_listener);
-addlistener(obj,'show_histogram','PostSet',@show_histogram_listener);
+%addlistener(obj,'show_digital_channels','PostSet',@show_digital_channels_listener);
+%addlistener(obj,'show_histogram','PostSet',@show_histogram_listener);
 addlistener(obj,'digital_channels','PreSet',@digital_channels_listener_pre);
 addlistener(obj,'digital_channels','PostSet',@digital_channels_listener_post);
 addlistener(obj,'histogram','PreSet',@histogram_listener_pre);
@@ -131,13 +131,13 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
         obj.dbg_out(mfilename,'pan_on_listener');
     end
 
-    function show_digital_channels_listener(~,~)
-        if obj.show_digital_channels && isempty(obj.digital_channels)
-            obj.digital_channels = DigitalAxes(obj);
-        elseif ~obj.show_digital_channels && ~isempty(obj.digital_channels)
-            obj.digital_channels = [];
-        end
-    end
+%     function show_digital_channels_listener(~,~)
+%         if obj.show_digital_channels && isempty(obj.digital_channels)
+%             obj.digital_channels = DigitalAxes(obj);
+%         elseif ~obj.show_digital_channels && ~isempty(obj.digital_channels)
+%             obj.digital_channels = [];
+%         end
+%     end
 
     function digital_channels_listener_pre(~,~)
         if ~isempty(obj.digital_channels)
@@ -154,13 +154,13 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
         end
     end
 
-    function show_histogram_listener(~,~)
-        if obj.show_histogram && isempty(obj.histogram)
-            obj.histogram = HistogramChannel(obj);
-        elseif ~obj.show_histogram && ~isempty(obj.histogram)
-            obj.histogram = [];
-        end
-    end
+%     function show_histogram_listener(~,~)
+%         if obj.show_histogram && isempty(obj.histogram)
+%             obj.histogram = HistogramChannel(obj);
+%         elseif ~obj.show_histogram && ~isempty(obj.histogram)
+%             obj.histogram = [];
+%         end
+%     end
 
     function histogram_listener_pre(~,~)
         if ~isempty(obj.histogram)

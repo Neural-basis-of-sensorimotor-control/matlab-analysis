@@ -31,22 +31,17 @@ if ~isempty(pieces)
             tmax = x(pieces(k+1));
         end
         pos = x>tmin&x<tmax;
-%       if nargin>2
-            if nargout
-                plothandles(k) = plot(h,x(pos),y(pos),args{:});
-            else
-                plot(h,x(pos),y(pos),args{:});
-            end
-%         else
-%             if nargout
-%                 plothandles(k) = plot(h,x(pos),y(pos));
-%             else
-%                 plot(h,x(pos),y(pos));
-%             end
-%         end
+        if nargout && nnz(pos)
+            plothandles(k) = plot(h,x(pos),y(pos),args{:});
+        else
+            plot(h,x(pos),y(pos),args{:});
+        end
     end
 elseif nargout
     plothandles = [];
+end
+if nargout
+    plothandles = plothandles(isfinite(plothandles));
 end
 if ~leave_hold_on
     hold(h,'off');

@@ -75,6 +75,7 @@ classdef ThresholdOptions < PanelComponent
             obj.gui.lock_screen(true,'Mark waveform by clicking in figure');
             set(obj.ui_cancel_thresholds,'Enable','on');
             set(obj.ui_added_done,'Enable','on');
+            set(obj.ui_undo_last,'Enable','on');
             obj.define_threshold_plothandle();
             obj.dbg_out();
         end
@@ -138,6 +139,7 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function added_done_callback(obj)
+            obj.gui.lock_screen(true,'Adding waveform, wait...');
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             set(obj.gui.current_view,'WindowButtonMotionFcn',[]);
             set(obj.gui.current_view,'WindowButtonUpFcn',[]);
@@ -270,6 +272,7 @@ classdef ThresholdOptions < PanelComponent
             if isempty(option), option = 'No';  end
             switch option
                 case 'Yes'
+                    obj.gui.lock_screen(true,'Recalculating waveforms, wait');
                     obj.gui.waveform.list(index) = [];
                     obj.gui.waveform.recalculate_spiketimes(obj.gui.main_channel.v,obj.gui.main_signal.dt);
                     obj.gui.has_unsaved_changes = true;

@@ -11,7 +11,7 @@ classdef WaveformSelection < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Waveform'),100);
-            obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.show_panels(false),'visible','off'),100);
+            obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_callback(),'visible','off'),100);
             mgr.newline(5)
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','New waveform',@add_waveform_callback),100);
@@ -25,16 +25,20 @@ classdef WaveformSelection < PanelComponent
             end
             
             function remove_waveform_callback(~,~)
-                answer = questdlg(sprintf('Are you sure you want to remove all thresholds belonging to waveform %s?',...
-                    obj.gui.waveform.tag));
-                if strcmp(answer,'Yes')
-                    prev_index = obj.gui.panels.indexof(obj.panel)-1;
-                    prev_panel = obj.gui.panels.get(prev_index);
-                    obj.gui.disable_panels(prev_panel);
-                    obj.gui.main_signal.waveforms.remove(obj.gui.waveform);
-                    obj.gui.main_channel.signal = obj.gui.main_signal;
-                    obj.gui.has_unsaved_changes = true;
-                    obj.show_panels(false);
+                if isempty(obj.gui.waveform)
+                    msgbox('No waveform selected. Cannot remove');
+                else
+                    answer = questdlg(sprintf('Are you sure you want to remove all thresholds belonging to waveform %s?',...
+                        obj.gui.waveform.tag));
+                    if strcmp(answer,'Yes')
+                        prev_index = obj.gui.panels.indexof(obj.panel)-1;
+                        prev_panel = obj.gui.panels.get(prev_index);
+                        obj.gui.disable_panels(prev_panel);
+                        obj.gui.main_signal.waveforms.remove(obj.gui.waveform);
+                        obj.gui.main_channel.signal = obj.gui.main_signal;
+                        obj.gui.has_unsaved_changes = true;
+                        obj.show_panels(false);
+                    end
                 end
             end
         end
@@ -61,5 +65,14 @@ classdef WaveformSelection < PanelComponent
             obj.initialize();
         end
         
+    end
+    
+    methods (Access = 'protected')
+        function waveform_callback(obj)
+            str = get(obj.ui_waveforms,'string');
+            val = get(obj.ui_waveforms,'value');
+            obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
+            obj.show_panels(false);
+        end
     end
 end

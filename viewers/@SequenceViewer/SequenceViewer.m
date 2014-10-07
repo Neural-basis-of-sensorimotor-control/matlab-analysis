@@ -17,8 +17,8 @@ classdef SequenceViewer < handle
         
         help_text
         
-        show_digital_channels = true
-        show_histogram = true
+%         show_digital_channels = true
+%         show_histogram = false%true
         
         has_unsaved_changes
         
@@ -47,6 +47,8 @@ classdef SequenceViewer < handle
         analog_ch
         main_signal
         main_axes
+        show_digital_channels
+        show_histogram
     end
     
     properties (Constant)
@@ -109,10 +111,10 @@ classdef SequenceViewer < handle
             obj.current_view = gcf;
             obj.analog_subch = ScCellList();
             obj.main_channel = AnalogAxes(obj);
+            setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
-            obj.histogram = HistogramChannel(obj);
-            
-            
+%            obj.histogram = HistogramChannel(obj);
+
         end
         
         function analog_ch = get.analog_ch(obj)
@@ -151,7 +153,12 @@ classdef SequenceViewer < handle
         function main_axes = get.main_axes(obj)
             main_axes = obj.main_channel.ax;
         end
-
+        function val = get.show_digital_channels(obj)
+            val = ~isempty(obj.digital_channels);
+        end
+        function val = get.show_histogram(obj)
+            val = ~isempty(obj.histogram);
+        end
     end
     
 end

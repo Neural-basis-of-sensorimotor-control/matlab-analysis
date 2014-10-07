@@ -40,9 +40,9 @@ classdef ChannelOptions < PanelComponent
         end
         
         function updated = update(obj)
-            obj.gui.show_digital_channels = get(obj.ui_show_digital_channels,'value');
+            obj.show_digital_channels_callback(true);
             obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
-            obj.gui.show_histogram = get(obj.ui_show_histogram,'value');
+            obj.show_histogram_callback(true);
             obj.update_nbr_of_analog_axes();
             updated = true;
         end
@@ -64,9 +64,18 @@ classdef ChannelOptions < PanelComponent
             end
         end
         
-        function show_digital_channels_callback(obj)
-            obj.gui.show_digital_channels = get(obj.ui_show_digital_channels,'value');
-            obj.show_panels(false);
+        function show_digital_channels_callback(obj,hide_panels)
+            val = get(obj.ui_show_digital_channels,'value');
+            if val
+                if isempty(obj.gui.digital_channels)
+                    obj.gui.digital_channels = DigitalAxes(obj.gui);
+                end
+            else
+                obj.gui.digital_channels = [];
+            end
+            if nargin==1 || hide_panels
+                obj.show_panels(false);
+            end
         end
         
         function nbr_of_channels_callback(obj)
@@ -75,9 +84,18 @@ classdef ChannelOptions < PanelComponent
             obj.show_panels(false);
         end
         
-        function show_histogram_callback(obj)
-            obj.gui.show_histogram = get(obj.ui_show_histogram,'value');
-            obj.show_panels(false);
+        function show_histogram_callback(obj,hide_panels)
+            val = get(obj.ui_show_histogram,'value');
+            if val
+                if isempty(obj.gui.histogram)
+                    obj.gui.histogram = HistogramChannel(obj.gui);
+                end
+            else
+                obj.gui.histogram = [];
+            end
+            if nargin==1 || hide_panels
+                obj.show_panels(false);
+            end
         end
     end
 end

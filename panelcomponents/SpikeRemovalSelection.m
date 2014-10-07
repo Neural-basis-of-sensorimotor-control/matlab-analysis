@@ -37,9 +37,10 @@ classdef SpikeRemovalSelection < PanelComponent
                 if list.contains(obj.gui.waveform);
                     msgbox('Waveform already in list');
                 else
+                    obj.show_panels(false);
                     list.add(obj.gui.waveform);
+                    obj.initialize();
                 end
-                obj.initialize();
             end
         end
         function delete_spike_removal_callback(obj)

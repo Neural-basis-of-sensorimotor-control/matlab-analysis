@@ -93,7 +93,7 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
             if ~isempty(obj.main_axes)
                 z = zoom(obj.main_axes);
                 set(z,'ActionPostCallback',@xaxis_listener);
-                p = pan(obj.current_view);
+                p = pan(obj.plot_window);
                 set(p,'ActionPostCallback',@xaxis_listener);
             end
             
@@ -124,9 +124,9 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
         obj.dbg_in(mfilename,'pan_on_listener');
         if obj.pan_on
             obj.zoom_on = 0;
-            pan(obj.current_view,'on');%obj.main_axes,'on');
+            pan(obj.plot_window,'on');%obj.main_axes,'on');
         else
-            pan(obj.current_view,'off');%pan(obj.main_axes,'off');
+            pan(obj.plot_window,'off');%pan(obj.main_axes,'off');
         end
         obj.dbg_out(mfilename,'pan_on_listener');
     end

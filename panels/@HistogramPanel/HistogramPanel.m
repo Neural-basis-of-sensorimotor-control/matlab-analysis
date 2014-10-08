@@ -1,7 +1,7 @@
 classdef HistogramPanel < SequenceDependentPanel
     methods
         function obj = HistogramPanel(gui)
-            panel = uipanel('Parent',gui.current_view,'Title','Histogram');
+            panel = uipanel('Parent',gui.btn_window,'Title','Histogram');
             obj@SequenceDependentPanel(gui,panel);
             obj.layout();
             

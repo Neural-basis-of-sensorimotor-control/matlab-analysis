@@ -42,8 +42,8 @@ classdef ThresholdOptions < PanelComponent
         
         function initialize(obj)
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
-            set(obj.gui.current_view,'WindowButtonMotionFcn',[]);
-            set(obj.gui.current_view,'WindowButtonUpFcn',[]);
+            set(obj.gui.plot_window,'WindowButtonMotionFcn',[]);
+            set(obj.gui.plot_window,'WindowButtonUpFcn',[]);
             obj.t0 = []; obj.v0 = [];   obj.tabs = []; obj.vabs = []; obj.upper = []; obj.lower = [];
             obj.set_visible(1);
             if ~isempty(obj.gui.waveform) && obj.gui.waveform.n
@@ -78,6 +78,7 @@ classdef ThresholdOptions < PanelComponent
             set(obj.ui_cancel_thresholds,'Enable','on');
             set(obj.ui_added_done,'Enable','on');
             set(obj.ui_undo_last,'Enable','on');
+            set(obj.gui.zoom_controls,'Enable','on');
             obj.define_threshold_plothandle();
         end
         
@@ -144,8 +145,8 @@ classdef ThresholdOptions < PanelComponent
         function added_done_callback(obj)
             obj.gui.lock_screen(true,'Adding waveform, wait...');
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
-            set(obj.gui.current_view,'WindowButtonMotionFcn',[]);
-            set(obj.gui.current_view,'WindowButtonUpFcn',[]);
+            set(obj.gui.plot_window,'WindowButtonMotionFcn',[]);
+            set(obj.gui.plot_window,'WindowButtonUpFcn',[]);
             threshold = ScThreshold(round((obj.tabs-obj.t0)/obj.gui.main_signal.dt),...
                 obj.vabs-obj.v0,obj.lower,obj.upper);
             obj.gui.waveform.add(threshold);
@@ -187,9 +188,9 @@ classdef ThresholdOptions < PanelComponent
             obj.endpoint_str = [];
             obj.dbg_out();
             
-            set(obj.gui.current_view,'WindowButtonMotionFcn',@(~,~) obj.move_endpoint);
+            set(obj.gui.plot_window,'WindowButtonMotionFcn',@(~,~) obj.move_endpoint);
             
-            set(obj.gui.current_view,'WindowButtonUpFcn',@(~,~) obj.drop_endpoint);
+            set(obj.gui.plot_window,'WindowButtonUpFcn',@(~,~) obj.drop_endpoint);
         end
         
         function move_endpoint(obj)

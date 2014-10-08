@@ -7,7 +7,7 @@ classdef GuiAxes < handle
         ax
         gui
         height = 300
-        postset_listener
+     %   postset_listener
     end
     properties (Dependent)
         sequence
@@ -35,36 +35,31 @@ classdef GuiAxes < handle
             %setheight(obj.ax,obj.height);
             
             function ax_listener_pre(~,~)
-                obj.dbg_in(mfilename,'ax_listener_pre')
                 if ~isempty(obj.ax)
-                    if isobject(obj.ax)
+               %     if isobject(obj.ax)
                         obj.height = getheight(obj.ax);
-                    end
-                    if ~isempty(obj.postset_listener) && isobject(obj.postset_listener)
-                        delete(obj.postset_listener);
-                    end
+               %     end
+%                     if ~isempty(obj.postset_listener) && isobject(obj.postset_listener)
+%                         delete(obj.postset_listener);
+%                     end
                 end
-                obj.dbg_out(mfilename,'ax_listener_pre')
             end
             
             function ax_listener_post(~,~)
-                obj.dbg_in(mfilename,'ax_listener_post')
                 if ~isempty(obj.ax)
                     set(obj.ax,'ActivePositionProperty','position');
                     setheight(obj.ax,obj.height);
-                    obj.postset_listener = addlistener(obj.ax,'BeingDeleted','PostSet',@being_deleted_listener);
+                  %  obj.postset_listener = addlistener(obj.ax,'BeingDeleted','PostSet',@being_deleted_listener);
                     addlistener(obj.ax,'XLim','PostSet',@xlim_listener);
+                    addlistener(obj.ax,'Position','PostSet',@(~,~) obj.axes_position_listener);
                     sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
                 end
-                obj.dbg_out(mfilename,'ax_listener_post')
                 
-                function being_deleted_listener(~,~)
-                    obj.dbg_in(mfilename,'being_deleted_listener')
-                    if get(obj.ax,'BeingDeleted')
-                        obj.height = getheight(obj.ax);
-                    end
-                    obj.dbg_out(mfilename,'being_deleted_listener')
-                end
+%                 function being_deleted_listener(~,~)
+%                     if get(obj.ax,'BeingDeleted')
+%                         obj.height = getheight(obj.ax);
+%                     end
+%                 end
                 
                 function xlim_listener(~,~)
                     if obj.ax == obj.gui.main_axes
@@ -95,5 +90,9 @@ classdef GuiAxes < handle
             end
         end
     end
-    
+    methods (Access='protected')   
+        function axes_position_listener(obj)
+            obj.height = getheight(obj.ax);
+        end
+    end
 end

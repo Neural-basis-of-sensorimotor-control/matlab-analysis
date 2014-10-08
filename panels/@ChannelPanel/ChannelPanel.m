@@ -1,7 +1,7 @@
 classdef ChannelPanel < SequenceDependentPanel
     methods
         function obj = ChannelPanel(gui)            
-            panel = uipanel('Parent',gui.current_view,'Title','Channel selection');
+            panel = uipanel('Parent',gui.btn_window,'Title','Channel selection');
             obj@SequenceDependentPanel(gui,panel);
             obj.layout();
         end

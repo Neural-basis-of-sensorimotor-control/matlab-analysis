@@ -2,7 +2,9 @@ classdef SequenceViewer < handle
     properties (SetObservable)
         parent
         
-        current_view
+        btn_window
+        plot_window
+        histogram_window
         panels
         
         digital_channels
@@ -40,6 +42,10 @@ classdef SequenceViewer < handle
         debug_indent = 0
     end
     
+    properties
+        zoom_controls
+    end
+    
     properties (Dependent)
         plots
         tmin
@@ -52,7 +58,7 @@ classdef SequenceViewer < handle
     end
     
     properties (Constant)
-        panel_width = 205;
+        panel_width = 405;
         margin = 40
     end
     
@@ -105,10 +111,13 @@ classdef SequenceViewer < handle
         end
         
         function obj = SequenceViewer(guimanager)
+            close all
+            obj.btn_window = figure;
+            obj.plot_window = figure;
+
             obj.setup_listeners();
-            
+            obj.zoom_controls = ScList();
             obj.parent = guimanager;
-            obj.current_view = gcf;
             obj.analog_subch = ScCellList();
             obj.main_channel = AnalogAxes(obj);
             setheight(obj.main_channel,450);

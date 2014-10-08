@@ -26,14 +26,13 @@ classdef SequenceOptions < PanelComponent
             
             function parse_protocol_callback(~,~)
                 obj.show_panels(false);
-                set(obj.gui.current_view,'Visible','off');
+                obj.lock_screen(true,'Wait, parsing...');
                 [protocolfile, pdir] = uigetfile('*.txt','Select protocol file');
                 if isnumeric(protocolfile), return; end
                 protocolfile = fullfile(pdir, protocolfile);
                 obj.gui.experiment.update_from_protocol(protocolfile);
                 obj.gui.has_unsaved_changes = true;
-                set(obj.gui.current_view,'Visible','on');
-       %         obj.gui.file = obj.gui.file;
+                obj.lock_screen(false);
                 if obj.gui.experiment.n
                     obj.gui.file = obj.gui.experiment.get(1);
                 end
@@ -122,17 +121,12 @@ classdef SequenceOptions < PanelComponent
                     end
                     obj.gui.has_unsaved_changes = true;
                     close(dlg);
-%                     clf(obj.gui.current_view);
-%                     show_file(h);
-                   % obj.gui.file = obj.gui.file;
                 end
                 
                 function remove_sequence_callback(~,~)
                     obj.gui.file.list(obj.gui.sequence.index) = [];
                     obj.gui.has_unsaved_changes = true;
                     close(dlg);
-%                     clf(obj.gui.current_view);
-%                     show_file(h);
                     obj.gui.file = obj.gui.file;
                 end
             end

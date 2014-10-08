@@ -3,7 +3,7 @@ classdef PlotPanel < SequenceDependentPanel
     end
     methods
         function obj = PlotPanel(gui)
-            panel = uipanel('Parent',gui.current_view,'Title','Plot options');
+            panel = uipanel('Parent',gui.btn_window,'Title','Plot options');
             obj@SequenceDependentPanel(gui,panel);
             obj.layout();
         end
@@ -19,6 +19,7 @@ classdef PlotPanel < SequenceDependentPanel
         end
         
         function update_panel(obj)
+            obj.gui.zoom_controls = get(obj.uihandle,'children');
             obj.dbg_in(mfilename,'update_panel','enabled = ',obj.enabled);
             update_panel@SequenceDependentPanel(obj);
             if obj.enabled

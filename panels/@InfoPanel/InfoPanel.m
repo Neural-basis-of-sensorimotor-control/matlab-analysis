@@ -4,7 +4,7 @@ classdef InfoPanel < Panel
     end
     methods
         function obj = InfoPanel(gui)
-            panel = uipanel('Parent',gui.current_view,'Title','Main');
+            panel = uipanel('Parent',gui.btn_window,'Title','Main');
             obj@Panel(gui,panel);
             obj.layout();
             addlistener(panel,'BeingDeleted','PostSet',@(~,~) obj.being_deleted_fcn);

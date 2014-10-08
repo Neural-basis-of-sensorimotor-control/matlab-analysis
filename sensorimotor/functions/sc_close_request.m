@@ -1,5 +1,4 @@
 function sc_close_request(~,~,guimgr)
-
 if ~isempty(guimgr)
     if guimgr.has_unsaved_changes
         option = questdlg('There are unsaved changes. Save before closing?',...

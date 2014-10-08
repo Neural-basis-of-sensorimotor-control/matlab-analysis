@@ -22,11 +22,11 @@ classdef FilterOptions < PanelComponent
                 'Artifact width in bins (0 = off))'),50);
             mgr.add(sc_ctrl('text','bins'),50);
             
-            mgr.newline(20);
-            mgr.add(sc_ctrl('text','Moving avg width'),100);
-            obj.ui_artifact_nbr_of_samples = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_samples_callback,'ToolTipString',...
-                'Nbr of samples for moving average (empty = all)'),50);
-            mgr.add(sc_ctrl('text','samples'),50);
+%             mgr.newline(20);
+%             mgr.add(sc_ctrl('text','Moving avg width'),100);
+%             obj.ui_artifact_nbr_of_samples = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_samples_callback,'ToolTipString',...
+%                 'Nbr of samples for moving average (empty = all)'),50);
+%             mgr.add(sc_ctrl('text','samples'),50);
             
             sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
             obj.dbg_out(mfilename,'populate');

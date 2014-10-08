@@ -20,8 +20,11 @@ classdef ZoomOptions < PanelComponent
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);
             mgr.newline(20);
+            mgr.add(sc_ctrl('pushbutton','Y zoom in',@(~,~) obj.y_zoom_in_callback),100);
             mgr.add(sc_ctrl('pushbutton','Y zoom out',@(~,~) obj.y_zoom_out_callback),100);
-            mgr.add(sc_ctrl('pushbutton','X zoom out',@(~,~) obj.x_zoom_out_callback),100);
+            mgr.newline(20);
+            mgr.add(sc_ctrl('pushbutton','X zoom in',@(~,~) obj.x_zoom_in_callback),100);
+            mgr.add(sc_ctrl('pushbutton','X zoom out',@(~,~) obj.x_zoom_in_callback),100);
         end
         
     end
@@ -57,8 +60,6 @@ classdef ZoomOptions < PanelComponent
             ydiff = diff(ylimits);
             ylimits = ylimits + [-ydiff/2 ydiff/2];
             ylim(obj.gui.main_axes,ylimits);
-%             obj.gui.zoom_on = false;
-%             obj.gui.pan_on = false;
         end
         
         
@@ -66,6 +67,22 @@ classdef ZoomOptions < PanelComponent
             xlimits = xlim(obj.gui.main_axes);
             xdiff = diff(xlimits);
             xlimits = xlimits + [-xdiff/2 xdiff/2];
+            xlim(obj.gui.main_axes,xlimits);
+        end
+        
+        
+        function y_zoom_in_callback(obj)
+            ylimits = ylim(obj.gui.main_axes);
+            ydiff = diff(ylimits);
+            ylimits = ylimits - [-ydiff/4 ydiff/4];
+            ylim(obj.gui.main_axes,ylimits);
+        end
+        
+        
+        function x_zoom_in_callback(obj)
+            xlimits = xlim(obj.gui.main_axes);
+            xdiff = diff(xlimits);
+            xlimits = xlimits - [-xdiff/4 xdiff/4];
             xlim(obj.gui.main_axes,xlimits);
         end
         

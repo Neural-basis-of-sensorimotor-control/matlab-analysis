@@ -6,7 +6,7 @@ classdef PlotMode < PanelComponent
     methods
         function obj = PlotMode(panel)
             obj@PanelComponent(panel);
-            sc_addlistener(obj.gui,'plotmode',@(~,~) plotmode_listener,obj.uihandle);
+            sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,obj.uihandle);
             
         end
         
@@ -19,7 +19,7 @@ classdef PlotMode < PanelComponent
         
         function initialize(obj)
             [~,str_] = enumeration('PlotModes');
-            val = find(enumeration('PlotModes') == obj.gui.plot_mode);
+            val = find(enumeration('PlotModes') == obj.gui.plotmode);
             set(obj.ui_plot_mode,'string',str_,'value',val);
         end
         
@@ -36,8 +36,8 @@ classdef PlotMode < PanelComponent
         end
         
         function plotmode_listener(obj)
-            for k=1:obj.gui.plot_axes.n
-                cla(obj.gui.plot_axes.get(k).ax);
+            for k=1:obj.gui.plots.n
+                cla(obj.gui.plots.get(k).ax);
             end
         end
     end

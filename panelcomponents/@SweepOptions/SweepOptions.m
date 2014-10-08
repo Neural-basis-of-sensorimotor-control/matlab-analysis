@@ -15,7 +15,7 @@ classdef SweepOptions < PanelComponent
             sc_addlistener(obj.gui,'sweep_increment',@(~,~) obj.increment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'pretrigger',@(~,~) obj.pretrigger_listener,obj.uihandle);
             sc_addlistener(obj.gui,'posttrigger',@(~,~) obj.posttrigger_listener,obj.uihandle);
-            sc_addlistener(obj.gui,'plotmode',@(~,~) plotmode_listener,obj.uihandle);
+            sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,obj.uihandle);
         end
         
         function populate(obj,mgr)
@@ -44,7 +44,7 @@ classdef SweepOptions < PanelComponent
             obj.posttrigger_listener();
             obj.sweep_listener();
             obj.increment_listener();
-            obj.plot_mode_listener();
+            obj.plotmode_listener();
         end
         
     end
@@ -85,7 +85,7 @@ classdef SweepOptions < PanelComponent
             end
         end
         
-        function plot_mode_listener(obj)
+        function plotmode_listener(obj)
             if obj.gui.plotmode == PlotModes.plot_all || ...
                     obj.gui.plotmode == PlotModes.plot_avg_std_all
                 set(obj.ui_sweep,'enable','off');

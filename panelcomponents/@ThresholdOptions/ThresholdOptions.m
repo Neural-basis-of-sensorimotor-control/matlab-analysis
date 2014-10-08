@@ -18,7 +18,7 @@ classdef ThresholdOptions < PanelComponent
         function obj = ThresholdOptions(panel)
             obj@PanelComponent(panel);
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,panel);
-            sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,panel);
+         %   sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,panel);
         end
         
         function populate(obj,mgr)
@@ -100,7 +100,7 @@ classdef ThresholdOptions < PanelComponent
                 set(obj.ui_undo_last,'Visible','on');
             end
             if isempty(obj.tabs)
-                obj.set(obj.ui_undo_last,'Visible','off');
+                set(obj.ui_undo_last,'Visible','off');
             end
             obj.define_threshold_plothandle();
         end

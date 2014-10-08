@@ -67,7 +67,9 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function define_thresholds_callback(obj)
-            obj.dbg_in(mfilename,'define_thresholds_callback');
+            if obj.gui.main_signal.filter.remove_waveforms.contains(obj.gui.waveform)
+                msgbox('Warning: current waveform is used to subtract spike shapes from raw signal. If new thresholds overlaps with old, spike finding can be unpredictable. Maybe it is better to create a new waveform for this purpose?')
+            end
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             %Reset waveform parameters
             obj.t0 = []; obj.v0 = []; obj.tabs = []; obj.vabs = []; obj.lower = []; obj.upper = [];
@@ -77,7 +79,6 @@ classdef ThresholdOptions < PanelComponent
             set(obj.ui_added_done,'Enable','on');
             set(obj.ui_undo_last,'Enable','on');
             obj.define_threshold_plothandle();
-            obj.dbg_out();
         end
         
         function cancel_thresholds_callback(obj)
@@ -89,7 +90,6 @@ classdef ThresholdOptions < PanelComponent
             if isempty(obj.tabs)
                 obj.t0 = [];
                 obj.v0 = [];
-                obj.set(obj.ui_undo_last,'Visible','off');
                 obj.set(obj.ui_added_done,'Visible','off');
             else
                 n = numel(obj.tabs);
@@ -98,6 +98,9 @@ classdef ThresholdOptions < PanelComponent
                 obj.lower = obj.lower(1:n-1);
                 obj.upper = obj.upper(1:n-1);
                 set(obj.ui_undo_last,'Visible','on');
+            end
+            if isempty(obj.tabs)
+                obj.set(obj.ui_undo_last,'Visible','off');
             end
             obj.define_threshold_plothandle();
         end
@@ -291,52 +294,29 @@ classdef ThresholdOptions < PanelComponent
             obj.dbg_out();
         end
         
-        function btn_down_fcn_addition(obj)
-            obj.dbg_in(mfilename,'btn_down_fcn_addition',1);
-            p = get(obj.gui.main_axes,'currentpoint');
-            obj.dbg_in(mfilename,'btn_down_fcn_addition',2);
+        function btn_down_fcn_addition(obj)   
+            p = get(obj.gui.main_axes,'currentpoint'); 
             if isempty(obj.t0)
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3a');
                 set(obj.ui_undo_last,'Visible','on');
                 obj.t0 = p(1,1);
-                obj.v0 = p(1,2);
-                obj.dbg_out('3a');
-            elseif p(1,1) > obj.t0
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3b');
-                set(obj.ui_added_done,'Visible','on');
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3b.1');
+                obj.v0 = p(1,2);   
+            elseif p(1,1) > obj.t0  
+                set(obj.ui_added_done,'Visible','on');  
                 n = numel(obj.tabs);
-                obj.dbg_out();
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3b.2');
                 obj.tabs(n+1) = p(1,1);
-                obj.dbg_out();
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3b.3');
                 obj.vabs(n+1) = p(1,2);
-                obj.dbg_out();
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3b.4');
-                obj.dbg_out();
                 if ~n
-                    obj.dbg_in(mfilename,'btn_down_fcn_addition','3ba');
                     amplitude = range(get(obj.gui.main_axes,'ylim'))/10;
                     obj.upper(n+1) = amplitude;
-                    obj.lower(n+1) = -amplitude;
-                    obj.dbg_out('3ba');
+                    obj.lower(n+1) = -amplitude;         
                 else
-                    obj.dbg_in(mfilename,'btn_down_fcn_addition','3bb');
                     obj.upper(n+1) = obj.upper(n);
-                    obj.lower(n+1) = obj.lower(n);
-                    obj.dbg_out('3bb');
+                    obj.lower(n+1) = obj.lower(n); 
                 end
-                obj.dbg_out('3b');
             else
-                obj.dbg_in(mfilename,'btn_down_fcn_addition','3c');
-                obj.dbg_out(2);
-                obj.dbg_out(1);
                 return
             end
             obj.define_threshold_plothandle();
-            obj.dbg_out(2);
-            obj.dbg_out(1);
         end
         
         

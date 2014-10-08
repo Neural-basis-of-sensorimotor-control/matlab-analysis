@@ -77,15 +77,15 @@ classdef ManualSpikeTimes < PanelComponent
             end
         end
         function remove_spike_btn_down(obj)
-            p = get(obj.gui.digital_axes,'currentpoint');
-            t = p(1,1) + obj.gui.triggertimes(obj.gui.sweep(index));
+            p = get(obj.gui.digital_channels,'currentpoint');
+            t = p(1,1) + obj.gui.triggertimes(obj.gui.sweep);
             if isempty(obj.gui.waveform.predefined_spiketimes)
                 msgbox('Could not delete: No click-defined spiketimes for current sweep(s).')
             else
                 [~,ind] = min(abs(obj.gui.waveform.predefined_spiketimes-t));
                 obj.gui.waveform.predefined_spiketimes(ind) = [];
                 obj.gui.help_text = 'Spike removed';
-                remove_spiketime_callback();
+                obj.remove_spiketime_callback();
             end
         end
     end

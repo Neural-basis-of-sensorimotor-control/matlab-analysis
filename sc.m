@@ -21,14 +21,10 @@ function sc(varargin)
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 global DEBUG
-DEBUG = 0;
+DEBUG = 0
 addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\ ...
     viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
 
-close all
-if ~isempty(findall(0,'type','figure'))
-    return
-end
 args = varargin;
 
 if ~numel(args)
@@ -37,7 +33,7 @@ if ~numel(args)
     if exist(filename,'file') == 2
         args = {filename};
     else
-        fprintf('Could not detect file');
+        msgbox('Could not detect file');
         return
     end
 end

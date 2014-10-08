@@ -8,7 +8,7 @@ classdef HelpBox < PanelComponent
            sc_addlistener(obj.gui,'help_text',@(~,~) obj.initialize,obj.uihandle);
        end
        function populate(obj,mgr)
-           mgr.newline(40);
+           mgr.newline(20);
            obj.ui_text = mgr.add(sc_ctrl('text',[],[],'Value',2),200);
     %       addlistener(obj.ui_text,'Enable','PostSet',@(~,~) obj.enable_listener());
        end

@@ -32,6 +32,7 @@ classdef PlotMode < PanelComponent
             [enum,enum_str] = enumeration('PlotModes');
             ind = cellfun(@(x) strcmp(x,str{val}),enum_str);
             obj.gui.plotmode = enum(ind);
+            obj.gui.plot_channels();
         end
         
         function plotmode_listener(obj)

@@ -11,7 +11,6 @@ classdef SequenceTextBox < PanelComponent
         function populate(obj,mgr)
             mgr.newline(60);
             obj.ui_text = mgr.add(sc_ctrl('text',[],[],'Value',2),200);
-            
             sc_addlistener(obj.gui,'sequence',@(~,~) obj.sequence_listener,obj.uihandle);
         end
         

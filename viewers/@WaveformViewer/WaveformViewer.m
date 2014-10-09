@@ -22,32 +22,7 @@ classdef WaveformViewer < SequenceViewer
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
             obj.dbg_in(mfilename,'WaveformViewer()');
-           
-            addlistener(obj,'sequence','PostSet',@sequence_listener);
-            
-            function sequence_listener(~,~)
-                obj.dbg_in(mfilename,'sequence_listener');
-                if isempty(obj.sequence) || ~obj.triggerparents.n
-                    obj.triggerparent = [];
-                else
-                    triggerparent_str = obj.triggerparents.values('tag');
-                    val = find(cellfun(@(x) strcmp(x,'DigMark'),triggerparent_str),1);
-                    if isempty(val),    val = 1;    end
-                    obj.triggerparent = obj.triggerparents.get(val);
-                    addlistener(obj,'triggerparent','PostSet',@triggerparent_listener);
-                end
-                obj.dbg_out(mfilename,'sequence_listener');
-            end
-            
-            function triggerparent_listener(~,~)
-                obj.dbg_in(mfilename,'triggerparent_listener\n');
-                if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
-                    obj.trigger = [];
-                else
-                    obj.trigger = obj.triggerparent.triggers.get(1);
-                end
-                obj.dbg_out(mfilename,'triggerparent_listener\n');
-            end
+            addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
             obj.dbg_out(mfilename,'WaveformViewer()');
         end
         
@@ -82,6 +57,31 @@ classdef WaveformViewer < SequenceViewer
             else
                 triggertimes = obj.trigger.gettimes(obj.tmin,obj.tmax);
             end
+        end
+        
+        function sequence_listener(obj)
+            obj.dbg_in(mfilename,'sequence_listener');
+            if isempty(obj.sequence) || ~obj.triggerparents.n
+                obj.triggerparent = [];
+            elseif isempty(obj.trigger) || ~obj.triggerparents.contains(obj.trigger)
+                triggerparent_str = obj.triggerparents.values('tag');
+                val = find(cellfun(@(x) strcmp(x,'DigMark'),triggerparent_str),1);
+                if isempty(val),    val = 1;    end
+                obj.triggerparent = obj.triggerparents.get(val);
+                obj.triggerparent_listener();
+            end
+            obj.dbg_out(mfilename,'sequence_listener');
+        end
+    end
+    methods (Access = 'protected')
+        function triggerparent_listener(obj)
+            obj.dbg_in(mfilename,'triggerparent_listener\n');
+            if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
+                obj.trigger = [];
+            else
+                obj.trigger = obj.triggerparent.triggers.get(1);
+            end
+            obj.dbg_out(mfilename,'triggerparent_listener\n');
         end
     end
 end

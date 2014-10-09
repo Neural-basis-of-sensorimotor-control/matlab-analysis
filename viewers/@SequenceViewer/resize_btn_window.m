@@ -9,7 +9,7 @@ else
         panel = obj.panels.get(i);
         height = getheight(panel);
         if y-height<0
-            x=x+obj.panelwidth;
+            x=x+obj.panel_width;
             y=getheight(obj.btn_window);
         end 
         y = y - height;
@@ -17,4 +17,5 @@ else
         sety(panel,y);
     end
 end 
+setwidth(obj.btn_window,x+obj.panel_width);
 end

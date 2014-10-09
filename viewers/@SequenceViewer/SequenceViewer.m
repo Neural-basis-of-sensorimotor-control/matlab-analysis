@@ -44,6 +44,9 @@ classdef SequenceViewer < handle
     
     properties
         zoom_controls
+        filepath
+        data_dir
+        reset_btn
     end
     
     properties (Dependent)
@@ -58,7 +61,7 @@ classdef SequenceViewer < handle
     end
     
     properties (Constant)
-        panel_width = 405;
+        panel_width = 205;
         margin = 40
     end
     

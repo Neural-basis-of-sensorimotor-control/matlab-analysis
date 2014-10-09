@@ -6,7 +6,11 @@ classdef Panel < GuiComponent
     properties
         gui_components
     end
-        
+    
+    properties (Dependent)
+        height
+    end
+    
     methods (Abstract)
         setup_components(obj);
     end
@@ -51,6 +55,10 @@ classdef Panel < GuiComponent
             end
             children = get(obj.uihandle,'children');
             set(children,'Enable',enablestr);
+        end
+        
+        function height = get.height(obj)
+            height = getheight(obj.uihandle);
         end
     end
     

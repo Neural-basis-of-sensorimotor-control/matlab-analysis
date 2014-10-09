@@ -1,5 +1,5 @@
 classdef UpdatePanel < Panel
-    
+
     methods
         function obj = UpdatePanel(gui)
             panel = uipanel('Parent',gui.btn_window,'Title','Update');
@@ -12,6 +12,7 @@ classdef UpdatePanel < Panel
             obj.gui_components.add(UpdateButton(obj));
             obj.gui_components.add(HelpBox(obj));
         end
+
     end
     
 end

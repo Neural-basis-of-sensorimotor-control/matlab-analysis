@@ -19,6 +19,9 @@ addlistener(obj,'pan_on','PostSet',@pan_on_listener);
 
     function experiment_listener(~,~)
         if ~isempty(obj.experiment) && obj.experiment.n
+            last_backslash = find(obj.experiment.fdir=='\',1,'last');
+            foldername = obj.experiment.fdir(last_backslash+1:end);
+            obj.experiment.fdir = [obj.data_dir '\' foldername];
             if ~isempty(obj.file)
                 if obj.experiment.contains(obj.file)
                     obj.file = obj.file;

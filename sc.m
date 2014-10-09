@@ -15,7 +15,7 @@ function sc(varargin)
 %   c) When the experiment file is opened, the experiment protocol can be
 %   parsed and all comments can be included in each file. This can be done
 %   any time once the file is created.
-%   
+%
 %   SC -NEWADQ create experiment file from .adq-files
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
@@ -31,13 +31,39 @@ if ~isempty(findall(0,'type','figure'))
 end
 args = varargin;
 
-if ~numel(args)
-    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
+if  exist('sc_confiq.txt','file') == 2
+    fprintf('1\n');
+    fid = fopen('sc_confiq.txt');
+    search_dir = fgetl(fid);
+    data_dir = fgetl(fid);
+    if ~numel(args)
+        fprintf('2\n');
+        str = fgetl(fid);
+        if ischar(str)
+            fprintf('3\n');
+            filename = [search_dir '\' str];
+            if exist(filename,'file') == 2
+                fprintf('4\n');
+                args = {filename};
+            end
+        end
+    end
+    fclose(fid);
+else
+    fprintf('5\n');
+    search_dir = [];
+    data_dir = [];
+end
+
+if ~numel(args) || strcmpi(args{1},'-loadnew')
+    fprintf('6\n');
+    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',search_dir);
     filename = fullfile(pname,fname);
     if exist(filename,'file') == 2
+        fprintf('7\n');
         args = {filename};
     else
-        fprintf('Could not detect file');
+        fprintf('Could not detect file\n');
         return
     end
 end
@@ -53,6 +79,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     
     experiment = ScExperiment('fdir',fdir);
     guimgr = GuiManager();
+    guimgr.viewer.data_dir = data_dir;
     guimgr.experiment = experiment;
     if strcmpi(args{1},'-newsp2')
         files = what(fdir);
@@ -84,17 +111,21 @@ elseif numel(args{1}) && args{1}(1) == '-'
     msgbox(['Illegal command : ' args{1}]);
     return;
 else
+    fprintf('a\n');
     if exist(args{1},'file') == 2
+        fprintf('b\n');
         filename = args{1};
     else
+        fprintf('c\n');
         [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
         filename = fullfile(pname,fname);
         if exist(filename,'file') ~= 2
-            msgbox('Could not detect file');
+            fprintf('Could not detect file\n');
             return;
         end
     end
     guimgr = GuiManager();
+    guimgr.viewer.data_dir = data_dir;
     d = load(filename);
     experiment = d.obj;
     clear d
@@ -118,7 +149,7 @@ end
 %                     [protocolfile, pdir] = uigetfile('*.txt','Select protocol file');
 %                     protocolfile = fullfile(pdir, protocolfile);
 %                     experiment.update_from_protocol(protocolfile);
-%                     experiment.sc_save();                    
+%                     experiment.sc_save();
 %                 case 'Abort'
 %                 otherwise
 %                     error(['Debugging error: unknown: ' answer])

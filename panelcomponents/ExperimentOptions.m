@@ -23,6 +23,7 @@ classdef ExperimentOptions < PanelComponent
             mgr.add(sc_ctrl('text','Sequence:'),100);
             obj.ui_sequence = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.sequence_callback,...
                 'visible','off'),100);
+            
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);

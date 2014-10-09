@@ -36,7 +36,7 @@ classdef DigitalAxes < ChannelAxes
                 btn_down_fcn = [];
             end
             sweep = obj.setup_axes();%,varargin{:});
-            if ~isempty(sweep)
+            if ~isempty(sweep) %&& numel(sweep)<=numel(obj.gui.triggertimes)
                 digch = obj.sequence.gettriggers(obj.gui.tmin,...
                     obj.gui.tmax);
                 switch obj.gui.plotmode

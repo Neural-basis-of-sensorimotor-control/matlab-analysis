@@ -1,6 +1,6 @@
 function resize_plot_window(obj)
 y = getheight(obj.plot_window);
-axeswidth = getwidth(obj.plot_window)- 3*obj.margin;
+axeswidth = getwidth(obj.plot_window)- 3*obj.margin - getx(obj.plot_window);
 for i=1:obj.plots.n
     ax_ = obj.plots.get(i);
     if i==1

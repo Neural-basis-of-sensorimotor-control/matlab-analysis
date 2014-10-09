@@ -4,7 +4,6 @@ if nargin<2
 end
 clf(obj.btn_window,'reset');
 set(obj.btn_window,'ToolBar','None');
-set(obj.btn_window,'Color',[0 0 0]);
 set(obj.btn_window,'ResizeFcn',@(~,~) obj.resize_btn_window(),...
     'CloseRequestFcn',@(~,~) obj.close_request);
 obj.panels = CascadeList();
@@ -19,6 +18,10 @@ for k=1:obj.panels.n
     panel.enabled_listener();
 end
 mgr.trim();
+clf(obj.plot_window,'reset');
+set(obj.plot_window,'ToolBar','None');
+set(obj.plot_window,'Color',[0 0 0]);
+set(obj.plot_window,'ResizeFcn',@(~,~) obj.resize_plot_window());
 if obj.show_digital_channels
     obj.digital_channels.ax = axes;
 end
@@ -31,7 +34,6 @@ end
 if ~ishandle(obj.plot_window)
     obj.plot_window = figure;
 end
-set(obj.plot_window,'ResizeFcn',@(~,~) obj.resize_plot_window());
 mgr = ScLayoutManager(obj.plot_window);
 for k=1:obj.plots.n
     plotaxes = obj.plots.get(k);
@@ -49,4 +51,6 @@ if enable_main_panel
         obj.panels.get(k).update_panel();
     end
 end
+obj.position_figures();
+figure(obj.btn_window)
 end

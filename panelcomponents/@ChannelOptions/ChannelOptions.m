@@ -3,7 +3,6 @@ classdef ChannelOptions < PanelComponent
     properties
         ui_show_digital_channels
         ui_nbr_of_channels
-        ui_show_histogram
     end
     
     methods
@@ -20,10 +19,6 @@ classdef ChannelOptions < PanelComponent
             mgr.add(sc_ctrl('text','Nbr of channels'),100);
             obj.ui_nbr_of_channels = mgr.add(sc_ctrl('popupmenu',[],...
                 @(~,~) obj.nbr_of_channels_callback,'visible','off'),100);
-            mgr.newline(20);
-            obj.ui_show_histogram = mgr.add(sc_ctrl('checkbox',...
-                'Show histogram',@(~,~) obj.show_histogram_callback),...
-                200);
             sc_addlistener(obj.gui,'sequence',@(~,~) obj.update_nbr_of_analog_axes, ...
                 obj.uihandle);
             
@@ -36,13 +31,11 @@ classdef ChannelOptions < PanelComponent
             obj.gui.nbr_of_analog_channels = obj.gui.analog_ch.n;
             set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
                 'on');
-            set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
         end
         
         function updated = update(obj)
             obj.show_digital_channels_callback(true);
             obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
-            obj.show_histogram_callback(true);
             obj.update_nbr_of_analog_axes();
             updated = true;
         end
@@ -82,20 +75,6 @@ classdef ChannelOptions < PanelComponent
             obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
             obj.update_nbr_of_analog_axes();
             obj.show_panels(false);
-        end
-        
-        function show_histogram_callback(obj,hide_panels)
-            val = get(obj.ui_show_histogram,'value');
-            if val
-                if isempty(obj.gui.histogram)
-                    obj.gui.histogram = HistogramChannel(obj.gui);
-                end
-            else
-                obj.gui.histogram = [];
-            end
-            if nargin==1 || hide_panels
-                obj.show_panels(false);
-            end
         end
     end
 end

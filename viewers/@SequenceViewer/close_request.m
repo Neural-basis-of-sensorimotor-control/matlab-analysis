@@ -27,4 +27,5 @@ function close_all_windows(obj)
 delete(obj.btn_window);
 if ishandle(obj.plot_window),        close(obj.plot_window);        end
 if ishandle(obj.histogram_window),   close(obj.histogram_window);   end
+delete(obj)
 end

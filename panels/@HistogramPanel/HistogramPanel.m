@@ -8,8 +8,8 @@ classdef HistogramPanel < SequenceDependentPanel
             sc_addlistener(gui,'histogram',@(~,~) obj.histogram_listener,panel);
         end
         
-        function setup_components(~)
-            fprintf('%s: to be implemented\n',mfilename);
+        function setup_components(obj)
+            obj.gui_components.add(HistogramCheckbox(obj));
         end
         
         function update_panel(obj)

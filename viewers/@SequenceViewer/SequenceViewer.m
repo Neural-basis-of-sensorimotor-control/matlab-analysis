@@ -19,8 +19,8 @@ classdef SequenceViewer < handle
         
         help_text
         
-%         show_digital_channels = true
-%         show_histogram = false%true
+        %         show_digital_channels = true
+        %         show_histogram = false%true
         
         has_unsaved_changes
         
@@ -45,6 +45,7 @@ classdef SequenceViewer < handle
     properties
         zoom_controls
         filepath
+        search_dir
         data_dir
         reset_btn
     end
@@ -78,38 +79,38 @@ classdef SequenceViewer < handle
         function dbg_in(obj,varargin)
             global DEBUG
             if DEBUG
-            for k=1:obj.debug_indent
-                fprintf('\t');
-            end
-            fprintf('Entering ');
-            for k=1:nargin-1
-                if ischar(varargin{k})
-                    fprintf('%s\\',varargin{k});
-                else
-                    fprintf('%g\\',varargin{k});
+                for k=1:obj.debug_indent
+                    fprintf('\t');
                 end
-            end
-            fprintf('\n');
-            obj.debug_indent = obj.debug_indent + 1;
+                fprintf('Entering ');
+                for k=1:nargin-1
+                    if ischar(varargin{k})
+                        fprintf('%s\\',varargin{k});
+                    else
+                        fprintf('%g\\',varargin{k});
+                    end
+                end
+                fprintf('\n');
+                obj.debug_indent = obj.debug_indent + 1;
             end
         end
         
         function dbg_out(obj,varargin)
             global DEBUG
             if DEBUG
-            obj.debug_indent = obj.debug_indent - 1;
-            for k=1:obj.debug_indent
-                fprintf('\t');
-            end
-            fprintf('Exiting ');
-            for k=1:nargin-1
-                if ischar(varargin{k})
-                    fprintf('%s\\',varargin{k});
-                else
-                    fprintf('%g\\',varargin{k});
+                obj.debug_indent = obj.debug_indent - 1;
+                for k=1:obj.debug_indent
+                    fprintf('\t');
                 end
-            end
-            fprintf('\n');
+                fprintf('Exiting ');
+                for k=1:nargin-1
+                    if ischar(varargin{k})
+                        fprintf('%s\\',varargin{k});
+                    else
+                        fprintf('%g\\',varargin{k});
+                    end
+                end
+                fprintf('\n');
             end
         end
         
@@ -117,7 +118,7 @@ classdef SequenceViewer < handle
             close all
             obj.btn_window = figure;
             obj.plot_window = figure;
-
+            
             obj.setup_listeners();
             obj.zoom_controls = ScList();
             obj.parent = guimanager;
@@ -125,8 +126,8 @@ classdef SequenceViewer < handle
             obj.main_channel = AnalogAxes(obj);
             setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
-%            obj.histogram = HistogramChannel(obj);
-
+            %            obj.histogram = HistogramChannel(obj);
+            
         end
         
         function analog_ch = get.analog_ch(obj)
@@ -171,6 +172,14 @@ classdef SequenceViewer < handle
         function val = get.show_histogram(obj)
             val = ~isempty(obj.histogram);
         end
+        function delete(obj)
+            if ~isempty(obj.experiment)
+                fid = fopen('sc_confiq.txt','w');
+                fprintf(fid,'%s\n',obj.search_dir);
+                fprintf(fid,'%s\n',obj.data_dir);
+                fprintf(fid,'%s\n',obj.experiment.save_name);
+                fclose(fid);
+            end
+        end
     end
-    
 end

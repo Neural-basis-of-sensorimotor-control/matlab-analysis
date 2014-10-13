@@ -32,6 +32,11 @@ classdef ChannelPanel < SequenceDependentPanel
                     obj.gui.histogram.load_data();
                 end
             end
+            if obj.enabled
+                nextpanel = obj.gui.panels.get(obj.gui.panels.indexof(obj)+1);
+                nextpanel.initialize_panel();
+                nextpanel.update_panel();
+            end
         end
     end
 end

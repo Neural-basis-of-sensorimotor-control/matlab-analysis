@@ -3,12 +3,16 @@ if nargin<2
     enable_main_panel = 0;
 end
 clf(obj.btn_window,'reset');
-set(obj.btn_window,'ToolBar','None');
-set(obj.btn_window,'ResizeFcn',@(~,~) obj.resize_btn_window(),...
-    'CloseRequestFcn',@(~,~) obj.close_request);
+set(obj.btn_window,'ToolBar','None','MenuBar','none');
+set(obj.btn_window,'CloseRequestFcn',@(~,~) obj.close_request);
 obj.panels = CascadeList();
-obj.add_panels();
+if enable_main_panel
+    obj.add_panels();
+else
+    obj.add_main_panel();
+end
 obj.panels.get(1).enabled = true;
+obj.panels.get(2).enabled = enable_main_panel;
 mgr = ScLayoutManager(obj.btn_window);
 for k=1:obj.panels.n
     panel = obj.panels.get(k);
@@ -19,17 +23,14 @@ for k=1:obj.panels.n
 end
 mgr.trim();
 clf(obj.plot_window,'reset');
-set(obj.plot_window,'ToolBar','None');
+set(obj.plot_window,'ToolBar','None','MenuBar','none');
 set(obj.plot_window,'Color',[0 0 0]);
-set(obj.plot_window,'ResizeFcn',@(~,~) obj.resize_plot_window());
+
 if obj.show_digital_channels
     obj.digital_channels.ax = axes;
 end
 for k=1:obj.analog_ch.n
     obj.analog_ch.get(k).ax = axes;
-end
-if obj.show_histogram
-    obj.histogram.ax = axes;
 end
 if ~ishandle(obj.plot_window)
     obj.plot_window = figure;
@@ -40,17 +41,22 @@ for k=1:obj.plots.n
     mgr.newline(getheight(plotaxes));
     mgr.add(plotaxes);
 end
-%obj.sequence = obj.sequence;
-for k=1:obj.panels.n
-    obj.panels.get(k).initialize_panel();
+first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
+for k=1:first_disabled-1
+    panel = obj.panels.get(k);
+    panel.initialize_panel();
 end
-obj.panels.get(2).enabled = enable_main_panel;
-if enable_main_panel
-    first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
-    for k=first_disabled:obj.panels.n
-        obj.panels.get(k).update_panel();
+for k=first_disabled:obj.panels.n
+    panel = obj.panels.get(k);
+    panel.initialize_panel();
+    panel.update_panel();
+    if ~panel.enabled
+        break;
     end
 end
-obj.position_figures();
-figure(obj.btn_window)
+if enable_main_panel
+    obj.enable_resize_fcn(true);
+    obj.position_figures();
+    figure(obj.btn_window)
+end
 end

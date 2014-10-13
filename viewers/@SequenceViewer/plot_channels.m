@@ -7,5 +7,4 @@ for k=1:obj.plots.n
         obj.plots.get(k).plotch();
     end
 end
-obj.resize_plot_window();
 end

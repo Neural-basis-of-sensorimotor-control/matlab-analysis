@@ -71,35 +71,21 @@ classdef Panel < GuiComponent
     
     methods %(Access = 'protected')
         function enabled_listener(obj)
-            obj.dbg_in(mfilename','Panel','enabled_listener','enabled = ',obj.enabled);
             index = obj.gui.panels.indexof(obj);
             if index<2 || obj.gui.panels.get(index-1).enabled
-                obj.dbg_in(mfilename','Panel','enabled_listener','1');
                 previous_panel_enabled = true;
-                obj.dbg_out();
             else
-                obj.dbg_in(mfilename','Panel','enabled_listener','2');
                 previous_panel_enabled = false;
-                obj.dbg_out();
             end
             if obj.enabled || previous_panel_enabled
-                obj.dbg_in(mfilename','Panel','enabled_listener','3');
-                obj.initialize_panel();
-                obj.dbg_out();
-                obj.dbg_in(mfilename','Panel','enabled_listener','3.1');
+            %    obj.initialize_panel();
                 set(obj.uihandle,'Visible','on');
-                obj.dbg_out();
             else
-                obj.dbg_in(mfilename','Panel','enabled_listener','4');
                 set(obj.uihandle,'Visible','off');
-                obj.dbg_out();
             end
             if obj.enabled && index > -1 && index < obj.gui.panels.n
-                obj.dbg_in(mfilename,'Panel','enabled_listener','5');
                 set(obj.gui.panels.get(index+1),'Visible','on');
-                obj.dbg_out();
             end
-            obj.dbg_out(mfilename','Panel','enabled_listener');
         end
     end
 end

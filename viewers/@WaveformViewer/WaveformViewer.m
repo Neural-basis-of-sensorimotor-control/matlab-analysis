@@ -21,17 +21,21 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
-            obj.dbg_in(mfilename,'WaveformViewer()');
             addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
-            obj.dbg_out(mfilename,'WaveformViewer()');
+        end
+        
+        function add_main_panel(obj)
+            obj.panels.add(UpdatePanel(obj));
+            obj.panels.add(InfoPanel(obj));
         end
         
         function add_panels(obj)
-            obj.panels.add(UpdatePanel(obj));
-            obj.panels.add(InfoPanel(obj));
-            obj.panels.add(ChannelPanel(obj));
-            obj.panels.add(PlotPanel(obj));
-            obj.panels.add(HistogramPanel(obj));
+            obj.add_main_panel();
+            if ~isempty(obj.sequence)
+                obj.panels.add(ChannelPanel(obj));
+                obj.panels.add(PlotPanel(obj));
+                obj.panels.add(HistogramPanel(obj));
+            end
         end
         
         function set_sweep(obj,sweep)
@@ -60,7 +64,6 @@ classdef WaveformViewer < SequenceViewer
         end
         
         function sequence_listener(obj)
-            obj.dbg_in(mfilename,'sequence_listener');
             if isempty(obj.sequence) || ~obj.triggerparents.n
                 obj.triggerparent = [];
             elseif isempty(obj.trigger) || ~obj.triggerparents.contains(obj.trigger)
@@ -70,18 +73,15 @@ classdef WaveformViewer < SequenceViewer
                 obj.triggerparent = obj.triggerparents.get(val);
                 obj.triggerparent_listener();
             end
-            obj.dbg_out(mfilename,'sequence_listener');
         end
     end
     methods (Access = 'protected')
         function triggerparent_listener(obj)
-            obj.dbg_in(mfilename,'triggerparent_listener\n');
             if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
                 obj.trigger = [];
             else
                 obj.trigger = obj.triggerparent.triggers.get(1);
             end
-            obj.dbg_out(mfilename,'triggerparent_listener\n');
         end
     end
 end

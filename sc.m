@@ -32,35 +32,31 @@ end
 args = varargin;
 
 if  exist('sc_confiq.txt','file') == 2
-    fprintf('1\n');
     fid = fopen('sc_confiq.txt');
     search_dir = fgetl(fid);
     data_dir = fgetl(fid);
     if ~numel(args)
-        fprintf('2\n');
         str = fgetl(fid);
         if ischar(str)
-            fprintf('3\n');
             filename = [search_dir '\' str];
             if exist(filename,'file') == 2
-                fprintf('4\n');
                 args = {filename};
             end
         end
     end
     fclose(fid);
 else
-    fprintf('5\n');
     search_dir = [];
     data_dir = [];
 end
 
+if ~ischar(search_dir), search_dir = [];    end
+if ~ischar(data_dir),   data_dir = [];      end
+
 if ~numel(args) || strcmpi(args{1},'-loadnew')
-    fprintf('6\n');
     [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',search_dir);
     filename = fullfile(pname,fname);
     if exist(filename,'file') == 2
-        fprintf('7\n');
         args = {filename};
     else
         fprintf('Could not detect file\n');
@@ -111,12 +107,9 @@ elseif numel(args{1}) && args{1}(1) == '-'
     msgbox(['Illegal command : ' args{1}]);
     return;
 else
-    fprintf('a\n');
     if exist(args{1},'file') == 2
-        fprintf('b\n');
         filename = args{1};
     else
-        fprintf('c\n');
         [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
         filename = fullfile(pname,fname);
         if exist(filename,'file') ~= 2
@@ -125,8 +118,13 @@ else
         end
     end
     guimgr = GuiManager();
+    if numel(args)>=2
+        data_dir = args{2};
+    end
     guimgr.viewer.data_dir = data_dir;
     d = load(filename);
+    
+    guimgr.viewer.search_dir = fileparts(filename);
     experiment = d.obj;
     clear d
     guimgr.experiment = experiment;
@@ -134,28 +132,3 @@ else
 end
 
 end
-
-% function check_if_updated(experiment)
-% for i=1:experiment.n
-%     file = experiment.get(i);
-%     for j=1:file.n
-%         if any(cellfun(@(x) isempty(x),file.values('tmax')))
-%             answer = questdlg(['It appears that the experiment file was '...
-%                 'created with a previous version of the sensorimotor '...
-%                 'toolbox. Load protocol file again to update?'],...
-%                 'Yes','Abort','Yes');
-%             switch answer
-%                 case 'Yes'
-%                     [protocolfile, pdir] = uigetfile('*.txt','Select protocol file');
-%                     protocolfile = fullfile(pdir, protocolfile);
-%                     experiment.update_from_protocol(protocolfile);
-%                     experiment.sc_save();
-%                 case 'Abort'
-%                 otherwise
-%                     error(['Debugging error: unknown: ' answer])
-%             end
-%             return
-%         end
-%     end
-% end
-%end

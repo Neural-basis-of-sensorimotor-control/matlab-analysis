@@ -14,8 +14,9 @@ classdef SpikeRemovalSelection < PanelComponent
             obj.ui_list = mgr.add(sc_ctrl('popupmenu',[],[],'visible','off'),100);
             mgr.newline(5);
             mgr.newline(20);
-            obj.ui_add_spike_removal = mgr.add(sc_ctrl('pushbutton','Add to spike removal list',@(~,~) obj.add_to_spike_removal_callback),100);
-            obj.ui_delete_spike_removal = mgr.add(sc_ctrl('pushbutton','Delete from spike removal list',@(~,~) obj.delete_spike_removal_callback),100);
+            obj.ui_add_spike_removal = mgr.add(sc_ctrl('pushbutton','Add to spike removal list',@(~,~) obj.add_to_spike_removal_callback),200);
+            mgr.newline(20);
+            obj.ui_delete_spike_removal = mgr.add(sc_ctrl('pushbutton','Delete from spike removal list',@(~,~) obj.delete_spike_removal_callback),200);
         end
         function initialize(obj)
             list = obj.gui.main_signal.filter.remove_waveforms;

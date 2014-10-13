@@ -50,7 +50,7 @@ classdef SetAxesHeight < PanelComponent
         function close_req_fcn(obj)
             figure(obj.fighandle);
             closereq;
-            obj.gui.resize_figure();
+            obj.gui.resize_plot_window();
         end
     end
 end

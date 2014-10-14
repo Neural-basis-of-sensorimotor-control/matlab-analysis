@@ -1,8 +1,8 @@
-classdef HistogramPanel < SequenceDependentPanel
+classdef HistogramPanel < UpdatablePanel%SequenceDependentPanel
     methods
         function obj = HistogramPanel(gui)
             panel = uipanel('Parent',gui.btn_window,'Title','Histogram');
-            obj@SequenceDependentPanel(gui,panel);
+            obj@UpdatablePanel(gui,panel);
             obj.layout();
             
             sc_addlistener(gui,'histogram',@(~,~) obj.histogram_listener,panel);
@@ -10,6 +10,8 @@ classdef HistogramPanel < SequenceDependentPanel
         
         function setup_components(obj)
             obj.gui_components.add(HistogramCheckbox(obj));
+            obj.gui_components.add(HistogramParameters(obj));
+            setup_components@UpdatablePanel(obj);
         end
         
         function update_panel(obj)

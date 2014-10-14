@@ -8,6 +8,7 @@ classdef SavePlotOptions < PanelComponent
         end
         
         function populate(obj,mgr)
+            fprintf('to be implemnted: SavePLotOptions');
         end
         
         function initialize(obj)

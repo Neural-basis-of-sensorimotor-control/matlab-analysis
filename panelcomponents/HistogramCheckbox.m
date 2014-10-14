@@ -19,25 +19,28 @@ classdef HistogramCheckbox < PanelComponent
             set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
         end
         
-        function updated = update(obj)
-            obj.show_histogram_callback(true);
-            updated = true;
-        end
-        
+%         function updated = update(obj)
+%            % obj.show_histogram_callback();
+%             updated = true;
+%         end
+%         
     end
     
     methods (Access = 'protected')
-        function show_histogram_callback(obj,hide_panels)
+        function show_histogram_callback(obj)
             val = get(obj.ui_show_histogram,'value');
             if val
                 if isempty(obj.gui.histogram)
                     obj.gui.histogram = HistogramChannel(obj.gui);
+                    if isempty(obj.gui.histogram_window) || ~ishandle(obj.gui.histogram_window)
+                        obj.gui.histogram_window = figure('Color',[0 0 0]);
+                        set(obj.gui.histogram,'Parent',obj.gui.histogram_window);
+                    end
                 end
+                obj.panel.initialize_panel();
+                obj.panel.update_panel();
             else
                 obj.gui.histogram = [];
-            end
-            if nargin==1 || hide_panels
-                obj.show_panels(false);
             end
         end
     end

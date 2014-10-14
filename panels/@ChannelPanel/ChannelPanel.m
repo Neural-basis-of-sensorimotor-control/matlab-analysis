@@ -1,8 +1,8 @@
-classdef ChannelPanel < SequenceDependentPanel
+classdef ChannelPanel < UpdatablePanel%SequenceDependentPanel
     methods
         function obj = ChannelPanel(gui)            
             panel = uipanel('Parent',gui.btn_window,'Title','Channel selection');
-            obj@SequenceDependentPanel(gui,panel);
+            obj@UpdatablePanel(gui,panel);
             obj.layout();
         end
         
@@ -15,6 +15,7 @@ classdef ChannelPanel < SequenceDependentPanel
             obj.gui_components.add(PlotOptions(obj));
             obj.gui_components.add(WaveformSelection(obj));
             obj.gui_components.add(SpikeRemovalSelection(obj));
+            setup_components@UpdatablePanel(obj);
         end
         
         function update_panel(obj)

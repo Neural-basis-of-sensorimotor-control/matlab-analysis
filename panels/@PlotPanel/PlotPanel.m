@@ -1,10 +1,10 @@
-classdef PlotPanel < SequenceDependentPanel
+classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
     properties
     end
     methods
         function obj = PlotPanel(gui)
             panel = uipanel('Parent',gui.btn_window,'Title','Plot options');
-            obj@SequenceDependentPanel(gui,panel);
+            obj@UpdatablePanel(gui,panel);
             obj.layout();
         end
         
@@ -16,10 +16,11 @@ classdef PlotPanel < SequenceDependentPanel
             obj.gui_components.add(PlotMode(obj));
             obj.gui_components.add(ManualSpikeTimes(obj));
             obj.gui_components.add(SavePlotOptions(obj));
+            setup_components@UpdatablePanel(obj);
         end
         
         function initialize_panel(obj)
-            initialize_panel@SequenceDependentPanel(obj);
+            initialize_panel@UpdatablePanel(obj);
         %    if obj.enabled
                 obj.gui.plot_channels();
         %    end
@@ -28,7 +29,7 @@ classdef PlotPanel < SequenceDependentPanel
         function update_panel(obj)
             obj.gui.zoom_controls = get(obj.uihandle,'children');
             obj.gui.sequence_listener;
-            update_panel@SequenceDependentPanel(obj);
+        %    update_panel@UpdatablePanel(obj);
             if obj.enabled
                 if ~isempty(obj.gui.sequence)
                     obj.gui.plot_channels();

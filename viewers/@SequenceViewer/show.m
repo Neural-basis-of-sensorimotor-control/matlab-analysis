@@ -55,8 +55,9 @@ for k=first_disabled:obj.panels.n
     end
 end
 if enable_main_panel
-    obj.enable_resize_fcn(true);
-    obj.position_figures();
+   % obj.position_figures();
     figure(obj.btn_window)
 end
+drawnow
+obj.position_figures();
 end

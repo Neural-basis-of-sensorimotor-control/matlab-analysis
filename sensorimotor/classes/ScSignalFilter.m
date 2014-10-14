@@ -11,7 +11,7 @@ classdef ScSignalFilter < handle
         function obj = ScSignalFilter(parent)
             obj.parent = parent;
             obj.artifactchannels = ScList();
-            obj.remove_waveforms = ScList();
+            obj.remove_waveforms = ScRemoveWaveforms();
         end
         
         %add all stim channels from parent file to artifact filter
@@ -54,14 +54,14 @@ classdef ScSignalFilter < handle
         end
         
         function add_waveform(obj,waveform)
-            obj.remove_waveforms_list.add(waveform);
+            obj.remove_waveforms.add(waveform);
         end
     end
     
     methods (Static)
         function obj = loadobj(a)
             if isempty(a.remove_waveforms)
-                a.remove_waveforms = ScList();
+                a.remove_waveforms = ScRemoveWaveforms();
             end
             obj = a;
         end

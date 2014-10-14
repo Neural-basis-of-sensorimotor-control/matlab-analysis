@@ -1,5 +1,5 @@
 function resize_plot_window(obj)
-fprintf('resize_plot_window\n');
+
 obj.enable_resize_fcn(false);
 y = getheight(obj.plot_window);
 axeswidth = getwidth(obj.plot_window)- 3*obj.margin;

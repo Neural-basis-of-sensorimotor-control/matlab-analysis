@@ -11,7 +11,7 @@ setheight(obj.signalaxes,obj.plotheight);
 mgr.newline(getheight(obj.signalaxes));
 mgr.add(obj.signalaxes);
 for i=1:obj.extrasignalaxes.n
-    obj.extrasignalaxes.get(i).axeshandle = axes(); %#ok<LAXES>
+    obj.extrasignalaxes.get(i).axeshandle = axes();
     setheight(obj.extrasignalaxes.get(i).axeshandle,obj.plotheight);
     mgr.newline(getheight(obj.extrasignalaxes.get(i).axeshandle));
     mgr.add(obj.extrasignalaxes.get(i).axeshandle);

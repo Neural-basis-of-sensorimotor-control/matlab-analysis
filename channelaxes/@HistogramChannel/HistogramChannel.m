@@ -5,6 +5,7 @@ classdef HistogramChannel < GuiAxes
         pretrigger = -.1
         posttrigger = .1
         binwidth = 1e-2
+        rasterplot
     end
     
     methods
@@ -44,42 +45,53 @@ classdef HistogramChannel < GuiAxes
                         set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
                     case HistogramType.raster
-                        rasterplot_fig = figure(obj.gui.current_view+1);
-                        set(rasterplot_fig,'WindowStyle','modal','Name','Raster plot');
+                        if isempty(obj.gui.rasterplot_window) || ~ishandle(obj.gui.rasterplot_window)
+                            obj.gui.rasterplot_window = figure;
+                            set(obj.gui.rasterplot_window,'Name','Raster plot');
+                        end
                         [t,sweep] = obj.gui.waveform.perievent(obj.gui.triggertimes, obj.gui.pretrigger, obj.gui.posttrigger);
-                        rasterplot_axes = subplot(6,1,1:4);
-                        plot(rasterplot_axes,t,sweep,'k.','markersize',1,'Color',[0 0 0]);
-                        set(rasterplot_axes,'YDir','reverse')
-                        set(rasterplot_axes,'FontSize',14);
-                        xlabel(rasterplot_axes,'Time [s]')
-                        ylabel(rasterplot_axes,'Sweep nbr')
-                        xlim(rasterplot_axes,[obj.gui.pretrigger obj.gui.posttrigger])
-                        histogram_axes = subplot(6,1,5);
+                        obj.rasterplot = subplot(8,1,1:4,'parent',obj.gui.rasterplot_window);
+                        plot(obj.rasterplot,t,sweep,'k.','markersize',1,'Color',[0 0 0]);
+                        set(obj.rasterplot,'YDir','reverse')
+                        set(obj.rasterplot,'FontSize',14);
+                        xlabel(obj.rasterplot,'Time [s]')
+                        ylabel(obj.rasterplot,'Sweep nbr')
+                        xlim(obj.rasterplot,[obj.gui.pretrigger obj.gui.posttrigger])
+                        title(obj.rasterplot,'Raster plot');
+                        histogram_axes = subplot(8,1,6,'parent',obj.gui.rasterplot_window);
                         spiketimes = obj.gui.waveform.perievent(obj.gui.triggertimes,obj.gui.pretrigger,obj.gui.posttrigger);
                         if ~isempty(spiketimes)
                             edges = (obj.gui.pretrigger:obj.binwidth:obj.gui.posttrigger)';
                             firing = histc(spiketimes,edges)/(numel(obj.gui.triggertimes) * obj.binwidth);
                             bar(histogram_axes,edges,firing,'EdgeColor',[1 0 0]);
-                            ylabel('Firing [Hz]')
+                            xlabel(histogram_axes,'Time [s]')
+                            ylabel(histogram_axes,'Firing [Hz]')
                         end
                         xlim(histogram_axes,[obj.gui.pretrigger obj.gui.posttrigger])
-                        stimplot = subplot(6,1,6);
+                        title(histogram_axes,'Histogram');
+                        stimplot = subplot(8,1,8,'parent',obj.gui.rasterplot_window);
                         hold(stimplot,'on');
                         stims = obj.gui.sequence.stims;
                         sweeps = 1:numel(obj.gui.triggertimes);
                         height = 0;
+                        ytick = {};
                         for i=1:stims.n
                             for j=1:stims.get(i).triggers.n
                                 trg = stims.get(i).triggers.get(j);
+                                ytick(numel(ytick)+1) = {trg.tag};
                                 height = height+1;
-                                plot([obj.gui.pretrigger obj.gui.posttrigger],[height height]);
+                                plot(stimplot,[obj.gui.pretrigger obj.gui.posttrigger],[height height]);
                                 times = trg.perievent(obj.gui.triggertimes(sweeps),obj.gui.pretrigger,obj.gui.posttrigger);
                                 for k=1:numel(times)
-                                    plot(histogram_axes,times(k)*ones(2,1),height+[-.5 .5],'LineWidth',2)
+                                    plot(stimplot,times(k)*ones(2,1),height+[-.5 .5],'LineWidth',2)
                                 end
                             end
                         end
-                        axis(obj.gui.histogram.ax,'tight');
+                        xlabel(stimplot,'Time [s]');
+                        set(stimplot,'YTick',1:numel(ytick),'YTickLabel',ytick);
+                        ylabel(stimplot,'Stims');
+                        ylim(stimplot,[0 (numel(ytick)+1)]);
+                        title(stimplot,'Stims');
                 end
             end
         end

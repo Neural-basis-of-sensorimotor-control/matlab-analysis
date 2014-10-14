@@ -5,7 +5,7 @@ classdef UpdatePanelButton < PanelComponent
         end
         function populate(obj,mgr)
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','UPDATE',@(~,~) obj.update_callback()),200);
+            mgr.add(sc_ctrl('pushbutton','UPDATE',@(~,~) obj.update_callback(),'FontWeight','bold'),200);
         end
     end
     methods (Access = 'protected')

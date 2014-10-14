@@ -10,8 +10,9 @@ classdef ManualSpikeTimes < PanelComponent
         end
         function populate(obj,mgr)
             mgr.newline(20);
-            obj.ui_add = mgr.add(sc_ctrl('pushbutton','Add spiketime manually',@(~,~) obj.add_spiketime_callback()),100);
-            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove manual spiketime',@(~,~) obj.remove_spiketime_callback()),100);
+            obj.ui_add = mgr.add(sc_ctrl('pushbutton','Add spiketime manually',@(~,~) obj.add_spiketime_callback()),200);
+            mgr.newline(20);
+            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove manual spiketime',@(~,~) obj.remove_spiketime_callback()),200);
      %       sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.ui_add);
         end
 %         function initialize(obj)

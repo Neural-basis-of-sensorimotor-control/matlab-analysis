@@ -52,13 +52,13 @@ classdef HistogramParameters < PanelComponent
     
     methods (Access = 'protected')
         function pretrigger_callback(obj)
-            obj.gui.hist.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
+            obj.gui.histogram.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
         end
         function posttrigger_callback(obj)
-            obj.gui.hist.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
+            obj.gui.histogram.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
         end
         function binwidth_callback(obj)
-            obj.gui.hist.binwidth = str2double(get(obj.ui_binwidth,'string'));
+            obj.gui.histogram.binwidth = str2double(get(obj.ui_binwidth,'string'));
         end
         function hist_type_callback(obj)
             val = get(obj.ui_hist_type,'value');
@@ -66,7 +66,7 @@ classdef HistogramParameters < PanelComponent
             type = str{val};
             [enum,str_] = enumeration('HistogramType');
             index = find(cellfun(@(x) strcmp(x,type),str_));
-            obj.gui.hist.hist_type = enum(index);
+            obj.gui.histogram.hist_type = enum(index);
             obj.update();
         end
     end

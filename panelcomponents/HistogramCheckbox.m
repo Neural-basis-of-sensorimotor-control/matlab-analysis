@@ -35,6 +35,7 @@ classdef HistogramCheckbox < PanelComponent
                     if isempty(obj.gui.histogram_window) || ~ishandle(obj.gui.histogram_window)
                         obj.gui.histogram_window = figure('Color',[0 0 0]);
                         set(obj.gui.histogram,'Parent',obj.gui.histogram_window);
+                        set(obj.gui.histogram_window,'ResizeFcn',@(~,~) obj.gui.resize_histogram_window());
                     end
                 end
                 obj.panel.initialize_panel();

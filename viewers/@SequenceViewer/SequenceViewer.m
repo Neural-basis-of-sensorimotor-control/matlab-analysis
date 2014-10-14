@@ -5,6 +5,7 @@ classdef SequenceViewer < handle
         btn_window
         plot_window
         histogram_window
+        rasterplot_window
         panels
         
         digital_channels
@@ -126,8 +127,10 @@ classdef SequenceViewer < handle
             obj.main_channel = AnalogAxes(obj);
             setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
-            %            obj.histogram = HistogramChannel(obj);
-            
+            obj.histogram = HistogramChannel(obj);
+            obj.histogram_window = figure('Color',[0 0 0]);
+            set(obj.histogram,'Parent',obj.histogram_window);
+            set(obj.histogram_window,'ResizeFcn',@(~,~) obj.resize_histogram_window());
         end
         
         function analog_ch = get.analog_ch(obj)
@@ -146,9 +149,9 @@ classdef SequenceViewer < handle
             for k=1:obj.analog_ch.n
                 plots.add(obj.analog_ch.get(k));
             end
-            if ~isempty(obj.histogram)
-                plots.add(obj.histogram);
-            end
+%             if ~isempty(obj.histogram)
+%                 plots.add(obj.histogram);
+%             end
         end
         
         function tmin = get.tmin(obj)

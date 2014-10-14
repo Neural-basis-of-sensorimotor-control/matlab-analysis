@@ -8,6 +8,10 @@ classdef PanelComponent < GuiComponent
         populate(obj,mgr)
     end
     
+    properties (Dependent)
+        children
+    end
+    
     methods
         function obj = PanelComponent(panel)
             obj@GuiComponent(panel.gui,panel.uihandle);
@@ -29,6 +33,10 @@ classdef PanelComponent < GuiComponent
             else
                 obj.gui.disable_panels(obj.panel);
             end
+        end
+        
+        function children = get.children(obj)
+            children = get(obj.uihandle,'children');
         end
         
     end

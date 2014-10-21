@@ -1,31 +1,26 @@
-function show(obj,enable_main_panel)
-if nargin<2
-    enable_main_panel = 0;
-end
+function show(obj)
+
+%Clear all figures
 clf(obj.btn_window,'reset');
 set(obj.btn_window,'ToolBar','None','MenuBar','none');
 set(obj.btn_window,'CloseRequestFcn',@(~,~) obj.close_request);
+clf(obj.plot_window,'reset');
+set(obj.plot_window,'ToolBar','None','MenuBar','none');
+set(obj.plot_window,'Color',[0 0 0]);
+
+%Create panels
 obj.panels = CascadeList();
-if enable_main_panel
-    obj.add_panels();
-else
-    obj.add_main_panel();
-end
-obj.panels.get(1).enabled = true;
-obj.panels.get(2).enabled = enable_main_panel;
+obj.add_panels();
 mgr = ScLayoutManager(obj.btn_window);
 for k=1:obj.panels.n
     panel = obj.panels.get(k);
     setwidth(panel,obj.panel_width);
     mgr.newline(getheight(panel));
     mgr.add(panel);
-    panel.enabled_listener();
 end
 mgr.trim();
-clf(obj.plot_window,'reset');
-set(obj.plot_window,'ToolBar','None','MenuBar','none');
-set(obj.plot_window,'Color',[0 0 0]);
 
+%Create plot axes
 if obj.show_digital_channels
     obj.digital_channels.ax = axes;
 end
@@ -41,23 +36,20 @@ for k=1:obj.plots.n
     mgr.newline(getheight(plotaxes));
     mgr.add(plotaxes);
 end
-first_disabled = obj.panels.indexof(obj.panels.last_enabled_item);
-for k=1:first_disabled-1
-    panel = obj.panels.get(k);
-    panel.initialize_panel();
-end
-for k=first_disabled:obj.panels.n
-    panel = obj.panels.get(k);
-    panel.initialize_panel();
-    panel.update_panel();
-    if ~panel.enabled
+
+for k=1:obj.panels.n
+    if k>obj.panels.n
         break;
+    else
+        panel = obj.panels.get(k);
+        panel.initialize_panel();
+        panel.update_panel();
+        if ~panel.enabled
+            break;
+        end
     end
-end
-if enable_main_panel
-   % obj.position_figures();
-    figure(obj.btn_window)
 end
 drawnow
 obj.position_figures();
+figure(obj.btn_window)
 end

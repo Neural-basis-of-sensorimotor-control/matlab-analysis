@@ -53,7 +53,7 @@ classdef GuiManager < handle
         end
         
         function set.experiment(obj,experiment)
-            obj.viewer.experiment = experiment;
+            obj.viewer.set_experiment(experiment);
         end
     end
 end

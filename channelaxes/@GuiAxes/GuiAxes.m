@@ -18,13 +18,6 @@ classdef GuiAxes < handle
         plotch(obj,varargin)
     end
     methods
-        function dbg_in(obj,varargin)
-            obj.gui.dbg_in(varargin{:});
-        end
-        
-        function dbg_out(obj,varargin)
-            obj.gui.dbg_out(varargin{:});
-        end
         
         function obj = GuiAxes(gui)
 %            addlistener(obj,'ax','PreSet',@ax_listener_pre);

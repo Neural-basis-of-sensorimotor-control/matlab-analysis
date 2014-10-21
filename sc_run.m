@@ -14,8 +14,12 @@
 clc
 close all
 clear classes
+originalpath = cd;
+sc_path = mfilename('fullpath');
+sc_path =fileparts(sc_path);
+cd(sc_path);
 sc
-
+cd(originalpath)
 
 
 

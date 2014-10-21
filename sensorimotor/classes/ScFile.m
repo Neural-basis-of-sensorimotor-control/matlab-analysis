@@ -22,7 +22,7 @@ classdef ScFile < ScList
     
     methods
         %ScFile
-        %   filename    either .mat or .adq
+        %   filename    ends either with .mat or .adq
         function obj = ScFile(parent, filename)
             obj.parent = parent;
             obj.filename = filename;

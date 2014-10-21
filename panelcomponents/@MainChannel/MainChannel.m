@@ -24,12 +24,20 @@
         end
         
         function initialize(obj)
-            str = obj.gui.sequence.signals.values('tag');
-            if isempty(obj.gui.main_channel.signal)
-                obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
-            end
-            val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
-            set(obj.ui_channel,'string',str,'value',val,'visible','on');
+%             if isempty(obj.gui.sequence)
+%                 set(obj.panel,'visible','off');
+%             else
+                str = obj.gui.sequence.signals.values('tag');
+                if isempty(obj.gui.main_channel.signal)
+                    if any(cellfun(@(x) strmcpi(x.tag,'patch'),str))
+                        obj.gui.main_channel.signal = obj.gui.sequence.get('tag','patch');
+                    else
+                        obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
+                    end
+                end
+                val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
+                set(obj.ui_channel,'string',str,'value',val,'visible','on');
+ %           end
         end
         
     end

@@ -18,8 +18,6 @@ classdef CascadeList < ScCellList
             for k=1:obj.n
                 item = obj.get(k);
                 if ~item.enabled
-                    item.dbg_in(mfilename,'get.last_enabled_item',class(item));
-                    item.dbg_out(mfilename,'get.last_enabled_item');
                     return
                 end
             end

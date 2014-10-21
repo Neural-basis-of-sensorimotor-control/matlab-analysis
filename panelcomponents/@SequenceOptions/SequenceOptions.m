@@ -118,7 +118,7 @@ classdef SequenceOptions < PanelComponent
                     sequence = ScSequence(obj.gui.file,tag,tmin,tmax);
                     sequence.comment = '';
                     obj.gui.file.add(sequence);
-                    obj.gui.sequence = sequence;
+                    obj.gui.set_sequence(sequence);
                 elseif src==obj.ui_edit_sequence
                     obj.gui.sequence.tmin = tmin;
                     obj.gui.sequence.tmax = tmax;

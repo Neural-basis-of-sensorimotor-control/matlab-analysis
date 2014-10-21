@@ -13,15 +13,15 @@ classdef SequenceViewer < handle
         histogram
     end
     
-    properties (SetObservable)
+    properties (SetObservable, SetAccess = 'protected')
         experiment
         file
         sequence
-        
+        sc_file_folder
+        raw_data_folder
+    end
+    properties (SetObservable)
         help_text
-        
-        %         show_digital_channels = true
-        %         show_histogram = false%true
         
         has_unsaved_changes
         
@@ -46,8 +46,6 @@ classdef SequenceViewer < handle
     properties
         zoom_controls
         filepath
-        search_dir
-        data_dir
         reset_btn
     end
     
@@ -68,7 +66,9 @@ classdef SequenceViewer < handle
     end
     
     methods (Abstract)
-        add_panels(obj)
+        add_constant_panels(obj)
+        add_dynamic_panels(obj)
+        delete_dynamic_panels(obj)
     end
     
     methods (Abstract, Static)
@@ -77,43 +77,6 @@ classdef SequenceViewer < handle
     
     
     methods
-        function dbg_in(obj,varargin)
-            global DEBUG
-            if DEBUG
-                for k=1:obj.debug_indent
-                    fprintf('\t');
-                end
-                fprintf('Entering ');
-                for k=1:nargin-1
-                    if ischar(varargin{k})
-                        fprintf('%s\\',varargin{k});
-                    else
-                        fprintf('%g\\',varargin{k});
-                    end
-                end
-                fprintf('\n');
-                obj.debug_indent = obj.debug_indent + 1;
-            end
-        end
-        
-        function dbg_out(obj,varargin)
-            global DEBUG
-            if DEBUG
-                obj.debug_indent = obj.debug_indent - 1;
-                for k=1:obj.debug_indent
-                    fprintf('\t');
-                end
-                fprintf('Exiting ');
-                for k=1:nargin-1
-                    if ischar(varargin{k})
-                        fprintf('%s\\',varargin{k});
-                    else
-                        fprintf('%g\\',varargin{k});
-                    end
-                end
-                fprintf('\n');
-            end
-        end
         
         function obj = SequenceViewer(guimanager)
             close all
@@ -149,9 +112,6 @@ classdef SequenceViewer < handle
             for k=1:obj.analog_ch.n
                 plots.add(obj.analog_ch.get(k));
             end
-%             if ~isempty(obj.histogram)
-%                 plots.add(obj.histogram);
-%             end
         end
         
         function tmin = get.tmin(obj)
@@ -176,13 +136,22 @@ classdef SequenceViewer < handle
             val = ~isempty(obj.histogram);
         end
         function delete(obj)
+            fid = fopen('sc_config.txt','w');
             if ~isempty(obj.experiment)
-                fid = fopen('sc_confiq.txt','w');
-                fprintf(fid,'%s\n',obj.search_dir);
-                fprintf(fid,'%s\n',obj.data_dir);
-                fprintf(fid,'%s\n',obj.experiment.save_name);
-                fclose(fid);
+                if ~isempty(obj.experiment) && ~isempty(obj.experiment.save_name)
+                    p = fileparts(obj.experiment.save_name);
+                    if ~isempty(p)
+                        obj.set_sc_file_folder(p);
+                    end
+                    if isdir(obj.experiment.fdir)
+                        obj.set_raw_data_folder(obj.experiment.fdir);
+                    end
+                end
             end
+            fprintf(fid,'%s\n',obj.sc_file_folder);
+            fprintf(fid,'%s\n',obj.raw_data_folder);
+            fprintf(fid,'%s\n',obj.experiment.save_name);
+            fclose(fid);
         end
     end
 end

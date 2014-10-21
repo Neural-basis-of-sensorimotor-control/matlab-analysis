@@ -1,11 +1,14 @@
 function disable_panels(obj, panel)
-obj.dbg_in(mfilename,'disable_panels');
+
 index = obj.panels.indexof(panel);
 for k=index:obj.panels.n
-    obj.panels.get(k).enabled = false;
+    if k>obj.panels.n
+        break;
+    else
+        obj.panels.get(k).enabled = false;
+    end
 end
 for k=1:obj.plots.n
     cla(obj.plots.get(k).ax);
 end
-obj.dbg_out(mfilename,'disable_panels');
 end

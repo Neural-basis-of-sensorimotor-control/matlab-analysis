@@ -23,5 +23,11 @@ classdef UiWrapper < handle
                 set(obj.uihandle,varargin{:});
             end
         end
+        
+        function delete(obj)
+            if ~isempty(obj.uihandle) && (ishandle(obj.uihandle) || isobject(obj.uihandle))
+                delete(obj.uihandle)
+            end
+        end
     end
 end

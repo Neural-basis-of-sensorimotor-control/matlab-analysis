@@ -165,7 +165,7 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function define_threshold_plothandle(obj)
-            obj.dbg_in(mfilename,'define_threshold_plothandle');
+            
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             obj.gui.plot_channels(@(~,~) obj.btn_down_fcn_addition);
             
@@ -186,7 +186,7 @@ classdef ThresholdOptions < PanelComponent
             obj.endpoint = [];
             obj.endpoint_index = -1;
             obj.endpoint_str = [];
-            obj.dbg_out();
+            
             
             set(obj.gui.plot_window,'WindowButtonMotionFcn',@(~,~) obj.move_endpoint);
             
@@ -194,24 +194,24 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function move_endpoint(obj)
-            obj.dbg_in(mfilename,'move_endpoint')
+            
             if ~isempty(obj.endpoint)
                 p = get(obj.gui.main_axes,'CurrentPoint');
                 set(obj.endpoint,'YData',p(1,2));
             end
-            obj.dbg_out();
+            
         end
         
         function drag_endpoint(obj, index,str,src)
-            obj.dbg_in(mfilename,'drag_endpoint');
+           
             obj.endpoint = src;
             obj.endpoint_index = index;
             obj.endpoint_str = str;
-            obj.dbg_out();
+            
         end
         
         function drop_endpoint(obj)
-            obj.dbg_in(mfilename,'drop_endpoint');
+           
             if ~isempty(obj.endpoint)
                 p = get(obj.gui.main_axes,'CurrentPoint');
                 set(obj.endpoint,'YData',p(1,2));
@@ -224,7 +224,7 @@ classdef ThresholdOptions < PanelComponent
                 end
                 obj.define_threshold_plothandle();
             end
-            obj.dbg_out();
+           
         end
         
         function remove_threshold_plotfcn(obj)
@@ -268,7 +268,7 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function btn_down_fcn_removal(obj,index,wfindex,ind,time_remove,v_remove,colors)
-            obj.dbg_in(mfilename,'btn_down_fcn_removal');
+            
             sc_piecewiseplot(obj.gui.main_axes,time_remove(wfindex==index),v_remove(wfindex==index,ind),'Color',colors(index,:),...
                 'LineWidth',4);
             option = questdlg('Delete highlighted threshold?','Delete',...
@@ -292,7 +292,7 @@ classdef ThresholdOptions < PanelComponent
                     %do nothing
             end
             obj.show_panels(0);
-            obj.dbg_out();
+     
         end
         
         function btn_down_fcn_addition(obj)   

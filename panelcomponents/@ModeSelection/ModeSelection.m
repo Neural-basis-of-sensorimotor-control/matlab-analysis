@@ -17,11 +17,11 @@ classdef ModeSelection < PanelComponent
         end
         
         function initialize(obj)
-            obj.dbg_in(mfilename,'initialize');
+            
             [~,str_] = enumeration('ScGuiState');
             set(obj.ui_mode,'string',str_,'value',find(obj.gui.parent.mode == enumeration('ScGuiState')),...
                 'visible','on');
-            obj.dbg_out();
+
         end
         
         function update = update(obj)

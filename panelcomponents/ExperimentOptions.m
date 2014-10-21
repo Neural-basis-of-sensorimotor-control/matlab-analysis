@@ -11,7 +11,7 @@ classdef ExperimentOptions < PanelComponent
         end
         
         function populate(obj, mgr)
-            obj.dbg_in(mfilename,'populate');
+            
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Experiment:'),100);
             obj.ui_experiment = mgr.add(sc_ctrl('text',[]),100);
@@ -27,7 +27,7 @@ classdef ExperimentOptions < PanelComponent
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);
-            obj.dbg_out(mfilename,'populate');
+
         end
         
         function initialize(obj)
@@ -43,37 +43,26 @@ classdef ExperimentOptions < PanelComponent
         function experiment_listener(obj,~,~)
             if ~isempty(obj.gui.experiment)
                 set(obj.ui_experiment,'string',obj.gui.experiment.save_name,'visible','on');
-                if obj.gui.experiment.n
-                    set(obj.ui_file,'string',obj.gui.experiment.values('tag'),'visible','on');
-                else
-                    set(obj.ui_file,'visible','off');
-                end
             else
-                set(obj.ui_experiment,'string',[]);
-                set(obj.ui_file,'visible','off');
+                set(obj.ui_experiment,'string',[],'visible','off');
             end
-            
         end
 
         function file_listener(obj,~,~)
             if ~isempty(obj.gui.file)
-                index = find(cellfun(@(x) strcmp(x,obj.gui.file.tag),obj.gui.experiment.values('tag')));
-                set(obj.ui_file,'value',index,'visible','on');
-                if obj.gui.file.n
-                    set(obj.ui_sequence,'string',obj.gui.file.values('tag'),'visible','on');
-                else
-                    set(obj.ui_sequence,'visible','off');
-                end
+                str = obj.gui.experiment.values('tag');
+                val = find(cellfun(@(x) strcmp(x,obj.gui.file.tag),str));
+                set(obj.ui_file,'string',str,'value',val,'visible','on');
             else 
                 set(obj.ui_file,'visible','off');
-                set(obj.ui_sequence,'visible','off');
             end
         end
         
         function sequence_listener(obj,~,~)
             if ~isempty(obj.gui.sequence)
-                index = find(cellfun(@(x) strcmp(x,obj.gui.sequence.tag),obj.gui.file.values('tag')));
-                set(obj.ui_sequence,'value',index,'visible','on');
+                str = obj.gui.file.values('tag');
+                val = find(cellfun(@(x) strcmp(x,obj.gui.sequence.tag),str));
+                set(obj.ui_sequence,'string',str,'value',val,'visible','on');
             else 
                 set(obj.ui_sequence,'visible','off');
             end
@@ -82,17 +71,15 @@ classdef ExperimentOptions < PanelComponent
         function file_callback(obj)
             str = get(obj.ui_file,'string');
             val = get(obj.ui_file,'value');
-            obj.gui.file = obj.gui.experiment.get('tag',str{val});
+            obj.gui.set_file(obj.gui.experiment.get('tag',str{val}));
             obj.show_panels(false);
         end
         
         function sequence_callback(obj)  
-            obj.dbg_in(mfilename,'sequence_callback');
             str = get(obj.ui_sequence,'string');
             val = get(obj.ui_sequence,'value');
-            obj.gui.sequence = obj.gui.file.get('tag',str{val});
+            obj.gui.set_sequence(obj.gui.file.get('tag',str{val}));
             obj.show_panels(false);
-            obj.dbg_out(mfilename,'sequence_callback');
         end
         
     end

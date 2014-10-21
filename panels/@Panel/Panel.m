@@ -78,7 +78,6 @@ classdef Panel < GuiComponent
                 previous_panel_enabled = false;
             end
             if obj.enabled || previous_panel_enabled
-            %    obj.initialize_panel();
                 set(obj.uihandle,'Visible','on');
             else
                 set(obj.uihandle,'Visible','off');

@@ -100,7 +100,7 @@ classdef TriggerSelection < PanelComponent
         end
         
         function trigger_listener(obj)
-            obj.dbg_in(mfilename,'trigger_listener');
+            
             if isempty(obj.gui.trigger)
                 set(obj.ui_trigger,'visible','off');
                 set(obj.ui_nbr_of_sweeps,'string','No triggers to show');
@@ -112,7 +112,7 @@ classdef TriggerSelection < PanelComponent
                 set(obj.ui_nbr_of_sweeps,'string',sprintf('Total nbr of sweeps: %i',...
                     numel(obj.gui.triggertimes)));
             end
-            obj.dbg_out(mfilename,'trigger_listener');
+            
         end
         
     end

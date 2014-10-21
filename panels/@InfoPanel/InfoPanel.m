@@ -1,18 +1,16 @@
 classdef InfoPanel < UpdatablePanel
     properties
-        panel_is_populated = false
+        dynamic_panels_exist = false
     end
     methods
         function obj = InfoPanel(gui)
             panel = uipanel('Parent',gui.btn_window,'Title','Main');
             obj@UpdatablePanel(gui,panel);
             obj.layout();
-            addlistener(panel,'BeingDeleted','PostSet',@(~,~) obj.being_deleted_fcn);
         end
         
         function layout(obj)
             layout@Panel(obj);
-            obj.panel_is_populated = true;
         end
         
         function setup_components(obj)   
@@ -20,34 +18,39 @@ classdef InfoPanel < UpdatablePanel
             obj.gui_components.add(ExperimentOptions(obj));
             obj.gui_components.add(SequenceOptions(obj));
             obj.gui_components.add(SequenceTextBox(obj));
-            if ~isempty(obj.gui.sequence)
-                obj.gui_components.add(ModeSelection(obj));
-                obj.gui_components.add(ChannelOptions(obj));
-            end
+            obj.gui_components.add(ModeSelection(obj));
+            obj.gui_components.add(ChannelOptions(obj));
+            obj.dynamic_panels_exist = true;
             setup_components@UpdatablePanel(obj);
         end
         
         function update_panel(obj)
             update_panel@Panel(obj);
-            obj.gui.show(obj.enabled);
             if isempty(obj.gui.sequence)
                 obj.enabled = false;
-            end
-        end
-        
-        function initialize_panel(obj)
-            if obj.panel_is_populated
-                initialize_panel@Panel(obj);
+            elseif ~obj.dynamic_panels_exist
+                obj.gui.add_dynamic_panels();
+                obj.dynamic_panels_exist = true;
+                for k=3:obj.gui.panels.n
+                    panel = obj.gui.panels.get(k);
+                    panel.initialize_panel();
+                    panel.update_panel();
+                    if ~panel.enabled
+                        break;
+                    end
+                end
+                obj.gui.resize_btn_window();
             end
         end
         
     end
     
-    methods (Access = 'protected')
-        function being_deleted_fcn(obj)
-            if get(obj.uihandle,'BeingDeleted')
-                obj.panel_is_populated = false;
-            end
+    methods %(Access = 'protected')
+        function enabled_listener(obj)
+           if ~obj.enabled
+               obj.gui.delete_dynamic_panels();
+               obj.dynamic_panels_exist = false;
+           end
         end
     end
 end

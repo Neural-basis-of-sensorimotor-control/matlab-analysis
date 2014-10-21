@@ -10,7 +10,7 @@ classdef FilterOptions < PanelComponent
         end
         
         function populate(obj,mgr)
-            obj.dbg_in(mfilename,'populate');
+            
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Smoothing width'),100);
             obj.ui_smoothing_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.smoothing_width_callback,...
@@ -29,7 +29,7 @@ classdef FilterOptions < PanelComponent
 %             mgr.add(sc_ctrl('text','samples'),50);
             
             sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
-            obj.dbg_out(mfilename,'populate');
+
         end
         
         function initialize(obj)

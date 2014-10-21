@@ -9,7 +9,7 @@ classdef UpdatePanel < Panel
         end
         
         function setup_components(obj)   
-            obj.gui_components.add(UpdateButton(obj));
+            obj.gui_components.add(ResetButton(obj));
             obj.gui_components.add(HelpBox(obj));
         end
 

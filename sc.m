@@ -31,30 +31,33 @@ if ~isempty(findall(0,'type','figure'))
 end
 args = varargin;
 
-if  exist('sc_confiq.txt','file') == 2
-    fid = fopen('sc_confiq.txt');
-    search_dir = fgetl(fid);
-    data_dir = fgetl(fid);
+if  exist('sc_config.txt','file') == 2
+    fid = fopen('sc_config.txt');
+    sc_file_folder = fgetl(fid);
+    if isempty(sc_file_folder)
+        sc_file_folder = cd;
+    end
+    raw_data_folder = fgetl(fid);
     if ~numel(args)
         str = fgetl(fid);
         if ischar(str)
-            filename = [search_dir '\' str];
+            filename = [sc_file_folder '\' str];
             if exist(filename,'file') == 2
                 args = {filename};
             end
         end
     end
     fclose(fid);
+    if ~ischar(sc_file_folder), sc_file_folder = [];    end
+    if ~ischar(raw_data_folder),   raw_data_folder = [];      end
 else
-    search_dir = [];
-    data_dir = [];
+    sc_file_folder = [];
+    raw_data_folder = [];
 end
 
-if ~ischar(search_dir), search_dir = [];    end
-if ~ischar(data_dir),   data_dir = [];      end
-
 if ~numel(args) || strcmpi(args{1},'-loadnew')
-    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',search_dir);
+    %Force program to neglect sc_config.txt
+    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',sc_file_folder);
     filename = fullfile(pname,fname);
     if exist(filename,'file') == 2
         args = {filename};
@@ -70,36 +73,35 @@ elseif strcmpi(args{1},'-help')
     help(mfilename)
     return
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
-    fdir = uigetdir;
-    if isnumeric(fdir), return, end
-    
-    experiment = ScExperiment('fdir',fdir);
-    guimgr = GuiManager();
-    guimgr.viewer.data_dir = data_dir;
-    guimgr.experiment = experiment;
+    %Create new *_sc.mat file
+    experiment = ScExperiment();
     if strcmpi(args{1},'-newsp2')
-        files = what(fdir);
-        rawdatafiles = cellfun(@(x) cell2mat(regexp(x,'^[\w]{1,1}[A-Z]{3,3}[0-9]{4,4}\.mat.{0,0}','match')), files.mat, 'UniformOutput',false);
+        [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+        if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
     else  %adq
-        files = dir(fdir);
-        rawdatafiles = cellfun(@(x) cell2mat(regexp(x,'^[A-Z]{3,3}[0-9]{5,5}\.ADQ.{0,0}','match')), {files.name}, 'UniformOutput',false);
+        [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+        if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
     end
+    experiment.fdir = raw_data_folder;
     rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x),rawdatafiles));
     for i=1:numel(rawdatafiles)
         fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
         file = ScFile(experiment, rawdatafiles{i});
         if strcmpi(args{1},'-newsp2')
+            %Look for 'Pontus-style' files with spikes detected in Spike2 
             [~,name] = fileparts(rawdatafiles{i});
-            spikefiles = cellfun(@(x) cell2mat(regexp(x,['^' name '_\w*\.mat.{0,0}'],'match')), files.mat, 'UniformOutput',false);
+            spikefiles = cellfun(@(x) cell2mat(regexp(x,['^' name '_\w*\.mat.{0,0}'],'match')), rawdatafiles, 'UniformOutput',false);
             file.spikefiles = spikefiles(cellfun(@(x) ~isempty(x), spikefiles));
         end
         file.init();
         experiment.add(file);
     end
     if ~experiment.n
-        msgbox('No data of requested type in directory. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
+        msgbox('No files selected. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
         return;
     else
+        guimgr = GuiManager();
+        guimgr.experiment = experiment; 
         guimgr.viewer.has_unsaved_changes = ~experiment.sc_save();
         guimgr.show;
     end
@@ -118,13 +120,10 @@ else
         end
     end
     guimgr = GuiManager();
-    if numel(args)>=2
-        data_dir = args{2};
-    end
-    guimgr.viewer.data_dir = data_dir;
+    guimgr.viewer.set_sc_file_folder(sc_file_folder);
+    guimgr.viewer.set_raw_data_folder(raw_data_folder);
     d = load(filename);
     
-    guimgr.viewer.search_dir = fileparts(filename);
     experiment = d.obj;
     clear d
     guimgr.experiment = experiment;

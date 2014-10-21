@@ -26,18 +26,28 @@ classdef ChannelOptions < PanelComponent
         
         function initialize(obj)
             set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
-            str = cell(obj.gui.file.signals.n,1);
-            for k=1:numel(str), str(k) = {num2str(k)}; end
-            obj.gui.nbr_of_analog_channels = obj.gui.analog_ch.n;
-            set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
-                'on');
+            if ~obj.gui.file.signals.n
+                set(obj.ui_nbr_of_channels,'visible','off');
+            else
+                str = cell(obj.gui.file.signals.n,1);
+                for k=1:numel(str), str(k) = {num2str(k)}; end
+                obj.gui.nbr_of_analog_channels = obj.gui.analog_ch.n;
+                set(obj.ui_nbr_of_channels,'string',str,'value',obj.gui.nbr_of_analog_channels,'visible',...
+                    'on');
+            end
         end
         
         function updated = update(obj)
-            obj.show_digital_channels_callback(true);
-            obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
-            obj.update_nbr_of_analog_axes();
-            updated = true;
+            if obj.gui.file.signals.n
+                obj.show_digital_channels_callback(true);
+                obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
+                obj.update_nbr_of_analog_axes();
+                updated = true;
+                set(obj.ui_nbr_of_channels,'visible','on');
+            else
+                set(obj.ui_nbr_of_channels,'visible','off');
+                updated = false;
+            end
         end
         
     end
@@ -55,6 +65,10 @@ classdef ChannelOptions < PanelComponent
             for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_ch.n
                 obj.gui.analog_subch.remove_at(obj.gui.nbr_of_analog_channels);
             end
+            for k=1:obj.gui.analog_ch.n
+                set(obj.gui.analog_ch.get(k),'Parent',obj.gui.plot_window);
+            end
+            obj.gui.resize_plot_window();
         end
         
         function show_digital_channels_callback(obj,hide_panels)

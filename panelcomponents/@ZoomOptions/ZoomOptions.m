@@ -15,7 +15,7 @@ classdef ZoomOptions < PanelComponent
         
         function populate(obj,mgr)
             mgr.newline(20);
-            obj.ui_zoom = mgr.add(sc_ctrl('pushbutton','Zoom',@(~,~) obj.zoom_callback),100);
+            obj.ui_zoom = mgr.add(sc_ctrl('pushbutton','Manual zoom',@(~,~) obj.zoom_callback),100);
             obj.ui_pan = mgr.add(sc_ctrl('pushbutton','Pan',@(~,~) obj.pan_callback),100);
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);

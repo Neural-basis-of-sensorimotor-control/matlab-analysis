@@ -2,6 +2,10 @@ function sc(varargin)
 %SC View Spike2 or binary files from experiment
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
+%   
+%   SC -LOADNEW suppress autoloading of previous experiment file
+%
+%   SC -VERSION get versioning number
 %
 %   SC FILEPATH load experiment file that is found at FILEPATH
 %
@@ -20,11 +24,8 @@ function sc(varargin)
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
-global DEBUG
-DEBUG = 0;
-addpath layout\ sensorimotor\classes\ sensorimotor\gui\ sensorimotor\functions\ third-party\ ...
-    viewers\ panelcomponents\ panels\ channelaxes\ enumtypes\ uiobjects\ utility\
-
+addpath(genpath(fileparts(mfilename('fullpath'))));
+github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
 close all
 if ~isempty(findall(0,'type','figure'))
     return
@@ -105,8 +106,12 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         guimgr.viewer.has_unsaved_changes = ~experiment.sc_save();
         guimgr.show;
     end
+elseif strcmpi(args{1},'-version')
+    fprintf('Version number: 1.0.0\n');
+    fprintf('This project has been modified since the last release.\n');
+    fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
 elseif numel(args{1}) && args{1}(1) == '-'
-    msgbox(['Illegal command : ' args{1}]);
+    fprintf(['Illegal command : ' args{1}]);
     return;
 else
     if exist(args{1},'file') == 2

@@ -27,8 +27,13 @@ classdef ScWaveform < ScTrigger & ScList
         %Load spike times from separate Spike2 file
         function sc_loadtimes(obj)
             if ~isempty(obj.spike2filename)
-                d = load(fullfile(obj.parent.fdir,obj.spike2filename));
-                obj.imported_spiketimes = d.spikes.times;
+                fname = fullfile(obj.parent.fdir,obj.spike2filename);
+                if isempty(who('-file',fname,'spikes'))
+                    fprintf('Warning: could not find channel ''spikes'' in file %s.\n',fname);
+                else
+                    d = load(fname,'spikes');
+                    obj.imported_spiketimes = d.spikes.times;
+                end
             end
         end
         

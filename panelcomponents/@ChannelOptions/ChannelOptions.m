@@ -39,11 +39,8 @@ classdef ChannelOptions < PanelComponent
         
         function updated = update(obj)
             if obj.gui.file.signals.n
-                obj.show_digital_channels_callback(true);
-                obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
-                obj.update_nbr_of_analog_axes();
-                updated = true;
                 set(obj.ui_nbr_of_channels,'visible','on');
+                updated = true;
             else
                 set(obj.ui_nbr_of_channels,'visible','off');
                 updated = false;
@@ -76,6 +73,7 @@ classdef ChannelOptions < PanelComponent
             if val
                 if isempty(obj.gui.digital_channels)
                     obj.gui.digital_channels = DigitalAxes(obj.gui);
+                    set(obj.gui.digital_channels.ax,'Parent',obj.gui.plot_window);
                 end
             else
                 obj.gui.digital_channels = [];

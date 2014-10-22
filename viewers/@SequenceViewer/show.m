@@ -10,7 +10,7 @@ set(obj.plot_window,'Color',[0 0 0]);
 
 %Create panels
 obj.panels = CascadeList();
-obj.add_panels();
+obj.add_constant_panels();
 mgr = ScLayoutManager(obj.btn_window);
 for k=1:obj.panels.n
     panel = obj.panels.get(k);
@@ -37,17 +37,11 @@ for k=1:obj.plots.n
     mgr.add(plotaxes);
 end
 
-for k=1:obj.panels.n
-    if k>obj.panels.n
-        break;
-    else
-        panel = obj.panels.get(k);
-        panel.initialize_panel();
-        panel.update_panel();
-        if ~panel.enabled
-            break;
-        end
-    end
+nbr_of_constant_panels = obj.panels.n;
+for k=1:nbr_of_constant_panels
+    panel = obj.panels.get(k);
+    panel.initialize_panel();
+    panel.update_panel();
 end
 drawnow
 obj.position_figures();

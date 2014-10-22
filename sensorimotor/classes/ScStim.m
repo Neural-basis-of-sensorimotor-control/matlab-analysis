@@ -17,6 +17,10 @@ classdef ScStim < ScChannel
         
         function sc_loadtimes(obj)
             obj.triggers = ScList();
+            if isempty(who('-file',obj.parent.filepath,obj.channelname))
+                fprintf('Warning: Could not find channel %s in file %s\n',obj.channelname,obj.parent.filepath);
+                return
+            end
             d = load(obj.parent.filepath,obj.channelname);
             times = d.(obj.channelname).times;
             if isfield(d.(obj.channelname),'codes')

@@ -2,7 +2,7 @@ classdef ScAdqSweeps < ScEvent & ScTrigger
     properties
         nbrofsweeps
         sweepwidth
-        tag = 'ADQ sweep'
+        tag = 'Sweep #'
     end
     
     properties (Dependent)

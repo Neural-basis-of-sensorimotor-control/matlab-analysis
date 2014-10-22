@@ -9,6 +9,16 @@ end
 triggerpos = round((triggertimes-tmin)/dt)+1;
 sweeppos = (round(pretrigger/dt):round(posttrigger/dt))';
 pos = bsxfun(@plus,triggerpos,sweeppos);
+
+min_pos = min(pos(:));
+if min_pos<1
+    v = [zeros(abs(min_pos)+1,1); v];
+    pos = pos + abs(min_pos)+1;
+end
+max_pos = max(pos(:));
+if max_pos>numel(v)
+    v = [v; zeros(abs(max_pos)-numel(v),1)];
+end
 sweeps = v(pos);
 
 time = sweeppos*dt;

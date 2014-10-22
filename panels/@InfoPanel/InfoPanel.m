@@ -20,7 +20,7 @@ classdef InfoPanel < UpdatablePanel
             obj.gui_components.add(SequenceTextBox(obj));
             obj.gui_components.add(ModeSelection(obj));
             obj.gui_components.add(ChannelOptions(obj));
-            obj.dynamic_panels_exist = true;
+           % obj.dynamic_panels_exist = true;
             setup_components@UpdatablePanel(obj);
         end
         
@@ -28,7 +28,7 @@ classdef InfoPanel < UpdatablePanel
             update_panel@Panel(obj);
             if isempty(obj.gui.sequence)
                 obj.enabled = false;
-            elseif ~obj.dynamic_panels_exist
+            elseif obj.enabled && ~obj.dynamic_panels_exist
                 obj.gui.add_dynamic_panels();
                 obj.dynamic_panels_exist = true;
                 for k=3:obj.gui.panels.n
@@ -47,7 +47,7 @@ classdef InfoPanel < UpdatablePanel
     
     methods %(Access = 'protected')
         function enabled_listener(obj)
-           if ~obj.enabled
+           if ~obj.enabled && obj.dynamic_panels_exist
                obj.gui.delete_dynamic_panels();
                obj.dynamic_panels_exist = false;
            end

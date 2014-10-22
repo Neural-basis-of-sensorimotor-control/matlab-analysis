@@ -307,7 +307,7 @@ classdef ThresholdOptions < PanelComponent
                 obj.tabs(n+1) = p(1,1);
                 obj.vabs(n+1) = p(1,2);
                 if ~n
-                    amplitude = range(get(obj.gui.main_axes,'ylim'))/10;
+                    amplitude = sc_range(get(obj.gui.main_axes,'ylim'))/10;
                     obj.upper(n+1) = amplitude;
                     obj.lower(n+1) = -amplitude;         
                 else

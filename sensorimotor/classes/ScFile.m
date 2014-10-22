@@ -1,6 +1,6 @@
 classdef ScFile < ScList
-%One for each spike2 / adq file
-%children: ScSequence
+    %One for each spike2 / adq file
+    %children: ScSequence
     properties
         parent      %ScExperiment
         filename    %name of .mat / .adq file
@@ -8,16 +8,16 @@ classdef ScFile < ScList
         spikefiles  %extra files with spike data imported from Spike2
         
         signals         %List of analog channels (ScSignal)
-        stims           %List of digital channels (ScStim)
+        stims           %List of digital channels (ScStim / ScAdqTriggerParent)
         textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
     end
     
     properties (Dependent)
-        is_adq_file     
-        tag             
-        filepath        
-        fdir          
-        channels        
+        is_adq_file
+        tag
+        filepath
+        fdir
+        channels
     end
     
     methods
@@ -52,6 +52,7 @@ classdef ScFile < ScList
                 if isnumeric(line) && line == -1
                     fclose(fid);
                     msgbox(['Could not find file ''' obj.tag '''in protocol file'])
+                    return
                 elseif strcmp(line, ['¤¤' obj.tag])
                     break;
                 end
@@ -81,7 +82,7 @@ classdef ScFile < ScList
                     else
                         obj.comment = sprintf([obj.comment '\n' line]);
                     end
-                elseif checkForEvent(line)                    
+                elseif checkForEvent(line)
                     pos = find(line==' ',2);
                     tmin = str2double(line(pos(1):pos(2)));
                     tag = line(1);
@@ -141,7 +142,7 @@ classdef ScFile < ScList
                 obj.channels.get(i).sc_clear();
             end
         end
-
+        
         %Check that raw data file exists on hard drive
         function success = check_fdir(obj)
             success = false;
@@ -149,19 +150,17 @@ classdef ScFile < ScList
                 success = true;
             else
                 while  exist(obj.filepath, 'file') ~= 2
-                %  if exist(obj.filepath,'file') ~= 2
-                        answer = questdlg(['File ' obj.filename ' could not be ' ...
-                            'found in current directory. Abort program?'],'',...
-                            'Yes, abort','No, choose new directory',...
-                            'No, choose new directory');
-                        switch answer
-                            case 'Yes, abort'
-                                return
-                            case 'No, choose new directory'
-                            otherwise
-                                error(['debugging error: ' answer ' could not be found'])
-                        end
-                %    end
+                    answer = questdlg(['File ' obj.filename ' could not be ' ...
+                        'found in current directory. Abort program?'],'',...
+                        'Yes, abort','No, choose new directory',...
+                        'No, choose new directory');
+                    switch answer
+                        case 'Yes, abort'
+                            return
+                        case 'No, choose new directory'
+                        otherwise
+                            error(['debugging error: ' answer ' could not be found'])
+                    end
                     dname = uigetdir(obj.parent.fdir,'Choose load directory');
                     if ~isnumeric(dname)
                         obj.parent.fdir = dname;
@@ -188,10 +187,10 @@ classdef ScFile < ScList
             else
                 success = obj.init_spike2_file();
             end
-        end    
-                
+        end
+        
         %Triggers = objects that can be triggered on
-        %Implement function gettimes, and property istrigger returns true 
+        %Implement function gettimes, and property istrigger returns true
         %Only returns objects where numel(times)>0
         function triggers = gettriggers(obj,tmin,tmax)
             triggers = ScCellList;
@@ -257,7 +256,7 @@ classdef ScFile < ScList
                     end
                 end
             end
-            for i=1:obj.stims.n                
+            for i=1:obj.stims.n
                 stimtriggers = obj.stims.get(i).triggers;
                 for j=1:stimtriggers.n
                     if numel(stimtriggers.get(j).gettimes(tmin,tmax))
@@ -276,7 +275,7 @@ classdef ScFile < ScList
                 end
             end
         end
-
+        
         function fdir = get.fdir(obj)
             fdir = obj.parent.fdir;
         end
@@ -367,7 +366,7 @@ classdef ScFile < ScList
             all_zeros = fread(fid,244,'uint8');
             if nnz(all_zeros), warning('%i values that should equal zero differ from zero\n',nnz(all_zeros)); end
             fclose(fid);
-
+            
             for k=1:nbrofchannels
                 tag = sprintf('ch%i',k);
                 signal = ScSignal(obj,256+(k-1)*N,'tag',tag,...
@@ -376,8 +375,9 @@ classdef ScFile < ScList
                 signal.filter.artifact_width = 0;
                 obj.signals.add(signal);
             end
-            obj.stims.add(ScAdqSweeps(nbrofsweeps, buffersize*dt));
-            
+            triggerparent = ScAdqTriggerParent();
+            triggerparent.triggers.add(ScAdqSweeps(nbrofsweeps, buffersize*dt));  
+            obj.stims.add(triggerparent);
             success = true;
         end
     end

@@ -1,4 +1,4 @@
- classdef MainChannel < PanelComponent
+classdef MainChannel < PanelComponent
     %Select main panel
     properties
         ui_channel
@@ -24,21 +24,27 @@
         end
         
         function initialize(obj)
-%             if isempty(obj.gui.sequence)
-%                 set(obj.panel,'visible','off');
-%             else
-                str = obj.gui.sequence.signals.values('tag');
-                if isempty(obj.gui.main_channel.signal)
-                    if any(cellfun(@(x) strmcpi(x.tag,'patch'),str))
-                        obj.gui.main_channel.signal = obj.gui.sequence.get('tag','patch');
-                    else
-                        obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
-                    end
+            str = obj.gui.sequence.signals.values('tag');
+            if isempty(obj.gui.main_channel.signal)
+                if any(cellfun(@(x) strmcpi(x.tag,'patch'),str))
+                    obj.gui.main_channel.signal = obj.gui.sequence.get('tag','patch');
+                else
+                    obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
                 end
-                val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
-                set(obj.ui_channel,'string',str,'value',val,'visible','on');
- %           end
+            end
+            val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
+            set(obj.ui_channel,'string',str,'value',val,'visible','on');
         end
-        
+       
+        function updated = update(obj)
+            if isempty(obj.gui.sequence) || ~obj.gui.sequence.signals.n
+                updated = false;
+            else
+                val = get(obj.ui_channel,'value');
+                str = get(obj.ui_channel,'string');
+                obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
+                updated = true;
+            end
+        end
     end
 end

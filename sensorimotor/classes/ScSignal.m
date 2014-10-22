@@ -46,6 +46,10 @@ classdef ScSignal < ScChannel
                 v_raw = fread(fid,obj.N,'uint16');
                 fclose(fid);
             else
+                if isempty(who('-file',obj.parent.filepath,obj.channelname))
+                    msgbox('Error: Could not find channel %s in file %s\n',obj.channelname,obj.parent.filepath);
+                    return
+                end
                 d = load(obj.parent.filepath,obj.channelname);
                 obj.dt = d.(obj.channelname).interval;
                 obj.N = d.(obj.channelname).length;%numel(obj.v_raw);

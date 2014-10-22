@@ -27,12 +27,14 @@ classdef PlotMode < PanelComponent
     
     methods (Access = 'protected')
         function plot_mode_callback(obj)
+            obj.gui.lock_screen(true,'Wait, plotting...');
             str = get(obj.ui_plot_mode,'string');
             val = get(obj.ui_plot_mode,'value');
             [enum,enum_str] = enumeration('PlotModes');
             ind = cellfun(@(x) strcmp(x,str{val}),enum_str);
             obj.gui.plotmode = enum(ind);
             obj.gui.plot_channels();
+            obj.gui.lock_screen(false,'Done');
         end
         
         function plotmode_listener(obj)

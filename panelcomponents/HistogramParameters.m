@@ -61,13 +61,15 @@ classdef HistogramParameters < PanelComponent
             obj.gui.histogram.binwidth = str2double(get(obj.ui_binwidth,'string'));
         end
         function hist_type_callback(obj)
+            obj.gui.lock_screen(true,'Plotting histogram...');
             val = get(obj.ui_hist_type,'value');
             str = get(obj.ui_hist_type,'string');
             type = str{val};
             [enum,str_] = enumeration('HistogramType');
-            index = find(cellfun(@(x) strcmp(x,type),str_));
+            index = find(cellfun(@(x) strcmp(x,type),str_),1);
             obj.gui.histogram.hist_type = enum(index);
             obj.update();
+            obj.gui.lock_screen(false);
         end
     end
 end

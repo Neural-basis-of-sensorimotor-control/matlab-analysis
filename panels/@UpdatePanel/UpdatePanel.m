@@ -2,7 +2,7 @@ classdef UpdatePanel < Panel
 
     methods
         function obj = UpdatePanel(gui)
-            panel = uipanel('Parent',gui.btn_window,'Title','Update');
+            panel = uipanel('Parent',gui.btn_window,'Title','Reset');
             obj@Panel(gui,panel);
             obj.layout();
             obj.enabled = true;

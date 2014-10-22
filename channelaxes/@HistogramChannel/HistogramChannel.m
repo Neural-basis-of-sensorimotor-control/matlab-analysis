@@ -93,6 +93,11 @@ classdef HistogramChannel < GuiAxes
                         ylim(stimplot,[0 (numel(ytick)+1)]);
                         title(stimplot,'Stims');
                 end
+                if obj.hist_type == HistogramType.raster
+                    figure(obj.gui.rasterplot_window);
+                else
+                    figure(obj.gui.histogram_window)
+                end
             end
         end
     end

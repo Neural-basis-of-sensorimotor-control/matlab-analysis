@@ -107,8 +107,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         guimgr.show;
     end
 elseif strcmpi(args{1},'-version')
-    fprintf('Version number: 1.0.0\n');
-    fprintf('This project has been modified since the last release.\n');
+    fprintf('Version number: 1.0.1\n');
     fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
 elseif numel(args{1}) && args{1}(1) == '-'
     fprintf(['Illegal command : ' args{1}]);

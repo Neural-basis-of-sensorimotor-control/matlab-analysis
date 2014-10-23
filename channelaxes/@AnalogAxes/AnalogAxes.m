@@ -29,7 +29,8 @@ classdef AnalogAxes < ChannelAxes
             obj.b_highlighted = [];
         end
         
-        function load_data(obj)
+        function load_data(obj,apply_remove_waveforms)
+            if nargin<2,    apply_remove_waveforms = true;   end
             obj.data_loaded = true;
             if obj.plot_raw
                 obj.v_raw = obj.signal.sc_loadsignal();
@@ -39,15 +40,17 @@ classdef AnalogAxes < ChannelAxes
                 obj.v = obj.signal.sc_loadsignal();
                 obj.v = obj.signal.filter.filt(obj.v,0,inf);
             end
+            if apply_remove_waveforms
+                for k=1:obj.signal.remove_waveforms.n
+                    obj.v = obj.signal.remove_waveforms.get(k).remove_wf(obj.v,0);
+                end
+            end
             if obj.plot_waveforms
                 obj.b_highlighted = false(size(obj.v));
                 if ~isempty(obj.gui.waveform)
                     [spikepos,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
                     obj.gui.waveform.detected_spiketimes = spikepos*obj.gui.waveform.parent.dt;
                 end
-            end
-            for k=1:obj.signal.remove_waveforms.n
-                obj.v = obj.signal.remove_waveforms.get(k).remove_wf(obj.v,0);
             end
         end
         

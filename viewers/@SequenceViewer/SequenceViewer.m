@@ -2,11 +2,9 @@ classdef SequenceViewer < handle
     properties (SetObservable)
         parent
         
-        btn_window
-        plot_window
-        histogram_window
-        rasterplot_window
         panels
+        
+        btn_window
         
         digital_channels
         analog_subch
@@ -58,6 +56,16 @@ classdef SequenceViewer < handle
         main_axes
         show_digital_channels
         show_histogram
+        
+        plot_window
+        histogram_window
+        rasterplot_window
+    end
+    
+    properties
+        plot_window_pr
+        histogram_window_pr
+        rasterplot_window_pr
     end
     
     properties (Constant)
@@ -134,6 +142,33 @@ classdef SequenceViewer < handle
         end
         function val = get.show_histogram(obj)
             val = ~isempty(obj.histogram);
+        end
+        function val = get.plot_window(obj)   
+            if isempty(obj.plot_window_pr) || ~ishandle(obj.plot_window_pr)
+                obj.plot_window_pr = figure;
+            end
+            val = obj.plot_window_pr;
+        end
+        function set.plot_window(obj,val)
+            obj.plot_window_pr = val;
+        end
+        function val = get.histogram_window(obj)
+            val = obj.histogram_window_pr;
+        end
+        function set.histogram_window(obj,val)
+            if isempty(obj.histogram_window_pr) || ~ishandle(obj.histogram_window_pr)
+                obj.histogram_window_pr = figure;
+            end
+            obj.histogram_window_pr = val;
+        end
+        function val = get.rasterplot_window(obj)
+            if isempty(obj.rasterplot_window_pr) || ~ishandle(obj.rasterplot_window_pr)
+                obj.rasterplot_window_pr = figure;
+            end
+            val = obj.rasterplot_window_pr;
+        end
+        function set.rasterplot_window(obj,val)
+            obj.rasterplot_window_pr = val;
         end
         function delete(obj)
             fid = fopen('sc_config.txt','w');

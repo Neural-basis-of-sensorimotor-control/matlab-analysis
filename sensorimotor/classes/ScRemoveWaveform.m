@@ -9,15 +9,8 @@ classdef ScRemoveWaveform < handle
     methods
         %Assuming that tmin = 0 for conversion from time to discrete time
         %steps
-        function obj = ScRemoveWaveform(waveform)
-            obj.parent = waveform.parent;
-            obj.tag = waveform.tag;
-            obj.width = waveform.width;
-            obj.stimpos = round(waveform.gettimes(0,inf)/waveform.parent.dt)+1;
-            below_one = find(obj.stimpos<1);
-            above_max = find(obj.stimpos>waveform.parent.N);
-            obj.stimpos(below_one) = ones(size(below_one));
-            obj.stimpos(above_max) = waveform.parent.N*ones(size(above_max));
+        function obj = ScRemoveWaveform(waveform) 
+            obj.initialize(waveform);
         end
         
         function calibrate(obj,v)
@@ -49,6 +42,17 @@ classdef ScRemoveWaveform < handle
             removepos(removepos<1) = ones(size(find(removepos<1)));
             v = sc_remove_artifacts(v,obj.width,removepos);
         end
+        
+        function update_waveform(obj,v)
+            list = obj.parent.waveforms;
+            if ~sc_contains(list.values('tag'),obj.tag)
+                msgbox(sprintf('Cannot update waveform: %s. No waveform with this name.',obj.tag));
+            else
+                waveform = list.get('tag',obj.tag);
+                obj.initialize(waveform);
+                obj.calibrate(v);
+            end
+        end
     end
     methods (Access = 'protected')
         function minpos = find_min(obj,minmax,v)
@@ -60,6 +64,16 @@ classdef ScRemoveWaveform < handle
             end
             [~,ind] = min(ressqrd);
             minpos = indices(ind);
+        end
+        function initialize(obj,waveform)
+            obj.parent = waveform.parent;
+            obj.tag = waveform.tag;
+            obj.width = waveform.width;
+            obj.stimpos = round(waveform.gettimes(0,inf)/waveform.parent.dt)+1;
+            below_one = find(obj.stimpos<1);
+            above_max = find(obj.stimpos>waveform.parent.N);
+            obj.stimpos(below_one) = ones(size(below_one));
+            obj.stimpos(above_max) = waveform.parent.N*ones(size(above_max));
         end
     end
 end

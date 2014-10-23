@@ -17,5 +17,7 @@ else
         sety(panel,y);
     end
 end 
-setwidth(obj.btn_window,x+obj.panel_width);
+if getwidth(obj.btn_window)<x+obj.panel_width
+    setwidth(obj.btn_window,x+obj.panel_width);
+end
 end

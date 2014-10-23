@@ -3,6 +3,7 @@ classdef SpikeRemovalSelection < PanelComponent
         ui_list
         ui_add_spike_removal
         ui_delete_spike_removal
+        ui_update_spike_removal
     end
     methods
         function obj = SpikeRemovalSelection(panel)
@@ -17,6 +18,8 @@ classdef SpikeRemovalSelection < PanelComponent
             obj.ui_add_spike_removal = mgr.add(sc_ctrl('pushbutton','Add to spike removal list',@(~,~) obj.add_to_spike_removal_callback),200);
             mgr.newline(20);
             obj.ui_delete_spike_removal = mgr.add(sc_ctrl('pushbutton','Delete from spike removal list',@(~,~) obj.delete_spike_removal_callback),200);
+            mgr.newline(20);
+            obj.ui_update_spike_removal = mgr.add(sc_ctrl('pushbutton','Update spike removal times',@(~,~) obj.update_spike_removal_callback),200);
         end
         function initialize(obj)
             list = obj.gui.main_signal.remove_waveforms;
@@ -40,6 +43,7 @@ classdef SpikeRemovalSelection < PanelComponent
                     msgbox('Waveform with same name already in list');
                 else
                     obj.gui.lock_screen(true,'Wait, calibrating waveform position...');
+                    obj.gui.has_unsaved_changes = true;
                     obj.gui.main_channel.load_data();
                     obj.show_panels(false);
                     rmwf = ScRemoveWaveform(obj.gui.waveform);
@@ -55,11 +59,22 @@ classdef SpikeRemovalSelection < PanelComponent
             if ~list.n
                 msgbox('Cannot remove. List is empty.')
             else
+                obj.gui.has_unsaved_changes = true;
                 val = get(obj.ui_list,'value');
                 str = get(obj.ui_list,'string');
                 list.remove('tag',str{val});
                 obj.initialize();
             end
+        end
+        function update_spike_removal_callback(obj)
+            obj.gui.has_unsaved_changes = true;
+            obj.gui.lock_screen(true,'Wait, updating spike removal tool...');
+            obj.gui.main_channel.load_data(false);
+            list = obj.gui.main_signal.remove_waveforms;
+            for k=1:list.n
+                list.get(k).update_waveform(obj.gui.main_channel.v);
+            end
+            obj.gui.lock_screen(false);
         end
     end
 end

@@ -49,6 +49,8 @@ classdef AnalogAxes < ChannelAxes
                         obj.remove_waveforms();
                         obj.extract_b_highlighted();
                     end
+                else
+                    obj.remove_waveforms();
                 end
             elseif obj.plot_waveforms
                 obj.extract_b_highlighted;

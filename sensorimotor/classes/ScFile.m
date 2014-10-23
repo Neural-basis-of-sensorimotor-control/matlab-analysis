@@ -189,6 +189,19 @@ classdef ScFile < ScList
             end
         end
         
+        function digchannels = getdigchannels(obj,tmin,tmax)
+            digchannels = obj.gettriggers(tmin,tmax);
+            for k=1:obj.signals.n
+                signal = obj.signals.get(k);
+                for j=1:signal.remove_waveforms.n
+                    rmwf = signal.remove_waveforms.get(j);
+                    if numel(rmwf.gettimes(tmin,tmax))
+                        digchannels.add(rmwf);
+                    end
+                end
+            end
+        end
+        
         %Triggers = objects that can be triggered on
         %Implement function gettimes, and property istrigger returns true
         %Only returns objects where numel(times)>0

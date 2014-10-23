@@ -24,7 +24,8 @@ classdef SpikeRemovalSelection < PanelComponent
         function initialize(obj)
             list = obj.gui.main_signal.remove_waveforms;
             if list.n
-                set(obj.ui_list,'string',list.values('tag'));
+                str = list.values('tag');
+                set(obj.ui_list,'string',str);
                 set(obj.ui_list,'value',1);
                 set(obj.ui_list,'visible','on');
             else

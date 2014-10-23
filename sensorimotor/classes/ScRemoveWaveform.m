@@ -1,4 +1,4 @@
-classdef ScRemoveWaveform < handle
+classdef ScRemoveWaveform < ScTrigger
     properties
         parent
         stimpos
@@ -45,13 +45,19 @@ classdef ScRemoveWaveform < handle
         
         function update_waveform(obj,v)
             list = obj.parent.waveforms;
-            if ~sc_contains(list.values('tag'),obj.tag)
-                msgbox(sprintf('Cannot update waveform: %s. No waveform with this name.',obj.tag));
+            wf_tag = obj.tag(2:end);
+            if ~sc_contains(list.values('tag'),wf_tag)
+                msgbox(sprintf('Cannot update waveform: %s. No waveform with this name.',wf_tag));
             else
-                waveform = list.get('tag',obj.tag);
+                waveform = list.get('tag',wf_tag);
                 obj.initialize(waveform);
                 obj.calibrate(v);
             end
+        end
+        
+        function times = gettimes(obj,tmin,tmax)
+            times = obj.stimpos*obj.parent.dt;
+            times = times(times>=tmin & times<tmax);
         end
     end
     methods (Access = 'protected')
@@ -67,7 +73,7 @@ classdef ScRemoveWaveform < handle
         end
         function initialize(obj,waveform)
             obj.parent = waveform.parent;
-            obj.tag = waveform.tag;
+            obj.tag = ['#' waveform.tag];
             obj.width = waveform.width;
             obj.stimpos = round(waveform.gettimes(0,inf)/waveform.parent.dt)+1;
             below_one = find(obj.stimpos<1);

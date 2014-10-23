@@ -2,7 +2,7 @@ clc
 close all
 clear
 dependent_files = matlab.codetools.requiredFilesAndProducts('sc.m');
-cd('C:\Users\hamo\Documents\GitHub\matlab-analysis')
+cd('C:\Users\Hannes\Documents\GitHub\matlab-analysis')
 existing_files=rdir('**\*.m');
 %%
 for k=1:numel(existing_files)

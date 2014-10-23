@@ -1,10 +1,11 @@
 classdef ScSignal < ScChannel
     %Analog imported channel
     properties
-        dt          %time resolution (1x1 double)
-        waveforms   %ScWaveform
-        filter      %ScFilter
-        N           %nbr of data points (1x1 double)
+        dt                  %time resolution (1x1 double)
+        waveforms           %ScWaveform
+        filter              %ScFilter
+        remove_waveforms    %ScRemoveWaveformList
+        N                   %nbr of data points (1x1 double)
     end
     
     properties (Dependent)
@@ -19,6 +20,7 @@ classdef ScSignal < ScChannel
             obj.channelname = channelname;
             obj.waveforms = ScList;
             obj.filter = ScSignalFilter(obj);
+            obj.remove_waveforms = ScList();
             for k=1:2:numel(varargin)
                 obj.(varargin{k}) = varargin{k+1};
             end
@@ -43,7 +45,7 @@ classdef ScSignal < ScChannel
             if obj.is_adq_file
                 fid = fopen(obj.parent.filepath);
                 fread(fid,obj.channelname,'uint16');
-                v_raw = fread(fid,obj.N,'uint16');
+                v_raw = fread(fid,obj.N,'bit12',4);
                 fclose(fid);
             else
                 if isempty(who('-file',obj.parent.filepath,obj.channelname))
@@ -67,6 +69,14 @@ classdef ScSignal < ScChannel
         
         function t = get.t(obj)
             t = (0:obj.N-1)'*obj.dt;
+        end
+    end
+    methods (Static)
+        function obj = loadobj(a)
+            if isempty(a.remove_waveforms)
+                a.remove_waveforms = ScList();
+            end
+            obj = a;
         end
     end
 end

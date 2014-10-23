@@ -15,18 +15,19 @@ classdef ScExperiment < ScList
         %Save current object
         %   showdialog  if true, user can update obj.save_name
         function saved = sc_save(obj, showdialog)
+            if nargin<2,    showdialog = true;  end
             saved = false;
-            if nargin<2 || showdialog || isempty(obj.save_name)
+            if showdialog || isempty(obj.save_name) || exist(obj.save_name,'file') ~= 2
                 [fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
                     obj.save_name);
                 if ~isnumeric(fname)
                     file = fullfile(pname,fname);
-                    obj.save_name = fname;
+                    obj.save_name = file;
                     save(file,'obj');
                     saved = true;
                 end
             else
-                save(fullfile(obj.fdir,obj.save_name),'obj');
+                save(obj.save_name,'obj');
                 saved = true;
             end
         end

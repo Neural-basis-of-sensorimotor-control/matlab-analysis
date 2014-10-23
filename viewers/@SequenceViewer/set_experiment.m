@@ -12,7 +12,7 @@ if ~isempty(experiment)
     else
         if ~isempty(obj.raw_data_folder) || experiment.n
             if ~isempty(experiment.fdir)
-                [~,experiment_folder] = filesep(experiment.fdir);
+                [~,experiment_folder] = fileparts(experiment.fdir);
             else
                 experiment_folder = [];
             end

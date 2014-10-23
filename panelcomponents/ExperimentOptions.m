@@ -42,7 +42,8 @@ classdef ExperimentOptions < PanelComponent
         
         function experiment_listener(obj,~,~)
             if ~isempty(obj.gui.experiment)
-                set(obj.ui_experiment,'string',obj.gui.experiment.save_name,'visible','on');
+                [~,f] = fileparts(obj.gui.experiment.save_name);
+                set(obj.ui_experiment,'string',f,'visible','on');
             else
                 set(obj.ui_experiment,'string',[],'visible','off');
             end

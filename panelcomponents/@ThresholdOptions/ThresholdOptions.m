@@ -67,9 +67,6 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function define_thresholds_callback(obj)
-            if obj.gui.main_signal.filter.remove_waveforms.contains(obj.gui.waveform)
-                msgbox('Warning: current waveform is used to subtract spike shapes from raw signal. If new thresholds overlaps with old, spike finding can be unpredictable. Maybe it is better to create a new waveform for this purpose?')
-            end
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             %Reset waveform parameters
             obj.t0 = []; obj.v0 = []; obj.tabs = []; obj.vabs = []; obj.lower = []; obj.upper = [];

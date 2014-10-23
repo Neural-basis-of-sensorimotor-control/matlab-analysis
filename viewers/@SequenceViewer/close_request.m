@@ -6,7 +6,7 @@ if obj.has_unsaved_changes
     if isempty(option), option = 'Cancel';  end
     switch option,
         case 'Yes',
-            saved = obj.experiment.sc_save();
+            saved = obj.experiment.sc_save(false);
             if saved
                 obj.has_unsaved_changes = false;
                 close_all_windows(obj);

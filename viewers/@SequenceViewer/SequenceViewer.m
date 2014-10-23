@@ -146,6 +146,10 @@ classdef SequenceViewer < handle
         function val = get.plot_window(obj)   
             if isempty(obj.plot_window_pr) || ~ishandle(obj.plot_window_pr)
                 obj.plot_window_pr = figure;
+                clf(obj.plot_window_pr,'reset');
+                set(obj.plot_window_pr,'ToolBar','None','MenuBar','none');
+                set(obj.plot_window_pr,'Color',[0 0 0]);
+                set(obj.plot_window_pr,'ResizeFcn',@(~,~) obj.resize_plot_window());
             end
             val = obj.plot_window_pr;
         end

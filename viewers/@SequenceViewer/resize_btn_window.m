@@ -1,4 +1,5 @@
 function resize_btn_window(obj)
+obj.enable_resize_fcn(false);
 x=0;
 y=getheight(obj.btn_window);
 min_height = max(cell2mat(obj.panels.values('height')));
@@ -20,4 +21,5 @@ end
 if getwidth(obj.btn_window)<x+obj.panel_width
     setwidth(obj.btn_window,x+obj.panel_width);
 end
+obj.enable_resize_fcn(true);
 end

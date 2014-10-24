@@ -23,7 +23,7 @@ classdef ScWaveform < ScTrigger & ScList
             obj.parent = parent;
             obj.tag = tag;
             obj.spike2filename = spike2filename;
-            obj.apply_after = ScWaveform.artifact_filtering;
+            obj.apply_after = ScWaveformEnum.artifact_filtering;
         end
         
         %Load spike times from separate Spike2 file

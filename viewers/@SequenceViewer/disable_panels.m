@@ -1,11 +1,13 @@
 function disable_panels(obj, panel)
 
 index = obj.panels.indexof(panel);
-for k=index:obj.panels.n
-    if k>obj.panels.n
-        break;
-    else
-        obj.panels.get(k).enabled = false;
+if index>0
+    for k=index:obj.panels.n
+        if k>obj.panels.n
+            break;
+        else
+            obj.panels.get(k).enabled = false;
+        end
     end
 end
 for k=1:obj.plots.n

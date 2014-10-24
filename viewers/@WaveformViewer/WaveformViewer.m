@@ -71,12 +71,17 @@ classdef WaveformViewer < SequenceViewer
         function sequence_listener(obj)
             if isempty(obj.sequence) || ~obj.triggerparents.n
                 obj.triggerparent = [];
-            elseif isempty(obj.trigger) || ~obj.triggerparents.contains(obj.trigger)
-                triggerparent_str = obj.triggerparents.values('tag');
-                val = find(cellfun(@(x) strcmp(x,'DigMark'),triggerparent_str),1);
-                if isempty(val),    val = 1;    end
-                obj.triggerparent = obj.triggerparents.get(val);
-                obj.triggerparent_listener();
+            elseif isempty(obj.triggerparent)
+                obj.triggerparent = obj.triggerparents.get(1);
+            elseif obj.triggerparents.contains(obj.triggerparent)
+                obj.triggerparent = obj.triggerparent;
+            else
+                tag = obj.triggerparent.tag;
+                if sc_contains(obj.triggerparents.values('tag'),tag)
+                    obj.triggerparent = obj.triggerparents.get('tag',tag);
+                else
+                    obj.triggerparent = obj.triggerparents.get(1);
+                end
             end
         end
     end
@@ -85,7 +90,19 @@ classdef WaveformViewer < SequenceViewer
             if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
                 obj.trigger = [];
             else
-                obj.trigger = obj.triggerparent.triggers.get(1);
+                triggers = obj.triggerparent.triggers;
+                if isempty(obj.trigger)
+                    obj.trigger = triggers.get(1);
+                elseif triggers.contains(obj.trigger)
+                    obj.trigger = obj.trigger;
+                else
+                    tag = obj.trigger.tag;
+                    if sc_contains(triggers.values('tag'),tag)
+                        obj.trigger = triggers.get('tag',tag);
+                    else
+                        obj.trigger = triggers.get(1);
+                    end
+                end
             end
         end
     end

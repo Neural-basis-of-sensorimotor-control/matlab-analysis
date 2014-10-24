@@ -1,4 +1,9 @@
 classdef SequenceViewer < handle
+    methods (Static)
+        function str = version_str()
+            str = '>1.0.4';
+        end
+    end
     properties (SetObservable)
         parent
         
@@ -185,6 +190,9 @@ classdef SequenceViewer < handle
                     if isdir(obj.experiment.fdir)
                         obj.set_raw_data_folder(obj.experiment.fdir);
                     end
+                else
+                    f = [];
+                    ext = [];                    
                 end
             else
                 f = [];

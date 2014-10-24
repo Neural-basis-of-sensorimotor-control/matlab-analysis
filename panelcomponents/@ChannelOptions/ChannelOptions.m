@@ -52,16 +52,31 @@ classdef ChannelOptions < PanelComponent
     methods (Access = 'protected')
         
         function update_nbr_of_analog_axes(obj)
-            for k=1:obj.gui.nbr_of_analog_channels
-                if k>obj.gui.analog_ch.n
-                    obj.gui.analog_subch.add(AnalogAxes(obj.gui,obj.gui.file.signals.get(k)));
-                elseif  ~obj.gui.file.signals.contains(obj.gui.analog_ch.get(k).signal)
-                    obj.gui.analog_ch.get(k).signal = obj.gui.file.signals.get(k);
+            signals = obj.gui.file.signals;
+            analog_subch = obj.gui.analog_subch;
+            nbr_of_analog_subch = obj.gui.nbr_of_analog_channels-1;
+            for k=1:nbr_of_analog_subch
+                old_signal = analog_subch.get(k).signal;
+                if k>obj.gui.analog_subch.n
+                    %Add extra analog channel
+                    analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));
+                elseif  ~signals.contains(old_signal)
+                    %Channel does not belong to this file, add an accurate
+                    %one
+                    if sc_contains(signal.values('tag'),old_signal.tag)
+                        %Add channel with same tag string
+                        analog_subch.get(k) = signals.get('tag',old_signal.tag);
+                    else
+                        %Add arbitrary channel
+                        analog_subch.get(k) = signals.get(k);
+                    end
                 end
             end
-            for k=obj.gui.nbr_of_analog_channels+1:obj.gui.analog_ch.n
-                obj.gui.analog_subch.remove_at(obj.gui.nbr_of_analog_channels);
+            %Remove superfluous channels
+            while nbr_of_analog_subch<analog_subch.n
+                analog_subch.remove_at(analog_subch.n);
             end
+            %Assign to correct parent figure
             for k=1:obj.gui.analog_ch.n
                 set(obj.gui.analog_ch.get(k),'Parent',obj.gui.plot_window);
             end

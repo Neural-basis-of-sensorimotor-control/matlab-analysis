@@ -3,6 +3,7 @@ classdef ScExperiment < ScList
     properties
         fdir        %directory containing .mat / .adq files
         save_name   %for saving this class, ends with _sc.mat
+        last_gui_version
     end
     
     methods

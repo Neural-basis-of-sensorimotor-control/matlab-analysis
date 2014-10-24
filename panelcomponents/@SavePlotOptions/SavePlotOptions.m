@@ -26,11 +26,6 @@ classdef SavePlotOptions < PanelComponent
             set(obj.ui_filenbr,'String',obj.filenbr);
         end
         
-        %         function updated = update(obj)
-        %       %      set(obj.ui_filename,'String',obj.filename);
-        %             updated = true;
-        %         end
-        %
     end
     
     methods (Access = 'protected')

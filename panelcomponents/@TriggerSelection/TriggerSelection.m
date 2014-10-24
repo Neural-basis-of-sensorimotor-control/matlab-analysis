@@ -25,11 +25,9 @@ classdef TriggerSelection < PanelComponent
             
             mgr.newline(20);
             obj.ui_nbr_of_sweeps = mgr.add(sc_ctrl('text',[]),200);
-            
-%             sc_addlistener(obj.gui,'sequence',@(~,~) obj.sequence_listener,obj.uihandle);
-%             sc_addlistener(obj.gui,'triggerparent',@(~,~) obj.triggerparent_listener,obj.uihandle);
-%             sc_addlistener(obj.gui,'trigger',@(~,~) obj.trigger_listener,obj.uihandle);
-            
+
+            sc_addlistener(obj.gui,'triggerparent',@(~,~) obj.triggerparent_listener(),obj.uihandle);
+            sc_addlistener(obj.gui,'trigger',@(~,~) obj.trigger_listener(),obj.uihandle);
         end
         
         function initialize(obj)
@@ -54,10 +52,6 @@ classdef TriggerSelection < PanelComponent
     
     methods (Access = 'protected')
         function triggerparent_callback(obj) 
-            str = {};
-            for k=1:obj.gui.triggerparents.n
-                str(k) = {obj.gui.triggerparents.get(k).tag};
-            end
             val = get(obj.ui_triggerparent,'value');
             str = get(obj.ui_triggerparent,'string');
             obj.gui.triggerparent = obj.gui.triggerparents.get('tag',str{val});
@@ -93,9 +87,6 @@ classdef TriggerSelection < PanelComponent
                 val = find(cellfun(@(x) strcmp(x,obj.gui.triggerparent.tag),str));
                 set(obj.ui_triggerparent,'string',str,'value', val,...
                     'visible','on');
-                str = obj.gui.triggerparent.triggers.values('tag');
-                val = 1;
-                set(obj.ui_trigger,'string',str,'value',val,'visible','on');
             end
         end
         

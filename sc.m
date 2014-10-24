@@ -103,12 +103,14 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     else
         guimgr = GuiManager();
         guimgr.experiment = experiment; 
-        guimgr.viewer.has_unsaved_changes = ~experiment.sc_save();
-        guimgr.show;
+        if ~experiment.sc_save();
+            msgbox('Experiment not saved. Aborting');
+        else
+            guimgr.show;
+        end
     end
 elseif strcmpi(args{1},'-version')
-    fprintf('Version number: 1.0.4\n');
-%    fprintf('Changes might have been added since last release\n');
+    fprintf('Version number: %s\n',SequenceViewer.version_str);
     fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
 elseif numel(args{1}) && args{1}(1) == '-'
     fprintf(['Illegal command : ' args{1}]);

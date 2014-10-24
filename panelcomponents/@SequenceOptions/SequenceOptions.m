@@ -16,6 +16,8 @@ classdef SequenceOptions < PanelComponent
             mgr.newline(20);
             obj.ui_parse_protocol = mgr.add(sc_ctrl('pushbutton','Parse protocol',...
                 @(~,~) obj.parse_protocol_callback),100);
+            mgr.add(sc_ctrl('pushbutton','Show protocol',@(~,~) obj.show_protocol()),100);
+            mgr.newline(20);
             obj.ui_add_sequence = mgr.add(sc_ctrl('pushbutton','Add sequence',...
                 @(~,~) obj.affect_sequence_callback(obj.ui_add_sequence)),100);
             mgr.newline(20);
@@ -143,6 +145,10 @@ classdef SequenceOptions < PanelComponent
             obj.gui.has_unsaved_changes = true;
             close(dlg);
             obj.gui.set_file(obj.gui.file);
+        end
+        
+        function show_protocol(obj)
+            msgbox('Not implemented');
         end
     end
 end

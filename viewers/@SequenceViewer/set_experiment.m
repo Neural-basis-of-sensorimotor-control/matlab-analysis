@@ -1,6 +1,7 @@
 function set_experiment(obj,experiment)
 obj.experiment = experiment;
 if ~isempty(experiment)
+    experiment.last_gui_version = obj.version_str;
     if ~isempty(experiment.save_name)
         p = fileparts(experiment.save_name);
         if ~isempty(p)

@@ -35,9 +35,13 @@ if ~isempty(experiment)
                     experiment.fdir = folder;
                     found_dir = true;
                 else
-                    raw_folder_str = fileparts(raw_folder_str);
-                    at_root_level = numel(raw_folder_str) == nbr_of_chars;
-                    nbr_of_chars = numel(raw_folder_str);
+                    if ~isempty(raw_folder_str)
+                        raw_folder_str = fileparts(raw_folder_str);
+                        at_root_level = numel(raw_folder_str) == nbr_of_chars;
+                        nbr_of_chars = numel(raw_folder_str);
+                    else
+                        at_root_level = true;
+                    end
                 end
             end 
         end

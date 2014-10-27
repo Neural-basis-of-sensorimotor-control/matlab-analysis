@@ -68,10 +68,20 @@ classdef ScRemoveWaveform < ScTrigger
             removepos(removepos>=numel(v)) = (numel(v)-1)*ones(size(find(removepos>=numel(v))));
             %removepos(removepos<1) = ones(size(find(removepos<1)));
             %v = sc_remove_artifacts(v,obj.width,removepos);
+            b = [1 1 1 1 2 2 2 2 3 3 5 3 3 2 2 2 2 1 1 1 1];
+            n = min(round(obj.width/4),numel(b));
+            if n<numel(b)
+                if ~mod(n,2),   n = n+1;    end
+                b = interp1(b,linspace(1,numel(b),n),'nearest');
+            end
+            b = b/sum(b);
             t = (0:(obj.width+1))';
             for k=1:numel(removepos)
                 pos = removepos(k) + (0:obj.width-1)';
                 v(pos) = v(pos) - interp1(t,obj.v_interpolated_median,t(2:end-1)+obj.stimpos_offsets(k));
+                pos2 = pos(end-20):pos(end)+21;
+                pos2 = pos2(pos2>=1 & pos2<=numel(v));
+                v(pos2) = filter(b,1,v(pos2));
             end
         end
         

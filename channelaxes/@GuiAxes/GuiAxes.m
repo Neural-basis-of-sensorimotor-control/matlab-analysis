@@ -4,13 +4,13 @@ classdef GuiAxes < handle
     end
     
     properties (SetObservable)
-        ax
+        ax_pr
         gui
         height = 300
-     %   postset_listener
     end
     properties (Dependent)
         sequence
+        ax
     end
     methods (Abstract)
         load_data(obj)
@@ -20,24 +20,8 @@ classdef GuiAxes < handle
     methods
         
         function obj = GuiAxes(gui)
-%            addlistener(obj,'ax','PreSet',@ax_listener_pre);
-            addlistener(obj,'ax','PostSet',@(~,~) obj.ax_listener_post);
-            
             obj.gui = gui;
             obj.ax = axes;
-            %setheight(obj.ax,obj.height);
-            
-%             function ax_listener_pre(~,~)
-%                 if ~isempty(obj.ax)
-%                %     if isobject(obj.ax)
-%                         obj.height = getheight(obj.ax);
-%                %     end
-% %                     if ~isempty(obj.postset_listener) && isobject(obj.postset_listener)
-% %                         delete(obj.postset_listener);
-% %                     end
-%                 end
-%             end
-            
         end
         
         function sequence = get.sequence(obj)
@@ -54,38 +38,21 @@ classdef GuiAxes < handle
                 varargout = {varargout};
             end
         end
+        
+        function val = get.ax(obj)
+            if isempty(obj.ax_pr) || ~ishandle(obj.ax_pr)
+                obj.ax_pr = axes;
+            end
+            val = obj.ax_pr;
+        end
+        function set.ax(obj,val)
+            if ~isempty(obj.ax_pr) && ishandle(obj.ax_pr)
+                delete(obj.ax_pr)
+            end
+            obj.ax_pr = val;
+        end
     end
     methods (Access='protected')   
-        function axes_position_listener(obj)
-            obj.height = getheight(obj.ax);
-        end
         
-        function ax_listener_post(obj)
-            if ~isempty(obj.ax)
-                set(obj.ax,'ActivePositionProperty','position');
-                setheight(obj.ax,obj.height);
-                %  obj.postset_listener = addlistener(obj.ax,'BeingDeleted','PostSet',@being_deleted_listener);
-                addlistener(obj.ax,'XLim','PostSet',@(~,~) obj.xlim_listener);
-                addlistener(obj.ax,'Position','PostSet',@(~,~) obj.axes_position_listener);
-                sc_addlistener(obj.gui,'xlimits',@(~,~) obj.xlimits_listener,obj.ax);
-            end
-            
-            %                 function being_deleted_listener(~,~)
-            %                     if get(obj.ax,'BeingDeleted')
-            %                         obj.height = getheight(obj.ax);
-            %                     end
-            %                 end
-        end
-        function xlim_listener(obj)
-            if obj.ax == obj.gui.main_axes
-                obj.gui.xlimits = xlim(obj.ax);
-            end
-        end
-        
-        function xlimits_listener(obj)
-            if obj.gui.xlimits(1) < obj.gui.xlimits(2)
-                xlim(obj.ax,obj.gui.xlimits);
-            end
-        end
     end
 end

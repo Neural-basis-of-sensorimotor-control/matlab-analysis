@@ -17,13 +17,8 @@ classdef HistogramCheckbox < PanelComponent
         
         function initialize(obj)
             set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
+            obj.hide_all_options_but_enable(~obj.gui.show_histogram);
         end
-        
-%         function updated = update(obj)
-%            % obj.show_histogram_callback();
-%             updated = true;
-%         end
-%         
     end
     
     methods (Access = 'protected')
@@ -31,18 +26,28 @@ classdef HistogramCheckbox < PanelComponent
             val = get(obj.ui_show_histogram,'value');
             if val
                 if isempty(obj.gui.histogram)
+                    clf(obj.gui.histogram_window);
                     obj.gui.histogram = HistogramChannel(obj.gui);
-                    if isempty(obj.gui.histogram_window) || ~ishandle(obj.gui.histogram_window)
-                        obj.gui.histogram_window = figure('Color',[0 0 0]);
-                        set(obj.gui.histogram,'Parent',obj.gui.histogram_window);
-                        set(obj.gui.histogram_window,'ResizeFcn',@(~,~) obj.gui.resize_histogram_window());
-                    end
+                    set(obj.gui.histogram.ax,'Parent',obj.gui.histogram_window);
                 end
                 obj.panel.initialize_panel();
                 obj.panel.update_panel();
             else
                 obj.gui.histogram = [];
             end
+            obj.hide_all_options_but_enable(~val);
+        end
+        function hide_all_options_but_enable(obj,do_hide)
+            ch=get(obj.panel,'Children');
+            if do_hide
+                str = 'off';
+            else
+                str = 'on';
+            end
+            for k=1:numel(ch)
+               set(ch(k),'visible',str);
+            end
+            set(obj.ui_show_histogram,'visible','on');
         end
     end
 end

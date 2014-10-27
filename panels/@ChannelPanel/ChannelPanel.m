@@ -1,4 +1,4 @@
-classdef ChannelPanel < UpdatablePanel%SequenceDependentPanel
+classdef ChannelPanel < UpdatablePanel
     methods
         function obj = ChannelPanel(gui)            
             panel = uipanel('Parent',gui.btn_window,'Title','Channel selection');
@@ -28,6 +28,10 @@ classdef ChannelPanel < UpdatablePanel%SequenceDependentPanel
                 end
                 for k=1:obj.gui.analog_ch.n
                     obj.gui.analog_ch.get(k).load_data();
+                end
+                obj.sweep = obj.sweep(obj.sweep<=numel(obj.triggertimes));
+                if isempty(obj.sweep) && numel(obj.triggertimes)
+                    obj.sweep = 1;
                 end
             end
             if obj.enabled

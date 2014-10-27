@@ -18,7 +18,7 @@ classdef HistogramPanel < Panel
         end
         
         function update_panel(~)
-             %Overriding parent function           
+             %Overriding parent function    
         end
     end
     

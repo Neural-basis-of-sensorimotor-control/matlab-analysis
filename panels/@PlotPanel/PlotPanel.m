@@ -25,7 +25,7 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
         
         function update_panel(obj)
             obj.gui.zoom_controls = get(obj.uihandle,'children');
-            obj.gui.sequence_listener;
+            %obj.gui.sequence_listener;
             update_panel@UpdatablePanel(obj);
             if obj.enabled    
                 obj.gui.plot_channels();

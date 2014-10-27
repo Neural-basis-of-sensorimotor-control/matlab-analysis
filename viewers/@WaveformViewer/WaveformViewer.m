@@ -21,6 +21,7 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
+            addlistener(obj,'sequence','PostSet',@(~,~) obj.sequence_listener());
             addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
         end
         
@@ -57,7 +58,11 @@ classdef WaveformViewer < SequenceViewer
         end
         
         function triggers = get.triggers(obj)
-            triggers = obj.triggerparent.triggers;
+            if isempty(obj.triggerparent)
+                triggers = [];
+            else
+                triggers = obj.triggerparent.triggers;
+            end
         end
         
         function triggertimes = get.triggertimes(obj)
@@ -67,12 +72,19 @@ classdef WaveformViewer < SequenceViewer
                 triggertimes = obj.trigger.gettimes(obj.tmin,obj.tmax);
             end
         end
-        
+    
+    end
+    methods (Access = 'protected')
         function sequence_listener(obj)
             if isempty(obj.sequence) || ~obj.triggerparents.n
                 obj.triggerparent = [];
             elseif isempty(obj.triggerparent)
-                obj.triggerparent = obj.triggerparents.get(1);
+                str = obj.triggerparents.values('tag');
+                if sc_contains(str,'DigMark')
+                    obj.triggerparent = obj.triggerparents.get('tag','DigMark');
+                else
+                    obj.triggerparent = obj.triggerparents.get(1);
+                end    
             elseif obj.triggerparents.contains(obj.triggerparent)
                 obj.triggerparent = obj.triggerparent;
             else
@@ -84,8 +96,7 @@ classdef WaveformViewer < SequenceViewer
                 end
             end
         end
-    end
-    methods (Access = 'protected')
+        
         function triggerparent_listener(obj)
             if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
                 obj.trigger = [];
@@ -103,6 +114,12 @@ classdef WaveformViewer < SequenceViewer
                         obj.trigger = triggers.get(1);
                     end
                 end
+            end
+        end
+        function trigger_listener(obj)
+            obj.sweep = obj.sweep(obj.sweep<=numel(obj.triggertimes));
+            if isempty(obj.sweep) && numel(obj.triggertimes)
+                obj.sweep = 1;
             end
         end
     end

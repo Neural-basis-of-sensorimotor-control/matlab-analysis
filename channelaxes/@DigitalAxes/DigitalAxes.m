@@ -35,14 +35,14 @@ classdef DigitalAxes < ChannelAxes
             if nargin==1
                 btn_down_fcn = [];
             end
-            sweep = obj.setup_axes();%,varargin{:});
-            if ~isempty(sweep) %&& numel(sweep)<=numel(obj.gui.triggertimes)
+            sweep = obj.setup_axes();
+            if ~isempty(sweep)
                 digch = obj.sequence.getdigchannels(obj.gui.tmin,...
                     obj.gui.tmax);
                 switch obj.gui.plotmode
                     case {PlotModes.default, PlotModes.plot_all}
                         for k=1:digch.n
-                            if isa(digch.get(k),'ScWaveform')
+                            if isa(digch.get(k),'ScWaveform') || isa(digch.get(k),'ScRemoveWaveform')
                                 plotcolor = [1 1 1];
                             else
                                 plotcolor = [.5 .5 0];

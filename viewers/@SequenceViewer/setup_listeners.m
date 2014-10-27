@@ -1,23 +1,19 @@
 function setup_listeners(obj)
 
 addlistener(obj,'main_channel','PostSet',@main_channel_listener);
-%addlistener(obj,'show_digital_channels','PostSet',@show_digital_channels_listener);
-%addlistener(obj,'show_histogram','PostSet',@show_histogram_listener);
 addlistener(obj,'digital_channels','PreSet',@digital_channels_listener_pre);
 addlistener(obj,'digital_channels','PostSet',@digital_channels_listener_post);
-% addlistener(obj,'histogram','PreSet',@histogram_listener_pre);
-% addlistener(obj,'histogram','PostSet',@histogram_listener_post);
 deletechannel = [];
 addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
 addlistener(obj,'pan_on','PostSet',@pan_on_listener);
 
-% addlistener(obj,'nbr_of_analog_channels','PostSet',@set_nbr_of_analog_channels_listener);
-% addlistener(obj,'nbr_of_analog_channels','PreGet',@get_nbr_of_analog_channels_listener);
+addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_listener());
+
 
     function main_channel_listener(~,~)
         
         addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
-        addlistener(obj.main_channel,'ax','PostSet',@main_channel_ax_listener);
+        addlistener(obj.main_channel,'ax_pr','PostSet',@main_channel_ax_listener);
         
         function main_channel_signal_listener(~,~)
             if ~isempty(obj.main_channel.signal)

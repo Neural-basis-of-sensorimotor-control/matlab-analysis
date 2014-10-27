@@ -22,12 +22,6 @@ classdef FilterOptions < PanelComponent
                 'Artifact width in bins (0 = off))'),50);
             mgr.add(sc_ctrl('text','bins'),50);
             
-%             mgr.newline(20);
-%             mgr.add(sc_ctrl('text','Moving avg width'),100);
-%             obj.ui_artifact_nbr_of_samples = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_samples_callback,'ToolTipString',...
-%                 'Nbr of samples for moving average (empty = all)'),50);
-%             mgr.add(sc_ctrl('text','samples'),50);
-            
             sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
 
         end
@@ -48,15 +42,27 @@ classdef FilterOptions < PanelComponent
         end
         
         function smoothing_width_callback(obj)
-            obj.gui.main_signal.filter.smoothing_width = str2double(get(obj.ui_smoothing_width,'string'));
-            obj.gui.has_unsaved_changes = true;
-            obj.show_panels(false);
+            smoothing_width = round(str2double(get(obj.ui_smoothing_width,'string')));
+            if ~isfinite(smoothing_width) || ~smoothing_width
+                msgbox('Smoothing width has to be a positive integer. 1 = off');
+                set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
+            else
+                obj.gui.main_signal.filter.smoothing_width = str2double(get(obj.ui_smoothing_width,'string'));
+                obj.gui.has_unsaved_changes = true;
+                obj.show_panels(false);
+            end
         end
         
         function artifact_width_callback(obj)
-            obj.gui.main_signal.filter.artifact_width = str2double(get(obj.ui_artifact_width,'string'));
-            obj.gui.has_unsaved_changes = true;
-            obj.show_panels(false);
+            width = round(str2double(get(obj.ui_artifact_width,'string')));
+            if ~isfinite(width) || width < 0
+                 msgbox('Artifact width has to be a non-negative integer. 0 = off');
+                set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
+            else
+                obj.gui.main_signal.filter.artifact_width = width;
+                obj.gui.has_unsaved_changes = true;
+                obj.show_panels(false);
+            end
         end
         
         

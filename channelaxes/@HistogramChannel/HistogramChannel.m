@@ -40,10 +40,10 @@ classdef HistogramChannel < GuiAxes
                             isi_pdf = histc(isi,edges)/numel(isi);
                             plot(obj.gui.histogram.ax,edges,isi_pdf,'Color',[1 0 0],'LineWidth',4);
                             xlabel(obj.gui.histogram.ax,'ISI time [s]')
-                            ylabel(obj.gui.histogram.ax,'pdf')
-                        end
-                        set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
+                            ylabel(obj.gui.histogram.ax,'pdf')                        
+                            set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
+                        end
                     case HistogramType.raster
                         if isempty(obj.gui.rasterplot_window) || ~ishandle(obj.gui.rasterplot_window)
                             obj.gui.rasterplot_window = figure;

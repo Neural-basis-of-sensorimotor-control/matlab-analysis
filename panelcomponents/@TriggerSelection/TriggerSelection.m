@@ -31,21 +31,25 @@ classdef TriggerSelection < PanelComponent
         end
         
         function initialize(obj)
-            obj.sequence_listener();
-            val = get(obj.ui_triggerparent,'value');
-            str = get(obj.ui_triggerparent,'string');
-            obj.gui.triggerparent = obj.gui.triggerparents.get('tag',str{val});
-            obj.triggerparent_listener();
-            val = get(obj.ui_trigger,'value');
-            str = get(obj.ui_trigger,'string');
-            obj.gui.trigger = obj.gui.triggers.get('tag',str{val});
-            obj.trigger_listener();
+           triggerparent = obj.gui.triggerparent;
+           if isempty(triggerparent)
+               set(obj.ui_triggerparent,'visible','off');
+           else
+                str = obj.gui.triggerparents.values('tag');
+                val = sc_cellfind(str,triggerparent.tag);
+                set(obj.ui_triggerparent,'string',str,'value',val,'visible','on');
+           end
+           trigger = obj.gui.trigger;
+           if isempty(trigger)
+               set(obj.ui_trigger,'visible','off');
+           else
+               str = obj.gui.triggers.values('tag');
+               val = sc_cellfind(str,trigger.tag);
+               set(obj.ui_trigger,'string',str,'value',val,'visible','on');
+           end
         end
         
         function updated = update(obj)
-
-            obj.triggerparent_listener();
-            obj.trigger_listener();
             updated = numel(obj.gui.triggertimes) > 0;
         end
     end
@@ -65,23 +69,9 @@ classdef TriggerSelection < PanelComponent
             obj.show_panels(false);
         end
         
-        function sequence_listener(obj)
-            if ~isempty(obj.gui.sequence) 
-                str = cell(obj.gui.triggerparents.n,1);
-                for k=1:obj.gui.triggerparents.n
-                    str(k) = {obj.gui.triggerparents.get(k).tag};
-                end
-                if obj.gui.triggerparents.n
-                    str = obj.gui.triggerparents.values('tag');
-                    set(obj.ui_triggerparent,'string',str);
-                end
-            end
-        end
-        
         function triggerparent_listener(obj)
             if isempty(obj.gui.triggerparent)
                 set(obj.ui_triggerparent,'visible','off');
-                set(obj.ui_trigger,'visible','off');
             else
                 str = obj.gui.triggerparents.values('tag');
                 val = find(cellfun(@(x) strcmp(x,obj.gui.triggerparent.tag),str));

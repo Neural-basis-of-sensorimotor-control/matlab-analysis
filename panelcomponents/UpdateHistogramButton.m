@@ -9,6 +9,7 @@ classdef UpdateHistogramButton < UpdatePanelButton
             obj.gui.lock_screen(true,'Wait, plotting histogram ...');
             obj.gui.histogram.plotch();
             obj.gui.lock_screen(false);
+            figure(obj.histogram_window);
         end
     end
 end

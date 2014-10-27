@@ -148,7 +148,24 @@ classdef SequenceOptions < PanelComponent
         end
         
         function show_protocol(obj)
-            msgbox('Not implemented');
+            fig = figure;
+            panel = uipanel('Parent',fig);
+            mgr = ScLayoutManager(panel);
+            mgr.newline(20);
+            mgr.add(sc_ctrl('text','Tag',[],'fontweight','bold'),100);
+            mgr.add(sc_ctrl('text','Time [s]',[],'fontweight','bold'),100);
+            mgr.add(sc_ctrl('text','Comment',[],'fontweight','bold'),200);
+            for k=1:obj.file.n
+                seq = obj.file.get(k);
+                nbroflines =  nnz(double(seq.comment)==10)+1;
+                mgr.newline(nbroflines*20);
+                mgr.add(sc_ctrl('text',seq.tag,[]),100);
+                mgr.add(sc_ctrl('text',sprintf('%i - %i',round(seq.tmin),round(seq.tmax))),100);
+                mgr.add(sc_ctrl('text',seq.comment,[],'Value',2),200);
+            end
+            mgr.trim;
+            setheight(fig,getheight(panel)+10);
+            sety(panel,5);
         end
     end
 end

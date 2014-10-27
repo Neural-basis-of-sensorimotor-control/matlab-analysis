@@ -25,7 +25,11 @@ end
 
 function close_all_windows(obj)
 delete(obj.btn_window);
-if ishandle(obj.plot_window),        close(obj.plot_window);        end
-if ishandle(obj.histogram_window),   close(obj.histogram_window);   end
+% if ~isempty(obj.plot_window_pr) && ishandle(obj.plot_window_pr)
+%     close(obj.plot_window_pr);
+% end
+% if ~isempty(obj.histogram_window_pr) && ishandle(obj.histogram_window_pr)
+%     close(obj.histogram_window_pr);   
+% end
 delete(obj)
 end

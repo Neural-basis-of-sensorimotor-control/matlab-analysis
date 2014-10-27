@@ -77,9 +77,12 @@ classdef AnalogAxes < ChannelAxes
         end
         
         function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
+            pretrigger = obj.gui.pretrigger;
+            posttrigger = obj.gui.posttrigger;
+            if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end
+            if posttrigger<obj.gui.xlimits(2),  posttrigger = obj.gui.xlimits(2);   end
             [v_signal,time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
-                obj.gui.pretrigger, obj.gui.posttrigger, ...
-                obj.signal.dt);
+                pretrigger, posttrigger, obj.signal.dt);
             if ~isempty(obj.b_highlighted)
                 b_signal = sc_get_sweeps(obj.b_highlighted, 0, obj.gui.triggertimes(sweep), ...
                     obj.gui.pretrigger, obj.gui.posttrigger, ...

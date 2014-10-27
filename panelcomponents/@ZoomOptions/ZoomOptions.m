@@ -7,7 +7,6 @@ classdef ZoomOptions < PanelComponent
     methods
         function obj = ZoomOptions(panel)
             obj@PanelComponent(panel);
-            
             sc_addlistener(obj.gui,'zoom_on',@(~,~) obj.toggle_button('zoom_on',obj.ui_zoom),panel);
             sc_addlistener(obj.gui,'pan_on',@(~,~) obj.toggle_button('pan_on',obj.ui_pan),panel);
             

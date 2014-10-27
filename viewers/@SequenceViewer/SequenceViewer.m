@@ -88,9 +88,10 @@ classdef SequenceViewer < handle
         mode            %see ScGuiState enums
     end
     
-    
+    methods (Access = 'protected')
+        has_unsaved_changes_listener(obj)
+    end
     methods
-        
         function obj = SequenceViewer(guimanager)
             close all
             obj.btn_window = figure;
@@ -104,9 +105,6 @@ classdef SequenceViewer < handle
             setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
             obj.histogram = HistogramChannel(obj);
-            obj.histogram_window = figure('Color',[0 0 0]);
-            set(obj.histogram,'Parent',obj.histogram_window);
-            set(obj.histogram_window,'ResizeFcn',@(~,~) obj.resize_histogram_window());
         end
         
         function analog_ch = get.analog_ch(obj)
@@ -162,12 +160,19 @@ classdef SequenceViewer < handle
             obj.plot_window_pr = val;
         end
         function val = get.histogram_window(obj)
+            if isempty(obj.histogram_window_pr) || ~ishandle(obj.histogram_window_pr)
+                obj.histogram_window_pr = figure('Color',[0 0 0],...
+                    'ResizeFcn',@(~,~) obj.resize_histogram_window);
+                if ~isempty(obj.histogram)
+                    set(obj.histogram,'Parent',obj.histogram_window_pr);
+                    if isempty(obj.histogram.ax) || ~ishandle(obj.histogram.ax)
+                        obj.histogram.ax = axes;
+                    end
+                end
+            end
             val = obj.histogram_window_pr;
         end
         function set.histogram_window(obj,val)
-            if isempty(obj.histogram_window_pr) || ~ishandle(obj.histogram_window_pr)
-                obj.histogram_window_pr = figure;
-            end
             obj.histogram_window_pr = val;
         end
         function val = get.rasterplot_window(obj)

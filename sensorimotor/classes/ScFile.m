@@ -164,7 +164,7 @@ classdef ScFile < ScList
                     dname = uigetdir(obj.parent.fdir,'Choose load directory');
                     if ~isnumeric(dname)
                         obj.parent.fdir = dname;
-                        obj.sc_save(0);
+                        obj.sc_save(false);
                         success = true;
                     end
                 end

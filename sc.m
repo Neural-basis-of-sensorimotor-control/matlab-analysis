@@ -35,9 +35,9 @@ args = varargin;
 if  exist('sc_config.txt','file') == 2
     fid = fopen('sc_config.txt');
     sc_file_folder = fgetl(fid);
-    if isempty(sc_file_folder)
-        sc_file_folder = cd;
-    end
+%     if isempty(sc_file_folder)
+%         sc_file_folder = cd;
+%     end
     raw_data_folder = fgetl(fid);
     if ~numel(args)
         str = fgetl(fid);

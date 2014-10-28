@@ -187,25 +187,14 @@ classdef SequenceViewer < handle
         function delete(obj)
             fid = fopen('sc_config.txt','w');
             if ~isempty(obj.experiment)
-                if ~isempty(obj.experiment) && ~isempty(obj.experiment.save_name)
-                    [p,f,ext] = fileparts(obj.experiment.save_name);
-                    if ~isempty(p)
-                        obj.set_sc_file_folder(p);
-                    end
-                    if isdir(obj.experiment.fdir)
-                        obj.set_raw_data_folder(obj.experiment.fdir);
-                    end
-                else
-                    f = [];
-                    ext = [];                    
-                end
+                fprintf(fid,'%s\n',obj.experiment.sc_dir);
+                fprintf(fid,'%s\n',obj.experiment.fdir);
+                fprintf(fid,'%s\n',obj.experiment.save_name);
             else
-                f = [];
-                ext = [];
+                fprintf(fid,'%s\n',obj.sc_file_folder);
+                fprintf(fid,'%s\n',obj.raw_data_folder);
+                fprintf(fid,'%s\n','');
             end
-            fprintf(fid,'%s\n',obj.sc_file_folder);
-            fprintf(fid,'%s\n',obj.raw_data_folder);
-            fprintf(fid,'%s\n',[f ext]);
             fclose(fid);
         end
     end

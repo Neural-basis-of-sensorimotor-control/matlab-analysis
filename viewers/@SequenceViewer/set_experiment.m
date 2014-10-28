@@ -1,11 +1,8 @@
 function set_experiment(obj,experiment)
 obj.experiment = experiment;
 if ~isempty(experiment)
-    if ~isempty(experiment.save_name)
-        p = fileparts(experiment.save_name);
-        if ~isempty(p)              %p is always empty - change variable experiment.save_name or add new variable
-            obj.set_sc_file_folder(p);
-        end
+    if ~isempty(experiment.sc_dir) && exist(fullfile(experiment.sc_dir,experiment.save_name),'file') == 2
+        obj.set_sc_file_folder(obj.sc_dir);
     end
     if isdir(experiment.fdir)
         obj.set_raw_data_folder(experiment.fdir);

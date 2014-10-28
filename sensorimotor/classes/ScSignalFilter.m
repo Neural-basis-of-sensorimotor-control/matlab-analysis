@@ -2,7 +2,7 @@ classdef ScSignalFilter < handle
     properties (SetObservable)
         parent
         smoothing_width = 5
-        artifact_width = 1e3
+        artifact_width = 0%1e3
         artifactchannels
     end
     

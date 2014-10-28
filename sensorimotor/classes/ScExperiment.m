@@ -2,8 +2,13 @@ classdef ScExperiment < ScList
 %Children: ScFile    
     properties
         fdir        %directory containing .mat / .adq files
+        sc_dir      %directory for save_name (where this object is saved)
         save_name   %for saving this class, ends with _sc.mat
         last_gui_version
+    end
+    
+    properties (Dependent)
+        abs_save_path
     end
     
     methods
@@ -18,11 +23,12 @@ classdef ScExperiment < ScList
         function saved = sc_save(obj, showdialog)
             if nargin<2,    showdialog = true;  end
             saved = false;
-            if showdialog || isempty(obj.save_name) || exist(obj.save_name,'file') ~= 2
+            if showdialog || isempty(obj.abs_save_path) || exist(obj.abs_save_path,'file') ~= 2
                 [fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
                     obj.save_name);
                 if ~isnumeric(fname)
                     file = fullfile(pname,fname);
+                    obj.sc_dir = pname;
                     obj.save_name = file;
                     save(file,'obj');
                     saved = true;
@@ -54,6 +60,10 @@ classdef ScExperiment < ScList
                  fprintf('parsing file %i out of %i\n',i,obj.n);
                  obj.get(i).update_from_protocol(protocolfile);
              end
+         end
+         
+         function val = get.abs_save_path(obj)
+             val = fullfile(obj.sc_dir,obj.save_name);
          end
     end
 end

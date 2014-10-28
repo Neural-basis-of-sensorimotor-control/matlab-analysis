@@ -3,7 +3,7 @@ obj.experiment = experiment;
 if ~isempty(experiment)
     if ~isempty(experiment.save_name)
         p = fileparts(experiment.save_name);
-        if ~isempty(p)
+        if ~isempty(p)              %p is always empty - change variable experiment.save_name or add new variable
             obj.set_sc_file_folder(p);
         end
     end

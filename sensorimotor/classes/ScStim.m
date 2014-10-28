@@ -13,7 +13,7 @@ classdef ScStim < ScChannel
             for k=1:2:numel(varargin)
                 obj.(varargin{k}) = varargin{k+1};
             end
-        end 
+        end
         
         function sc_loadtimes(obj)
             obj.triggers = ScList();
@@ -41,6 +41,11 @@ classdef ScStim < ScChannel
         function sc_clear(obj)
             obj.triggers = ScList;
         end
-
+        
+    end
+    methods (Static)
+        function obj = loadobj(a)
+            obj = loadobj@ScChannel(a);
+        end
     end
 end

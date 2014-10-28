@@ -95,6 +95,7 @@ classdef ScSignal < ScChannel
     end
     methods (Static)
         function obj = loadobj(a)
+            a = loadobj@ScChannel(a);
             if isempty(a.remove_waveforms)
                 a.remove_waveforms = ScList();
             end

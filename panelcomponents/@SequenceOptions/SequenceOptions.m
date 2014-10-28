@@ -14,12 +14,13 @@ classdef SequenceOptions < PanelComponent
         
         function populate(obj,mgr)
             mgr.newline(20);
-            obj.ui_parse_protocol = mgr.add(sc_ctrl('pushbutton','Parse protocol',...
-                @(~,~) obj.parse_protocol_callback),100);
-            mgr.add(sc_ctrl('pushbutton','Show protocol',@(~,~) obj.show_protocol()),100);
-            mgr.newline(20);
             obj.ui_add_sequence = mgr.add(sc_ctrl('pushbutton','Add sequence',...
                 @(~,~) obj.affect_sequence_callback(obj.ui_add_sequence)),100);
+            obj.ui_parse_protocol = mgr.add(sc_ctrl('pushbutton','Parse protocol',...
+                @(~,~) obj.parse_protocol_callback),100);
+            mgr.newline(20);
+            mgr.add(sc_ctrl('pushbutton','Show protocol',@(~,~) obj.show_protocol()),100);
+            mgr.add(sc_ctrl('pushbutton','Print summary',@(~,~) obj.print_experiment_status()),100);            
             mgr.newline(20);
             obj.ui_edit_sequence = mgr.add(sc_ctrl('pushbutton','Edit sequence',...
                 @(~,~) obj.affect_sequence_callback(obj.ui_edit_sequence)),100);
@@ -166,6 +167,30 @@ classdef SequenceOptions < PanelComponent
             mgr.trim;
             setheight(fig,getheight(panel)+10);
             sety(panel,5);
+        end
+        
+        function print_experiment_status(obj)
+            clc
+            fprintf('Experiment: %s\n',obj.experiment.save_name);
+            fprintf('Files:\n');
+            for k=1:obj.experiment.n
+                file = obj.experiment.get(k);
+                fprintf('\t%s\n',file.tag);
+                for i=1:file.n
+                    sequence = file.get(i);
+                    for j=1:sequence.signals.n
+                        signal = sequence.signals.get(j);
+                        for m=1:signal.waveforms.n
+                            waveform = signal.waveforms.get(m);
+                            waveform.sc_loadtimes();
+                            spiketimes = waveform.gettimes(sequence.tmin,sequence.tmax); 
+                            if ~isempty(spiketimes)
+                                fprintf('\t\t%s\t%s\t%s\t%i spikes\n',sequence.tag,signal.tag,waveform.tag,numel(spiketimes));
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
 end

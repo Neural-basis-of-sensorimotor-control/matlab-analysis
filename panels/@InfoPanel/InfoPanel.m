@@ -20,7 +20,6 @@ classdef InfoPanel < UpdatablePanel
             obj.gui_components.add(SequenceTextBox(obj));
             obj.gui_components.add(ModeSelection(obj));
             obj.gui_components.add(ChannelOptions(obj));
-           % obj.dynamic_panels_exist = true;
             setup_components@UpdatablePanel(obj);
         end
         

@@ -6,6 +6,7 @@ classdef GuiComponent < UiWrapper
         sweep
         triggertimes
         histogram_window
+        experiment
         file
         sequence
     end
@@ -28,6 +29,12 @@ classdef GuiComponent < UiWrapper
         end
         function set.histogram_window(obj,val)
             obj.gui.histogram_window = val;
+        end
+        function val = get.experiment(obj)
+            val = obj.gui.experiment;
+        end
+        function set.experiment(obj,val)
+            obj.gui.experiment = val;
         end
         function val = get.file(obj)
             val = obj.gui.file;

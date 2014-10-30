@@ -15,7 +15,9 @@ if numel(stimpos) && filterwidth
         min_filter_width = 1;
         for max_filter_width=unique(nbr_of_stims_per_filterwidth)
             columns = nbr_of_stims_per_filterwidth>=min_filter_width & nbr_of_stims_per_filterwidth <= max_filter_width;
-            v_median(columns) = median(v(filterinput(min_filter_width:max_filter_width,columns)),1);
+            v_matrix = v(filterinput(min_filter_width:max_filter_width,columns));
+            v_matrix = v_matrix - repmat(v_matrix(:,1),1,size(v_matrix,2));
+            v_median(columns) = median(v_matrix,1);
             min_filter_width = max_filter_width+1;
         end
         v_median = v_median - v_median(1);
@@ -36,5 +38,8 @@ if numel(stimpos) && filterwidth
             v(filterinput(pos)) = v(filterinput(pos)) - v_median(medianpos)';
         end
     end
+else
+    fprintf('Warning in %s: no filtering.\n',mfilename);
+    v_median = [];
 end
 end

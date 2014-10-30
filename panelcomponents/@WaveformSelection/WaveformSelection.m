@@ -90,18 +90,18 @@ classdef WaveformSelection < PanelComponent
             obj.show_panels(false);
         end
         function waveform_order_callback(obj)
-            str = get(obj.ui_waveforms,'string');
-            val = get(obj.ui_waveforms,'value');
+            str = get(obj.ui_waveform_order,'string');
+            val = get(obj.ui_waveform_order,'value');
             [enum,enum_str] = enumeration('ScWaveformEnum');
             obj.gui.waveform.apply_after = enum(sc_cellfind(enum_str,str{val}));
             obj.gui.has_unsaved_changes = true;
         end
         function update_all_waveforms(obj)
-            obj.lock_screen(true,'Recalculating all waveforms, might take a minute...');
+            obj.gui.lock_screen(true,'Recalculating all waveforms, might take a minute...');
             obj.show_panels(false);
             obj.gui.has_unsaved_changes = true;
             obj.gui.main_channel.signal.recalculate_all_waveforms();
-            obj.lock_screen(false);
+            obj.gui.lock_screen(false);
         end
     end
 end

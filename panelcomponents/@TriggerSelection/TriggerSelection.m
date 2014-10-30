@@ -25,28 +25,30 @@ classdef TriggerSelection < PanelComponent
             
             mgr.newline(20);
             obj.ui_nbr_of_sweeps = mgr.add(sc_ctrl('text',[]),200);
-
+            
             sc_addlistener(obj.gui,'triggerparent',@(~,~) obj.triggerparent_listener(),obj.uihandle);
             sc_addlistener(obj.gui,'trigger',@(~,~) obj.trigger_listener(),obj.uihandle);
         end
         
         function initialize(obj)
-           triggerparent = obj.gui.triggerparent;
-           if isempty(triggerparent)
-               set(obj.ui_triggerparent,'visible','off');
-           else
+            triggerparent = obj.gui.triggerparent;
+            if isempty(triggerparent)
+                set(obj.ui_triggerparent,'visible','off');
+            else
                 str = obj.gui.triggerparents.values('tag');
                 val = sc_cellfind(str,triggerparent.tag);
                 set(obj.ui_triggerparent,'string',str,'value',val,'visible','on');
-           end
-           trigger = obj.gui.trigger;
-           if isempty(trigger)
-               set(obj.ui_trigger,'visible','off');
-           else
-               str = obj.gui.triggers.values('tag');
-               val = sc_cellfind(str,trigger.tag);
-               set(obj.ui_trigger,'string',str,'value',val,'visible','on');
-           end
+            end
+            trigger = obj.gui.trigger;
+            if isempty(trigger)
+                set(obj.ui_trigger,'visible','off');
+            else
+                str = obj.gui.triggers.values('tag');
+                val = sc_cellfind(str,trigger.tag);
+                set(obj.ui_trigger,'string',str,'value',val,'visible','on');
+            end
+            set(obj.ui_nbr_of_sweeps,'string',sprintf('Total nbr of sweeps: %i',...
+                numel(obj.gui.triggertimes)));
         end
         
         function updated = update(obj)
@@ -55,7 +57,7 @@ classdef TriggerSelection < PanelComponent
     end
     
     methods (Access = 'protected')
-        function triggerparent_callback(obj) 
+        function triggerparent_callback(obj)
             val = get(obj.ui_triggerparent,'value');
             str = get(obj.ui_triggerparent,'string');
             obj.gui.triggerparent = obj.gui.triggerparents.get('tag',str{val});

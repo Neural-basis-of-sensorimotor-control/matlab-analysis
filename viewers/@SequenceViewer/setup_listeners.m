@@ -37,12 +37,12 @@ addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_l
             
             function xaxis_listener(~,~)
                 obj.xlimits = xlim(gca);%obj.main_axes);
-                if obj.xlimits(1) < obj.pretrigger
-                    obj.pretrigger = obj.xlimits(1);
-                end
-                if obj.xlimits(2) > obj.posttrigger
-                    obj.posttrigger = obj.xlimits(2);
-                end
+%                 if obj.xlimits(1) < obj.pretrigger
+%                     obj.pretrigger = obj.xlimits(1);
+%                 end
+%                 if obj.xlimits(2) > obj.posttrigger
+%                     obj.posttrigger = obj.xlimits(2);
+%                 end
             end
         end
     end

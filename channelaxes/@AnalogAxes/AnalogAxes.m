@@ -50,10 +50,13 @@ classdef AnalogAxes < ChannelAxes
                         obj.extract_b_highlighted();
                     end
                 else
+                    obj.b_highlighted = [];
                     obj.remove_waveforms();
                 end
             elseif obj.plot_waveforms
                 obj.extract_b_highlighted;
+            else
+                obj.b_highlighted = [];
             end
         end
         
@@ -85,7 +88,7 @@ classdef AnalogAxes < ChannelAxes
                 pretrigger, posttrigger, obj.signal.dt);
             if ~isempty(obj.b_highlighted)
                 b_signal = sc_get_sweeps(obj.b_highlighted, 0, obj.gui.triggertimes(sweep), ...
-                    obj.gui.pretrigger, obj.gui.posttrigger, ...
+                    pretrigger, posttrigger, ...
                     obj.signal.dt);
             else
                 b_signal = [];

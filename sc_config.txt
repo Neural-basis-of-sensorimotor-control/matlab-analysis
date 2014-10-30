@@ -1,3 +1,3 @@
 D:\MATLAB
-D:\Spike2\2NCP130318\
-2NCP_sc.mat
+D:\Spike2\BNNR140319\
+BNNR_sc.mat

@@ -153,6 +153,8 @@ classdef SequenceOptions < PanelComponent
             panel = uipanel('Parent',fig);
             mgr = ScLayoutManager(panel);
             mgr.newline(20);
+            mgr.add(sc_ctrl('text',sprintf('File : %s',obj.file.tag),[],'fontweight','bold'),100);
+            mgr.newline(20);
             mgr.add(sc_ctrl('text','Tag',[],'fontweight','bold'),100);
             mgr.add(sc_ctrl('text','Time [s]',[],'fontweight','bold'),100);
             mgr.add(sc_ctrl('text','Comment',[],'fontweight','bold'),200);

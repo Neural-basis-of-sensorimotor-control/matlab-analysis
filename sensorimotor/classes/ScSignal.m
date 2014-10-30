@@ -3,7 +3,7 @@ classdef ScSignal < ScChannel
     properties
         dt                  %time resolution (1x1 double)
         waveforms           %ScWaveform
-        filter              %ScFilter
+        filter              %ScSignalFilter
         remove_waveforms    %ScRemoveWaveformList
         N                   %nbr of data points (1x1 double)
     end

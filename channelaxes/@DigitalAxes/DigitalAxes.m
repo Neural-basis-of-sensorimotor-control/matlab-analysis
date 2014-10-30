@@ -41,6 +41,10 @@ classdef DigitalAxes < ChannelAxes
                     obj.gui.tmax);
                 switch obj.gui.plotmode
                     case {PlotModes.default, PlotModes.plot_all}
+                        pretrigger = obj.gui.pretrigger;
+                        posttrigger = obj.gui.posttrigger;
+                        if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end
+                        if posttrigger<obj.gui.xlimits(2),  posttrigger = obj.gui.xlimits(2);   end
                         for k=1:digch.n
                             if isa(digch.get(k),'ScWaveform') || isa(digch.get(k),'ScRemoveWaveform')
                                 plotcolor = [1 1 1];
@@ -48,8 +52,8 @@ classdef DigitalAxes < ChannelAxes
                                 plotcolor = [.5 .5 0];
                             end
                             times = digch.get(k).perievent(obj.gui.triggertimes(sweep),...
-                                obj.gui.pretrigger,obj.gui.posttrigger);
-                            trange = [obj.gui.pretrigger; obj.gui.posttrigger];
+                                pretrigger,posttrigger);
+                            trange = [pretrigger; posttrigger];
                             plot(obj.ax,trange,[k k],'Color',plotcolor);
                             for j=1:numel(times)
                                 plot(obj.ax,times(j)*ones(2,1),k+[-.5 .5],'LineWidth',2,...

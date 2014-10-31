@@ -16,13 +16,20 @@ addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_l
         addlistener(obj.main_channel,'ax_pr','PostSet',@main_channel_ax_listener);
         
         function main_channel_signal_listener(~,~)
-            if ~isempty(obj.main_channel.signal)
-                if ~isempty(obj.waveform) && obj.main_signal.waveforms.contains(obj.waveform)
+            signal = obj.main_channel.signal;
+            if ~isempty(signal)
+                if ~isempty(obj.waveform) && signal.waveforms.contains(obj.waveform)
                     obj.waveform = obj.waveform;
-                elseif obj.main_signal.waveforms.n
-                    obj.waveform = obj.main_signal.waveforms.get(1);
+                elseif signal.waveforms.n
+                    obj.waveform = signal.waveforms.get(1);
                 else
                     obj.waveform = [];
+                end
+                rmwfs = signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
+                if ~rmwfs.n
+                    obj.rmwf = [];
+                else
+                    obj.rmwf = rmwfs.get(rmwfs.n);
                 end
             end
         end

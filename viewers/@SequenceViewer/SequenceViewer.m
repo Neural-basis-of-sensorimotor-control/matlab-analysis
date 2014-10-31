@@ -14,6 +14,7 @@ classdef SequenceViewer < handle
         digital_channels
         analog_subch
         histogram
+        rmwf
     end
     
     properties (SetObservable, SetAccess = 'protected')

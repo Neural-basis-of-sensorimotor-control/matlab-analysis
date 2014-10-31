@@ -38,6 +38,14 @@ classdef ChannelOptions < PanelComponent
         end
         
         function updated = update(obj)
+            ch = get(obj.gui.plot_window,'children');
+            for k=1:numel(ch)
+                delete(ch(k));
+            end
+            for k=1:obj.gui.plots.n
+                obj.gui.plots.get(k).ax = axes('Parent',obj.gui.plot_window); %#ok<LAXES>
+            end
+            obj.gui.resize_plot_window();
             if obj.gui.file.signals.n
                 set(obj.ui_nbr_of_channels,'visible','on');
                 updated = true;
@@ -56,24 +64,33 @@ classdef ChannelOptions < PanelComponent
             analog_subch = obj.gui.analog_subch;
             nbr_of_analog_subch = obj.gui.nbr_of_analog_channels-1;
             for k=1:nbr_of_analog_subch
-                old_signal = analog_subch.get(k).signal;
                 if k>obj.gui.analog_subch.n
                     %Add extra analog channel
                     analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));
-                elseif  ~signals.contains(old_signal)
-                    %Channel does not belong to this file, add an accurate
-                    %one
-                    if sc_contains(signal.values('tag'),old_signal.tag)
-                        %Add channel with same tag string
-                        analog_subch.get(k) = signals.get('tag',old_signal.tag);
+                else
+                    old_signal = analog_subch.get(k).signal;
+                    if  ~signals.contains(old_signal)
+                        %Channel does not belong to this file, add an accurate
+                        %one
+                        if sc_contains(signal.values('tag'),old_signal.tag)
+                            %Add channel with same tag string
+                            analog_subch.get(k) = signals.get('tag',old_signal.tag);
+                        else
+                            %Add arbitrary channel
+                            analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));
+                        end
                     else
                         %Add arbitrary channel
-                        analog_subch.get(k) = signals.get(k);
+                        analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));
                     end
                 end
             end
             %Remove superfluous channels
             while nbr_of_analog_subch<analog_subch.n
+                ax = analog_subch.get(analog_subch.n);
+                if ishandle(ax)
+                    delete(ax);
+                end
                 analog_subch.remove_at(analog_subch.n);
             end
             %Assign to correct parent figure

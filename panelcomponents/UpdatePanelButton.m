@@ -10,7 +10,7 @@ classdef UpdatePanelButton < PanelComponent
     end
     methods (Access = 'protected')
         function update_callback(obj)
-            clc
+           % clc
             obj.gui.lock_screen(true,'Wait, updating gui...');
             index = obj.gui.panels.indexof(obj.panel);
             obj.panel.update_panel();

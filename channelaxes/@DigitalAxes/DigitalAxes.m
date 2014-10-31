@@ -15,7 +15,7 @@ classdef DigitalAxes < ChannelAxes
 %             
             function sequence_listener(~,~)
                 if ~isempty(obj.gui.sequence)
-                    digch_ = obj.sequence.getdigchannels(obj.gui.tmin,...
+                    digch_ = obj.sequence.gettriggers(obj.gui.tmin,...
                         obj.gui.tmax);
                     height_ = max(15,digch_.n*15);
                     setheight(obj.ax,height_);
@@ -37,7 +37,7 @@ classdef DigitalAxes < ChannelAxes
             end
             sweep = obj.setup_axes();
             if ~isempty(sweep)
-                digch = obj.sequence.getdigchannels(obj.gui.tmin,...
+                digch = obj.sequence.gettriggers(obj.gui.tmin,...
                     obj.gui.tmax);
                 switch obj.gui.plotmode
                     case {PlotModes.default, PlotModes.plot_all}

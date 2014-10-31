@@ -15,7 +15,8 @@ classdef SetAxesHeight < PanelComponent
     
     methods (Access = 'protected')
         function setheights_callback(obj)
-            obj.fighandle = figure('WindowStyle','modal','CloseRequestFcn',@(~,~) obj.close_req_fcn);
+            obj.fighandle = figure('WindowStyle','modal','CloseRequestFcn',@(~,~) obj.close_req_fcn,...
+                'ToolBar','None','MenuBar','none');
             newpanel = uipanel('parent',obj.fighandle);
             mgr = ScLayoutManager(newpanel,'panelwidth',205);
             mgr.newline(20);

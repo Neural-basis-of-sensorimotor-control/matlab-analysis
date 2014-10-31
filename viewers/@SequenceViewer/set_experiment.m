@@ -2,7 +2,7 @@ function set_experiment(obj,experiment)
 obj.experiment = experiment;
 if ~isempty(experiment)
     if ~isempty(experiment.sc_dir) && exist(fullfile(experiment.sc_dir,experiment.save_name),'file') == 2
-        obj.set_sc_file_folder(obj.sc_dir);
+        obj.set_sc_file_folder(experiment.sc_dir);
     end
     if isdir(experiment.fdir)
         obj.set_raw_data_folder(experiment.fdir);

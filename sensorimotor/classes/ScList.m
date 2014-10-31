@@ -7,6 +7,7 @@ classdef ScList < handle
     
     properties (Dependent)
         n
+        cell_list
     end
     
     methods
@@ -97,6 +98,13 @@ classdef ScList < handle
         
         function n = get.n(obj)
             n = numel(obj.list);
+        end
+        
+        function val = get.cell_list(obj)
+            val = cell(obj.n,1);
+            for k=1:obj.n
+                val(k) = {obj.get(k)};
+            end
         end
     end
 end

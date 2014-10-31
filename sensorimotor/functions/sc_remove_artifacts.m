@@ -1,4 +1,4 @@
-function [v, v_median] = sc_remove_artifacts(v,filterwidth,stimpos)
+function [v, v_median, filterwidth] = sc_remove_artifacts(v,filterwidth,stimpos)
 %offset_compensation_width = 5;
 if numel(stimpos) && filterwidth
     interspacing = [diff(stimpos)-1; numel(v)-stimpos(end)];
@@ -7,8 +7,11 @@ if numel(stimpos) && filterwidth
     pos = filterinput - repmat(stimpos,1,filterwidth) <= repmat(interspacing,1,filterwidth);
     
     if any(~all(pos,1))
-        filterwidth = find(all(pos,1),1,'last');
-        v = sc_remove_artifacts(v,filterwidth,stimpos);
+        fwidth = find(all(pos,1),1,'last');
+        [v,v_median] = sc_remove_artifacts(v,fwidth,stimpos);
+        zrs = numel(v_median)+1:filterwidth;
+        v_median(zrs) = ones(size(zrs));
+        filterwidth = fwidth;
     else
         v_median = nan(1,filterwidth);
         nbr_of_stims_per_filterwidth = sum(pos,1);

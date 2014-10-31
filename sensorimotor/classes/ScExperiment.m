@@ -27,14 +27,13 @@ classdef ScExperiment < ScList
                 [fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
                     obj.save_name);
                 if ~isnumeric(fname)
-                    file = fullfile(pname,fname);
                     obj.sc_dir = pname;
-                    obj.save_name = file;
-                    save(file,'obj');
+                    obj.save_name = fname;
+                    save(obj.abs_save_path,'obj');
                     saved = true;
                 end
             else
-                save(obj.save_name,'obj');
+                save(obj.abs_save_path,'obj');
                 saved = true;
             end
         end

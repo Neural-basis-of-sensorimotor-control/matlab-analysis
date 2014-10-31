@@ -81,12 +81,27 @@ classdef ScSignal < ScChannel
             end
         end
         
+        function rmwfs = get_rmwfs(obj,tmin,tmax)
+            rmwfs = ScList();
+            for k=1:obj.remove_waveforms.n
+                rmwf = obj.remove_waveforms.get(k);
+                if rmwf.tstart<tmax && rmwf.tstop>=tmin
+                    rmwfs.add(rmwf);
+                end
+            end
+        end
         function istrigger = get.istrigger(~)
             istrigger = false;
         end
         
         function triggers = get.triggers(obj)
-            triggers = obj.waveforms;
+            triggers = ScCellList();
+            for k=1:obj.waveforms.n
+                triggers.add(obj.waveforms.get(k));
+            end
+            for k=1:obj.remove_waveforms.n
+                triggers.add(obj.remove_waveforms.get(k));
+            end
         end
         
         function t = get.t(obj)

@@ -1,26 +1,38 @@
 classdef ScRemoveWaveform < ScTrigger
     properties
         parent
-        original_stimpos
-        stimpos
-        stimpos_offsets
-        width
-        tag
-        v_median
-        v_interpolated_median
-        tstart
-        tstop
+        original_stimpos        %Spike times (in integer position values) from original ScWaveform object
+        stimpos                 %Post-calibration spike times (in integer position values)
+        stimpos_offsets         %Offset to stimpos (in seconds)
+        width                   %Total filter width
+        tag                     
+        v_median                %Vector to be subtracted in first calibration step
+        v_interpolated_median   %Vector to be subtracted after last calibration step
+        tstart                  %Only use stimpos where stimpos*parent.dt>=tstart
+        tstop                   %Only use stimpos where stimpos*parent.dt<tstop
+        apply_calibration = true
     end
     methods
         
-        function obj = ScRemoveWaveform(waveform)
-            obj.initialize(waveform);
+        function obj = ScRemoveWaveform(parent_signal,trigger,width,apply_calibration,tstart,tstop)
+            obj.parent = parent_signal;
+            obj.width = width;
+            obj.tstart = tstart;
+            obj.tstop = tstop;
+            obj.apply_calibration = apply_calibration;
+            obj.initialize(trigger);
         end
         
         %Assuming that tmin = 0 for conversion from time to discrete time
         %steps
         function calibrate(obj,v)
+            if ~obj.apply_calibration
+                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                return
+            end
             obj.stimpos = obj.original_stimpos;
+            obj.stimpos = obj.stimpos(obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop);
+            obj.stimpos_offsets = zeros(size(obj.stimpos));
             ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
             ranges(ranges<1) = 1*ones(size(find(ranges<1)));
             ranges(ranges>numel(v)-(obj.width+1)) = (numel(v)-(obj.width+1))*ones(size(find(ranges>numel(v)-(obj.width+1))));
@@ -48,7 +60,7 @@ classdef ScRemoveWaveform < ScTrigger
             times = t_index*obj.parent.dt;
             sp = spaps(times,obj.v_interpolated_median,1e-6);
             obj.v_interpolated_median = fnval(sp,times);
-            
+
             it=1;
             max_nbr_of_iterations = 3;
             %todo: add check for convergence
@@ -71,7 +83,7 @@ classdef ScRemoveWaveform < ScTrigger
                     new_v_median(:,k) = fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));
                 end
                 obj.v_interpolated_median(2:end-1) = mean(new_v_median,2);
-                dbgplt(17+it,[],obj.v_interpolated_median);
+                %dbgplt(17+it,[],obj.v_interpolated_median);
                 it = it+1;
             end
         end
@@ -110,7 +122,7 @@ classdef ScRemoveWaveform < ScTrigger
         end
         
         function times = gettimes(obj,tmin,tmax)
-            times = obj.stimpos*obj.parent.dt;
+            times = obj.stimpos*obj.parent.dt + obj.stimpos_offsets;
             times = times(times>=tmin & times<tmax);
         end
     end
@@ -129,16 +141,28 @@ classdef ScRemoveWaveform < ScTrigger
         %             t = (0:(obj.width+1))';
         %             ressqrd = double(sqrt( sum( ( v(stimpos+t(1:end-2)) - v(stimpos) - interp1(t,obj.v_interpolated_median,t(2:end-1)+stimpos_offset) ).^2 ) ));
         %         end
-        function initialize(obj,waveform)
-            obj.parent = waveform.parent;
-            obj.tag = ['#' waveform.tag];
-            obj.width = waveform.width;
-            obj.original_stimpos = round(waveform.gettimes(0,inf)/waveform.parent.dt)+1;
+        function initialize(obj,trigger)
+            obj.tag = ['#' trigger.tag];
+            obj.original_stimpos = round(trigger.gettimes(0,inf)/obj.parent.dt);
             obj.stimpos = obj.original_stimpos;
+            obj.stimpos_offsets = trigger.gettimes(0,inf) - obj.stimpos*obj.parent.dt;
             below_one = find(obj.stimpos<1);
-            above_max = find(obj.stimpos>waveform.parent.N);
+            above_max = find(obj.stimpos>obj.parent.N);
             obj.stimpos(below_one) = ones(size(below_one));
-            obj.stimpos(above_max) = waveform.parent.N*ones(size(above_max));
+            obj.stimpos(above_max) = obj.parent.N*ones(size(above_max));
+        end
+    end
+    methods (Static)
+        function obj = loadobj(obj)
+            if isempty(obj.tstart)
+                obj.tstart = -inf;
+            end
+            if isempty(obj.tstop)
+                obj.tstop = inf;
+            end
+            if isempty(obj.apply_calibration)
+                obj.apply_calibration = true;
+            end
         end
     end
 end

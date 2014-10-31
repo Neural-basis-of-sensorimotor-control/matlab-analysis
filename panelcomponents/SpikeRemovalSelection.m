@@ -1,13 +1,19 @@
 classdef SpikeRemovalSelection < PanelComponent
     properties
         ui_list
-        ui_add_spike_removal
+        ui_tstart
+        ui_tstop
+        ui_width
+        ui_nbr_of_artifacts
+        ui_import_current_wf
+        ui_import_current_trg
         ui_delete_spike_removal
         ui_update_spike_removal
     end
     methods
         function obj = SpikeRemovalSelection(panel)
             obj@PanelComponent(panel);
+            sc_addlistener(obj.gui,'rmwf',@(~,~) obj.rmwf_listener(),obj.uihandle);
         end
         function populate(obj,mgr)
             mgr.newline(20);
@@ -15,56 +21,133 @@ classdef SpikeRemovalSelection < PanelComponent
             obj.ui_list = mgr.add(sc_ctrl('popupmenu',[],[],'visible','off'),100);
             mgr.newline(5);
             mgr.newline(20);
-            obj.ui_add_spike_removal = mgr.add(sc_ctrl('pushbutton','Add to spike removal list',@(~,~) obj.add_to_spike_removal_callback),200);
+            mgr.add(sc_ctrl('text','tmin'),50);
+            obj.ui_tstart = mgr.add(sc_ctrl('edit',[],@(~,~) obj.tstart_callback()),50);
+            mgr.add(sc_ctrl('text','tmax'),50);
+            obj.ui_tstop = mgr.add(sc_ctrl('edit',[],@(~,~) obj.tstop_callback()),50);
+            mgr.newline(20);
+            mgr.add(sc_ctrl('text','Filter width'),100);
+            obj.ui_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.width_callback()),50);
+            mgr.add(sc_ctrl('text','bins'),50);
+            mgr.newline(20);
+            obj.ui_nbr_of_artifacts = mgr.add(sc_ctrl('text',[]),200);
+            mgr.newline(20);
+            obj.ui_import_current_wf = mgr.add(sc_ctrl('pushbutton','Add waveform to spike removal list',@(~,~) obj.import_wf_callback),200);
+            mgr.newline(20);
+            obj.ui_import_current_wf = mgr.add(sc_ctrl('pushbutton','Add trigger to spike removal list',@(~,~) obj.import_trg_callback),200);
             mgr.newline(20);
             obj.ui_delete_spike_removal = mgr.add(sc_ctrl('pushbutton','Delete from spike removal list',@(~,~) obj.delete_spike_removal_callback),200);
             mgr.newline(20);
-            obj.ui_update_spike_removal = mgr.add(sc_ctrl('pushbutton','Update spike removal times',@(~,~) obj.update_spike_removal_callback),200);
+            obj.ui_update_spike_removal = mgr.add(sc_ctrl('pushbutton','Re-do spike removal calibration',@(~,~) obj.update_spike_removal_callback),200);
         end
         function initialize(obj)
-            list = obj.gui.main_signal.remove_waveforms;
-            if list.n
-                str = list.values('tag');
-                set(obj.ui_list,'string',str);
-                set(obj.ui_list,'value',1);
-                set(obj.ui_list,'visible','on');
-            else
-                set(obj.ui_list,'visible','off');
-            end
+            obj.rmwf_listener();
         end
     end
     methods (Access='protected')
-        function add_to_spike_removal_callback(obj)
-            list = obj.gui.main_signal.remove_waveforms;
+        function rmwf_listener(obj)
+            if isempty(obj.gui.rmwf)
+                set(obj.ui_list,'visible','off');
+                set(obj.ui_tstart,'visible','off');
+                set(obj.ui_tstop,'visible','off');
+                set(obj.ui_width,'visible','off');
+                set(obj.ui_delete_spike_removal,'visible','off');
+                set(obj.ui_update_spike_removal,'visible','off');
+                set(obj.ui_nbr_of_artifacts,'visible','off');
+            else
+                list = obj.gui.main_signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
+                str = list.values('tag');
+                val =  sc_cellfind(str,obj.gui.rmwf.tag);
+                if numel(val)>1
+                    fprintf('Warning: >1 rmwf with identical names.\n');
+                    val = val(1);
+                end
+                set(obj.ui_list,'visible','on','string',str,'value',val);
+                set(obj.ui_tstart,'visible','on','string',obj.gui.rmwf.tstart);
+                set(obj.ui_tstop,'visible','on','string',obj.gui.rmwf.tstop);
+                set(obj.ui_width,'visible','on','string',obj.gui.rmwf.width);
+                set(obj.ui_delete_spike_removal,'visible','on');
+                set(obj.ui_update_spike_removal,'visible','on');
+                set(obj.ui_nbr_of_artifacts,'visible','on','string',...
+                    sprintf('Nbr of artifacts: %i\n',numel(obj.gui.rmwf.stimpos)));
+            end
+        end
+        
+        function tstart_callback(obj)
+            val = str2double(get(obj.ui_tstart,'string'));
+            if ~isnumeric(val)
+                msgbox('tmin has to be a numeric value [-inf, inf]');
+                set(obj.ui_tstart,'string',obj.gui.rmwf.tstart);
+            else
+                obj.gui.rmwf.tstart = val;
+                obj.gui.has_unsaved_changes = true;
+            end
+        end
+        
+        function tstop_callback(obj)
+            val = str2double(get(obj.ui_tstop,'string'));
+            if ~isnumeric(val)
+                msgbox('tmax has to be a numeric value [-inf, inf]');
+                set(obj.ui_tstop,'string',obj.gui.rmwf.tstop);
+            else
+                obj.gui.rmwf.tstop = val;
+                obj.gui.has_unsaved_changes = true;
+            end
+        end
+        
+        function width_callback(obj)
+            val = str2double(get(obj.ui_width,'string'));
+            if ~isnumeric(val) || val<1 || mod(val,1)
+                msgbox('Filter width has to be a positive integer');
+                set(obj.ui_tstop,'string',obj.gui.rmwf.tstop);
+            else
+                obj.gui.rmwf.width = val;
+                obj.gui.has_unsaved_changes = true;
+            end
+        end
+        
+        function import_wf_callback(obj)
             if isempty(obj.gui.waveform)
                 msgbox('Cannot add. First choose a waveform');
             else
-                str = list.values('tag');
-                if sc_contains(str,obj.gui.waveform.tag);
-                    msgbox('Waveform with same name already in list');
-                else
-                    obj.gui.lock_screen(true,'Wait, calibrating waveform position...');
-                    obj.gui.has_unsaved_changes = true;
-                    obj.gui.main_channel.load_data();
-                    obj.show_panels(false);
-                    rmwf = ScRemoveWaveform(obj.gui.waveform);
-                    rmwf.calibrate(obj.gui.main_channel.v);
-                    list.add(rmwf);
-                    obj.initialize();
-                    obj.gui.lock_screen(false);
-                end
+                obj.add_rmwf(obj.gui.waveform,obj.gui.waveform.width,true);
             end
+        end
+        function import_trg_callback(obj)
+            trg = obj.gui.trigger;
+            obj.add_rmwf(trg,500,false);
+        end
+        function add_rmwf(obj,trg,width,apply_calibration)
+            list = obj.gui.main_signal.remove_waveforms;
+            str = list.values('tag');
+            if sc_contains(str,sprintf('#%s',trg.tag));
+                msgbox('Waveform with same name already in list. (Possible cause: You must not give a waveform the same name as a trigger)');
+            else
+                obj.gui.lock_screen(true,'Wait, calibrating waveform position...');
+                obj.gui.has_unsaved_changes = true;
+                obj.gui.main_channel.load_data();
+                obj.show_panels(false);
+                rmwf = ScRemoveWaveform(obj.gui.main_signal,trg,width,apply_calibration,obj.sequence.tmin,obj.sequence.tmax);
+                rmwf.calibrate(obj.gui.main_channel.v);
+                list.add(rmwf);
+                obj.gui.rmwf = rmwf;
+                obj.gui.has_unsaved_changes = true;
+                obj.gui.lock_screen(false);
+            end
+            
         end
         function delete_spike_removal_callback(obj)
             list = obj.gui.main_signal.remove_waveforms;
             if ~list.n
                 msgbox('Cannot remove. List is empty.')
             else
-                obj.gui.has_unsaved_changes = true;
                 val = get(obj.ui_list,'value');
                 str = get(obj.ui_list,'string');
                 list.remove('tag',str{val});
-                obj.initialize();
+                if list.n
+                    obj.gui.rmwf = list.get(list.n);
+                end
+                obj.gui.has_unsaved_changes = true;
             end
         end
         function update_spike_removal_callback(obj)
@@ -73,8 +156,11 @@ classdef SpikeRemovalSelection < PanelComponent
             obj.gui.main_channel.load_data(false);
             list = obj.gui.main_signal.remove_waveforms;
             for k=1:list.n
-                list.get(k).update_waveform(obj.gui.main_channel.v);
+                list.get(k).calibrate(obj.gui.main_channel.v);
             end
+            set(obj.ui_nbr_of_artifacts,'string',...
+                sprintf('Nbr of artifacts: %i\n',numel(obj.gui.rmwf.stimpos)));
+            obj.gui.has_unsaved_changes = true;
             obj.gui.lock_screen(false);
         end
     end

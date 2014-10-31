@@ -10,6 +10,7 @@ classdef ScFile < ScList
         signals         %List of analog channels (ScSignal)
         stims           %List of digital channels (ScStim / ScAdqTriggerParent)
         textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
+        user_comment
     end
     
     properties (Dependent)
@@ -189,30 +190,17 @@ classdef ScFile < ScList
             end
         end
         
-        function digchannels = getdigchannels(obj,tmin,tmax)
-            digchannels = obj.gettriggers(tmin,tmax);
-            for k=1:obj.signals.n
-                signal = obj.signals.get(k);
-                for j=1:signal.remove_waveforms.n
-                    rmwf = signal.remove_waveforms.get(j);
-                    if numel(rmwf.gettimes(tmin,tmax))
-                        digchannels.add(rmwf);
-                    end
-                end
-            end
-        end
-        
         %Triggers = objects that can be triggered on
         %Implement function gettimes, and property istrigger returns true
         %Only returns objects where numel(times)>0
         function triggers = gettriggers(obj,tmin,tmax)
             triggers = ScCellList;
             for i=1:obj.signals.n
-                signal = obj.signals.get(i);
-                for j=1:signal.waveforms.n
-                    waveform = signal.waveforms.get(j);
-                    if numel(waveform.gettimes(tmin,tmax))
-                        triggers.add(waveform);
+                trgs = obj.signals.get(i).triggers;
+                for j=1:trgs.n
+                    trg = trgs.get(j);
+                    if numel(trg.gettimes(tmin,tmax))
+                        triggers.add(trg);
                     end
                 end
             end
@@ -262,8 +250,9 @@ classdef ScFile < ScList
             triggerparents = ScCellList();
             for i=1:obj.signals.n
                 channel = obj.signals.get(i);
-                for j=1:channel.waveforms.n
-                    if numel(channel.waveforms.get(j).gettimes(tmin,tmax))
+                trgs = channel.triggers;
+                for j=1:trgs.n
+                    if numel(trgs.get(j).gettimes(tmin,tmax))
                         triggerparents.add(channel);
                         break;
                     end

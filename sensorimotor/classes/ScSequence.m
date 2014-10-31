@@ -58,9 +58,9 @@ classdef ScSequence < ScListElement
             triggers = obj.parent.gettriggers(tmin,tmax);
         end
         
-        function digchannels = getdigchannels(obj,tmin,tmax)
-            digchannels = obj.parent.getdigchannels(tmin,tmax);
-        end
+%         function digchannels = getdigchannels(obj,tmin,tmax)
+%             digchannels = obj.parent.getdigchannels(tmin,tmax);
+%         end
         
         function signals = get.signals(obj)
             signals = obj.parent.signals;

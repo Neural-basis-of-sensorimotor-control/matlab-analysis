@@ -26,7 +26,6 @@ classdef SequenceOptions < PanelComponent
                 @(~,~) obj.affect_sequence_callback(obj.ui_edit_sequence)),100);
             obj.ui_remove_sequence = mgr.add(sc_ctrl('pushbutton','Remove sequence',...
                 @(~,~) obj.affect_sequence_callback(obj.ui_remove_sequence)),100);
-            mgr.newline(20);
         end
         
     end
@@ -178,6 +177,11 @@ classdef SequenceOptions < PanelComponent
             for k=1:obj.experiment.n
                 file = obj.experiment.get(k);
                 fprintf('\t%s\n',file.tag);
+                if ~isempty(file.user_comment)
+                    for j=1:size(file.user_comment,1)
+                        fprintf('\t/* %s\n',file.user_comment(j,:));
+                    end
+                end
                 for i=1:file.n
                     sequence = file.get(i);
                     for j=1:sequence.signals.n

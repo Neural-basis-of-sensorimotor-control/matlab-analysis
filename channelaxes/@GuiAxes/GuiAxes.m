@@ -22,6 +22,7 @@ classdef GuiAxes < handle
         function obj = GuiAxes(gui)
             obj.gui = gui;
             obj.ax = axes;
+            set(obj.ax,'Parent',gui.plot_window);
         end
         
         function sequence = get.sequence(obj)

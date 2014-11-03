@@ -75,6 +75,7 @@ classdef ScRemoveWaveform < ScTrigger
                 below_bounds = obj.stimpos_offsets < -1;
                 above_bounds = obj.stimpos_offsets > 1;
                 obj.stimpos_offsets(below_bounds | above_bounds) = zeros(size(find(below_bounds | above_bounds)));
+                fprintf('%i offsets out of %i out of bounds\n',nnz(above_bounds | below_bounds),numel(obj.stimpos_offsets));
                 obj.stimpos_offsets = obj.parent.dt*obj.stimpos_offsets;
                 new_v_median = nan(obj.width,numel(obj.stimpos));
                 

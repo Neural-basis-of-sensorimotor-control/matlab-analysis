@@ -172,31 +172,7 @@ classdef SequenceOptions < PanelComponent
         
         function print_experiment_status(obj)
             clc
-            fprintf('Experiment: %s\n',obj.experiment.save_name);
-            fprintf('Files:\n');
-            for k=1:obj.experiment.n
-                file = obj.experiment.get(k);
-                fprintf('\t%s\n',file.tag);
-                if ~isempty(file.user_comment)
-                    for j=1:size(file.user_comment,1)
-                        fprintf('\t/* %s\n',file.user_comment(j,:));
-                    end
-                end
-                for i=1:file.n
-                    sequence = file.get(i);
-                    for j=1:sequence.signals.n
-                        signal = sequence.signals.get(j);
-                        for m=1:signal.waveforms.n
-                            waveform = signal.waveforms.get(m);
-                            waveform.sc_loadtimes();
-                            spiketimes = waveform.gettimes(sequence.tmin,sequence.tmax); 
-                            if ~isempty(spiketimes)
-                                fprintf('\t\t%s\t%s\t%s\t%i spikes\n',sequence.tag,signal.tag,waveform.tag,numel(spiketimes));
-                            end
-                        end
-                    end
-                end
-            end
+            obj.experiment.print_status();
         end
     end
 end

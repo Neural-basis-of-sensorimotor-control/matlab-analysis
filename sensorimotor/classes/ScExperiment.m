@@ -1,5 +1,5 @@
 classdef ScExperiment < ScList
-%Children: ScFile    
+    %Children: ScFile
     properties
         fdir        %directory containing .mat / .adq files
         sc_dir      %directory for save_name (where this object is saved)
@@ -17,7 +17,7 @@ classdef ScExperiment < ScList
                 obj.(varargin{i}) = varargin{i+1};
             end
         end
-                
+        
         %Save current object
         %   showdialog  if true, user can update obj.save_name
         function saved = sc_save(obj, showdialog)
@@ -25,7 +25,7 @@ classdef ScExperiment < ScList
             saved = false;
             if showdialog || isempty(obj.abs_save_path) || exist(obj.abs_save_path,'file') ~= 2
                 [fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
-                    obj.save_name);
+                    obj.abs_save_path);
                 if ~isnumeric(fname)
                     obj.sc_dir = pname;
                     obj.save_name = fname;
@@ -54,15 +54,43 @@ classdef ScExperiment < ScList
         end
         
         %Parse experimental protocol (*.txt)
-         function update_from_protocol(obj, protocolfile)
-             for i=1:obj.n
-                 fprintf('parsing file %i out of %i\n',i,obj.n);
-                 obj.get(i).update_from_protocol(protocolfile);
-             end
-         end
-         
-         function val = get.abs_save_path(obj)
-             val = fullfile(obj.sc_dir,obj.save_name);
-         end
+        function update_from_protocol(obj, protocolfile)
+            for i=1:obj.n
+                fprintf('parsing file %i out of %i\n',i,obj.n);
+                obj.get(i).update_from_protocol(protocolfile);
+            end
+        end
+        
+        function print_status(obj)
+            fprintf('Experiment: %s\n',obj.save_name);
+            fprintf('Files:\n');
+            for k=1:obj.n
+                file = obj.get(k);
+                fprintf('\t%s\n',file.tag);
+                if ~isempty(file.user_comment)
+                    for j=1:size(file.user_comment,1)
+                        fprintf('\t/* %s\n',file.user_comment(j,:));
+                    end
+                end
+                for i=1:file.n
+                    sequence = file.get(i);
+                    for j=1:sequence.signals.n
+                        signal = sequence.signals.get(j);
+                        for m=1:signal.waveforms.n
+                            waveform = signal.waveforms.get(m);
+                            waveform.sc_loadtimes();
+                            spiketimes = waveform.gettimes(sequence.tmin,sequence.tmax);
+                            if ~isempty(spiketimes)
+                                fprintf('\t\t%s\t%s\t%s\t%i spikes\n',sequence.tag,signal.tag,waveform.tag,numel(spiketimes));
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        function val = get.abs_save_path(obj)
+            val = fullfile(obj.sc_dir,obj.save_name);
+        end
     end
 end

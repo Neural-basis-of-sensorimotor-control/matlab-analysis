@@ -41,10 +41,10 @@ classdef ScSignalFilter < handle
                 end
             end
         end
-        
-        function add_waveform(obj,waveform)
-            obj.remove_waveforms.add(waveform);
-        end
+%         
+%         function add_waveform(obj,waveform)
+%             obj.remove_waveforms.add(waveform);
+%         end
     end
     
 end

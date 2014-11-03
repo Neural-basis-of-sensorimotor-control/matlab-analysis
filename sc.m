@@ -73,6 +73,19 @@ if strcmpi(args{1},'-addpath')
 elseif strcmpi(args{1},'-help')
     help(mfilename)
     return
+elseif strcmpi(args{1},'-what')
+    directory = uigetdir(sc_file_folder,'Select file directory');
+    if ~isnumeric(directory)
+        w = what(directory);
+        clc
+        for k=1:numel(w.mat)
+            f = w.mat{k};
+            if numel(f)>7 && strcmpi(f(end-6:end),'_sc.mat')
+                d = load([directory filesep f]);
+                d.obj.print_status();
+            end
+        end
+    end
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     %Create new *_sc.mat file
     experiment = ScExperiment();

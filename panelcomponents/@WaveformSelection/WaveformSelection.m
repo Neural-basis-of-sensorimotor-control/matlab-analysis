@@ -2,7 +2,7 @@ classdef WaveformSelection < PanelComponent
     properties
         ui_waveforms
         ui_remove
-        ui_waveform_order
+%         ui_waveform_order
         ui_nbr_of_spikes
     end
     methods
@@ -15,10 +15,10 @@ classdef WaveformSelection < PanelComponent
             mgr.add(sc_ctrl('text','Waveform'),100);
             obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_callback(),'visible','off'),100);
             mgr.newline(5)
-            mgr.newline(20);
-            mgr.add(sc_ctrl('text','Waveform order:'),100);
-            obj.ui_waveform_order = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_order_callback(),'visible','off'),100);
-            mgr.newline(5)
+%             mgr.newline(20);
+%             mgr.add(sc_ctrl('text','Waveform order:'),100);
+%             obj.ui_waveform_order = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_order_callback(),'visible','off'),100);
+%             mgr.newline(5)
             mgr.newline(20);
             obj.ui_nbr_of_spikes = mgr.add(sc_ctrl('text',[]),200);
             mgr.newline(20);
@@ -62,8 +62,8 @@ classdef WaveformSelection < PanelComponent
                 str = obj.gui.main_signal.waveforms.values('tag');
                 ind = find(cellfun(@(x) strcmp(x,wf.tag), str));
                 set(obj.ui_waveforms,'string',str,'value',ind,'visible','on');
-                [enum,enum_str] = enumeration('ScWaveformEnum');
-                set(obj.ui_waveform_order,'string',enum_str,'value',find(enum==wf.apply_after),'visible','on');
+                %[enum,enum_str] = enumeration('ScWaveformEnum');
+                %set(obj.ui_waveform_order,'string',enum_str,'value',find(enum==wf.apply_after),'visible','on');
                 set(obj.ui_nbr_of_spikes,'string',sprintf('Number of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
             else
                 set(obj.ui_waveforms,'visible','off');
@@ -89,13 +89,13 @@ classdef WaveformSelection < PanelComponent
             obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
             obj.show_panels(false);
         end
-        function waveform_order_callback(obj)
-            str = get(obj.ui_waveform_order,'string');
-            val = get(obj.ui_waveform_order,'value');
-            [enum,enum_str] = enumeration('ScWaveformEnum');
-            obj.gui.waveform.apply_after = enum(sc_cellfind(enum_str,str{val}));
-            obj.gui.has_unsaved_changes = true;
-        end
+%         function waveform_order_callback(obj)
+%             str = get(obj.ui_waveform_order,'string');
+%             val = get(obj.ui_waveform_order,'value');
+%             [enum,enum_str] = enumeration('ScWaveformEnum');
+%             obj.gui.waveform.apply_after = enum(sc_cellfind(enum_str,str{val}));
+%             obj.gui.has_unsaved_changes = true;
+%         end
         function update_all_waveforms(obj)
             obj.gui.lock_screen(true,'Recalculating all waveforms, might take a minute...');
             obj.show_panels(false);

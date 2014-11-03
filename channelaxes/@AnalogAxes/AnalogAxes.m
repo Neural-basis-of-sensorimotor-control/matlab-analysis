@@ -41,22 +41,10 @@ classdef AnalogAxes < ChannelAxes
                 obj.v = obj.signal.filter.filt(obj.v,0,inf);
             end
             if apply_remove_waveforms
-                if obj.plot_waveforms
-                    if obj.gui.waveform.apply_after == ScWaveformEnum.artifact_filtering
-                        obj.extract_b_highlighted();
-                        obj.remove_waveforms();
-                    else
-                        obj.remove_waveforms();
-                        obj.extract_b_highlighted();
-                    end
-                else
-                    obj.b_highlighted = [];
-                    obj.remove_waveforms();
-                end
-            elseif obj.plot_waveforms
-                obj.extract_b_highlighted;
+                obj.remove_waveforms();
+                obj.extract_b_highlighted();
             else
-                obj.b_highlighted = [];
+                obj.extract_b_highlighted();
             end
         end
         
@@ -141,15 +129,20 @@ classdef AnalogAxes < ChannelAxes
     end
     methods (Access='protected')
         function remove_waveforms(obj)
-            for k=1:obj.signal.remove_waveforms.n
-                obj.v = obj.signal.remove_waveforms.get(k).remove_wf(obj.v,0);
+            rmwfs = obj.signal.get_rmwfs(obj.gui.sequence.tmin,obj.gui.sequence.tmax);
+            for k=1:rmwfs.n
+                obj.v = rmwfs.get(k).remove_wf(obj.v,0);
             end
         end
         function extract_b_highlighted(obj)
-            obj.b_highlighted = false(size(obj.v));
-            if ~isempty(obj.gui.waveform)
-                [spikepos,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
-                obj.gui.waveform.detected_spiketimes = spikepos*obj.gui.waveform.parent.dt;
+            if ~obj.plot_waveforms
+                obj.b_highlighted = [];
+            else
+                obj.b_highlighted = false(size(obj.v));
+                if ~isempty(obj.gui.waveform)
+                    [spikepos,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    obj.gui.waveform.detected_spiketimes = spikepos*obj.gui.waveform.parent.dt;
+                end
             end
         end
     end

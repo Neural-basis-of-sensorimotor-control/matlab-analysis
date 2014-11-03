@@ -22,6 +22,9 @@ function sc(varargin)
 %
 %   SC -NEWADQ create experiment file from .adq-files
 %
+%   SC -WHAT print all available information about experiment files in
+%   chosen directory
+%
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 addpath(genpath(fileparts(mfilename('fullpath'))));

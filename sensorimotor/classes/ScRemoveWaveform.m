@@ -31,6 +31,9 @@ classdef ScRemoveWaveform < ScTrigger
                 return
             end
             obj.stimpos = obj.original_stimpos;
+            if isempty(obj.stimpos)
+                return
+            end
             obj.stimpos = obj.stimpos(obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop);
             obj.stimpos_offsets = zeros(size(obj.stimpos));
             ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));

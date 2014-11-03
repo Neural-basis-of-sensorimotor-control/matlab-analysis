@@ -34,7 +34,8 @@ classdef AnalogAxes < ChannelAxes
             obj.data_loaded = true;
             if obj.plot_raw
                 obj.v_raw = obj.signal.sc_loadsignal();
-                obj.v = obj.signal.filter.filt(obj.v_raw,0,inf);
+                obj.v_raw = obj.signal.filter.smoothing(obj.raw);
+                obj.v = obj.signal.filter.artifact_removal(obj.v_raw,0,inf);
             else
                 obj.v_raw = [];
                 obj.v = obj.signal.sc_loadsignal();

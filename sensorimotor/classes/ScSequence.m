@@ -52,6 +52,7 @@ classdef ScSequence < ScListElement
         
         function triggerparents = gettriggerparents(obj,tmin,tmax)
             triggerparents = obj.parent.gettriggerparents(tmin,tmax);
+            triggerparents.add(ScClockTriggerParent(obj));
         end
         
         function triggers = gettriggers(obj,tmin,tmax)

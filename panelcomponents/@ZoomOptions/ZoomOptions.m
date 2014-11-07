@@ -47,10 +47,12 @@ classdef ZoomOptions < PanelComponent
         end
         
         function reset_callback(obj)
-            ylim(obj.gui.main_axes,'auto');
+            for k=1:obj.gui.analog_ch.n
+                ylim(obj.gui.analog_ch.get(k).ax,'auto');
+            end
             obj.gui.xlimits = [obj.gui.pretrigger obj.gui.posttrigger];
-            obj.gui.zoom_on = false;
-            obj.gui.pan_on = false;
+          %  obj.gui.zoom_on = false;
+          %  obj.gui.pan_on = false;
             obj.gui.plot_channels();
         end
         function x_zoom_in_callback(obj)

@@ -6,7 +6,6 @@ classdef SavePlotOptions < PanelComponent
         ui_filename
         ui_savebutton
     end
-    
     methods
         function obj = SavePlotOptions(panel)
             obj@PanelComponent(panel);
@@ -19,13 +18,12 @@ classdef SavePlotOptions < PanelComponent
             obj.ui_filename = mgr.add(sc_ctrl('edit',[],@(~,~) obj.filename_callback()),150);
             obj.ui_filenbr = mgr.add(sc_ctrl('edit',[],@(~,~) obj.filenbr_callback()),50);
             mgr.newline(20);
-            obj.ui_savebutton = mgr.add(sc_ctrl('pushbutton','Save to .dat',@(~,~) obj.save_plot_callback()),200);
+            obj.ui_savebutton = mgr.add(sc_ctrl('pushbutton','Save signal to .dat',@(~,~) obj.save_plot_callback()),200);
         end
         function initialize(obj)
             set(obj.ui_filename,'String',obj.filename);
             set(obj.ui_filenbr,'String',obj.filenbr);
         end
-        
     end
     
     methods (Access = 'protected')
@@ -35,6 +33,7 @@ classdef SavePlotOptions < PanelComponent
                 set(obj.ui_filename,'String',obj.filename);
             end
         end
+        
         
         function save_plot_callback(obj)
             plothandles = get(obj.gui.main_axes,'Children');

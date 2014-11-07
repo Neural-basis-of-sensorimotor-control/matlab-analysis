@@ -44,6 +44,17 @@ classdef HistogramChannel < GuiAxes
                             set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
                         end
+                    case HistogramType.continuous
+                        spiketimes = obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax);
+                        if ~isempty(spiketimes)
+                            edges = obj.gui.sequence.tmin:obj.binwidth:obj.gui.sequence.tmax;
+                            firing = histc(spiketimes,edges)/(numel(obj.gui.triggertimes)*obj.binwidth);
+                            plot(obj.gui.histogram.ax,firing,'Color',[1 0 0]);
+                            xlabel(obj.gui.histogram.ax,'Time [s]','Color',[1 1 1])
+                            ylabel(obj.gui.histogram.ax,'Firing [Hz]')
+                        end
+                        set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
+                            [1 1 1],'Box','off');
                     case HistogramType.raster
                         if isempty(obj.gui.rasterplot_window) || ~ishandle(obj.gui.rasterplot_window)
                             obj.gui.rasterplot_window = figure;

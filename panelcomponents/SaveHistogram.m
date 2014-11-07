@@ -44,7 +44,8 @@ classdef SaveHistogram < PanelComponent
         end
         function save_callback(obj)
             if obj.gui.histogram.hist_type == HistogramType.default || ...
-                    obj.gui.histogram.hist_type == HistogramType.ISI_pdf
+                    obj.gui.histogram.hist_type == HistogramType.ISI_pdf || ...
+                    obj.gui.histogram.hist_type == HistogramType.continuous
                 child = get(obj.gui.histogram.ax,'Children');
             else
                 if isempty(obj.gui.rasterplot_window) || ~ishandle(obj.gui.rasterplot_window)

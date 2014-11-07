@@ -62,12 +62,6 @@ classdef ScSignal < ScChannel
         %Recalculate all waveform times with correct order vs filtering
         function recalculate_all_waveforms(obj)
             v = obj.filter.filt(obj.sc_loadsignal());
-%             for k=1:obj.waveforms.n
-%                 wf = obj.waveforms.get(k);
-%                 if wf.apply_after==ScWaveformEnum.artifact_filtering
-%                     wf.recalculate_spiketimes(v,obj.dt);
-%                 end
-%             end
             for k=1:obj.remove_waveforms.n
                 rmwf = obj.remove_waveforms.get(k);
                 rmwf.calibrate(v);
@@ -75,9 +69,7 @@ classdef ScSignal < ScChannel
             end
             for k=1:obj.waveforms.n
                 wf = obj.waveforms.get(k);
-             %   if wf.apply_after==ScWaveformEnum.spike_removal
-                    wf.recalculate_spiketimes(v,obj.dt);
-            %    end
+                wf.recalculate_spiketimes(v,obj.dt);
             end
         end
         

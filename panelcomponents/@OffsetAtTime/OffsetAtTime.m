@@ -40,7 +40,7 @@ classdef OffsetAtTime < PanelComponent
         
         function value_callback(obj)
             val = str2double(get(obj.ui_value,'string'));
-            if isnumeric(val)
+            if isnumeric(val) && isfinite(val)
                 obj.gui.main_channel.v_equals_zero_for_t = val;
             else
                 obj.gui.main_channel.v_equals_zero_for_t = [];

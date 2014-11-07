@@ -12,6 +12,9 @@ classdef ScRemoveWaveform < ScTrigger
         tstop                   %Only use stimpos where stimpos*parent.dt<tstop
         apply_calibration = true
     end
+    properties (Dependent)
+        sigm
+    end
     methods
         
         function obj = ScRemoveWaveform(parent_signal,trigger,width,apply_calibration,tstart,tstop)
@@ -27,7 +30,7 @@ classdef ScRemoveWaveform < ScTrigger
         %steps
         function calibrate(obj,v)
             if ~obj.apply_calibration
-                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos);
                 return
             end
             obj.stimpos = obj.original_stimpos;
@@ -47,7 +50,8 @@ classdef ScRemoveWaveform < ScTrigger
             it = 1;
             prev_stimpos = [];
             while it<=max_nbr_of_iterations && (it==1 || ~nnz(prev_stimpos - obj.stimpos))
-                [~,obj.v_median] = sc_remove_artifacts(v,obj.width,obj.stimpos);
+                [~,obj.v_median, obj.width] = sc_remove_artifacts(v,obj.width,obj.stimpos);
+                obj.stimpos = obj.stimpos(1:obj.width);
                 prev_stimpos = obj.stimpos;
                 for i=1:numel(obj.stimpos)
                     obj.stimpos(i) = obj.find_min(ranges(i,:),v);
@@ -92,42 +96,47 @@ classdef ScRemoveWaveform < ScTrigger
             end
         end
         
-        function v=remove_wf(obj,v,tmin)
+        function [v]=remove_wf(obj,v,~)
             if isempty(obj.v_interpolated_median)
                 msgbox(sprintf('You will need to calibrate ScRemoveWaveform %s',obj.tag));
                 return
             end
-            removepos = obj.stimpos-round(tmin/obj.parent.dt);
-            removepos(removepos<2) = 2*ones(size(find(removepos<1)));
-            removepos(removepos>=numel(v)) = (numel(v)-1)*ones(size(find(removepos>=numel(v))));
-            tail_length = min(ceil(obj.width/3),20);
-            last_f_val =1e-3;
-            c = obj.width - tail_length;
-            a = log(1/last_f_val-1)/(c-obj.width);
-            f = sigmf((1:obj.width)',[a c]);
+            f = obj.sigm;
             times = (0:(obj.width+1))'*obj.parent.dt;
             pp = spaps(times,obj.v_interpolated_median,1e-6);
-            for k=1:numel(removepos)
-                pos = removepos(k) + (0:obj.width-1)';
-                v(pos) = v(pos) - f.*fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
+            for k=1:numel(obj.stimpos)
+                pos = obj.stimpos(k) + (0:obj.width-1)';
+                v(pos) = v(pos) - f.*fnval(pp,times(1:end-2)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
             end
         end
         
-        function update_waveform(obj,v)
-            list = obj.parent.waveforms;
-            wf_tag = obj.tag(2:end);
-            if ~sc_contains(list.values('tag'),wf_tag)
-                msgbox(sprintf('Cannot update waveform: %s. No waveform with this name.',wf_tag));
-            else
-                waveform = list.get('tag',wf_tag);
-                obj.initialize(waveform);
-                obj.calibrate(v);
-            end
-        end
+%         function [signal,tt] = get_plottable_wfs(obj,~,~,triggertimes,pretrigger,posttrigger)
+%             startpos = [];
+%             starttimes = [];
+%             for k=1:numel(triggertimes)
+%                 modtime = obj.stimpos*obj.parent.dt-triggertimes(k);
+%                 usepos = modtime>=pretrigger & modtime<posttrigger;
+%                 startpos = [startpos; find(usepos)];
+%                 starttimes = [starttimes; obj.stimpos(usepos)*obj.parent.dt-triggertimes(k)];
+%             end
+%             tt = nan(obj.width,numel(startpos));
+%             signal = nan(size(tt));
+%             for k=1:numel(startpos)
+%                 tt(:,k) = sc_floor(starttimes(k),obj.parent.dt) + (0:(obj.width-1))'*obj.parent.dt;
+%                 signal(:,k) = obj.get_removal_archetype(startpos(k));
+%             end
+%         end
         
         function times = gettimes(obj,tmin,tmax)
             times = obj.stimpos*obj.parent.dt + obj.stimpos_offsets;
             times = times(times>=tmin & times<tmax);
+        end
+        function val = get.sigm(obj)
+            tail_length = min(ceil(obj.width/3),20);
+            last_f_val =1e-3;
+            c = obj.width - tail_length;
+            a = log(1/last_f_val-1)/(c-obj.width);
+            val = sigmf((1:obj.width)',[a c]); 
         end
     end
     methods (Access = 'protected')

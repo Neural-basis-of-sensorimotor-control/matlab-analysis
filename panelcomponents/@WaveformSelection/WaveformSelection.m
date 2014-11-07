@@ -2,7 +2,6 @@ classdef WaveformSelection < PanelComponent
     properties
         ui_waveforms
         ui_remove
-%         ui_waveform_order
         ui_nbr_of_spikes
     end
     methods
@@ -15,15 +14,13 @@ classdef WaveformSelection < PanelComponent
             mgr.add(sc_ctrl('text','Waveform'),100);
             obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_callback(),'visible','off'),100);
             mgr.newline(5)
-%             mgr.newline(20);
-%             mgr.add(sc_ctrl('text','Waveform order:'),100);
-%             obj.ui_waveform_order = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.waveform_order_callback(),'visible','off'),100);
-%             mgr.newline(5)
             mgr.newline(20);
             obj.ui_nbr_of_spikes = mgr.add(sc_ctrl('text',[]),200);
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','New waveform',@add_waveform_callback),100);
             obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove waveform',@remove_waveform_callback),100);
+            mgr.newline(20)
+            mgr.add(sc_ctrl('pushbutton','Export waveform',@(~,~) obj.export_waveform()),100);
             mgr.newline(20)
             mgr.add(sc_ctrl('pushbutton','Detect all waveforms again',@(~,~) obj.update_all_waveforms),200);
                         
@@ -89,13 +86,34 @@ classdef WaveformSelection < PanelComponent
             obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
             obj.show_panels(false);
         end
-%         function waveform_order_callback(obj)
-%             str = get(obj.ui_waveform_order,'string');
-%             val = get(obj.ui_waveform_order,'value');
-%             [enum,enum_str] = enumeration('ScWaveformEnum');
-%             obj.gui.waveform.apply_after = enum(sc_cellfind(enum_str,str{val}));
-%             obj.gui.has_unsaved_changes = true;
-%         end
+        function export_waveform(obj)
+            if isempty(obj.gui.waveform)
+                msgbox('Cannot export. No waveform chosen');
+                return
+            end
+            sgnl = obj.gui.main_signal;
+            wf = obj.gui.waveform;
+            file = obj.gui.file;
+            experiment = obj.gui.experiment;
+            for k=1:experiment.n
+                thisfile = experiment.get(k);
+                if thisfile~=file
+                    for j=1:thisfile.signals.n
+                        this_sgnl = thisfile.signals.get(j);
+                        if strcmp(this_sgnl.tag,sgnl.tag)
+                            wfs = this_sgnl.waveforms;
+                            if wfs.contains(wf)
+                                msgbox(sprintf('Waveform %s already exists in file %s',wf.tag,thisfile.tag));
+                            elseif sc_contains(wfs.values('tag'),wf.tag)
+                                msgbox(sprintf('Other waveform with same tag (%s) already exists in file %s',wf.tag,thisfile.tag));
+                            else
+                                wfs.add(wf);
+                            end
+                        end
+                    end
+                end
+            end
+        end
         function update_all_waveforms(obj)
             obj.gui.lock_screen(true,'Recalculating all waveforms, might take a minute...');
             obj.show_panels(false);

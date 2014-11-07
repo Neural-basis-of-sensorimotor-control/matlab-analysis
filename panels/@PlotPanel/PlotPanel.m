@@ -16,6 +16,7 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
             obj.gui_components.add(PlotMode(obj));
             obj.gui_components.add(ManualSpikeTimes(obj));
             obj.gui_components.add(SavePlotOptions(obj));
+            obj.gui_components.add(SaveSpikeTimesOptions(obj));
             setup_components@UpdatablePanel(obj);
         end
         

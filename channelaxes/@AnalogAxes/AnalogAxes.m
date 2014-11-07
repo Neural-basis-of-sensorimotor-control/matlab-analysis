@@ -34,7 +34,7 @@ classdef AnalogAxes < ChannelAxes
             obj.data_loaded = true;
             if obj.plot_raw
                 obj.v_raw = obj.signal.sc_loadsignal();
-                obj.v_raw = obj.signal.filter.smoothing(obj.raw);
+                obj.v_raw = obj.signal.filter.smoothing(obj.v_raw);
                 obj.v = obj.signal.filter.artifact_removal(obj.v_raw,0,inf);
             else
                 obj.v_raw = [];
@@ -60,6 +60,9 @@ classdef AnalogAxes < ChannelAxes
             if ~isempty(sweep)
                 if ~isempty(obj.v_raw)
                     obj.plotv(obj.v_raw,sweep,[1 1 1],[],false);
+                    v_rmwf = zeros(size(obj.v_raw));
+                    v_rmwf = obj.gui.rmwf.remove_wf(v_rmwf);
+                    obj.plotv(-v_rmwf,sweep,[0 1 0],[],false);
                 end
                 obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn,1);
             else
@@ -82,7 +85,7 @@ classdef AnalogAxes < ChannelAxes
             else
                 b_signal = [];
             end
-            if ~isempty(obj.v_equals_zero_for_t)
+            if ~isempty(obj.v_equals_zero_for_t) && isfinite(obj.v_equals_zero_for_t)
                 [~,ind] = min(abs(time-obj.v_equals_zero_for_t));
                 for i=1:size(v_signal,2)
                     v_signal(:,i) = v_signal(:,i) - v_signal(ind,i);

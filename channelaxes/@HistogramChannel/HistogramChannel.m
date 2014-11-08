@@ -18,7 +18,9 @@ classdef HistogramChannel < GuiAxes
         function load_data(~), end
         
         function plotch(obj,varargin)
-            cla(obj.ax);
+            if obj.hist_type ~= HistogramType.raster
+                cla(obj.gui.histogram.ax);
+            end
             if ~isempty(obj.gui.waveform)
                 switch obj.hist_type
                     case HistogramType.default
@@ -43,6 +45,9 @@ classdef HistogramChannel < GuiAxes
                             ylabel(obj.gui.histogram.ax,'pdf')                        
                             set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
+                            fprintf('\n-------------------------\n')
+                            fprintf('ISI mean\t%g s\nISI std dev\t%g s\nISI cv\t\t%g\n',mean(isi),std(isi),std(isi)/mean(isi)); 
+                            fprintf('-------------------------\n')
                         end
                     case HistogramType.continuous
                         spiketimes = obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax);

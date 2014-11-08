@@ -96,18 +96,24 @@ classdef WaveformSelection < PanelComponent
             file = obj.gui.file;
             experiment = obj.gui.experiment;
             for k=1:experiment.n
-                thisfile = experiment.get(k);
-                if thisfile~=file
-                    for j=1:thisfile.signals.n
-                        this_sgnl = thisfile.signals.get(j);
-                        if strcmp(this_sgnl.tag,sgnl.tag)
-                            wfs = this_sgnl.waveforms;
+                this_file = experiment.get(k);
+                if this_file~=file
+                    for j=1:this_file.signals.n
+                        this_signal = this_file.signals.get(j);
+                        if strcmp(this_signal.tag,sgnl.tag)
+                            wfs = this_signal.waveforms;
                             if wfs.contains(wf)
-                                msgbox(sprintf('Waveform %s already exists in file %s',wf.tag,thisfile.tag));
+                                msgbox(sprintf('Waveform %s already exists in file %s',wf.tag,this_file.tag));
                             elseif sc_contains(wfs.values('tag'),wf.tag)
-                                msgbox(sprintf('Other waveform with same tag (%s) already exists in file %s',wf.tag,thisfile.tag));
+                                msgbox(sprintf('Other waveform with same tag (%s) already exists in file %s',wf.tag,this_file.tag));
                             else
-                                wfs.add(wf);
+                                obj.gui.has_unsaved_changes = true;
+                                this_wf = ScWaveform(this_signal,wf.tag,[]);
+                                for m=1:wf.n
+                                    threshold = wf.get(m);
+                                    this_wf.add(threshold.create_copy());
+                                end
+                                wfs.add(this_wf);
                             end
                         end
                     end

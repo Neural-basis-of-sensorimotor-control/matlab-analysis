@@ -316,6 +316,10 @@ classdef ScFile < ScList
                     obj.textchannels.add(textchannel);
                 elseif isfield(channelstruct,'times')
                     obj.stims.add(ScStim(obj,channelname,'tag',channelname));
+                else
+                    msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes.', channelname, file.tag, mfilename);
+                    msgbox(msg);
+                    disp(msg);
                 end
             end
             for i=1:obj.stims.n
@@ -328,24 +332,26 @@ classdef ScFile < ScList
                 obj.stims.get(i).sc_clear;
             end
             for j=1:numel(obj.spikefiles)
+                %Remove this procedure - unused so far and thus not needed
                 spikefile = obj.spikefiles{j};
                 d = load(fullfile(obj.fdir,spikefile));
                 [~,name] = fileparts(obj.filepath);
                 tag_ = regexp(spikefile,['^' name '_(\w*).mat.{0,0}'],'tokens');
-                spike = ScWaveform(obj,cell2mat(tag_{1}),spikefile);
-                if ~isfield(d,spike)
+                tag = cell2mat(tag_{1});
+                if ~isfield(d,'spikes')
                     return;
                 end
                 switch d.spikes.comment
                     case 'patch'
-                        obj.signals.get('tag','patch').waveforms.add(spike);
+                        sgnl = obj.signals.get('tag','patch');
                     case 'patch1'
-                        obj.signals.get('tag','patch').waveforms.add(spike);
+                        sgnl = obj.signals.get('tag','patch1');
                     case 'patch2'
-                        obj.signals.get('tag','patch2').waveforms.add(spike);
+                        sgnl = obj.signals.get('tag','patch2');
                     otherwise
-                        obj.signals.get('tag','patch').waveforms.add(spike);
+                        sgnl = obj.signals.get('tag','patch');
                 end
+                sgnl.waveforms.add(ScWaveform(sgnl,tag,spikefile));
             end
             success = true;
         end

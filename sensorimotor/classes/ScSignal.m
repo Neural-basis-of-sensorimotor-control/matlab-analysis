@@ -61,7 +61,7 @@ classdef ScSignal < ScChannel
         
         %Recalculate all waveform times with correct order vs filtering
         function recalculate_all_waveforms(obj)
-            v = obj.filter.filt(obj.sc_loadsignal());
+            v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
             for k=1:obj.remove_waveforms.n
                 rmwf = obj.remove_waveforms.get(k);
                 rmwf.calibrate(v);

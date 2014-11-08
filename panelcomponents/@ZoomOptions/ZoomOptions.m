@@ -2,6 +2,11 @@ classdef ZoomOptions < PanelComponent
     properties
         ui_zoom
         ui_pan
+        ui_reset
+        ui_x_zoom_in
+        ui_x_zoom_out
+        ui_y_zoom_in
+        ui_y_zoom_out
     end
     
     methods
@@ -17,13 +22,15 @@ classdef ZoomOptions < PanelComponent
             obj.ui_zoom = mgr.add(sc_ctrl('pushbutton','Manual zoom',@(~,~) obj.zoom_callback),100);
             obj.ui_pan = mgr.add(sc_ctrl('pushbutton','Pan',@(~,~) obj.pan_callback),100);
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);
+            obj.ui_reset = mgr.add(sc_ctrl('pushbutton','Reset',@(~,~) obj.reset_callback),100);
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','X zoom in',@(~,~) obj.x_zoom_in_callback),100);
-            mgr.add(sc_ctrl('pushbutton','X zoom out',@(~,~) obj.x_zoom_out_callback),100);
+            obj.ui_x_zoom_in = mgr.add(sc_ctrl('pushbutton','X zoom in',@(~,~) obj.x_zoom_in_callback),100);
+            obj.ui_x_zoom_out = mgr.add(sc_ctrl('pushbutton','X zoom out',@(~,~) obj.x_zoom_out_callback),100);
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','Y zoom in',@(~,~) obj.y_zoom_in_callback),100);
-            mgr.add(sc_ctrl('pushbutton','Y zoom out',@(~,~) obj.y_zoom_out_callback),100);
+            obj.ui_y_zoom_in = mgr.add(sc_ctrl('pushbutton','Y zoom in',@(~,~) obj.y_zoom_in_callback),100);
+            obj.ui_y_zoom_out = mgr.add(sc_ctrl('pushbutton','Y zoom out',@(~,~) obj.y_zoom_out_callback),100);
+            obj.gui.zoom_controls = [obj.ui_zoom obj.ui_pan obj.ui_reset ...
+                obj.ui_x_zoom_in obj.ui_x_zoom_out obj.ui_y_zoom_in obj.ui_y_zoom_out ];
         end
         
     end

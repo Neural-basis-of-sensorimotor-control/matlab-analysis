@@ -36,6 +36,19 @@ classdef ScThreshold < handle
             obj.lower_tolerance(2:end) = obj.lower_tolerance(ind+1);
             obj.upper_tolerance(2:end) = obj.upper_tolerance(ind+1);
         end
+        
+        function newobj = create_copy(obj)
+            newobj = ScWaveform(obj.position_offset,obj.v_offset,...
+                obj.lower_tolerance, obj.upper_tolerance);
+            mco = ?ScThreshold;
+            plist = mco.PropertyList;
+            for k=1:numel(plist)
+                p = plist(k);
+                if ~p.Dependent && ~p.Abstract && ~p.Constant
+                    newobj.(p.Name) = obj.(p.Name);
+                end
+            end
+        end
 
         %see ScWaveform for explanation
         function [spikepos, wfarea] = match_handle(obj,h,min_isi)

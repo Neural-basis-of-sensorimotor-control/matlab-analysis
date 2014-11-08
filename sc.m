@@ -45,7 +45,7 @@ if  exist('sc_config.txt','file') == 2
     if ~numel(args)
         str = fgetl(fid);
         if ischar(str)
-            filename = [sc_file_folder '\' str];
+            filename = fullfile(sc_file_folder,str);
             if exist(filename,'file') == 2
                 args = {filename};
             end

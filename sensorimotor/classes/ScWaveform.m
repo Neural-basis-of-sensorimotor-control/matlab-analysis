@@ -2,14 +2,13 @@ classdef ScWaveform < ScTrigger & ScList
     %Response from particular neuron
     %children: ScThreshold
     properties
-        parent                  %ScFile
+        parent                  %ScSignal
         spike2filename          %applicable when there are extra files with 
                                 %spiketimes from Spike2
         tag
         detected_spiketimes     %spiketimes that are given by ScThreshold children
         imported_spiketimes     %imported from Spike2
         predefined_spiketimes   %e.g userdefined spiketimes
-        %apply_after             %ScWaveformEnum enumeration type
                 
         min_isi = 1e-3          %min inter-spike interval (s)
     end
@@ -23,7 +22,6 @@ classdef ScWaveform < ScTrigger & ScList
             obj.parent = parent;
             obj.tag = tag;
             obj.spike2filename = spike2filename;
-           % obj.apply_after = ScWaveformEnum.spike_removal;
         end
         
         %Load spike times from separate Spike2 file
@@ -110,13 +108,5 @@ classdef ScWaveform < ScTrigger & ScList
         function width = get.width(obj)
             width = max(cell2mat(obj.values('width')));
         end
-    end
-    methods (Static)
-%         function obj = loadobj(a)
-%             if isempty(a.apply_after)
-%                 a.apply_after = ScWaveformEnum.artifact_filtering;
-%             end
-%             obj = a;
-%         end
     end
 end

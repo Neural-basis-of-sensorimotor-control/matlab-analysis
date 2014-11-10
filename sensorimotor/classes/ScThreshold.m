@@ -38,7 +38,7 @@ classdef ScThreshold < handle
         end
         
         function newobj = create_copy(obj)
-            newobj = ScWaveform(obj.position_offset,obj.v_offset,...
+            newobj = ScThreshold(obj.position_offset,obj.v_offset,...
                 obj.lower_tolerance, obj.upper_tolerance);
             mco = ?ScThreshold;
             plist = mco.PropertyList;

@@ -35,6 +35,7 @@ classdef ScRemoveWaveform < ScTrigger
             end
             obj.stimpos = obj.original_stimpos;
             if isempty(obj.stimpos)
+                obj.stimpos_offsets = [];
                 return
             end
             obj.stimpos = obj.stimpos(obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop);
@@ -51,7 +52,6 @@ classdef ScRemoveWaveform < ScTrigger
             prev_stimpos = [];
             while it<=max_nbr_of_iterations && (it==1 || ~nnz(prev_stimpos - obj.stimpos))
                 [~,obj.v_median, obj.width] = sc_remove_artifacts(v,obj.width,obj.stimpos);
-                obj.stimpos = obj.stimpos(1:obj.width);
                 prev_stimpos = obj.stimpos;
                 for i=1:numel(obj.stimpos)
                     obj.stimpos(i) = obj.find_min(ranges(i,:),v);

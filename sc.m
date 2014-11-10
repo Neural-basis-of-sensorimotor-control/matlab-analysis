@@ -104,12 +104,12 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     for i=1:numel(rawdatafiles)
         fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
         file = ScFile(experiment, rawdatafiles{i});
-        if strcmpi(args{1},'-newsp2')
-            %Look for 'Pontus-style' files with spikes detected in Spike2 
-            [~,name] = fileparts(rawdatafiles{i});
-            spikefiles = cellfun(@(x) cell2mat(regexp(x,['^' name '_\w*\.mat.{0,0}'],'match')), rawdatafiles, 'UniformOutput',false);
-            file.spikefiles = spikefiles(cellfun(@(x) ~isempty(x), spikefiles));
-        end
+%         if strcmpi(args{1},'-newsp2')
+%             %Look for 'Pontus-style' files with spikes detected in Spike2 
+%             [~,name] = fileparts(rawdatafiles{i});
+%             spikefiles = cellfun(@(x) cell2mat(regexp(x,['^' name '_\w*\.mat.{0,0}'],'match')), rawdatafiles, 'UniformOutput',false);
+%             file.spikefiles = spikefiles(cellfun(@(x) ~isempty(x), spikefiles));
+%         end
         file.init();
         experiment.add(file);
     end

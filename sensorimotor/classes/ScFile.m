@@ -295,7 +295,7 @@ classdef ScFile < ScList
     
     methods (Access = private)
         function success = init_spike2_file(obj)
-            success = false;
+           % success = false;
             channelnames = who('-file',obj.filepath);
             for i=1:numel(channelnames)
                 channelname = channelnames{i};
@@ -304,7 +304,7 @@ classdef ScFile < ScList
                 if isfield(channelstruct,'values')
                     signal = ScSignal(obj,channelname,'tag',channelname);
                     signal.dt = channelstruct.interval;
-                    signal.N = channelstruct.length;
+                    signal.N = channelstruct.length; %<- sometimes incorrect value from Spike2
                     obj.signals.add(signal);
                     if isempty(strfind(channelname,'patch'))
                         signal.filter.smoothing_width = 1;
@@ -331,28 +331,28 @@ classdef ScFile < ScList
             for i=1:obj.stims.n
                 obj.stims.get(i).sc_clear;
             end
-            for j=1:numel(obj.spikefiles)
-                %Remove this procedure - unused so far and thus not needed
-                spikefile = obj.spikefiles{j};
-                d = load(fullfile(obj.fdir,spikefile));
-                [~,name] = fileparts(obj.filepath);
-                tag_ = regexp(spikefile,['^' name '_(\w*).mat.{0,0}'],'tokens');
-                tag = cell2mat(tag_{1});
-                if ~isfield(d,'spikes')
-                    return;
-                end
-                switch d.spikes.comment
-                    case 'patch'
-                        sgnl = obj.signals.get('tag','patch');
-                    case 'patch1'
-                        sgnl = obj.signals.get('tag','patch1');
-                    case 'patch2'
-                        sgnl = obj.signals.get('tag','patch2');
-                    otherwise
-                        sgnl = obj.signals.get('tag','patch');
-                end
-                sgnl.waveforms.add(ScWaveform(sgnl,tag,spikefile));
-            end
+%             for j=1:numel(obj.spikefiles)
+%                 %Remove this procedure - unused so far and thus not needed
+%                 spikefile = obj.spikefiles{j};
+%                 d = load(fullfile(obj.fdir,spikefile));
+%                 [~,name] = fileparts(obj.filepath);
+%                 tag_ = regexp(spikefile,['^' name '_(\w*).mat.{0,0}'],'tokens');
+%                 tag = cell2mat(tag_{1});
+%                 if ~isfield(d,'spikes')
+%                     return;
+%                 end
+%                 switch d.spikes.comment
+%                     case 'patch'
+%                         sgnl = obj.signals.get('tag','patch');
+%                     case 'patch1'
+%                         sgnl = obj.signals.get('tag','patch1');
+%                     case 'patch2'
+%                         sgnl = obj.signals.get('tag','patch2');
+%                     otherwise
+%                         sgnl = obj.signals.get('tag','patch');
+%                 end
+%                 sgnl.waveforms.add(ScWaveform(sgnl,tag,spikefile));
+%             end
             success = true;
         end
         

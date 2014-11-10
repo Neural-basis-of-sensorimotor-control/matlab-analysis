@@ -1,7 +1,7 @@
 classdef HistogramChannel < GuiAxes
     
     properties
-        hist_type = HistogramType.default
+        hist_type = HistogramType.peristim
         pretrigger = -.1
         posttrigger = .1
         binwidth = 1e-2
@@ -23,7 +23,7 @@ classdef HistogramChannel < GuiAxes
             end
             if ~isempty(obj.gui.waveform)
                 switch obj.hist_type
-                    case HistogramType.default
+                    case HistogramType.peristim
                         spiketimes = obj.gui.waveform.perievent(obj.gui.triggertimes,...
                             obj.pretrigger,obj.posttrigger);
                         if ~isempty(spiketimes)
@@ -33,6 +33,7 @@ classdef HistogramChannel < GuiAxes
                             xlabel(obj.gui.histogram.ax,'Time [s]','Color',[1 1 1])
                             ylabel(obj.gui.histogram.ax,'Firing [Hz]')
                         end
+                        xlim(obj.gui.histogram.ax,[obj.pretrigger obj.posttrigger]);
                         set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
                             [1 1 1],'Box','off');
                     case HistogramType.ISI_pdf
@@ -53,9 +54,22 @@ classdef HistogramChannel < GuiAxes
                         spiketimes = obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax);
                         if ~isempty(spiketimes)
                             edges = obj.gui.sequence.tmin:obj.binwidth:obj.gui.sequence.tmax;
-                            firing = histc(spiketimes,edges)/(numel(obj.gui.triggertimes)*obj.binwidth);
-                            plot(obj.gui.histogram.ax,firing,'Color',[1 0 0]);
-                            xlabel(obj.gui.histogram.ax,'Time [s]','Color',[1 1 1])
+                            firing = histc(spiketimes,edges)/obj.binwidth;
+                            edges_minutes = (edges-edges(1))/60;
+                            plot(obj.gui.histogram.ax,edges_minutes,firing,'Color',[1 0 0]);
+                            xlabel(obj.gui.histogram.ax,'Time [minutes]','Color',[1 1 1])
+                            ylabel(obj.gui.histogram.ax,'Firing [Hz]')
+                        end
+                        set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...
+                            [1 1 1],'Box','off');
+                    case HistogramType.continuous_all_files
+                        spiketimes = obj.gui.experiment.get_spiketimes(obj.gui.waveform.tag);
+                        if ~isempty(spiketimes)
+                            edges = 0:obj.binwidth:max(spiketimes);
+                            firing = histc(spiketimes,edges)/obj.binwidth;
+                            edges_minutes = (edges-edges(1))/60;
+                            plot(obj.gui.histogram.ax,edges_minutes,firing,'Color',[1 0 0]);
+                            xlabel(obj.gui.histogram.ax,'Time [minutes]','Color',[1 1 1])
                             ylabel(obj.gui.histogram.ax,'Firing [Hz]')
                         end
                         set(obj.gui.histogram.ax,'Color',[0 0 0],'XColor',[1 1 1],'YColor',...

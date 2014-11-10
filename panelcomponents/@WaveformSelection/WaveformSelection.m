@@ -61,7 +61,7 @@ classdef WaveformSelection < PanelComponent
                 set(obj.ui_waveforms,'string',str,'value',ind,'visible','on');
                 %[enum,enum_str] = enumeration('ScWaveformEnum');
                 %set(obj.ui_waveform_order,'string',enum_str,'value',find(enum==wf.apply_after),'visible','on');
-                set(obj.ui_nbr_of_spikes,'string',sprintf('Number of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
+                set(obj.ui_nbr_of_spikes,'string',sprintf('Nbr of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
             else
                 set(obj.ui_waveforms,'visible','off');
             end
@@ -72,7 +72,7 @@ classdef WaveformSelection < PanelComponent
                 set(obj.ui_remove,'enable','off');
             else
                 set(obj.ui_remove,'enable','on');
-                set(obj.ui_nbr_of_spikes,'string',sprintf('Number of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
+                set(obj.ui_nbr_of_spikes,'string',sprintf('Nbr of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
             end
             obj.initialize();
         end

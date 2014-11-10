@@ -6,7 +6,7 @@ if obj.has_unsaved_changes
     if isempty(option), option = 'Cancel';  end
     switch option,
         case 'Yes',
-            obj.gui.experiment.last_gui_version = SequenceViewer.version_str;
+            obj.experiment.last_gui_version = SequenceViewer.version_str;
             saved = obj.experiment.sc_save(false);
             if saved
                 obj.has_unsaved_changes = false;

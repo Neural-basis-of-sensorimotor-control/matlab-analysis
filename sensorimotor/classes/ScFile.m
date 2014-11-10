@@ -317,7 +317,7 @@ classdef ScFile < ScList
                 elseif isfield(channelstruct,'times')
                     obj.stims.add(ScStim(obj,channelname,'tag',channelname));
                 else
-                    msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes.', channelname, file.tag, mfilename);
+                    msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes if you think this channel should be viewable.', channelname, obj.tag, mfilename);
                     msgbox(msg);
                     disp(msg);
                 end

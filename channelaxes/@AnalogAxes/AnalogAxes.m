@@ -96,7 +96,7 @@ classdef AnalogAxes < ChannelAxes
             
             if isempty(b_signal) || ~plothighlighted
                 for i=1:size(v_signal,2)
-                    plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor,'LineWidth',2);
+                    plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor);%,'LineWidth',2);
                     if ~isempty(btn_down_fcn)
                         set(plothandle,'ButtonDownFcn',btn_down_fcn);
                     end

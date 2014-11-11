@@ -3,7 +3,7 @@ obj.experiment = experiment;
 if ~isempty(experiment)
     if ~sc_version_check(experiment)
         obj.has_unsaved_changes = false;
-        close all
+        close(findobj('Tag','Main Figure'));
         error('Loading experiment canceled');
     end
     if ~isempty(experiment.sc_dir) && exist(fullfile(experiment.sc_dir,experiment.save_name),'file') == 2

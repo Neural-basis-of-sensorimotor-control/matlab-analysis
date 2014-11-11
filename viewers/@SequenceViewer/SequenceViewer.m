@@ -94,8 +94,8 @@ classdef SequenceViewer < handle
     end
     methods
         function obj = SequenceViewer(guimanager)
-            close all
-            obj.btn_window = figure;
+            close(findobj('Tag','Main Figure'));
+            obj.btn_window = figure('Tag','Main Figure');
             obj.plot_window = figure;
             
             obj.setup_listeners();

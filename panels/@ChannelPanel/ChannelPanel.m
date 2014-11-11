@@ -34,10 +34,15 @@ classdef ChannelPanel < UpdatablePanel
                     obj.sweep = 1;
                 end
             end
+            if ~numel(obj.gui.triggertimes)
+                obj.enabled = false;
+            end
+            nextpanel = obj.gui.panels.get(obj.gui.panels.indexof(obj)+1);
             if obj.enabled
-                nextpanel = obj.gui.panels.get(obj.gui.panels.indexof(obj)+1);
                 nextpanel.initialize_panel();
                 nextpanel.update_panel();
+            else
+                nextpanel.enabled = false;
             end
         end
     end

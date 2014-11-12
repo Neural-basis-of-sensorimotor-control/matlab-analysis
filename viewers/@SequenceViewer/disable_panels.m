@@ -10,7 +10,7 @@ if index>0
         end
     end
 end
-for k=1:obj.plots.n
-    cla(obj.plots.get(k).ax);
-end
+% for k=1:obj.plots.n
+%     cla(obj.plots.get(k).ax);
+% end
 end

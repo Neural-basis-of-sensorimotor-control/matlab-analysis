@@ -94,7 +94,8 @@ classdef SequenceViewer < handle
     end
     methods
         function obj = SequenceViewer(guimanager)
-            close(findobj('Tag','Main Figure'));
+            %close(findobj('Tag','Main Figure'));
+            close all
             obj.btn_window = figure('Tag','Main Figure');
             obj.plot_window = figure;
             
@@ -162,8 +163,8 @@ classdef SequenceViewer < handle
         end
         function val = get.histogram_window(obj)
             if isempty(obj.histogram_window_pr) || ~ishandle(obj.histogram_window_pr)
-                obj.histogram_window_pr = figure('Color',[0 0 0]);%,...
-                  %  'ResizeFcn',@(~,~) obj.resize_histogram_window);
+                obj.histogram_window_pr = figure('Color',[0 0 0],...
+                    'ResizeFcn',@(~,~) obj.resize_histogram_window);
                 if ~isempty(obj.histogram)
                     set(obj.histogram,'Parent',obj.histogram_window_pr);
                     if isempty(obj.histogram.ax) || ~ishandle(obj.histogram.ax)

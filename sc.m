@@ -29,8 +29,10 @@ function sc(varargin)
 %   hannes.mogensen@med.lu.se
 addpath(genpath(fileparts(mfilename('fullpath'))));
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
-close(findobj('Tag','Main Figure'));
-if ~isempty(findobj('Tag','Main Figure'))
+% close(findobj('Tag','Main Figure'));
+% if ~isempty(findobj('Tag','Main Figure'))
+close all
+if ~isempty(findall(0,'type','figure'))
     return
 end
 args = varargin;

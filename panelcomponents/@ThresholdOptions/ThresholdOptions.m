@@ -291,7 +291,9 @@ classdef ThresholdOptions < PanelComponent
             if isempty(option), option = 'No';  end
             switch option
                 case 'Yes'
-                    modify_threshold(obj.gui.waveform.list(index),obj.gui.main_channel.v,[],[]);
+                    v_sample = sc_get_sweeps(obj.gui.main_channel.v, 0, obj.gui.triggertimes(obj.gui.sweep(1)), ...
+                    obj.gui.pretrigger, obj.gui.posttrigger, obj.gui.main_signal.dt);
+                    modify_threshold(obj.gui.waveform.list(index),obj.gui.main_channel.v,[],[],v_sample);
                     obj.gui.has_unsaved_changes = true;
                     obj.gui.lock_screen(true);
                     %,'WindowStyle','modal');

@@ -1,16 +1,26 @@
-function modify_threshold(thr, v, startindex, stopindex,varargin)
+function modify_threshold(thr, v, startindex, stopindex,v_sample)
 if nargin<3,    startindex = [];    end
 if nargin<4,    stopindex = [];     end
+if nargin<5,    v_sample = [];      end
 
-fig = findobj('Tag','Modify Threshold');
-if isempty(fig)
-    fig = figure('Tag','Modify Threshold');%,'ToolBar','None','MenuBar','None');
+fig1 = findobj('Tag','Modify Threshold');
+if isempty(fig1)
+    fig1 = figure('Tag','Modify Threshold');%,'ToolBar','None','MenuBar','None');
 else
-    fig = fig(1);
+    fig1 = fig1(1);
 end
-clf(fig)
-if numel(varargin), set(fig,varargin{:});   end
-panel = uipanel('Parent',fig);
+clf(fig1)
+fig2 = findobj('Tag','Modify Threshold (2)');
+if isempty(fig2)
+    fig2 = figure('Tag','Modify Threshold (2)');
+else
+    fig2 = fig2(1);
+    clf(fig2);
+end
+
+
+%Populate figure 1
+panel = uipanel('Parent',fig1);
 mgr = ScLayoutManager(panel);
 mgr.newline(30);
 ui_update = mgr.add(sc_ctrl('pushbutton','Update spikepos',@(~,~) update_spikepos(thr)),100);
@@ -27,18 +37,22 @@ ui_stopindex = mgr.add(sc_ctrl('edit',startindex,@stopindex_callback),80);
 ui_previous = mgr.add(sc_ctrl('pushbutton','Previous',@(~,~) previous_callback(thr)),80);
 ui_next = mgr.add(sc_ctrl('pushbutton','Next',@(~,~) next_callback(thr)),80);
 mgr.add(sc_ctrl('pushbutton','Close',@close_callback),80);
+mgr.newline(30);
+mgr.add(sc_ctrl('pushbutton','Update sample',@(~,~) update_sample_callback(thr)),100);
 mgr.trim;
-
-ax = axes('Parent',fig);
+ax = axes('Parent',fig1);
 resize_fcn();
-set(fig,'ResizeFcn',@resize_fcn);
+set(fig1,'ResizeFcn',@resize_fcn);
+
+%Populate figure 2
+ax2 = axes('Parent',fig2);
 
 buttongroup = [ui_update, ui_plot, ui_delete, ui_previous, ui_next, ui_add];
 spikepos = [];
 
     function resize_fcn(~,~)
-        height = getheight(fig);
-        width = getwidth(fig);
+        height = getheight(fig1);
+        width = getwidth(fig1);
         setwidth(panel,width);
         setx(panel,0);
         sety(panel,height-getheight(panel));
@@ -82,6 +96,8 @@ spikepos = [];
         if nnz(spikes)
             colors = varycolor(nnz(spikes));
             pos = bsxfun(@plus,spikes,(0:(8*thr.width))');
+            within_boundary = all(pos<=numel(v),1);
+            pos = pos(:,within_boundary);
             v_matrix = v(pos);
             v_matrix = v_matrix - repmat(v_matrix(1,:),size(v_matrix,1),1);
             t = (0:(size(v_matrix,1)-1))';
@@ -134,20 +150,21 @@ spikepos = [];
         switch state
             case 'add_limits'
                 set(ax,'ButtonDownFcn',@(~,~) add_new_limits(thr));
-                set(fig,'WindowButtonMotionFcn',[],...
+                set(fig1,'WindowButtonMotionFcn',[],...
                     'WindowButtonUpFcn',[]);
             case 'move_limits'
                 set(ax,'ButtonDownFcn',[]);
-                set(fig,'WindowButtonMotionFcn',@move_item,...
+                set(fig1,'WindowButtonMotionFcn',@move_item,...
                     'WindowButtonUpFcn',@(~,~) drop_item(thr));
             case 'delete_limits'
                 set(ax,'ButtonDownFcn',[]);
-                set(fig,'WindowButtonMotionFcn',[],...
+                set(fig1,'WindowButtonMotionFcn',[],...
                     'WindowButtonUpFcn',[]);
         end
         item = [];
         item_index = -1;
         item_string = [];
+    %    axis(ax,'tight');
         drawnow
         
         function delete_item(index,thr)
@@ -264,7 +281,24 @@ spikepos = [];
     end
 
     function close_callback(~,~)
-        close(fig);
+        close(fig1);
+    end
+
+    function update_sample_callback(thr)
+        samplepos = thr.match(v_sample,1e-3);
+        cla(ax2);
+        hold(ax2,'on');
+        plot(ax2,v_sample);
+        for k=1:numel(samplepos)
+            x = samplepos(k);
+            plot(ax2,x,v_sample(x),'Linestyle','None',...
+                'Marker','o','MarkerSize',16);
+            for j=1:numel(thr.position_offset)
+                plot(ax2,x+thr.position_offset(j)*[1 1],...
+                    v_sample(x)+thr.v_offset(j) + [thr.lower_tolerance(j) thr.upper_tolerance(j)])
+            end
+        end
+        axis(ax2,'tight');
     end
 
 end

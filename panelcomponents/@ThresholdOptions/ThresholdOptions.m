@@ -2,6 +2,7 @@ classdef ThresholdOptions < PanelComponent
     properties
         ui_define_thresholds
         ui_remove_thresholds
+        ui_modify_thresholds
         ui_cancel_thresholds
         ui_undo_last
         ui_added_done
@@ -18,7 +19,6 @@ classdef ThresholdOptions < PanelComponent
         function obj = ThresholdOptions(panel)
             obj@PanelComponent(panel);
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,panel);
-         %   sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,panel);
         end
         
         function populate(obj,mgr)
@@ -27,6 +27,9 @@ classdef ThresholdOptions < PanelComponent
                 @(~,~) obj.define_thresholds_callback),100);
             obj.ui_remove_thresholds = mgr.add(sc_ctrl('pushbutton','Remove thresholds',...
                 @(~,~) obj.remove_thresholds_callback),100);
+            mgr.newline(20);
+            obj.ui_modify_thresholds = mgr.add(sc_ctrl('pushbutton','Modify thresholds',...
+                @(~,~) obj.modify_thresholds_callback),100);
             
             mgr.newline(20);
             obj.ui_cancel_thresholds = mgr.add(sc_ctrl('pushbutton','Cancel',...
@@ -57,6 +60,14 @@ classdef ThresholdOptions < PanelComponent
     end
     
     methods (Access = 'protected')
+        
+        function modify_thresholds_callback(obj)            
+            obj.gui.zoom_on = false; obj.gui.pan_on = false;
+            obj.set_visible(0);
+            obj.gui.lock_screen(true,'Click on the waveform you want to modify');
+            set(obj.ui_cancel_thresholds,'Enable','on');
+            obj.remove_threshold_plotfcn(false);
+        end
         
         function remove_thresholds_callback(obj)
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
@@ -200,7 +211,7 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function drag_endpoint(obj, index,str,src)
-           
+            
             obj.endpoint = src;
             obj.endpoint_index = index;
             obj.endpoint_str = str;
@@ -208,7 +219,7 @@ classdef ThresholdOptions < PanelComponent
         end
         
         function drop_endpoint(obj)
-           
+            
             if ~isempty(obj.endpoint)
                 p = get(obj.gui.main_axes,'CurrentPoint');
                 set(obj.endpoint,'YData',p(1,2));
@@ -221,16 +232,17 @@ classdef ThresholdOptions < PanelComponent
                 end
                 obj.define_threshold_plothandle();
             end
-           
+            
         end
         
-        function remove_threshold_plotfcn(obj)
+        function remove_threshold_plotfcn(obj,remove)
+            if nargin<2,    remove = true;  end
             obj.gui.zoom_on = false; obj.gui.pan_on = false;
             swps = obj.gui.sweep;
             [v_remove,time_remove] = sc_get_sweeps(obj.gui.main_channel.v,0, ...
                 obj.gui.triggertimes(swps),obj.gui.pretrigger,obj.gui.posttrigger,...
                 obj.gui.main_signal.dt);
-           % time_remove = time_remove-obj.gui.triggertimes(obj.gui.sweep(1));
+            % time_remove = time_remove-obj.gui.triggertimes(obj.gui.sweep(1));
             if ~isempty(obj.gui.main_channel.v_equals_zero_for_t )
                 [~,ind] = min(abs(time_remove-obj.gui.main_channel.v_equals_zero_for_t ));
                 for i=1:size(v_remove,2)
@@ -254,14 +266,52 @@ classdef ThresholdOptions < PanelComponent
                 indexes = indexes(indexes>0);
                 for j=1:numel(indexes)
                     pos = wfindex == indexes(j);
-                    sc_piecewiseplot(obj.gui.main_axes,time_remove(pos),v_remove(pos,i),'Color',...
-                        colors(indexes(j),:),'LineWidth',2,'ButtonDownFcn',...
-                        @(~,~) obj.btn_down_fcn_removal(indexes(j),wfindex,i,time_remove,...
-                        v_remove,colors));
+                    if remove
+                        sc_piecewiseplot(obj.gui.main_axes,time_remove(pos),v_remove(pos,i),'Color',...
+                            colors(indexes(j),:),'LineWidth',2,'ButtonDownFcn',...
+                            @(~,~) obj.btn_down_fcn_removal(indexes(j),wfindex,i,time_remove,...
+                            v_remove,colors));
+                    else
+                        sc_piecewiseplot(obj.gui.main_axes,time_remove(pos),v_remove(pos,i),'Color',...
+                            colors(indexes(j),:),'LineWidth',2,'ButtonDownFcn',...
+                            @(~,~) obj.btn_down_fcn_modify_threshold(indexes(j),wfindex,i,time_remove,...
+                            v_remove,colors));
+                    end
                 end
             end
             obj.show_panels(true);
             obj.set_visible(0);
+        end
+        
+        function btn_down_fcn_modify_threshold(obj,index,wfindex,ind,time_remove,v_remove,colors)
+            sc_piecewiseplot(obj.gui.main_axes,time_remove(wfindex==index),v_remove(wfindex==index,ind),'Color',colors(index,:),...
+                'LineWidth',4);
+            option = questdlg('Modify selected threshold? Remember to re-clasify waveforms when you are done.','Modify',...
+                'Yes','Cancel','Yes');
+            if isempty(option), option = 'No';  end
+            switch option
+                case 'Yes'
+                    modify_threshold(obj.gui.waveform.list(index),obj.gui.main_channel.v,[],[]);
+                    obj.gui.has_unsaved_changes = true;
+                    obj.gui.lock_screen(true);
+                    %,'WindowStyle','modal');
+%                     obj.gui.lock_screen(true,'Recalculating waveforms, wait');
+%                     obj.gui.waveform.recalculate_spiketimes(obj.gui.main_channel.v,obj.gui.main_signal.dt);
+%                     obj.gui.has_unsaved_changes = true;
+%                     if isempty(obj.gui.triggertimes)
+%                         obj.panel.enabled = false;
+%                         obj.gui.sweep = [];
+%                     else
+%                         if max(obj.gui.sweep) > numel(obj.gui.triggertimes)
+%                             obj.gui.sweep = 1;
+%                         end
+%                         obj.gui.plot_channels();
+%                         obj.set_visible(1);
+%                     end
+                case 'Cancel'
+                    %do nothing
+            end
+            obj.show_panels(0);
         end
         
         function btn_down_fcn_removal(obj,index,wfindex,ind,time_remove,v_remove,colors)
@@ -289,27 +339,27 @@ classdef ThresholdOptions < PanelComponent
                     %do nothing
             end
             obj.show_panels(0);
-     
+            
         end
         
-        function btn_down_fcn_addition(obj)   
-            p = get(obj.gui.main_axes,'currentpoint'); 
+        function btn_down_fcn_addition(obj)
+            p = get(obj.gui.main_axes,'currentpoint');
             if isempty(obj.t0)
                 set(obj.ui_undo_last,'Visible','on');
                 obj.t0 = p(1,1);
-                obj.v0 = p(1,2);   
-            elseif p(1,1) > obj.t0  
-                set(obj.ui_added_done,'Visible','on');  
+                obj.v0 = p(1,2);
+            elseif p(1,1) > obj.t0
+                set(obj.ui_added_done,'Visible','on');
                 n = numel(obj.tabs);
                 obj.tabs(n+1) = p(1,1);
                 obj.vabs(n+1) = p(1,2);
                 if ~n
                     amplitude = sc_range(get(obj.gui.main_axes,'ylim'))/10;
                     obj.upper(n+1) = amplitude;
-                    obj.lower(n+1) = -amplitude;         
+                    obj.lower(n+1) = -amplitude;
                 else
                     obj.upper(n+1) = obj.upper(n);
-                    obj.lower(n+1) = obj.lower(n); 
+                    obj.lower(n+1) = obj.lower(n);
                 end
             else
                 return

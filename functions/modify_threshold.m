@@ -85,8 +85,8 @@ spikepos = [];
     function plotv(state,thr)
         drawnow
         switch state
-%             case 'add_limits'
-%                 btn_down_fcn = @add_new_limits;
+            %             case 'add_limits'
+            %                 btn_down_fcn = @add_new_limits;
             otherwise
                 btn_down_fcn = [];
         end
@@ -164,7 +164,7 @@ spikepos = [];
         item = [];
         item_index = -1;
         item_string = [];
-    %    axis(ax,'tight');
+        %    axis(ax,'tight');
         drawnow
         
         function delete_item(index,thr)
@@ -271,12 +271,12 @@ spikepos = [];
     end
 
     function startindex_callback(~,~)
-        startindex = str2num(get(ui_startindex,'string'));
+        startindex = str2double(get(ui_startindex,'string'));
         set(ui_startindex,'string',startindex);
     end
 
     function stopindex_callback(~,~)
-        stopindex = str2num(get(ui_stopindex,'string'));
+        stopindex = str2double(get(ui_stopindex,'string'));
         set(ui_stopindex,'string',stopindex);
     end
 
@@ -288,17 +288,23 @@ spikepos = [];
         samplepos = thr.match(v_sample,1e-3);
         cla(ax2);
         hold(ax2,'on');
-        plot(ax2,v_sample);
         for k=1:numel(samplepos)
             x = samplepos(k);
             plot(ax2,x,v_sample(x),'Linestyle','None',...
-                'Marker','o','MarkerSize',16);
+                'Marker','o','MarkerSize',16,'HitTest','off');
+        end
+        plot(ax2,v_sample,'color',[135 206 250]/255,'ButtonDownFcn',@button_dwn_fcn);
+     %   axis(ax2,'tight');
+        
+        function button_dwn_fcn(~,~)
+            p = get(ax2,'currentpoint');
+            x_ = round(p(1,1));
+            y_ = p(1,2);
             for j=1:numel(thr.position_offset)
-                plot(ax2,x+thr.position_offset(j)*[1 1],...
-                    v_sample(x)+thr.v_offset(j) + [thr.lower_tolerance(j) thr.upper_tolerance(j)])
+                plot(ax2,x_+thr.position_offset(j)*[1 1],...
+                    y_+thr.v_offset(j) + [thr.lower_tolerance(j) thr.upper_tolerance(j)],...
+                    'color',[0 0 0])
             end
         end
-        axis(ax2,'tight');
     end
-
 end

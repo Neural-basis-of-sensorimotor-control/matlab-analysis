@@ -10,12 +10,11 @@ else
     fig1 = fig1(1);
 end
 clf(fig1)
-fig2 = findobj('Tag','Modify Threshold (2)');
-if isempty(fig2)
+if ~isempty(v_sample)
     fig2 = figure('Tag','Modify Threshold (2)');
-else
-    fig2 = fig2(1);
-    clf(fig2);
+    userdata.ax = axes('Parent',fig2);
+    userdata.v_sample = v_sample;
+    set(fig2,'userdata',userdata);
 end
 
 
@@ -44,8 +43,6 @@ ax = axes('Parent',fig1);
 resize_fcn();
 set(fig1,'ResizeFcn',@resize_fcn);
 
-%Populate figure 2
-ax2 = axes('Parent',fig2);
 
 buttongroup = [ui_update, ui_plot, ui_delete, ui_previous, ui_next, ui_add];
 spikepos = [];
@@ -285,16 +282,21 @@ spikepos = [];
     end
 
     function update_sample_callback(thr)
-        samplepos = thr.match(v_sample,1e-3);
-        cla(ax2);
-        hold(ax2,'on');
-        for k=1:numel(samplepos)
-            x = samplepos(k);
-            plot(ax2,x,v_sample(x),'Linestyle','None',...
-                'Marker','o','MarkerSize',16,'HitTest','off');
+        figs = findobj('Tag','Modify Threshold (2)');
+        for k=1:numel(figs)
+            udata = get(figs(k),'userdata');
+            sample = udata.v_sample;
+            ax2 = udata.ax;
+            samplepos = thr.match(sample,1e-3);
+            cla(ax2);
+            hold(ax2,'on');
+            for i=1:numel(samplepos)
+                x = samplepos(i);
+                plot(ax2,x,sample(x),'Linestyle','None',...
+                    'Marker','o','MarkerSize',16,'HitTest','off');
+            end
+            plot(ax2,sample,'color',[135 206 250]/255,'ButtonDownFcn',@button_dwn_fcn);
         end
-        plot(ax2,v_sample,'color',[135 206 250]/255,'ButtonDownFcn',@button_dwn_fcn);
-     %   axis(ax2,'tight');
         
         function button_dwn_fcn(~,~)
             p = get(ax2,'currentpoint');

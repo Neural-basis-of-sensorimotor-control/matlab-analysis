@@ -295,10 +295,10 @@ spikepos = [];
                 plot(ax2,x,sample(x),'Linestyle','None',...
                     'Marker','o','MarkerSize',16,'HitTest','off');
             end
-            plot(ax2,sample,'color',[135 206 250]/255,'ButtonDownFcn',@button_dwn_fcn);
+            plot(ax2,sample,'color',[135 206 250]/255,'ButtonDownFcn',@(~,~) button_dwn_fcn(ax2,thr));
         end
         
-        function button_dwn_fcn(~,~)
+        function button_dwn_fcn(ax2,thr)
             p = get(ax2,'currentpoint');
             x_ = round(p(1,1));
             y_ = p(1,2);

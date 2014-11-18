@@ -84,7 +84,9 @@ classdef WaveformSelection < PanelComponent
             str = get(obj.ui_waveforms,'string');
             val = get(obj.ui_waveforms,'value');
             obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
-            obj.show_panels(false);
+            if obj.gui.main_channel.plot_raw
+                obj.show_panels(false);
+            end
         end
         function export_waveform(obj)
             if isempty(obj.gui.waveform)

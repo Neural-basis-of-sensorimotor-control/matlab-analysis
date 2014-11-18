@@ -11,6 +11,7 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
         function setup_components(obj)
             obj.gui_components.add(OffsetAtTime(obj));
             obj.gui_components.add(SweepOptions(obj));
+            obj.gui_components.add(AbsoluteTime(obj));
             obj.gui_components.add(ZoomOptions(obj));
             obj.gui_components.add(ThresholdOptions(obj));
             obj.gui_components.add(PlotMode(obj));

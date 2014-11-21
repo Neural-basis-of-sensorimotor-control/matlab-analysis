@@ -72,9 +72,9 @@ classdef ChannelOptions < PanelComponent
                     if  ~signals.contains(old_signal)
                         %Channel does not belong to this file, add an accurate
                         %one
-                        if sc_contains(signal.values('tag'),old_signal.tag)
+                        if sc_contains(signals.values('tag'),old_signal.tag)
                             %Add channel with same tag string
-                            analog_subch.get(k) = signals.get('tag',old_signal.tag);
+                            analog_subch.replace_at(k,signals.get('tag',old_signal.tag));
                         else
                             %Add arbitrary channel
                             analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));

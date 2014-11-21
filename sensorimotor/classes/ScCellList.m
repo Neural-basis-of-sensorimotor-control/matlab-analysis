@@ -76,6 +76,7 @@ classdef ScCellList < handle
             obj.cell_list(index) = [];
         end
         
+        %Add item to list att position index
         function insert_at(obj, index, item)
             newlist = cell(obj.n+1,1);
             for k=1:index-1
@@ -88,6 +89,10 @@ classdef ScCellList < handle
             obj.cell_list = newlist;
         end
         
+        %Replace item at index with this item
+        function replace_at(obj, index, item)
+            obj.list(index) = {item};
+        end
         
         function item = remove_at(obj,index)
             item = obj.cell_list{index};

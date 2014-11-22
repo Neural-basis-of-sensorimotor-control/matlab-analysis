@@ -74,7 +74,9 @@ classdef ChannelOptions < PanelComponent
                         %one
                         if sc_contains(signals.values('tag'),old_signal.tag)
                             %Add channel with same tag string
-                            analog_subch.replace_at(k,signals.get('tag',old_signal.tag));
+                            ch = analog_subch.get(k); 
+                            ch.signal = signals.get('tag',old_signal.tag);
+                            ch.clear_data();
                         else
                             %Add arbitrary channel
                             analog_subch.add(AnalogAxes(obj.gui,signals.get(k)));

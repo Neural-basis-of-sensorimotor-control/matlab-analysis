@@ -73,6 +73,11 @@ classdef ScSignal < ScChannel
             end
         end
         
+        function recalculate_waveform(obj,wf)
+            v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
+            wf.recalculate_spiketimes(v,obj.dt);
+        end
+        
         function rmwfs = get_rmwfs(obj,tmin,tmax)
             rmwfs = ScList();
             for k=1:obj.remove_waveforms.n

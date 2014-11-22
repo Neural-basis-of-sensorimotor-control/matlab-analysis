@@ -23,6 +23,8 @@ classdef WaveformSelection < PanelComponent
             mgr.add(sc_ctrl('pushbutton','Export waveform',@(~,~) obj.export_waveform()),100);
             mgr.newline(20)
             mgr.add(sc_ctrl('pushbutton','Detect all waveforms again',@(~,~) obj.update_all_waveforms),200);
+            mgr.newline(20)
+            mgr.add(sc_ctrl('pushbutton','Detect this waveform again',@(~,~) obj.update_current_waveform),200);
                         
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);
             
@@ -127,6 +129,12 @@ classdef WaveformSelection < PanelComponent
             obj.show_panels(false);
             obj.gui.has_unsaved_changes = true;
             obj.gui.main_channel.signal.recalculate_all_waveforms();
+            obj.gui.lock_screen(false);
+        end
+        function update_current_waveform(obj)
+            obj.gui.lock_screen(true,'Recalculating curret waveform, might take a minute...');
+            obj.gui.has_unsaved_changes = true;
+            obj.gui.main_channel.signal.recalculate_waveform(obj.gui.waveform);
             obj.gui.lock_screen(false);
         end
     end

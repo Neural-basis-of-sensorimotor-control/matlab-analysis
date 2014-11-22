@@ -122,7 +122,7 @@ classdef SequenceOptions < PanelComponent
                 msgbox('Tag must be non-empty string');
                 return;
             end
-            if obj.gui.file.has('tag',tag)
+            if obj.gui.file.has('tag',tag) && src ~= obj.ui_edit_sequence
                 msgbox('Tag is already in use');
                 return;
             end

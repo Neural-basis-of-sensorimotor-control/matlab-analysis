@@ -91,7 +91,7 @@ classdef ScCellList < handle
         
         %Replace item at index with this item
         function replace_at(obj, index, item)
-            obj.list(index) = {item};
+            obj.cell_list(index) = {item};
         end
         
         function item = remove_at(obj,index)

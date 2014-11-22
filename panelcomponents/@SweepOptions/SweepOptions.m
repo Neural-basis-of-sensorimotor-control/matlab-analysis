@@ -72,8 +72,11 @@ classdef SweepOptions < PanelComponent
                 case 'posttrigger'
                     obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
                 case 'sweep'
+                    old_sweep = obj.gui.sweep;
                     obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));
-                    obj.gui.sweep_increment = numel(obj.gui.sweep);
+                    if numel(old_sweep) ~= numel(obj.gui.sweep)
+                        obj.gui.sweep_increment = numel(obj.gui.sweep);
+                    end
                 case 'increment'
                     obj.gui.sweep_increment = str2double(get(obj.ui_increment,'string'));
                 case 'next'

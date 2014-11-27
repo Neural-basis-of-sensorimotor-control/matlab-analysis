@@ -69,8 +69,18 @@ classdef SweepOptions < PanelComponent
             switch btn_id
                 case 'pretrigger'
                     obj.gui.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
+                    if isfinite(obj.gui.pretrigger) && isfinite(obj.gui.posttrigger) ...
+                            && obj.gui.pretrigger<obj.gui.posttrigger
+                        xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
+                        obj.gui.plot_channels();
+                    end
                 case 'posttrigger'
                     obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
+                    if isfinite(obj.gui.pretrigger) && isfinite(obj.gui.posttrigger) ...
+                            && obj.gui.pretrigger<obj.gui.posttrigger
+                        xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
+                        obj.gui.plot_channels();
+                    end
                 case 'sweep'
                     old_sweep = obj.gui.sweep;
                     obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));

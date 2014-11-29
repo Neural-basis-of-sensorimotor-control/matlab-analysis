@@ -5,7 +5,7 @@ classdef ScRemoveWaveform < ScTrigger
         stimpos                 %Post-calibration spike times (in integer position values)
         stimpos_offsets         %Offset to stimpos (in seconds)
         width                   %Total filter width
-        tag                     
+        tag
         v_median                %Vector to be subtracted in first calibration step
         v_interpolated_median   %Vector to be subtracted after last calibration step
         tstart                  %Only use stimpos where stimpos*parent.dt>=tstart
@@ -29,70 +29,75 @@ classdef ScRemoveWaveform < ScTrigger
         %Assuming that tmin = 0 for conversion from time to discrete time
         %steps
         function calibrate(obj,v)
-            if ~obj.apply_calibration
-                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos);
-                return
-            end
             obj.stimpos = obj.original_stimpos;
-            if isempty(obj.stimpos)
-                obj.stimpos_offsets = [];
-                return
-            end
+            obj.stimpos = obj.stimpos(obj.stimpos>1 & obj.stimpos+obj.width<numel(v));
             obj.stimpos = obj.stimpos(obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop);
-            obj.stimpos_offsets = zeros(size(obj.stimpos));
-            ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
-            ranges(ranges<1) = 1*ones(size(find(ranges<1)));
-            ranges(ranges>numel(v)-(obj.width+1)) = (numel(v)-(obj.width+1))*ones(size(find(ranges>numel(v)-(obj.width+1))));
-            overlap = ranges(1:end-1,2)>=ranges(2:end,1);
-            ranges(overlap,2) = floor((obj.stimpos([overlap; false])+obj.stimpos([false; overlap]))/2);
-            ranges([false; overlap],1) = ranges([overlap; false],2)+1;
-            
-            max_nbr_of_iterations = 5;
-            it = 1;
-            prev_stimpos = [];
-            while it<=max_nbr_of_iterations && (it==1 || ~nnz(prev_stimpos - obj.stimpos))
-                [~,obj.v_median, obj.width] = sc_remove_artifacts(v,obj.width,obj.stimpos);
-                prev_stimpos = obj.stimpos;
-                for i=1:numel(obj.stimpos)
-                    obj.stimpos(i) = obj.find_min(ranges(i,:),v);
-                end
-                it = it+1;
-            end
-            if it>max_nbr_of_iterations
-                fprintf('Warning: Reached maximum number of iterations (=%i) in %s\n',max_nbr_of_iterations,mfilename);
-            end
-            obj.stimpos_offsets = zeros(size(obj.stimpos));
-            [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
-            t_index = (0:(obj.width+1))';
-            times = t_index*obj.parent.dt;
-            sp = spaps(times,obj.v_interpolated_median,1e-6);
-            obj.v_interpolated_median = fnval(sp,times);
-
-            it=1;
-            max_nbr_of_iterations = 3;
-            %todo: add check for convergence
-            while it<=max_nbr_of_iterations
-                for k=1:numel(obj.stimpos)
-                    s = v(obj.stimpos(k)+t_index) - v(obj.stimpos(k));
-                    ind = (2:obj.width+1)';
-                    Y = obj.v_interpolated_median(ind) - s(ind);
-                    X = .5*(s(ind-1) - obj.v_interpolated_median(ind+1));
-                    obj.stimpos_offsets(k) = X\Y + 2;
-                end
-                below_bounds = obj.stimpos_offsets < -1;
-                above_bounds = obj.stimpos_offsets > 1;
-                obj.stimpos_offsets(below_bounds | above_bounds) = zeros(size(find(below_bounds | above_bounds)));
-                fprintf('%i offsets out of %i out of bounds\n',nnz(above_bounds | below_bounds),numel(obj.stimpos_offsets));
-                obj.stimpos_offsets = obj.parent.dt*obj.stimpos_offsets;
-                new_v_median = nan(obj.width,numel(obj.stimpos));
+            if isempty(obj.stimpos)
+                obj.v_interpolated_median = [];
+                obj.v_median = [];
+                obj.stimpos_offsets = [];
+            elseif ~obj.apply_calibration
+                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                obj.v_median = obj.v_interpolated_median(2:end-1);
+                obj.stimpos_offsets = zeros(size(obj.stimpos));
+            else
+                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                obj.v_median = obj.v_interpolated_median(2:end-1);
+                obj.stimpos_offsets = zeros(size(obj.stimpos));
+                ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
+                ranges(ranges<1) = 1*ones(size(find(ranges<1)));
+                ranges(ranges>numel(v)-(obj.width+1)) = (numel(v)-(obj.width+1))*ones(size(find(ranges>numel(v)-(obj.width+1))));
+                overlap = ranges(1:end-1,2)>=ranges(2:end,1);
+                ranges(overlap,2) = floor((obj.stimpos([overlap; false])+obj.stimpos([false; overlap]))/2);
+                ranges([false; overlap],1) = ranges([overlap; false],2)+1;
                 
-                pp = spaps(times,obj.v_interpolated_median,1e-6);
-                for k=1:numel(obj.stimpos)
-                    new_v_median(:,k) = fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));
+                max_nbr_of_iterations = 5;
+                it = 1;
+                prev_stimpos = [];
+                while it<=max_nbr_of_iterations && (it==1 || ~nnz(prev_stimpos - obj.stimpos))
+                    [~,obj.v_median, obj.width] = sc_remove_artifacts(v,obj.width,obj.stimpos);
+                    prev_stimpos = obj.stimpos;
+                    for i=1:numel(obj.stimpos)
+                        obj.stimpos(i) = obj.find_min(ranges(i,:),v);
+                    end
+                    it = it+1;
                 end
-                obj.v_interpolated_median(2:end-1) = mean(new_v_median,2);
-                %dbgplt(17+it,[],obj.v_interpolated_median);
-                it = it+1;
+                if it>max_nbr_of_iterations
+                    fprintf('Warning: Reached maximum number of iterations (=%i) in %s\n',max_nbr_of_iterations,mfilename);
+                end
+                obj.stimpos_offsets = zeros(size(obj.stimpos));
+                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                t_index = (0:(obj.width+1))';
+                times = t_index*obj.parent.dt;
+                sp = spaps(times,obj.v_interpolated_median,1e-6);
+                obj.v_interpolated_median = fnval(sp,times);
+                
+                it=1;
+                max_nbr_of_iterations = 3;
+                %todo: add check for convergence
+                while it<=max_nbr_of_iterations
+                    for k=1:numel(obj.stimpos)
+                        s = v(obj.stimpos(k)+t_index) - v(obj.stimpos(k));
+                        ind = (2:obj.width+1)';
+                        Y = obj.v_interpolated_median(ind) - s(ind);
+                        X = .5*(s(ind-1) - obj.v_interpolated_median(ind+1));
+                        obj.stimpos_offsets(k) = X\Y + 2;
+                    end
+                    below_bounds = obj.stimpos_offsets < -1;
+                    above_bounds = obj.stimpos_offsets > 1;
+                    obj.stimpos_offsets(below_bounds | above_bounds) = zeros(size(find(below_bounds | above_bounds)));
+                    fprintf('%i offsets out of %i out of bounds\n',nnz(above_bounds | below_bounds),numel(obj.stimpos_offsets));
+                    obj.stimpos_offsets = obj.parent.dt*obj.stimpos_offsets;
+                    new_v_median = nan(obj.width,numel(obj.stimpos));
+                    
+                    pp = spaps(times,obj.v_interpolated_median,1e-6);
+                    for k=1:numel(obj.stimpos)
+                        new_v_median(:,k) = fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));
+                    end
+                    obj.v_interpolated_median(2:end-1) = mean(new_v_median,2);
+                    %dbgplt(17+it,[],obj.v_interpolated_median);
+                    it = it+1;
+                end
             end
         end
         
@@ -110,23 +115,6 @@ classdef ScRemoveWaveform < ScTrigger
             end
         end
         
-%         function [signal,tt] = get_plottable_wfs(obj,~,~,triggertimes,pretrigger,posttrigger)
-%             startpos = [];
-%             starttimes = [];
-%             for k=1:numel(triggertimes)
-%                 modtime = obj.stimpos*obj.parent.dt-triggertimes(k);
-%                 usepos = modtime>=pretrigger & modtime<posttrigger;
-%                 startpos = [startpos; find(usepos)];
-%                 starttimes = [starttimes; obj.stimpos(usepos)*obj.parent.dt-triggertimes(k)];
-%             end
-%             tt = nan(obj.width,numel(startpos));
-%             signal = nan(size(tt));
-%             for k=1:numel(startpos)
-%                 tt(:,k) = sc_floor(starttimes(k),obj.parent.dt) + (0:(obj.width-1))'*obj.parent.dt;
-%                 signal(:,k) = obj.get_removal_archetype(startpos(k));
-%             end
-%         end
-        
         function times = gettimes(obj,tmin,tmax)
             times = obj.stimpos*obj.parent.dt + obj.stimpos_offsets;
             times = times(times>=tmin & times<tmax);
@@ -136,7 +124,7 @@ classdef ScRemoveWaveform < ScTrigger
             last_f_val =1e-3;
             c = obj.width - tail_length;
             a = log(1/last_f_val-1)/(c-obj.width);
-            val = sigmf((1:obj.width)',[a c]); 
+            val = sigmf((1:obj.width)',[a c]);
         end
     end
     methods (Access = 'protected')
@@ -175,6 +163,9 @@ classdef ScRemoveWaveform < ScTrigger
             end
             if isempty(obj.apply_calibration)
                 obj.apply_calibration = true;
+            end
+            if length(obj.stimpos) ~= length(obj.stimpos_offsets)
+                obj.stimpos_offsets = zeros(size(obj.stimpos));
             end
         end
     end

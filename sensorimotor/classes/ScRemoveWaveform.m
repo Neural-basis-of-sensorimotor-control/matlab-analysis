@@ -167,6 +167,17 @@ classdef ScRemoveWaveform < ScTrigger
             if length(obj.stimpos) ~= length(obj.stimpos_offsets)
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
             end
+            if isempty(obj.width)
+                obj.v_median = [];
+                obj.v_interpolated_median = [];
+            else
+                if length(obj.v_median) ~= obj.width
+                    obj.v_median = zeros(obj.width,1);
+                end
+                if length(obj.v_interpolated_median) ~= obj.width+2
+                    obj.v_median = zeros(obj.width+2,1);
+                end
+            end
         end
     end
 end

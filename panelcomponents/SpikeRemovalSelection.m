@@ -151,6 +151,7 @@ classdef SpikeRemovalSelection < PanelComponent
                     obj.gui.rmwf = list.get(list.n);
                 end
                 obj.gui.has_unsaved_changes = true;
+                obj.panel.initialize_panel();
             end
         end
         function update_spike_removal_callback(obj)

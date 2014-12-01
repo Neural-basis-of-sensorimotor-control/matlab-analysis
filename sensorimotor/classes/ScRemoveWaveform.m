@@ -1,7 +1,7 @@
 classdef ScRemoveWaveform < ScTrigger
     properties
         parent
-        original_stimpos        %Spike times (in integer position values) from original ScWaveform object
+        original_stimtimes      %Spike times from original ScWaveform object
         stimpos                 %Post-calibration spike times (in integer position values)
         stimpos_offsets         %Offset to stimpos (in seconds)
         width                   %Total filter width
@@ -29,19 +29,20 @@ classdef ScRemoveWaveform < ScTrigger
         %Assuming that tmin = 0 for conversion from time to discrete time
         %steps
         function calibrate(obj,v)
-            obj.stimpos = obj.original_stimpos;
-            obj.stimpos = obj.stimpos(obj.stimpos>1 & obj.stimpos+obj.width<numel(v));
-            obj.stimpos = obj.stimpos(obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop);
+            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt);
+            use_stimpos = obj.stimpos>1 & obj.stimpos+obj.width<numel(v);
+            use_stimpos = use_stimpos & obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop;
+            obj.stimpos = obj.stimpos(use_stimpos);
+            obj.stimpos_offsets = obj.original_stimtimes(use_stimpos) - obj.stimpos*obj.parent.dt;
             if isempty(obj.stimpos)
                 obj.v_interpolated_median = [];
                 obj.v_median = [];
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
             elseif ~obj.apply_calibration
                 [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
-                obj.interpolated_median = obj.v_interpolated_median(1:fwidth);
+                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth);
                 obj.v_median = obj.v_interpolated_median(2:end-1);
                 obj.width = length(obj.v_median);
-                obj.stimpos_offsets = zeros(size(obj.stimpos));
             else
                 [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
                 obj.interpolated_median = obj.v_interpolated_median(1:fwidth);
@@ -117,7 +118,7 @@ classdef ScRemoveWaveform < ScTrigger
             pp = spaps(times,obj.v_interpolated_median,1e-6);
             for k=1:numel(obj.stimpos)
                 pos = obj.stimpos(k) + (0:obj.width-1)';
-                v(pos) = v(pos) - f.*fnval(pp,times(1:end-2)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
+                v(pos) = v(pos) - f.*fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
             end
         end
         
@@ -150,13 +151,15 @@ classdef ScRemoveWaveform < ScTrigger
         %         end
         function initialize(obj,trigger)
             obj.tag = ['#' trigger.tag];
-            obj.original_stimpos = round(trigger.gettimes(0,inf)/obj.parent.dt);
-            obj.stimpos = obj.original_stimpos;
-            obj.stimpos_offsets = trigger.gettimes(0,inf) - obj.stimpos*obj.parent.dt;
+            obj.original_stimtimes = trigger.gettimes(0,inf);%round(/obj.parent.dt);
+            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt);
+            obj.stimpos_offsets = obj.original_stimtimes - obj.stimpos*obj.parent.dt;
             below_one = find(obj.stimpos<1);
             above_max = find(obj.stimpos>obj.parent.N);
             obj.stimpos(below_one) = ones(size(below_one));
             obj.stimpos(above_max) = obj.parent.N*ones(size(above_max));
+            obj.stimpos_offsets(below_one) = zeros(size(below_one));
+            obj.stimpos_offsets(above_max) = zeros(size(above_max));
         end
     end
     methods (Static)
@@ -183,6 +186,9 @@ classdef ScRemoveWaveform < ScTrigger
                 if length(obj.v_interpolated_median) ~= obj.width+2
                     obj.v_median = zeros(obj.width+2,1);
                 end
+            end
+            if isfield(obj.original_stimpos)
+                obj.original_stimtimes = obj.original_stimpos*obj.parent.dt;
             end
         end
     end

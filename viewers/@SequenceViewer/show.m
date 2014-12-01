@@ -44,8 +44,8 @@ for k=1:nbr_of_constant_panels
     panel.update_panel();
 end
 drawnow
-%obj.position_figures();
-obj.resize_plot_window();
-obj.resize_btn_window();
-figure(obj.btn_window)
+obj.position_figures();
+% obj.resize_plot_window();
+% obj.resize_btn_window();
+figure(obj.plot_window)
 end

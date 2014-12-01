@@ -35,7 +35,7 @@ classdef ScRemoveWaveform < ScTrigger
             if isempty(obj.stimpos)
                 obj.v_interpolated_median = [];
                 obj.v_median = [];
-                obj.stimpos_offsets = [];
+                obj.stimpos_offsets = zeros(size(obj.stimpos));
             elseif ~obj.apply_calibration
                 [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
                 obj.v_median = obj.v_interpolated_median(2:end-1);

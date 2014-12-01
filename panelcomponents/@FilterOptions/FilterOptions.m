@@ -3,6 +3,7 @@ classdef FilterOptions < PanelComponent
         ui_smoothing_width
         ui_artifact_width
         ui_artifact_nbr_of_samples
+        ui_scale_factor
     end
     methods
         function obj = FilterOptions(panel)
@@ -21,6 +22,9 @@ classdef FilterOptions < PanelComponent
             obj.ui_artifact_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.artifact_width_callback,'ToolTipString',...
                 'Artifact width in bins (0 = off))'),50);
             mgr.add(sc_ctrl('text','bins'),50);
+            mgr.newline(20);
+            mgr.add(sc_ctrl('text','Scale factor'),100);
+            obj.ui_scale_factor = mgr.add(sc_ctrl('edit',[],@(~,~) obj.scale_factor_callback),100);
             
             sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
 
@@ -39,6 +43,7 @@ classdef FilterOptions < PanelComponent
         function main_signal_listener(obj)
             set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
             set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
+            set(obj.ui_scale_factor,'string',obj.gui.main_signal.filter.scale_factor);
         end
         
         function smoothing_width_callback(obj)
@@ -65,10 +70,16 @@ classdef FilterOptions < PanelComponent
             end
         end
         
-        
-        function artifact_samples_callback(obj)
-          msgbox('to be implemented');
-            obj.show_panels(false);
+        function scale_factor_callback(obj)
+            scale_factor = str2double(get(obj.ui_scale_factor,'string'));
+            if ~isfinite(scale_factor)
+                msgbox('Scale factor has to be a finite number. 1 = off');
+                set(obj.ui_scale_factor,'string',obj.gui.main_signal.filter.scale_factor);
+            else
+                obj.gui.main_signal.filter.scale_factor = scale_factor;
+                obj.gui.has_unsaved_changes = true;
+                obj.show_panels(false);
+            end
         end
 
     end

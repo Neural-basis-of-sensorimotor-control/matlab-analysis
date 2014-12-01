@@ -3,9 +3,12 @@ classdef ScAdqTriggerParent < ScTriggerParent
         tag = 'ADQ file';
     end
     methods
-        function obj = ScAdqTriggerParent()
+        function obj = ScAdqTriggerParent(tag)
             obj@ScTriggerParent();
             obj.triggers = ScList();
+            if nargin
+                obj.tag = tag;
+            end
         end
         function sc_loadtimes(obj)
             for k=1:obj.triggers.n

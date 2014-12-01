@@ -20,7 +20,7 @@ classdef SequenceOptions < PanelComponent
                 @(~,~) obj.parse_protocol_callback),100);
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','Show protocol',@(~,~) obj.show_protocol()),100);
-            mgr.add(sc_ctrl('pushbutton','Print summary',@(~,~) obj.print_experiment_status()),100);            
+            mgr.add(sc_ctrl('pushbutton','Print summary',@(~,~) obj.print_experiment_status()),100);
             mgr.newline(20);
             obj.ui_edit_sequence = mgr.add(sc_ctrl('pushbutton','Edit sequence',...
                 @(~,~) obj.affect_sequence_callback(obj.ui_edit_sequence)),100);
@@ -31,22 +31,22 @@ classdef SequenceOptions < PanelComponent
     end
     methods (Access='protected')
         function parse_protocol_callback(obj)
-            if obj.gui.file.is_adq_file
-                msgbox('Parsing only possible for Spike2 files');
-                return
-            end
-            obj.show_panels(false);
-            obj.gui.lock_screen(true,'Wait, parsing...');
             [protocolfile, pdir] = uigetfile('*.txt','Select protocol file',obj.gui.experiment.fdir);
             if ~isnumeric(protocolfile)
+                obj.gui.lock_screen(true,'Wait, parsing...');
+                obj.show_panels(false);
                 protocolfile = fullfile(pdir, protocolfile);
-                obj.gui.experiment.update_from_protocol(protocolfile);
-                obj.gui.has_unsaved_changes = true;
-                if obj.gui.experiment.n
-                    obj.gui.set_file(obj.gui.experiment.get(1));
+                if obj.gui.file.is_adq_file
+                    obj.gui.file.parse_protocol(protocolfile);
+                else
+                    obj.gui.experiment.update_from_protocol(protocolfile);
+                    if obj.gui.experiment.n
+                        obj.gui.set_file(obj.gui.experiment.get(1));
+                    end
                 end
+                obj.gui.has_unsaved_changes = true;
+                obj.gui.lock_screen(false);
             end
-            obj.gui.lock_screen(false);
         end
         
         

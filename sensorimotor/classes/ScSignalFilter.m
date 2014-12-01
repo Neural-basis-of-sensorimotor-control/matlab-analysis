@@ -1,6 +1,7 @@
 classdef ScSignalFilter < handle
     properties (SetObservable)
         parent
+        scale_factor = 1
         smoothing_width = 5
         artifact_width = 0%1e3
         artifactchannels
@@ -34,6 +35,9 @@ classdef ScSignalFilter < handle
             v = obj.artifact_removal(v,tmin,tmax);
         end
         function v = smoothing(obj,v)
+            if obj.scale_factor~=1
+                v = v*obj.scale_factor;
+            end
             v = filter(ones(1,obj.smoothing_width)/obj.smoothing_width,1,v);
         end
         function v = artifact_removal(obj,v,tmin,tmax)
@@ -45,6 +49,14 @@ classdef ScSignalFilter < handle
                         v = sc_remove_artifacts(v,obj.artifact_width,stimpos);
                     end
                 end
+            end
+        end
+    end
+    
+    methods (Static)
+        function obj = loadobj(obj)
+            if isempty(obj.scale_factor)
+                obj.scale_factor = 1;
             end
         end
     end

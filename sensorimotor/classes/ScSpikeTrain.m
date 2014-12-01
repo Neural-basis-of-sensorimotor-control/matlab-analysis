@@ -18,5 +18,10 @@ classdef ScSpikeTrain < ScTrigger
                 obj.times<sc_floor(tmax,1e-3);
             t = obj.times(pos);
         end
+        
+        function sc_loadtimes(~)
+        end
+        function sc_clear(~)
+        end
     end
 end

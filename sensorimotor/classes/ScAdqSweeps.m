@@ -10,9 +10,10 @@ classdef ScAdqSweeps < ScEvent & ScTrigger
     end
     
     methods
-        function obj = ScAdqSweeps(nbrofsweeps, sweepwidth)
+        function obj = ScAdqSweeps(nbrofsweeps, sweepwidth, tag)
             obj.nbrofsweeps = nbrofsweeps;
             obj.sweepwidth = sweepwidth;
+            if nargin>2,    obj.tag = tag;  end
         end
         
         function sc_loadtimes(obj)

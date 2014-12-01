@@ -47,62 +47,141 @@ classdef ScFile < ScList
         
         %todo: change access to private
         function parse_protocol(obj, protocolfile)
-            fid = fopen(protocolfile);
-            while 1
-                line = fgetl(fid);
-                if isnumeric(line) && line == -1
-                    fclose(fid);
-                    msgbox(['Could not find file ''' obj.tag '''in protocol file'])
-                    return
-                elseif strcmp(line, ['¤¤' obj.tag])
-                    break;
-                end
+            function ret = end_of_file(line)
+                ret = ~isempty(line) && isnumeric(line) && line == -1;
             end
-            sequence = [];
-            while 1
+            function ret = start_of_sequence(line)
+                ret = ~isempty(line) && strcmp(line,'"Keyboard"');
+            end
+            function ret = is_comment(line)
+                ret = ~isempty(line) && line(1) == '"';
+            end
+            if obj.is_adq_file
+                fid = fopen(protocolfile);
                 line = fgetl(fid);
-                if checkForEof(line)
-                    if ~isempty(sequence)
-                        if ~obj.has('tag',sequence.tag)
-                            obj.add(sequence);
+                %Skip until start of trigger times
+                while ~end_of_file(line) && (isempty(line) || is_comment(line)) ....
+                        && ~start_of_sequence(line)  
+                    line = fgetl(fid);
+                end
+                %Store trigger times
+                triggertimes = nan(1000,1);
+                n = 0;
+                while ~end_of_file(line) && ~(isempty(line) || is_comment(line))
+                    n=n+1;
+                    triggertimes(n) = str2double(line);
+                    line = fgetl(fid);
+                end
+                triggertimes = triggertimes(1:n);
+                trg_parent_tag = 'Imported';
+                trg_tag = 'stim';
+                if obj.stims.has('tag',trg_parent_tag)
+                    triggerparent = obj.stims.get('tag',trg_parent_tag);
+                else
+                    triggerparent = ScAdqTriggerParent(trg_parent_tag);
+                end
+                if triggerparent.triggers.has('tag',trg_tag)
+                    msgbox(sprintf('Trigger parent %s already has a trigger with tag %s in file %s. Aborting.',...
+                                trg_parent_tag, trg_tag, obj.tag));
+                            return;
+                end
+                triggerparent.triggers.add(ScSpikeTrain('trg',triggertimes));
+                obj.stims.add(triggerparent);
+                %Skip until start of sequence times
+                while ~end_of_file(line) && ~start_of_sequence(line)
+                    line = fgetl(fid);
+                end
+                if ~end_of_file(line) && start_of_sequence(line)
+                    line = fgetl(fid);
+                    %Skip all empty lines
+                    while ~end_of_file(line) && isempty(line) && ~is_comment(line)
+                        line = fgetl(fid);
+                    end
+                    %Add sequences
+                    sequence = [];
+                    while ~end_of_file(line) && ~isempty(line) && ~is_comment(line)
+                        strcell = regexp(line,'\d+\.\d+','match');
+                        tmin = str2double(strcell{1});
+                        strcell = regexp(line,'".\?\?\?"','match');
+                        tag = strcell{1};
+                        tag = tag(2);
+                        if obj.has('tag',tag)
+                            msgbox(sprintf('There is already a sequence with tag %s in file %s. Aborting.',...
+                                tag,obj.tag));
+                            break;
                         end
-                        obj.sc_loadsignals();
-                        if sequence.signals.n
-                            N = cell2mat({sequence.signals.list.N});
-                            dt = cell2mat({sequence.signals.list.dt});
-                            sequence.tmax = max((N+1).*dt);
-                        else
-                            sequence.tmax = inf;
+                        if ~isempty(sequence)
+                            sequence.tmax = tmin;
                         end
-                    end
-                    fclose(fid);
-                    return;
-                elseif checkForCell(line)
-                    if isempty(obj.comment)
-                        obj.comment = line(3:end);
-                    else
-                        obj.comment = sprintf([obj.comment '\n' line]);
-                    end
-                elseif checkForEvent(line)
-                    pos = find(line==' ',2);
-                    tmin = str2double(line(pos(1):pos(2)));
-                    tag = line(1);
-                    %Set tmax for previous sequence
-                    if ~isempty(sequence)
-                        sequence.tmax = tmin;
-                    end
-                    if obj.has('tag',tag)
-                        sequence = obj.get('tag',tag);
-                    else
                         sequence = ScSequence(obj,tag,tmin);
                         obj.add(sequence);
+                        line = fgetl(fid);
                     end
-                    sequence.comment = line(pos(2)+1:end-3);
-                elseif ~isempty(line) && ~isempty(sequence)
-                    if isempty(sequence.comment)
-                        sequence.comment = line;
-                    else
-                        sequence.comment = sprintf([sequence.comment '\n' line]);
+                    if ~isempty(sequence)
+                        N = cell2mat({sequence.signals.list.N});
+                        dt = cell2mat({sequence.signals.list.dt});
+                        sequence.tmax = max((N+1).*dt);
+                    end
+                end
+                fclose(fid);
+            else
+                fid = fopen(protocolfile);
+                while 1
+                    line = fgetl(fid);
+                    if isnumeric(line) && line == -1
+                        fclose(fid);
+                        msgbox(['Could not find file ''' obj.tag '''in protocol file'])
+                        return
+                    elseif strcmp(line, ['¤¤' obj.tag])
+                        break;
+                    end
+                end
+                sequence = [];
+                while 1
+                    line = fgetl(fid);
+                    if checkForEof(line)
+                        if ~isempty(sequence)
+                            if ~obj.has('tag',sequence.tag)
+                                obj.add(sequence);
+                            end
+                            obj.sc_loadsignals();
+                            if sequence.signals.n
+                                N = cell2mat({sequence.signals.list.N});
+                                dt = cell2mat({sequence.signals.list.dt});
+                                sequence.tmax = max((N+1).*dt);
+                            else
+                                sequence.tmax = inf;
+                            end
+                        end
+                        fclose(fid);
+                        return;
+                    elseif checkForCell(line)
+                        if isempty(obj.comment)
+                            obj.comment = line(3:end);
+                        else
+                            obj.comment = sprintf([obj.comment '\n' line]);
+                        end
+                    elseif checkForEvent(line)
+                        pos = find(line==' ',2);
+                        tmin = str2double(line(pos(1):pos(2)));
+                        tag = line(1);
+                        %Set tmax for previous sequence
+                        if ~isempty(sequence)
+                            sequence.tmax = tmin;
+                        end
+                        if obj.has('tag',tag)
+                            sequence = obj.get('tag',tag);
+                        else
+                            sequence = ScSequence(obj,tag,tmin);
+                            obj.add(sequence);
+                        end
+                        sequence.comment = line(pos(2)+1:end-3);
+                    elseif ~isempty(line) && ~isempty(sequence)
+                        if isempty(sequence.comment)
+                            sequence.comment = line;
+                        else
+                            sequence.comment = sprintf([sequence.comment '\n' line]);
+                        end
                     end
                 end
             end
@@ -295,7 +374,7 @@ classdef ScFile < ScList
     
     methods (Access = private)
         function success = init_spike2_file(obj)
-           % success = false;
+            % success = false;
             channelnames = who('-file',obj.filepath);
             for i=1:numel(channelnames)
                 channelname = channelnames{i};
@@ -331,28 +410,6 @@ classdef ScFile < ScList
             for i=1:obj.stims.n
                 obj.stims.get(i).sc_clear;
             end
-%             for j=1:numel(obj.spikefiles)
-%                 %Remove this procedure - unused so far and thus not needed
-%                 spikefile = obj.spikefiles{j};
-%                 d = load(fullfile(obj.fdir,spikefile));
-%                 [~,name] = fileparts(obj.filepath);
-%                 tag_ = regexp(spikefile,['^' name '_(\w*).mat.{0,0}'],'tokens');
-%                 tag = cell2mat(tag_{1});
-%                 if ~isfield(d,'spikes')
-%                     return;
-%                 end
-%                 switch d.spikes.comment
-%                     case 'patch'
-%                         sgnl = obj.signals.get('tag','patch');
-%                     case 'patch1'
-%                         sgnl = obj.signals.get('tag','patch1');
-%                     case 'patch2'
-%                         sgnl = obj.signals.get('tag','patch2');
-%                     otherwise
-%                         sgnl = obj.signals.get('tag','patch');
-%                 end
-%                 sgnl.waveforms.add(ScWaveform(sgnl,tag,spikefile));
-%             end
             success = true;
         end
         
@@ -384,7 +441,7 @@ classdef ScFile < ScList
                 obj.signals.add(signal);
             end
             triggerparent = ScAdqTriggerParent();
-            triggerparent.triggers.add(ScAdqSweeps(nbrofsweeps, buffersize*dt));  
+            triggerparent.triggers.add(ScAdqSweeps(nbrofsweeps, buffersize*dt));
             obj.stims.add(triggerparent);
             success = true;
         end

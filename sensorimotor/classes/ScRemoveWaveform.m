@@ -37,11 +37,14 @@ classdef ScRemoveWaveform < ScTrigger
                 obj.v_median = [];
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
             elseif ~obj.apply_calibration
-                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                obj.interpolated_median = obj.v_interpolated_median(1:fwidth);
                 obj.v_median = obj.v_interpolated_median(2:end-1);
+                obj.width = length(obj.v_median);
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
             else
-                [~,obj.v_interpolated_median] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
+                obj.interpolated_median = obj.v_interpolated_median(1:fwidth);
                 obj.v_median = obj.v_interpolated_median(2:end-1);
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
                 ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
@@ -56,6 +59,7 @@ classdef ScRemoveWaveform < ScTrigger
                 prev_stimpos = [];
                 while it<=max_nbr_of_iterations && (it==1 || ~nnz(prev_stimpos - obj.stimpos))
                     [~,obj.v_median, obj.width] = sc_remove_artifacts(v,obj.width,obj.stimpos);
+                    obj.v_median = obj.v_median(1:obj.width);
                     prev_stimpos = obj.stimpos;
                     for i=1:numel(obj.stimpos)
                         obj.stimpos(i) = obj.find_min(ranges(i,:),v);
@@ -103,7 +107,9 @@ classdef ScRemoveWaveform < ScTrigger
         
         function [v]=remove_wf(obj,v,~)
             if isempty(obj.v_interpolated_median)
-                msgbox(sprintf('You will need to calibrate ScRemoveWaveform %s',obj.tag));
+                if ~isempty(obj.stimpos)
+                    msgbox(sprintf('You will need to calibrate ScRemoveWaveform %s',obj.tag));
+                end
                 return
             end
             f = obj.sigm;

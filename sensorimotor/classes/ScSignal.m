@@ -4,7 +4,7 @@ classdef ScSignal < ScChannel
         dt                  %time resolution (1x1 double)
         waveforms           %ScWaveform
         filter              %ScSignalFilter
-        remove_waveforms    %ScRemoveWaveformList
+        remove_waveforms    %ScList
         N                   %nbr of data points (1x1 double)
     end
     
@@ -65,7 +65,7 @@ classdef ScSignal < ScChannel
             for k=1:obj.remove_waveforms.n
                 rmwf = obj.remove_waveforms.get(k);
                 rmwf.calibrate(v);
-                v = rmvf.remove_artifacts(v);
+                v = rmwf.remove_wf(v);
             end
             for k=1:obj.waveforms.n
                 wf = obj.waveforms.get(k);
@@ -75,6 +75,11 @@ classdef ScSignal < ScChannel
         
         function recalculate_waveform(obj,wf)
             v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
+            for k=1:obj.remove_waveforms.n
+                rmwf = obj.remove_waveforms.get(k);
+                rmwf.calibrate(v);
+                v = rmwf.remove_wf(v);
+            end
             wf.recalculate_spiketimes(v,obj.dt);
         end
         

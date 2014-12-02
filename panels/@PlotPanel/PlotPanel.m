@@ -14,6 +14,7 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
             obj.gui_components.add(AbsoluteTime(obj));
             obj.gui_components.add(ZoomOptions(obj));
             obj.gui_components.add(ThresholdOptions(obj));
+            obj.gui_components.add(RemoveWaveformAll(obj));
             obj.gui_components.add(PlotMode(obj));
             obj.gui_components.add(ManualSpikeTimes(obj));
             obj.gui_components.add(SavePlotOptions(obj));

@@ -80,7 +80,8 @@ classdef SpikeRemovalSelection < PanelComponent
                 set(obj.ui_tstart,'string',obj.gui.rmwf.tstart);
             else
                 obj.gui.rmwf.tstart = val;
-                obj.gui.has_unsaved_changes = true;
+%                obj.gui.has_unsaved_changes = true;
+                obj.update_spike_removal_callback();
             end
         end
         
@@ -91,7 +92,8 @@ classdef SpikeRemovalSelection < PanelComponent
                 set(obj.ui_tstop,'string',obj.gui.rmwf.tstop);
             else
                 obj.gui.rmwf.tstop = val;
-                obj.gui.has_unsaved_changes = true;
+ %               obj.gui.has_unsaved_changes = true;
+                obj.update_spike_removal_callback();
             end
         end
         
@@ -127,7 +129,7 @@ classdef SpikeRemovalSelection < PanelComponent
                 obj.gui.has_unsaved_changes = true;
                 obj.gui.main_channel.load_data();
                 obj.show_panels(false);
-                rmwf = ScRemoveWaveform(obj.gui.main_signal,trg,width,apply_calibration,obj.sequence.tmin,obj.sequence.tmax);
+                rmwf = ScRemoveWaveform(obj.gui.main_signal,trg,width,apply_calibration,obj.sequence.tmin,floor(obj.sequence.tmax));
                 rmwf.calibrate(obj.gui.main_channel.v);
                 list.add(rmwf);
                 obj.gui.rmwf = rmwf;

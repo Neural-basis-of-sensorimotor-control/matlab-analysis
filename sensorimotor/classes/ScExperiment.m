@@ -152,6 +152,13 @@ classdef ScExperiment < ScList
                         end
                     end
                 end
+                for i=1:file.signals.n
+                    signal = file.signals.get(i);
+                    for j=1:signal.remove_waveforms.n
+                        rmwf = signal.remove_waveforms.get(j);
+                        fprintf('\t\trmwf\t%s\t%s\t%g - %g\n',signal.tag,rmwf.tag,rmwf.tstart,rmwf.tstop);
+                    end
+                end
             end
         end
         

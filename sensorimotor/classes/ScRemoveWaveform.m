@@ -187,7 +187,7 @@ classdef ScRemoveWaveform < ScTrigger
                     obj.v_median = zeros(obj.width+2,1);
                 end
             end
-            if isfield(obj.original_stimpos)
+            if isfield(obj,'original_stimpos')
                 obj.original_stimtimes = obj.original_stimpos*obj.parent.dt;
             end
         end

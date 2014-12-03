@@ -22,7 +22,7 @@ classdef RemoveWaveformAll < PanelComponent
             for k=1:obj.gui.file.n
                 seq = obj.gui.file.get(k);
                 if ~strcmpi(seq.tag,'full')
-                    rmwfs = signal.get_rmwfs(seq.tmin,seq.tmax);
+                    rmwfs = signal.get_rmwfs(seq.tmin+1,seq.tmax-1);
                     if ~rmwfs.n
                         rmwf = ScRemoveWaveform(signal,trigger,500,false,...
                             seq.tmin,floor(seq.tmax));

@@ -6,7 +6,6 @@ classdef CascadeList < ScCellList
     
     methods
         
-        
         function initialize(obj)
             for k=1:obj.n
                 obj.get(k).initalize();

@@ -1,4 +1,5 @@
 classdef UpdatablePanel < Panel
+    %Panel with a UpdatePanelButton
     methods
         function obj = UpdatablePanel(gui,panel)
             obj@Panel(gui,panel);

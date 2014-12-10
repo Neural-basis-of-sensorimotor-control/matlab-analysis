@@ -1,9 +1,11 @@
 classdef Panel < GuiComponent
     properties (SetObservable)
+        %to invoke enabled_listener function
         enabled = false
     end
     
     properties
+        %ScCellList of PanelComponent objects
         gui_components
     end
     
@@ -12,6 +14,7 @@ classdef Panel < GuiComponent
     end
     
     methods (Abstract)
+        %Populate gui_components property from inheriting class
         setup_components(obj);
     end
     
@@ -21,6 +24,7 @@ classdef Panel < GuiComponent
             addlistener(obj,'enabled','PostSet',@(~,~) obj.enabled_listener);
         end
         
+        %Populate PanelComponents objects
         function layout(obj)
             obj.gui_components = ScCellList();
             obj.setup_components();
@@ -33,12 +37,14 @@ classdef Panel < GuiComponent
             mgr.trim();
         end
         
+        %Update values in text boxes, popupmenus, etc
         function initialize_panel(obj)
             for k=1:obj.gui_components.n
                 obj.gui_components.get(k).initialize();
             end
         end
         
+        %Reload values and update enabled property
         function update_panel(obj)
             updated = true;
             for k=1:obj.gui_components.n
@@ -47,6 +53,9 @@ classdef Panel < GuiComponent
             obj.enabled = updated;
         end
         
+        %Make panel inaccessible to user
+        %   do_lock:    true    -> lock
+        %               false   -> unlock
         function lock_panel(obj,do_lock)
             if do_lock
                 enablestr = 'off';
@@ -57,6 +66,7 @@ classdef Panel < GuiComponent
             set(children,'Enable',enablestr);
         end
         
+        %Height of graphical object
         function height = get.height(obj)
             height = getheight(obj.uihandle);
         end
@@ -64,12 +74,16 @@ classdef Panel < GuiComponent
     
     
     methods (Static)
+        %Margin between top of uipanel and first PanelComponent object 
         function val = upper_margin()
             val = 15;
         end
     end
     
     methods %(Access = 'protected')
+        %If enabled is set to false, the subsequent panels will be hidden
+        %If previous panel is disabled, this panel will be hidden, unless
+        %it is the first panel
         function enabled_listener(obj)
             index = obj.gui.panels.indexof(obj);
             if index<2 || obj.gui.panels.get(index-1).enabled

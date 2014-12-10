@@ -1,4 +1,7 @@
 classdef UpdatePanelButton < PanelComponent
+    %Button to update Viewer components
+    %Starting with updating parent panel, then subsequent panels until a
+    %panel is not enabled after update
     methods
         function obj = UpdatePanelButton(panel)
             obj@PanelComponent(panel);

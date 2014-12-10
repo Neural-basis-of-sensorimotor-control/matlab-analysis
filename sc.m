@@ -1,4 +1,4 @@
-function sc(varargin)
+function gui = sc(varargin)
 %SC View Spike2 or binary files from experiment
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
@@ -27,6 +27,8 @@ function sc(varargin)
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
+
+if nargout, gui = [];    end
 addpath(genpath(fileparts(mfilename('fullpath'))));
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
 % close(findobj('Tag','Main Figure'));
@@ -40,9 +42,6 @@ args = varargin;
 if  exist('sc_config.txt','file') == 2
     fid = fopen('sc_config.txt');
     sc_file_folder = fgetl(fid);
-%     if isempty(sc_file_folder)
-%         sc_file_folder = cd;
-%     end
     raw_data_folder = fgetl(fid);
     if ~numel(args)
         str = fgetl(fid);
@@ -120,6 +119,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
         return;
     else
         guimgr = GuiManager();
+        if nargout,    gui = guimgr;   end
         guimgr.experiment = experiment; 
         if ~experiment.sc_save();
             msgbox('Experiment not saved. Aborting');
@@ -145,6 +145,7 @@ else
         end
     end
     guimgr = GuiManager();
+    if nargout,    gui = guimgr;   end
     guimgr.viewer.set_sc_file_folder(sc_file_folder);
     guimgr.viewer.set_raw_data_folder(raw_data_folder);
     d = load(filename);

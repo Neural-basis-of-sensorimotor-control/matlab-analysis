@@ -1,4 +1,5 @@
 classdef UiWrapper < handle
+    %Object that references a uicontrol, uipanel, etc
     properties
         uihandle
     end 

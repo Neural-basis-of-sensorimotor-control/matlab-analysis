@@ -39,8 +39,7 @@ classdef ModeSelection < PanelComponent
     
     methods (Access = 'protected')
         function viewer_callback(obj)
-            % obj.show_panels(false);
-            msgbox('To be implemented');
+            obj.show_panels(false);
         end
     end
 end

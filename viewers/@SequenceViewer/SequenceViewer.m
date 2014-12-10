@@ -5,33 +5,33 @@ classdef SequenceViewer < handle
         end
     end
     properties (SetObservable)
-        parent
+        parent              %GuiManager
         
-        panels
+        panels              %CascadeList
         
-        btn_window
+        btn_window          %Figure
         
-        digital_channels
-        analog_subch
-        histogram
-        rmwf
+        digital_channels    %DigitalAxes
+        analog_subch        %ScCellList
+        histogram           %HistogramChannel
+        rmwf                %ScRemoveWaveform
     end
     
     properties (SetObservable, SetAccess = 'protected')
-        experiment
-        file
-        sequence
-        sc_file_folder
-        raw_data_folder
+        experiment          %ScExperiment
+        file                %ScFile
+        sequence            %ScSequence
+        sc_file_folder      %char array
+        raw_data_folder     %char array
     end
     properties (SetObservable)
-        help_text
+        help_text           %char array
         
         has_unsaved_changes
         
-        main_channel
+        main_channel        %AnalogAxes
         
-        nbr_of_analog_channels
+        nbr_of_analog_channels 
         
         pretrigger = -.1
         posttrigger = .1
@@ -48,9 +48,9 @@ classdef SequenceViewer < handle
     end
     
     properties
-        zoom_controls
-        filepath
-        reset_btn
+        zoom_controls       %uicontrol array
+        filepath            %char array
+        reset_btn           %uicontrol
     end
     
     properties (Dependent)
@@ -69,9 +69,9 @@ classdef SequenceViewer < handle
     end
     
     properties
-        plot_window_pr
-        histogram_window_pr
-        rasterplot_window_pr
+        plot_window_pr          %Figure
+        histogram_window_pr     %Figure
+        rasterplot_window_pr    %Figure
     end
     
     properties (Constant)
@@ -80,8 +80,12 @@ classdef SequenceViewer < handle
     end
     
     methods (Abstract)
+        %Add panels that will never be deleted during usage
         add_constant_panels(obj)
+        %Add panels that can be deleted and reconstructed when data has
+        %changed
         add_dynamic_panels(obj)
+        %Delete deletable panels
         delete_dynamic_panels(obj)
     end
     
@@ -94,8 +98,6 @@ classdef SequenceViewer < handle
     end
     methods
         function obj = SequenceViewer(guimanager)
-            %close(findobj('Tag','Main Figure'));
-            close all
             obj.btn_window = figure('Tag','Main Figure');
             obj.plot_window = figure;
             

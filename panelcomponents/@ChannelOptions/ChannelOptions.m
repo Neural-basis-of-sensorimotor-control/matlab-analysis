@@ -43,7 +43,7 @@ classdef ChannelOptions < PanelComponent
                 delete(ch(k));
             end
             for k=1:obj.gui.plots.n
-                obj.gui.plots.get(k).ax = axes('Parent',obj.gui.plot_window); %#ok<LAXES>
+                obj.gui.plots.get(k).ax = axes('Parent',obj.gui.plot_window); 
             end
             obj.gui.resize_plot_window();
             if obj.gui.file.signals.n

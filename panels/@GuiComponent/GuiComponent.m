@@ -1,4 +1,5 @@
 classdef GuiComponent < UiWrapper
+    %Object that references a Viewer class
     properties
         gui
     end

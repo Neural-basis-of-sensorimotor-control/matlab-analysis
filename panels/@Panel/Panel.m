@@ -1,4 +1,8 @@
-classdef Panel < GuiComponent
+classdef Panel < GuiComponent   
+    methods (Abstract)
+        %Populate gui_components property from inheriting class
+        setup_components(obj);
+    end
     properties (SetObservable)
         %to invoke enabled_listener function
         enabled = false
@@ -13,12 +17,9 @@ classdef Panel < GuiComponent
         height
     end
     
-    methods (Abstract)
-        %Populate gui_components property from inheriting class
-        setup_components(obj);
-    end
-    
     methods
+        %overriding classes have to call obj.layout after creation of
+        %constructor
         function obj = Panel(gui, panel)
             obj@GuiComponent(gui,panel);
             addlistener(obj,'enabled','PostSet',@(~,~) obj.enabled_listener);
@@ -96,8 +97,12 @@ classdef Panel < GuiComponent
             else
                 set(obj.uihandle,'Visible','off');
             end
-            if obj.enabled && index > -1 && index < obj.gui.panels.n
-                set(obj.gui.panels.get(index+1),'Visible','on');
+            if index > -1 && index < obj.gui.panels.n
+                if obj.enabled 
+                    set(obj.gui.panels.get(index+1),'Visible','on');
+                else
+                    set(obj.gui.panels.get(index+1),'Visible','off');
+                end
             end
         end
     end

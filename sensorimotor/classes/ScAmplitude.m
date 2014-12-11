@@ -1,18 +1,19 @@
 classdef ScAmplitude < handle
     properties
-        parent_sequence
         parent_signal
         labels
         stimtimes
         data
         tag
     end
+    properties (Dependent)
+        tstart
+        tstop
+    end
     
     methods
-        function obj = ScAmplitude(parent_sequence, parent_signal, trigger, ...
-                labels, tag)
+        function obj = ScAmplitude(parent_sequence, parent_signal, trigger, labels, tag)
             obj.labels = labels;
-            obj.parent_sequence = parent_sequence;
             obj.parent_signal = parent_signal;
             obj.stimtimes = trigger.gettimes(parent_sequence.tmin,parent_sequence.tmax);
             obj.data = cell(numel(obj.stimtimes),numel(labels));
@@ -39,6 +40,21 @@ classdef ScAmplitude < handle
         
         function times  =  gettimes(obj, tmin, tmax)
             times = obj.stimtimes(obj.stimtimes >= tmin & obj.stimtimes < tmax);
+        end
+        
+        function ret = get.tstart(obj)
+            if isempty(obj.stimtimes)
+                ret = inf;
+            else
+                ret = min(obj.stimtimes);
+            end
+        end
+        function ret = get.tstop(obj)
+            if isempty(obj.stimtimes)
+                ret = -inf;
+            else
+                ret = max(obj.stimtimes);
+            end
         end
     end
 end

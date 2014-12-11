@@ -18,13 +18,6 @@ addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_l
         function main_channel_signal_listener(~,~)
             signal = obj.main_channel.signal;
             if ~isempty(signal)
-                if ~isempty(obj.waveform) && signal.waveforms.contains(obj.waveform)
-                    obj.waveform = obj.waveform;
-                elseif signal.waveforms.n
-                    obj.waveform = signal.waveforms.get(1);
-                else
-                    obj.waveform = [];
-                end
                 rmwfs = signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
                 if ~rmwfs.n
                     obj.rmwf = [];
@@ -43,19 +36,12 @@ addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_l
             end
             
             function xaxis_listener(~,~)
-                obj.xlimits = xlim(gca);%obj.main_axes);
-%                 if obj.xlimits(1) < obj.pretrigger
-%                     obj.pretrigger = obj.xlimits(1);
-%                 end
-%                 if obj.xlimits(2) > obj.posttrigger
-%                     obj.posttrigger = obj.xlimits(2);
-%                 end
+                obj.xlimits = xlim(gca);
             end
         end
     end
 
     function zoom_on_listener(~,~)
-
         if obj.zoom_on
             obj.pan_on = 0;
             zoom(obj.main_axes,'on');
@@ -66,14 +52,12 @@ addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_l
     end
 
     function pan_on_listener(~,~)
-
         if obj.pan_on
             obj.zoom_on = 0;
-            pan(obj.plot_window,'on');%obj.main_axes,'on');
+            pan(obj.plot_window,'on');
         else
-            pan(obj.plot_window,'off');%pan(obj.main_axes,'off');
+            pan(obj.plot_window,'off');
         end
-        
     end
 
 

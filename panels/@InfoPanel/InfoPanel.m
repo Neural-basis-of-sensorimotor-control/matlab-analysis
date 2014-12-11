@@ -19,7 +19,7 @@ classdef InfoPanel < UpdatablePanel
             obj.gui_components.add(SequenceOptions(obj));
             obj.gui_components.add(SequenceTextBox(obj));
             obj.gui_components.add(FileCommentTextBox(obj));
-            obj.gui_components.add(ModeSelection(obj));
+            
             obj.gui_components.add(ChannelOptions(obj));
             setup_components@UpdatablePanel(obj);
         end
@@ -31,7 +31,7 @@ classdef InfoPanel < UpdatablePanel
             elseif obj.enabled && ~obj.dynamic_panels_exist
                 obj.gui.add_dynamic_panels();
                 obj.dynamic_panels_exist = true;
-                for k=3:obj.gui.panels.n
+                for k=obj.gui.nbr_of_constant_panels+1:obj.gui.panels.n
                     panel = obj.gui.panels.get(k);
                     panel.initialize_panel();
                     panel.update_panel();
@@ -51,6 +51,7 @@ classdef InfoPanel < UpdatablePanel
                obj.gui.delete_dynamic_panels();
                obj.dynamic_panels_exist = false;
            end
+           
         end
     end
 end

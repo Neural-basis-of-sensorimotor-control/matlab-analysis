@@ -6,7 +6,6 @@ classdef ScSequence < ScListElement
         comment
         tmin
         tmax
-        ampl_list   %list of ScAmplitude objects
     end
     
     properties (Dependent)
@@ -27,7 +26,6 @@ classdef ScSequence < ScListElement
             if nargin>3
                 obj.tmax = tmax;
             end
-            obj.ampl_list = ScList();
         end
         
         %clear all transient data
@@ -59,10 +57,6 @@ classdef ScSequence < ScListElement
             triggers = obj.parent.gettriggers(tmin,tmax);
         end
         
-%         function digchannels = getdigchannels(obj,tmin,tmax)
-%             digchannels = obj.parent.getdigchannels(tmin,tmax);
-%         end
-        
         function signals = get.signals(obj)
             signals = obj.parent.signals;
         end
@@ -74,19 +68,9 @@ classdef ScSequence < ScListElement
         function textchannels = get.textchannels(obj)
             textchannels = obj.parent.textchannels;
         end
-        
         function saved = sc_save(obj)
             saved = obj.parent.sc_save();
         end
     end
     
-    methods (Static)
-        %called before class is created
-        function obj = loadobj(obj)
-            %ensure backwards compatibility
-            if isempty(obj.ampl_list)
-                obj.ampl_list = ScList();
-            end
-        end
-    end
 end

@@ -10,6 +10,7 @@ classdef WaveformViewer < SequenceViewer
         triggerparents
         triggers
         triggertimes
+        nbr_of_constant_panels
     end
     
     methods (Static)
@@ -21,23 +22,24 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
+            obj.wf_setup_listeners();
             addlistener(obj,'sequence','PostSet',@(~,~) obj.sequence_listener());
             addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
         end
         
         function add_constant_panels(obj)
-            obj.panels.add(UpdatePanel(obj));
             obj.panels.add(InfoPanel(obj));
         end
         
         function add_dynamic_panels(obj)    
-            obj.panels.add(ChannelPanel(obj));
-            obj.panels.add(PlotPanel(obj));
+            obj.panels.add(WfChannelPanel(obj));
+            obj.panels.add(WfPlotPanel(obj));
             obj.panels.add(HistogramPanel(obj));
         end
         
         function delete_dynamic_panels(obj)
-            for k=obj.panels.n:-1:3
+            %todo - replace hardcoded number with function
+            for k=obj.panels.n:-1:obj.nbr_of_constant_panels+1
                 panel = obj.panels.get(k);
                 obj.panels.remove(panel);
                 delete(panel);
@@ -71,6 +73,10 @@ classdef WaveformViewer < SequenceViewer
             else
                 triggertimes = obj.trigger.gettimes(obj.tmin,obj.tmax);
             end
+        end
+        
+        function ret = get.nbr_of_constant_panels(~)
+            ret = 3;
         end
     
     end

@@ -1,4 +1,17 @@
-classdef SequenceViewer < handle
+classdef SequenceViewer < handle   
+    properties (Dependent, Abstract)
+        triggertimes
+        nbr_of_constant_panels
+    end
+    methods (Abstract)
+        %Add panels that will never be deleted during usage
+        add_constant_panels(obj)
+        %Add panels that can be deleted and reconstructed when data has
+        %changed
+        add_dynamic_panels(obj)
+        %Delete deletable panels
+        delete_dynamic_panels(obj)
+    end
     methods (Static)
         function str = version_str()
             str = '>1.0.14';
@@ -79,19 +92,10 @@ classdef SequenceViewer < handle
         margin = 40
     end
     
-    methods (Abstract)
-        %Add panels that will never be deleted during usage
-        add_constant_panels(obj)
-        %Add panels that can be deleted and reconstructed when data has
-        %changed
-        add_dynamic_panels(obj)
-        %Delete deletable panels
-        delete_dynamic_panels(obj)
-    end
-    
     methods (Abstract, Static)
         mode            %see ScGuiState enums
     end
+
     
     methods (Access = 'protected')
         has_unsaved_changes_listener(obj)
@@ -100,7 +104,6 @@ classdef SequenceViewer < handle
         function obj = SequenceViewer(guimanager)
             obj.btn_window = figure('Tag','Main Figure');
             obj.plot_window = figure;
-            
             obj.setup_listeners();
             obj.zoom_controls = ScList();
             obj.parent = guimanager;
@@ -109,6 +112,11 @@ classdef SequenceViewer < handle
             setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
             obj.histogram = HistogramChannel(obj);
+        end
+        
+        function add_reset_panel(obj)
+            obj.panels.add(UpdatePanel(obj));
+            obj.panels.add(ModePanel(obj));
         end
         
         function analog_ch = get.analog_ch(obj)

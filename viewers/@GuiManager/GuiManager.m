@@ -19,8 +19,11 @@ classdef GuiManager < handle
         end
         
         %Important: all references to previous viewer in graphics objects must be cleared
-        function set.viewer(obj,new_viewer)
-            obj.viewer_ = new_viewer;
+        function set.viewer(obj,new_viewer)   
+%             close all
+%             if isempty(findall(0,'type','figure'))
+                obj.viewer_ = new_viewer;
+%             end
         end
         
         function viewer = get.viewer(obj)

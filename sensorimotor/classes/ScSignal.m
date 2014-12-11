@@ -5,6 +5,7 @@ classdef ScSignal < ScChannel
         waveforms           %ScWaveform
         filter              %ScSignalFilter
         remove_waveforms    %ScList
+        amplitudes          %ScCellList
         N                   %nbr of data points (1x1 double)
     end
     
@@ -21,6 +22,7 @@ classdef ScSignal < ScChannel
             obj.waveforms = ScList;
             obj.filter = ScSignalFilter(obj);
             obj.remove_waveforms = ScList();
+            obj.amplitudes = ScCellList();
             for k=1:2:numel(varargin)
                 obj.(varargin{k}) = varargin{k+1};
             end
@@ -92,6 +94,15 @@ classdef ScSignal < ScChannel
                 end
             end
         end
+        function ampls = get_ampls(obj,tmin,tmax)
+            ampls = ScCellList();
+            for k=1:obj.amplitudes.n
+                ampl = obj.amplitudes.get(k);
+                if ampl.tstart<=tmax && ampl.tstop>=tmin
+                    ampls.add(ampl);
+                end
+            end
+        end
         function istrigger = get.istrigger(~)
             istrigger = false;
         end
@@ -115,6 +126,9 @@ classdef ScSignal < ScChannel
             a = loadobj@ScChannel(a);
             if isempty(a.remove_waveforms)
                 a.remove_waveforms = ScList();
+            end
+            if isempty(a.amplitudes)
+                a.amplitudes = ScCellList();
             end
             obj = a;
         end

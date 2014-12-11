@@ -1,6 +1,8 @@
 classdef UpdatablePanel < Panel
     %Panel with a UpdatePanelButton
     methods
+        %overriding classes have to call obj.layout after creation of
+        %constructor
         function obj = UpdatablePanel(gui,panel)
             obj@Panel(gui,panel);
         end

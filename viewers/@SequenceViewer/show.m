@@ -1,7 +1,6 @@
 function show(obj)
 
 %Clear all figures
-clf(obj.btn_window,'reset');
 set(obj.btn_window,'ToolBar','None','MenuBar','none');
 set(obj.btn_window,'CloseRequestFcn',@(~,~) obj.close_request);
 clf(obj.plot_window,'reset');
@@ -10,6 +9,7 @@ set(obj.plot_window,'Color',[0 0 0]);
 
 %Create panels
 obj.panels = CascadeList();
+obj.add_reset_panel();
 obj.add_constant_panels();
 mgr = ScLayoutManager(obj.btn_window);
 for k=1:obj.panels.n

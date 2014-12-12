@@ -1,6 +1,7 @@
 classdef AmplitudeViewer < SequenceViewer
     properties (SetObservable)
         amplitude
+        mouse_press
     end
     properties (Dependent)
         triggertimes
@@ -10,7 +11,16 @@ classdef AmplitudeViewer < SequenceViewer
     methods
         function obj = AmplitudeViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
+            obj.create_channels(obj);
             obj.av_setup_listeners();
+        end
+        %Overriding method in SequenceViewer
+        function create_channels(obj)
+            obj.analog_subch = ScCellList();
+            obj.main_channel = AnalogAxes(obj);
+            setheight(obj.main_channel,450);
+            obj.digital_channels = DigitalAxes(obj);
+            obj.histogram = HistogramChannel(obj);
         end
         function add_constant_panels(obj)
             obj.panels.add(InfoPanel(obj));

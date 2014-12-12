@@ -73,7 +73,7 @@ classdef AnalogAxes < ChannelAxes
             xlim(obj.ax,obj.gui.xlimits);
         end
         
-        function plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
+        function [v_out, time_out] = plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
             pretrigger = obj.gui.pretrigger;
             posttrigger = obj.gui.posttrigger;
             if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end
@@ -130,6 +130,12 @@ classdef AnalogAxes < ChannelAxes
                 stddev = std(v_signal,0,2);
                 plot(obj.ax,time,avg+stddev,'Color',[0 0 1],'LineWidth',2);
                 plot(obj.ax,time,avg-stddev,'Color',[0 0 1],'LineWidth',2);
+            end
+            if nargout
+                v_out = v_signal;
+            end
+            if nargout>=2
+                time_out = time;
             end
         end
     end

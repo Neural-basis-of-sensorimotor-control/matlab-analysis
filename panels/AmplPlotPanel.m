@@ -6,6 +6,7 @@ classdef AmplPlotPanel < PlotPanel
         end
         function setup_components(obj)
             obj.gui_components.add(OffsetAtTime(obj));
+            obj.gui_components.add(PlotAmplitude(obj));
             obj.gui_components.add(SweepOptions(obj));
             obj.gui_components.add(AbsoluteTime(obj));
             obj.gui_components.add(ZoomOptions(obj));

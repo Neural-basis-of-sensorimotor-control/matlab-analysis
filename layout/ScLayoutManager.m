@@ -46,6 +46,13 @@ classdef ScLayoutManager < handle
             obj.xpos = obj.xpos + getwidth(tile);
         end
         
+        function tile = addsc(obj,varargin)
+            args = varargin(1:end-1);
+            width = varargin{end};
+            tile = sc_ctrl(args{:});
+            obj.add(tile,width);
+        end
+        
         function tile = addobject(obj, tile, width)
             obj.newline(getheight(tile));
             if nargin<3

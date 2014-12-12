@@ -1,11 +1,10 @@
 classdef PanelComponent < GuiComponent
     %Component to be added to Panel object
-    properties
-        panel   %Panel object
-    end
-    
     methods (Abstract)
         populate(obj,mgr)
+    end
+    properties
+        panel   %Panel object
     end
     
     properties (Dependent)

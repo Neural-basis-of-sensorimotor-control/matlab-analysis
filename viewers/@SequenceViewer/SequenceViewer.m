@@ -3,6 +3,9 @@ classdef SequenceViewer < handle
         triggertimes
         nbr_of_constant_panels
     end
+    methods (Abstract, Static)
+        mode            %see ScGuiState enums
+    end
     methods (Abstract)
         %Add panels that will never be deleted during usage
         add_constant_panels(obj)
@@ -90,23 +93,23 @@ classdef SequenceViewer < handle
     properties (Constant)
         panel_width = 205;
         margin = 40
-    end
-    
-    methods (Abstract, Static)
-        mode            %see ScGuiState enums
-    end
-
-    
+    end 
     methods (Access = 'protected')
         has_unsaved_changes_listener(obj)
     end
     methods
+        %obj.create_channels must be called in inheriting class right
+        %after calling SequenceViewer constructor
         function obj = SequenceViewer(guimanager)
             obj.btn_window = figure('Tag','Main Figure');
             obj.plot_window = figure;
             obj.setup_listeners();
             obj.zoom_controls = ScList();
             obj.parent = guimanager;
+        end
+        
+        %override to use customized channel classes
+        function create_channels(obj)
             obj.analog_subch = ScCellList();
             obj.main_channel = AnalogAxes(obj);
             setheight(obj.main_channel,450);

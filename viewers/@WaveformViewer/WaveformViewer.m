@@ -22,6 +22,7 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
+            obj.create_channels(obj);
             obj.wf_setup_listeners();
             addlistener(obj,'sequence','PostSet',@(~,~) obj.sequence_listener());
             addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            

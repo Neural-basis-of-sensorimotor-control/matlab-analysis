@@ -74,7 +74,7 @@ classdef SequenceOptions < PanelComponent
                     if obj.gui.file.signals.n
                         dialogmgr.add(uicontrol('style','pushbutton','String',...
                             'Set time span to maximal time range for file',...
-                            'Callback',@(~,~) obj.max_time_span_callback(ui_tmin,ui_tmax) ),295);
+                            'Callback',@(~,~) obj.max_time_span_callback(ui_tmin,ui_tmax,ui_new_tag) ),295);
                     end
                     dialogmgr.newline();
                     dialogmgr.add(uicontrol('style','pushbutton','String',...
@@ -103,11 +103,12 @@ classdef SequenceOptions < PanelComponent
     end
     
     methods (Access = 'protected')
-        function max_time_span_callback(obj,ui_tmin,ui_tmax)
+        function max_time_span_callback(obj,ui_tmin,ui_tmax,ui_new_tag)
             set(ui_tmin,'string',0);
             N = cell2mat(obj.gui.file.signals.values('N'));
             dt = cell2mat(obj.gui.file.signals.values('dt'));
             set(ui_tmax,'string',max(N.*dt));
+            set(ui_new_tag,'string','full');
         end
         
         function sequence_callback(obj,src,dlg,ui_tmin,ui_tmax,ui_new_tag)

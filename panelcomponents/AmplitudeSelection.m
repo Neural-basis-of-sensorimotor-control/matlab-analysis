@@ -46,9 +46,9 @@ classdef AmplitudeSelection < PanelComponent
         end
         function delete_amplitude(obj)
             if ~isempty(obj.gui.amplitude)
-                answ = msgbox('Do you really want to delete amplitude %s ? All data will be lost');
+                answ = questdlg(sprintf('Do you really want to delete amplitude ''%s'' ? All data will be lost',obj.gui.amplitude.tag));
                 if ~isempty(answ) && strcmp(answ,'Yes')
-                    obj.gui.amplitudes.remove(obj.amplitude);
+                    obj.gui.main_signal.amplitudes.remove(obj.gui.amplitude);
                     obj.panel.update_panel();
                 end
             end

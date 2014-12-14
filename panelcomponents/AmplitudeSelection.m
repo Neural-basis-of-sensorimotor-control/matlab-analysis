@@ -29,7 +29,7 @@ classdef AmplitudeSelection < PanelComponent
         function amplitude_callback(obj)
             val = get(obj.ui_amplitude,'value');
             str = get(obj.ui_amplitude,'string');
-            obj.gui.amplitude = obj.gui.main_signal.amplitudes.get('tag',str{val});
+            obj.gui.set_amplitude(obj.gui.main_signal.amplitudes.get('tag',str{val}));
             obj.show_panels(false);
         end
         function amplitude_listener(obj)

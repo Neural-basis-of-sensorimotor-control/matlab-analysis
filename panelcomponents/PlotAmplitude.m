@@ -25,7 +25,7 @@ classdef PlotAmplitude < PanelComponent
             obj.gui.has_unsaved_changes = true;
             stimtime = obj.gui.triggertimes(obj.sweep(1));
             obj.gui.amplitude.add_data(stimtime,1:4,nan(4,1));
-            obj.gui.mouse_press = 1;
+            obj.gui.set_mouse_press(1);
             obj.gui.plot_channels();
         end
         function mouse_press_listener(obj)

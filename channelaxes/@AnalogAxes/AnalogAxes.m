@@ -73,7 +73,8 @@ classdef AnalogAxes < ChannelAxes
             xlim(obj.ax,obj.gui.xlimits);
         end
         
-        function [v_out, time_out] = plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
+        function [v_out, time_out, handles_out] = plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
+            handles = nan(size(v_signal,2));
             pretrigger = obj.gui.pretrigger;
             posttrigger = obj.gui.posttrigger;
             if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end
@@ -100,6 +101,7 @@ classdef AnalogAxes < ChannelAxes
                     if ~isempty(btn_down_fcn)
                         set(plothandle,'ButtonDownFcn',btn_down_fcn);
                     end
+                    handles(i) = plothandle;
                 end
             else
                 for i=1:size(v_signal,2)
@@ -136,6 +138,9 @@ classdef AnalogAxes < ChannelAxes
             end
             if nargout>=2
                 time_out = time;
+            end
+            if nargout>=3
+                handles_out = handles;
             end
         end
     end

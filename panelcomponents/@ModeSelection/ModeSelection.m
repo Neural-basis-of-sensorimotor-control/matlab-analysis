@@ -39,7 +39,7 @@ classdef ModeSelection < PanelComponent
     
     methods (Access = 'protected')
         function viewer_callback(obj)
-            %obj.show_panels(false);
+            obj.gui.lock_screen(true,'Changing viewing mode');
             str = get(obj.ui_mode,'string');
             val = get(obj.ui_mode,'value');
             [enum,enum_str] = enumeration('ScGuiState');

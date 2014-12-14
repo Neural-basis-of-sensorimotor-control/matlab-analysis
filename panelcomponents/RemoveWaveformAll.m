@@ -11,6 +11,10 @@ classdef RemoveWaveformAll < PanelComponent
     end
     methods (Access = 'protected')
         function remove_waveform_all_callback(obj)
+            answ = questdlg('Add remove waveform to all sequences?');
+            if isempty(answ) && ~strcmp(answ,'Yes')
+                return;
+            end
             signal = obj.gui.main_signal;
             triggers = obj.gui.file.gettriggers(0,inf);
             if sc_contains(triggers.values('tag'),'1000')

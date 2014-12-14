@@ -22,7 +22,7 @@ classdef WaveformViewer < SequenceViewer
     methods
         function obj = WaveformViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
-            obj.create_channels(obj);
+            obj.create_channels();
             obj.wf_setup_listeners();
             addlistener(obj,'sequence','PostSet',@(~,~) obj.sequence_listener());
             addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
@@ -45,11 +45,6 @@ classdef WaveformViewer < SequenceViewer
                 obj.panels.remove(panel);
                 delete(panel);
             end
-        end
-        
-        function set_sweep(obj,sweep)
-            obj.sweep = mod(sweep-1,numel(obj.triggertimes))+1;
-            obj.plot_channels();
         end
         
         function triggerparents = get.triggerparents(obj)

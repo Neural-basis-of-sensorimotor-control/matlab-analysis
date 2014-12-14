@@ -34,7 +34,6 @@ classdef SavePlotOptions < PanelComponent
             end
         end
         
-        
         function save_plot_callback(obj)
             plothandles = get(obj.gui.main_axes,'Children');
             xl = get(obj.gui.main_axes,'xlim');

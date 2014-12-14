@@ -12,19 +12,19 @@ end
     function main_channel_signal_listener(objhandle)
         signal = objhandle.main_channel.signal;
         if isempty(signal)
-            objhandle.amplitude = [];
+            objhandle.set_amplitude([]);
         else
             ampls = signal.get_ampls(objhandle.tmin,objhandle.tmax);
             if ~ampls.n
-                objhandle.amplitude = [];
+                objhandle.set_amplitude([]);
             elseif isempty(objhandle.amplitude)
-                objhandle.amplitude = ampls.get(1);
+                objhandle.set_amplitude(ampls.get(1));
             elseif ampls.contains(objhandle.amplitude)
-                objhandle.amplitude = objhandle.amplitude;
+                objhandle.set_amplitude(objhandle.amplitude);
             elseif sc_contains(ampls.values('tag'),objhandle.amplitude.tag)
-                objhandle.amplitude = ampls.get('tag',objhandle.amplitude.tag);
+                objhandle.set_amplitude(ampls.get('tag',objhandle.amplitude.tag));
             else
-                objhandle.amplitude = ampls.get(1);
+                objhandle.set_amplitude(ampls.get(1));
             end
         end
     end

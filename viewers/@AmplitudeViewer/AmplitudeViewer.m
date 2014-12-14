@@ -1,7 +1,7 @@
 classdef AmplitudeViewer < SequenceViewer
-    properties (SetObservable)
+    properties (SetObservable, SetAccess = 'private')
         amplitude
-        mouse_press
+        mouse_press = 1
     end
     properties (Dependent)
         triggertimes
@@ -11,13 +11,13 @@ classdef AmplitudeViewer < SequenceViewer
     methods
         function obj = AmplitudeViewer(guimanager,varargin)
             obj@SequenceViewer(guimanager,varargin{:});
-            obj.create_channels(obj);
+            obj.create_channels();
             obj.av_setup_listeners();
         end
         %Overriding method in SequenceViewer
         function create_channels(obj)
             obj.analog_subch = ScCellList();
-            obj.main_channel = AnalogAxes(obj);
+            obj.main_channel = AmplAnalogAxes(obj);
             setheight(obj.main_channel,450);
             obj.digital_channels = DigitalAxes(obj);
             obj.histogram = HistogramChannel(obj);
@@ -26,9 +26,9 @@ classdef AmplitudeViewer < SequenceViewer
             obj.panels.add(InfoPanel(obj));
         end
         function add_dynamic_panels(obj)
-            obj.panels.add(AmplChannelPanel(obj));
+            obj.panels.add(AmplChannelPanel_(obj));
             obj.panels.add(AmplPlotPanel(obj));
-            obj.panels.add(HistogramPanel(obj));
+            %obj.panels.add(HistogramPanel(obj));
         end
         function delete_dynamic_panels(obj)
             %todo - replace hardcoded number with function
@@ -37,6 +37,34 @@ classdef AmplitudeViewer < SequenceViewer
                 obj.panels.remove(panel);
                 delete(panel);
             end
+        end
+        function set_amplitude(obj,amplitude)
+            obj.amplitude = amplitude;
+            if ~isempty(obj.amplitude) && numel(obj.triggertimes)
+                obj.set_mouse_press(1);
+            end
+        end
+        function set_sweep(obj,sweep)
+            obj.sweep = mod(sweep-1,numel(obj.triggertimes))+1;
+            if ~isempty(obj.amplitude) && numel(sweep)
+                triggertime = obj.triggertimes(obj.sweep(1));
+                val = obj.amplitude.get_data(triggertime,[1 3]);
+                mousepress = find(isnan(val),1);
+                if isempty(mousepress)
+                    obj.set_mouse_press(0);
+                else
+                    obj.set_mouse_press(mousepress);
+                end
+            end
+        end
+        function set_mouse_press(obj,val)
+            obj.mouse_press = val;
+            if obj.mouse_press ==1 || obj.mouse_press == 2
+                obj.help_text = sprintf('Awaiting mouse press #%i',obj.mouse_press);
+            else
+                obj.help_text = 'Amplitude is set for this sweep';
+            end
+            obj.plot_channels();
         end
         function ret = get.triggertimes(obj)
             if isempty(obj.amplitude)

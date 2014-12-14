@@ -34,7 +34,7 @@ uicontrol(ui_amplitude_tag);
             ampl = ScAmplitude(obj.sequence,obj.main_signal,trigger,...
                 {'t1','v1','t2','v2'},tag);
             ampls.add(ampl);
-            obj.amplitude = ampl;
+            obj.set_amplitude(ampl);
             obj.has_unsaved_changes = true;
         else
             msgbox(['Waveform name must be non-empty and unique for '...

@@ -16,14 +16,14 @@ classdef ScAmplitude < handle
             obj.labels = labels;
             obj.parent_signal = parent_signal;
             obj.stimtimes = trigger.gettimes(parent_sequence.tmin,parent_sequence.tmax);
-            obj.data = cell(numel(obj.stimtimes),numel(labels));
+            obj.data = nan(numel(obj.stimtimes),numel(labels));
             obj.tag = tag;
         end
         
         function add_data(obj, stimtime, ind, x)
             [~,pos] = min(abs(stimtime-obj.stimtimes));
             for k=1:numel(ind)
-                obj.data(pos,ind(k)) = {x(k)};
+                obj.data(pos,ind(k)) = (x(k));
             end
         end
         
@@ -32,8 +32,8 @@ classdef ScAmplitude < handle
             [~,pos] = min(abs(stimtime-obj.stimtimes));
             val = nan(size(ind));
             for k=1:numel(ind)
-                if ~isempty(obj.data{pos,ind(k)})
-                    val(k) = obj.data{pos,ind(k)};
+                if isfinite(obj.data(pos,ind(k)))
+                    val(k) = obj.data(pos,ind(k));
                 end
             end
         end

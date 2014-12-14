@@ -17,7 +17,7 @@ classdef SequenceViewer < handle
     end
     methods (Static)
         function str = version_str()
-            str = '1.1.0';
+            str = '>1.1.0';
         end
     end
     properties (SetObservable)

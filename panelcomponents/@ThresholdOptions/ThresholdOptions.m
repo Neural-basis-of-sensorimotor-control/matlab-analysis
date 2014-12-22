@@ -291,25 +291,10 @@ classdef ThresholdOptions < PanelComponent
             if isempty(option), option = 'No';  end
             switch option
                 case 'Yes'
-                    v_sample = sc_get_sweeps(obj.gui.main_channel.v, 0, obj.gui.triggertimes(obj.gui.sweep(1)), ...
-                    obj.gui.pretrigger, obj.gui.posttrigger, obj.gui.main_signal.dt);
-                    modify_threshold(obj.gui.waveform.list(index),obj.gui.main_channel.v,[],[],v_sample);
-                    obj.gui.has_unsaved_changes = true;
                     obj.gui.lock_screen(true);
-                    %,'WindowStyle','modal');
-%                     obj.gui.lock_screen(true,'Recalculating waveforms, wait');
-%                     obj.gui.waveform.recalculate_spiketimes(obj.gui.main_channel.v,obj.gui.main_signal.dt);
-%                     obj.gui.has_unsaved_changes = true;
-%                     if isempty(obj.gui.triggertimes)
-%                         obj.panel.enabled = false;
-%                         obj.gui.sweep = [];
-%                     else
-%                         if max(obj.gui.sweep) > numel(obj.gui.triggertimes)
-%                             obj.gui.sweep = 1;
-%                         end
-%                         obj.gui.plot_channels();
-%                         obj.set_visible(1);
-%                     end
+                    ModifyThresholdGui.modify(obj.gui.waveform.list(index),...
+                        obj.gui.main_channel.v,round(obj.gui.triggertimes/obj.gui.main_signal.dt),...
+                        obj.gui.sweep(1));
                 case 'Cancel'
                     %do nothing
             end

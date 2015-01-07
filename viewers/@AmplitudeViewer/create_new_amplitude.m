@@ -13,8 +13,10 @@ if ~triggers.n
     return
 end
 dlgmgr.add(sc_ctrl('text','Trigger'),100);
-ui_trigger = dlgmgr.add(sc_ctrl('popupmenu',triggers.values('tag')),100);
+ui_trigger = dlgmgr.add(sc_ctrl('popupmenu',triggers.values('tag'),@triggers_callback),100);
 dlgmgr.newline(5)
+dlgmgr.newline(20);
+ui_nbr_of_times = dlgmgr.add(sc_ctrl('text',[]),200);
 dlgmgr.newline(20);
 dlgmgr.add(getuitext('Name:'),40);
 ui_amplitude_tag = dlgmgr.add(sc_ctrl('edit',[],[],'horizontalalignment','left'),160);
@@ -58,5 +60,10 @@ dlgmgr.trim;
 % figmgr.newline(getheight(panel));
 % figmgr.add(panel);
 % figmgr.trim;
-
+    function triggers_callback(~,~)
+        str = get(ui_trigger,'string');
+        val = get(ui_trigger,'value');
+        trigger = triggers.get('tag',str{val});
+        set(ui_nbr_of_times,'string',sprintf('# of triggers: %i',length(trigger.gettimes(obj.sequence.tmin,obj.sequence.tmax))));
+    end
 end

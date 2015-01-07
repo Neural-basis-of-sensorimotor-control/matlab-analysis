@@ -32,7 +32,7 @@ classdef GuiFigure < handle
             delete(obj.window);
         end
     end
-    methods (Access = 'private')
+    methods
         function window = get_window(obj)
             if isempty(obj.window) || ~ishandle(obj.window)
                 obj.window = figure();

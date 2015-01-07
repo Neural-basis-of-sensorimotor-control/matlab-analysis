@@ -1,14 +1,14 @@
 classdef ScThreshold < handle
     properties
-
         position_offset
         v_offset
         lower_tolerance
         upper_tolerance
         
         max_matrix_size = 1e7   %can be changed to optimize speed and memory
-                                %usage, optimal value depends on available
-                                %RAM
+        %usage, optimal value depends on available
+        %RAM
+        min_isi                 %min inter-spike interval (ISI) in bins
     end
     
     properties (Dependent)
@@ -49,55 +49,87 @@ classdef ScThreshold < handle
                 end
             end
         end
-
+        
         %see ScWaveform for explanation
-        function [spikepos, wfarea] = match_handle(obj,h,min_isi)
-            if size(h.v,2) > 1
-                h.v = h.v';
-            end
-            spikepos = nan(round(numel(h.v)/5e3),1);
-            nbrofspikes = 0;
-            startpos = 1;
-            while startpos < numel(h.v) - obj.width
-                stoppos = min(startpos+obj.max_matrix_size,numel(h.v));
-                stoppos = stoppos-obj.width;
-                spikepos_temp = (startpos:stoppos)';
-                spikepos_temp = spikepos_temp( (h.v(obj.position_offset(1)+spikepos_temp) - h.v(spikepos_temp)) ...
-                    >= (obj.v_offset(1) + obj.lower_tolerance(1)) );
-                spikepos_temp = spikepos_temp( ( h.v(obj.position_offset(1)+spikepos_temp) - h.v(spikepos_temp)) ...
-                    <= (obj.v_offset(1) + obj.upper_tolerance(1)) );
-                for k=2:numel(obj.position_offset)
-                    spikepos_temp = spikepos_temp( (h.v(obj.position_offset(k)+spikepos_temp) - h.v(spikepos_temp)) ...
-                        >= (obj.v_offset(k) + obj.lower_tolerance(k)) );
-                    spikepos_temp = spikepos_temp( (h.v(obj.position_offset(k)+spikepos_temp) - h.v(spikepos_temp)) ...
-                        <= (obj.v_offset(k) + obj.upper_tolerance(k)) );
+        %Uses no parfor loop - suitable when there is parallel computation
+        %of several ScThreshold objects
+        function [spikepos, spikearea] = match_v(obj,v)
+            original_dim_v = size(v);
+            if length(v)<=obj.max_matrix_size
+                spikepos = ScThreshold.find_spikepos(obj,v);
+                spikepos = sc_separate(spikepos,obj.min_isi);
+            else
+                [vcell,spikes] = obj.conv_v(v);
+                clear v
+                for k=1:length(spikes)
+                    spikes(k) = {ScThreshold.find_spikepos(obj,vcell{k})};
                 end
-                spikepos(nbrofspikes+1:nbrofspikes+numel(spikepos_temp)) = spikepos_temp;
-                nbrofspikes = nbrofspikes + numel(spikepos_temp);
-                startpos = stoppos+1;
+                spikepos = obj.deconv_spikes(spikes);
             end
-            spikepos = spikepos(1:nbrofspikes);
-            spikepos = sc_separate(spikepos,min_isi);
             if nargout>=2
-                wfarea = false(size(h.v));
-                batchsize = round(obj.max_matrix_size/obj.width);
-                for startpos = 1:batchsize:numel(spikepos)
-                    endpos = min(startpos+batchsize,numel(spikepos));
-                    wfs = bsxfun(@plus,spikepos(startpos:endpos),0:(obj.width-1));
-                    wfarea(wfs(:)) = true(size(wfs(:)));
-                end
+                spikearea = obj.compute_spikearea(spikepos,original_dim_v);
             end
             spikepos = sc_separate(spikepos,obj.width);
         end
         
         %see ScWaveform for explanation
-        function [spikepos, wfarea] = match(obj,v,min_isi)
-            h.v = v;
-            clear v;
-            if nargout==1
-                spikepos = obj.match_handle(h,min_isi);
+        %Uses parfor loop - suitable when there is no parallel computation
+        %of several ScThreshold objects
+        function [spikepos, spikearea] = match_v_parallel(obj,v)
+            if length(v)<=obj.max_matrix_size
+                if nargout<=1
+                    spikepos = obj.match_v(v);
+                else
+                    [spikepos,spikearea] = obj.match_v(v);
+                end
             else
-                [spikepos,wfarea] = obj.match_handle(h,min_isi);
+                [vcell,spikes,original_dim_v] = obj.conv_v(v);
+                clear v
+                parfor k=1:length(spikes)
+                    spikes(k) = {ScThreshold.find_spikepos(obj,vcell{k})};
+                end
+                spikepos = obj.deconv_spikes(spikes);
+                if nargout>=2
+                    spikearea = obj.compute_spikearea(spikepos,original_dim_v);
+                end
+                spikepos = sc_separate(spikepos,obj.width);
+            end
+        end
+        %Rearrange v from matrix to cell, and create cell for containing
+        %spikes
+        function [vcell,spikes,original_dim_v] = conv_v(obj,v)
+            original_dim_v = size(v);
+            if size(v,2) > 1
+                v = v';
+            end
+            startpos = 1:obj.max_matrix_size:length(v);
+            stoppos = [(startpos(2:end)+obj.width) length(v)];
+            stoppos(stoppos>length(v)) = length(v)*ones(size(find(stoppos>length(v))));
+            spikes = cell(size(startpos));
+            vcell = cell(size(spikes));
+            for k=1:length(vcell)
+                vcell(k) = {v((startpos(k):stoppos(k)))};
+            end
+        end
+        
+        %Rearrange spike from cell structure to matrix structure
+        function spikepos = deconv_spikes(obj,spikes)
+            for k=1:length(spikes)
+                spikes(k) = {(k-1)*obj.max_matrix_size+spikes{k}};
+            end
+            spikepos = cell2mat(spikes');
+            spikepos = sc_separate(spikepos,obj.min_isi);
+        end
+        
+        %Reaturn logical vector where true means that bin is part of
+        %threshold
+        function spikearea = compute_spikearea(obj,spikepos,original_dim_v)
+            spikearea = false(original_dim_v);
+            batchsize = round(obj.max_matrix_size/obj.width);
+            for startpos = 1:batchsize:numel(spikepos)
+                endpos = min(startpos+batchsize,numel(spikepos));
+                wfs = bsxfun(@plus,spikepos(startpos:endpos),0:(obj.width-1));
+                spikearea(wfs(:)) = true(size(wfs(:)));
             end
         end
         
@@ -110,4 +142,24 @@ classdef ScThreshold < handle
         end
     end
     
+    methods (Static)
+        function obj = loadobj(obj)
+            if isempty(obj.min_isi)
+                obj.min_isi = 1e2;
+            end
+        end
+        function spikepos = find_spikepos(objh,v)
+            spikepos = (1:length(v)-objh.width)';
+            spikepos = spikepos( (v(objh.position_offset(1)+spikepos) - v(spikepos)) ...
+                >= (objh.v_offset(1) + objh.lower_tolerance(1)) );
+            spikepos = spikepos( ( v(objh.position_offset(1)+spikepos) - v(spikepos)) ...
+                <= (objh.v_offset(1) + objh.upper_tolerance(1)) );
+            for k=2:numel(objh.position_offset)
+                spikepos = spikepos( (v(objh.position_offset(k)+spikepos) - v(spikepos)) ...
+                    >= (objh.v_offset(k) + objh.lower_tolerance(k)) );
+                spikepos = spikepos( (v(objh.position_offset(k)+spikepos) - v(spikepos)) ...
+                    <= (objh.v_offset(k) + objh.upper_tolerance(k)) );
+            end
+        end
+    end
 end

@@ -157,7 +157,7 @@ classdef AnalogAxes < ChannelAxes
             else
                 obj.b_highlighted = false(size(obj.v));
                 if ~isempty(obj.gui.waveform)
-                    [spikepos,obj.b_highlighted] = obj.gui.waveform.match_handle(obj);
+                    [spikepos,obj.b_highlighted] = obj.gui.waveform.match_v(obj.v);
                     obj.gui.waveform.detected_spiketimes = spikepos*obj.gui.waveform.parent.dt;
                 end
             end

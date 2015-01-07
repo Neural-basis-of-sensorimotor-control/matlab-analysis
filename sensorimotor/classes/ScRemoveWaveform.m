@@ -15,6 +15,11 @@ classdef ScRemoveWaveform < ScTrigger
     properties (Dependent)
         sigm
     end
+    %To avoid warnings when loading saved object created with previous
+    %version
+    properties (SetAccess = 'private', GetAccess = 'private')
+        original_stimpos
+    end
     methods
         
         function obj = ScRemoveWaveform(parent_signal,trigger,width,apply_calibration,tstart,tstop)
@@ -187,8 +192,9 @@ classdef ScRemoveWaveform < ScTrigger
                     obj.v_median = zeros(obj.width+2,1);
                 end
             end
-            if isfield(obj,'original_stimpos')
+            if isfield(obj,'original_stimpos') && ~isempty(obj.original_stimpos)
                 obj.original_stimtimes = obj.original_stimpos*obj.parent.dt;
+                obj.original_stimpos = [];
             end
         end
     end

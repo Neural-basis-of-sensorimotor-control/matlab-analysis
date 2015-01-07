@@ -3,18 +3,17 @@ classdef ScWaveform < ScTrigger & ScList
     %children: ScThreshold
     properties
         parent                  %ScSignal
-        spike2filename          %applicable when there are extra files with 
-                                %spiketimes from Spike2
+        spike2filename          %applicable when there are extra files with
+        %spiketimes from Spike2
         tag
         detected_spiketimes     %spiketimes that are given by ScThreshold children
         imported_spiketimes     %imported from Spike2
         predefined_spiketimes   %e.g userdefined spiketimes
-                
-        min_isi = 1e-3          %min inter-spike interval (s)
     end
     
     properties (Dependent)
         width
+        min_isi
     end
     
     methods
@@ -42,71 +41,62 @@ classdef ScWaveform < ScTrigger & ScList
             obj.imported_spiketimes = [];
         end
         
-        %match waveforms in ScThreshold list to vector v that is contained in
-        %handle h. h must have field v, that is a Nx1 double
-        %Using a handle to reduce RAM requirement
+        %match waveforms in ScThreshold list to Nx1 vector v
         %Returns:
-        %   - spikepos  = positions in w with a match
-        %   - wfarea    = Nx1 logical array with true for all points in v
+        %   - spikepos      = positions in w with a match
+        %   - spikearea     = Nx1 logical array with true for all points in v
         %   that are covered by a waveform
-        function [spikepos,wfarea] = match_handle(obj, h)
-            if size(h.v,2)>size(h.v,1), 
-                h.v=h.v';   
-            end
-            spikepos = nan(ceil(numel(h.v)/100),1);
-            pos = 0;
-            wfarea = false(size(h.v));
-            for k=1:obj.n
-                if nargout<2
-                    spikepos_temp = obj.get(k).match_handle(h,obj.min_isi);
+        function [spikepos,spikearea] = match_v(obj,v)
+            if nargout<=1
+                if ~obj.n
+                    spikepos = [];
+                elseif obj.n==1
+                    spikepos = obj.get(1).match_v_parallel(v);
                 else
-                    [spikepos_temp, wfarea_temp] = obj.get(k).match_handle(h,obj.min_isi);
-                    wfarea = wfarea | wfarea_temp;
+                    spikes = cell(obj.n,1);
+                    thrs = obj.list;
+                    parfor k=1:obj.n
+                        spikes(k) = {thrs(k).match_v(v)};
+                    end
+                    spikepos = cell2mat(spikes);
                 end
-                spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
-                pos = pos+numel(spikepos_temp);
+            else
+                spikepos = nan(ceil(numel(v)/100),1);
+                pos = 0;
+                spikearea = false(size(v));
+                for k=1:obj.n
+                    [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v);
+                    spikearea = spikearea | wfarea_temp;
+                    spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
+                    pos = pos+numel(spikepos_temp);
+                end
+                spikepos = spikepos(1:pos);
             end
-            spikepos = spikepos(1:pos);
-        end
-        
-        %same as match_handle but v is passed as a vector, thus it is
-        %unsuitable for large vectors as it may challenge memory
-        %availability
-        %Returns
-        %   - spikepos   
-        %   - spikeindex = Nx1 double where value is 0 if no match and otherwise 
-        %index from 1...:(nbr of ScThreshold) that shows which waveform is
-        %covered
-        function [spikepos, spikeindex] = match(obj,v)
-            if size(v,2)>size(v,1), v=v';   end
-            spikepos = nan(ceil(numel(v)/100),1);
-            pos = 0;
-            spikeindex = zeros(size(v));
-            min_isi_pos = round(obj.min_isi/obj.parent.dt);
-            for i=1:obj.n
-                [spikepos_temp, wfarea] = obj.get(i).match(v,min_isi_pos);
-                spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
-                pos = pos+numel(spikepos_temp);
-                spikeindex(wfarea) = i*ones(nnz(wfarea),1);
-            end
-            spikepos = spikepos(1:pos);
         end
         
         %Return all spike times between tmin and tmax
         function times = gettimes(obj,tmin,tmax)
-               times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
-                   obj.predefined_spiketimes]),obj.min_isi);
-               times = times(times>=tmin & times<tmax);
+            times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
+                obj.predefined_spiketimes]),obj.min_isi*obj.parent.dt);
+            times = times(times>=tmin & times<tmax);
         end
         
         %Run through v and redo all thresholding
         function recalculate_spiketimes(obj,v,dt)
-            obj.detected_spiketimes = obj.match(v)*dt;
+            obj.detected_spiketimes = obj.match_v(v)*dt;
         end
         
         %Get max width (in pixels) from ScThreshold object list
         function width = get.width(obj)
             width = max(cell2mat(obj.values('width')));
+        end
+        
+        function val = get.min_isi(obj)
+            if ~obj.n
+                val = 100;
+            else
+                val = max(cell2mat({obj.list.min_isi}));
+            end
         end
     end
 end

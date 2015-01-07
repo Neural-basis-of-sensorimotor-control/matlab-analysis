@@ -78,7 +78,7 @@ classdef ModifyThresholdGui < GuiFigure
             set(obj.ax,'Visible','off');
             set(obj.ui_reset,'Enable','on');
             drawnow
-            obj.spikepos = obj.threshold.match(obj.v,1e-3);
+            obj.spikepos = obj.threshold.match_v(obj.v);
             if ~isempty(obj.spikepos)
                 set(obj.ui_imin,'string',1);
                 set(obj.ui_imax,'string',min(100,length(obj.spikepos)));
@@ -279,6 +279,7 @@ classdef ModifyThresholdGui < GuiFigure
         function show(obj)
             show@GuiFigure(obj);
             obj.sweep_gui.show(obj.sweepnbr);
+            figure(obj.window);
         end
         function populate(obj,mgr)
             mgr.newline(30);
@@ -302,6 +303,10 @@ classdef ModifyThresholdGui < GuiFigure
             mgr.add(sc_ctrl('pushbutton','Update',@(~,~) obj.update_callback),100);
             mgr.add(sc_ctrl('pushbutton','Show sweep',@(~,~) obj.show_sweep_callback),100);
         end
+        function window = get_window(obj)
+            window = get_window@GuiFigure(obj);
+            set(obj.window,'CloseRequestFcn',@(~,~) obj.close_request());
+        end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%% FIGURE CALLBACKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -317,6 +322,7 @@ classdef ModifyThresholdGui < GuiFigure
                     case 'Yes'
                         obj.original_threshold = obj.threshold.create_copy();
                         delete(obj.window);
+                        close(obj.sweep_gui.get_window());
                     case 'No'
                         delete(obj.window);
                         close(obj.sweep_gui.get_window());

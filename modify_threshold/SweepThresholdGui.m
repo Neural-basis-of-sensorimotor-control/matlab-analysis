@@ -71,7 +71,7 @@ classdef SweepThresholdGui < GuiFigure
             hold(obj.ax,'on')
             sweep = sc_perieventsweep(obj.parent_gui.v,obj.triggerpos(obj.sweep_nbr),...
                 obj.pretrigger,obj.posttrigger);
-            spikepos = obj.parent_gui.threshold.match(sweep,1e-3);
+            spikepos = obj.parent_gui.threshold.match_v(sweep);
             for k=1:length(spikepos)
                 plot(obj.ax,spikepos(k),sweep(spikepos(k)),'Linestyle','None',...
                     'Marker','o','MarkerSize',16,'HitTest','off');

@@ -28,7 +28,7 @@ classdef ThresholdOptions < PanelComponent
             obj.ui_remove_thresholds = mgr.add(sc_ctrl('pushbutton','Remove thresholds',...
                 @(~,~) obj.remove_thresholds_callback),100);
             mgr.newline(20);
-            obj.ui_modify_thresholds = mgr.add(sc_ctrl('pushbutton','Modify thresholds (*beta version*)',...
+            obj.ui_modify_thresholds = mgr.add(sc_ctrl('pushbutton','Modify thresholds',...
                 @(~,~) obj.modify_thresholds_callback),200);
             
             mgr.newline(20);
@@ -158,13 +158,12 @@ classdef ThresholdOptions < PanelComponent
             threshold = ScThreshold(round((obj.tabs-obj.t0)/obj.gui.main_signal.dt),...
                 obj.vabs-obj.v0,obj.lower,obj.upper);
             obj.gui.waveform.add(threshold);
-            min_isi = round(obj.gui.waveform.min_isi/obj.gui.main_signal.dt);
             if obj.gui.main_channel.plot_waveforms
-                [spiketimes, b_wf] = threshold.match_handle(obj.gui.main_channel,min_isi);
+                [spiketimes, b_wf] = threshold.match_v(obj.gui.main_channel.v);
                 spiketimes = spiketimes*obj.gui.main_signal.dt;
                 obj.gui.main_channel.b_highlighted = obj.gui.main_channel.b_highlighted | b_wf;
             else
-                spiketimes = threshold.match_handle(obj.gui.main_channel,min_isi)*obj.gui.main_signal.dt;
+                spiketimes = threshold.match_v(obj.gui.main_channel.v)*obj.gui.main_signal.dt;
             end
             obj.gui.waveform.detected_spiketimes = sort([obj.gui.waveform.detected_spiketimes; spiketimes]);
             obj.gui.has_unsaved_changes = true;
@@ -260,7 +259,7 @@ classdef ThresholdOptions < PanelComponent
             black = sum(colors,2) < eps;
             colors(black,:) = ones(nnz(black),3);
             for i=1:size(v_remove,2)
-                [~,wfindex] = obj.gui.waveform.match(v_remove(:,i));
+                [~,wfindex] = obj.gui.waveform.match_v(v_remove(:,i));
                 plot(obj.gui.main_axes,time_remove,v_remove(:,i),'Color',colors(end,:));
                 indexes = unique(wfindex);
                 indexes = indexes(indexes>0);

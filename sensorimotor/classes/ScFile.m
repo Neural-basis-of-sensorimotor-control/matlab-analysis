@@ -381,20 +381,26 @@ classdef ScFile < ScList
                 d = load(obj.filepath,channelname);
                 channelstruct = d.(channelname);
                 if isfield(channelstruct,'values')
-                    signal = ScSignal(obj,channelname,'tag',channelname);
-                    signal.dt = channelstruct.interval;
-                    signal.N = channelstruct.length; %<- sometimes incorrect value from Spike2
-                    obj.signals.add(signal);
-                    if isempty(strfind(channelname,'patch'))
-                        signal.filter.smoothing_width = 1;
-                        signal.filter.artifact_width = 0;
+                    if ~obj.signals.has('tag',channelname)
+                        signal = ScSignal(obj,channelname,'tag',channelname);
+                        signal.dt = channelstruct.interval;
+                        signal.N = channelstruct.length; %<- sometimes incorrect value from Spike2
+                        obj.signals.add(signal);
+                        if isempty(strfind(channelname,'patch'))
+                            signal.filter.smoothing_width = 1;
+                            signal.filter.artifact_width = 0;
+                        end
                     end
                 elseif strcmpi(channelname,'TextMark') || ...
                         strcmpi(channelname,'Keyboard')
-                    textchannel = ScTextMark(obj,channelname,'tag',channelname);
-                    obj.textchannels.add(textchannel);
+                    if ~obj.textchannels.has('tag',channelname)
+                        textchannel = ScTextMark(obj,channelname,'tag',channelname);
+                        obj.textchannels.add(textchannel);
+                    end
                 elseif isfield(channelstruct,'times')
-                    obj.stims.add(ScStim(obj,channelname,'tag',channelname));
+                    if ~obj.stims.has('tag',channelname)
+                        obj.stims.add(ScStim(obj,channelname,'tag',channelname));
+                    end
                 else
                     msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes if you think this channel should be viewable.', channelname, obj.tag, mfilename);
                     msgbox(msg);

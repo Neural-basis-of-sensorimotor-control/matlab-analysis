@@ -46,10 +46,10 @@ classdef ScExperiment < ScList
         end
         
         %Populate all children
-        function init(obj)
+        function init(obj,varargin)
             for i=1:obj.n
                 fprintf('reading file: %i out of %i\n',i,obj.n);
-                obj.get(i).init();
+                obj.get(i).init(varargin{:});
             end
         end
         

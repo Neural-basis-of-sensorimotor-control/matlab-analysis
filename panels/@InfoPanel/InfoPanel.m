@@ -15,6 +15,7 @@ classdef InfoPanel < UpdatablePanel
         
         function setup_components(obj)   
             obj.gui_components.add(AutomaticUpdate(obj));
+            obj.gui_components.add(ReImportRawData(obj));
             obj.gui_components.add(SaveLoadButton(obj));
             obj.gui_components.add(ExperimentOptions(obj));
             obj.gui_components.add(SequenceOptions(obj));

@@ -370,10 +370,8 @@ classdef ScFile < ScList
             [~,~,ext] = fileparts(obj.filename);
             is_adq_file = strcmpi(ext,'.adq');
         end
-    end
-    
-    methods (Access = private)
-        function success = init_spike2_file(obj)
+        
+        function add_spike2_channels(obj)
             % success = false;
             channelnames = who('-file',obj.filepath);
             for i=1:numel(channelnames)
@@ -407,6 +405,13 @@ classdef ScFile < ScList
                     disp(msg);
                 end
             end
+        end
+    end
+    
+    methods (Access = private)
+        
+        function success = init_spike2_file(obj)
+            obj.add_spike2_channels();
             for i=1:obj.stims.n
                 obj.stims.get(i).sc_loadtimes;
             end

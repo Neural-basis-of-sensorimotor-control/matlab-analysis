@@ -46,13 +46,19 @@ classdef ScExperiment < ScList
         end
         
         %Populate all children
-        function init(obj,varargin)
+        function init(obj)
             for i=1:obj.n
                 fprintf('reading file: %i out of %i\n',i,obj.n);
-                obj.get(i).init(varargin{:});
+                obj.get(i).init();
             end
         end
         
+        function add_spike2_channels(obj)
+            for k=1:obj.n
+                fprintf('reading file: %i out of %i\n',k,obj.n);
+                obj.get(k).add_spike2_channels();
+            end
+        end
         %Parse experimental protocol (*.txt)
         function update_from_protocol(obj, protocolfile)
             for i=1:obj.n

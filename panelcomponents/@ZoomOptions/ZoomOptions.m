@@ -14,7 +14,6 @@ classdef ZoomOptions < PanelComponent
             obj@PanelComponent(panel);
             sc_addlistener(obj.gui,'zoom_on',@(~,~) obj.toggle_button('zoom_on',obj.ui_zoom),panel);
             sc_addlistener(obj.gui,'pan_on',@(~,~) obj.toggle_button('pan_on',obj.ui_pan),panel);
-            
         end
         
         function populate(obj,mgr)
@@ -58,8 +57,6 @@ classdef ZoomOptions < PanelComponent
                 ylim(obj.gui.analog_ch.get(k).ax,'auto');
             end
             obj.gui.xlimits = [obj.gui.pretrigger obj.gui.posttrigger];
-          %  obj.gui.zoom_on = false;
-          %  obj.gui.pan_on = false;
             obj.gui.plot_channels();
         end
         function x_zoom_in_callback(obj)

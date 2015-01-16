@@ -1,80 +1,104 @@
 function setup_listeners(obj)
 
-addlistener(obj,'main_channel','PostSet',@main_channel_listener);
-addlistener(obj,'digital_channels','PreSet',@digital_channels_listener_pre);
-addlistener(obj,'digital_channels','PostSet',@digital_channels_listener_post);
-deletechannel = [];
-addlistener(obj,'zoom_on','PostSet',@zoom_on_listener);
-addlistener(obj,'pan_on','PostSet',@pan_on_listener);
+addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
+addlistener(obj,'digital_channels','PreSet',@(~,~) digital_channels_listener_pre(obj));
+addlistener(obj,'digital_channels','PostSet',@(~,~) digital_channels_listener_post(obj));
+addlistener(obj,'zoom_on','PostSet',@(~,~) zoom_on_listener(obj));
+addlistener(obj,'pan_on','PostSet',@(~,~) pan_on_listener(obj));
 
 addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_listener());
+addlistener(obj,'sequence','PostSet',@(~,~) sequence_listener(obj));
 
+addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
 
-    function main_channel_listener(~,~)
+    function main_channel_listener(objh)
+        if ~isempty(objh.main_channel)
+            addlistener(objh.main_channel,'signal','PostSet',@(~,~) main_signal_listener(objh));
+            if ~isempty(objh.main_signal)
+                main_signal_listener(objh);
+            end
+        end
         
-        addlistener(obj.main_channel,'signal','PostSet',@main_channel_signal_listener);
-        addlistener(obj.main_channel,'ax_pr','PostSet',@main_channel_ax_listener);
+        addlistener(objh.main_channel,'ax_pr','PostSet',@(~,~) main_channel_ax_listener(objh));
         
-        function main_channel_signal_listener(~,~)
-            signal = obj.main_channel.signal;
-            if ~isempty(signal)
-                rmwfs = signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
-                if ~rmwfs.n
-                    obj.rmwf = [];
+        function main_channel_ax_listener(objh)
+            if ~isempty(objh.main_axes)
+                z = zoom(objh.main_axes);
+                set(z,'ActionPostCallback',@(~,~) xaxis_listener(objh));
+                p = pan(objh.plot_window);
+                set(p,'ActionPostCallback',@(~,~) xaxis_listener(objh));
+            end
+            
+            function xaxis_listener(objh)
+                objh.xlimits = xlim(gca);
+            end
+        end
+    end
+
+    function sequence_listener(objh)
+        if ~isempty(objh.main_signal)
+            signal = objh.main_signal;
+            rmwfs = signal.get_rmwfs(objh.tmin,objh.tmax);
+            if ~rmwfs.n
+                objh.rmwf = [];
+            else
+                if ~isempty(objh.rmwf) && rmwfs.contains(objh.rmwf)
+                    objh.rmwf = objh.rmwf;
                 else
-                    obj.rmwf = rmwfs.get(rmwfs.n);
+                    objh.rmwf = rmwfs.get(1);
                 end
             end
         end
-        
-        function main_channel_ax_listener(~,~)
-            if ~isempty(obj.main_axes)
-                z = zoom(obj.main_axes);
-                set(z,'ActionPostCallback',@xaxis_listener);
-                p = pan(obj.plot_window);
-                set(p,'ActionPostCallback',@xaxis_listener);
+    end
+
+    function zoom_on_listener(objh)
+        if objh.zoom_on
+            objh.pan_on = 0;
+            zoom(objh.main_axes,'on');
+        else
+            zoom(objh.main_axes,'off');
+        end
+    end
+
+    function pan_on_listener(objh)
+        if objh.pan_on
+            objh.zoom_on = 0;
+            pan(objh.plot_window,'on');
+        else
+            pan(objh.plot_window,'off');
+        end
+    end
+
+
+    function digital_channels_listener_pre(objh)
+        if ~isempty(objh.digital_channels)
+            objh.deletechannel = objh.digital_channels;
+        else
+            objh.deletechannel = [];
+        end
+    end
+
+    function digital_channels_listener_post(objh)
+        if ~isempty(objh.deletechannel) && isobject(objh.deletechannel) && ...
+                (isempty(objh.digital_channels) || objh.digital_channels ~= objh.deletechannel)
+            delete(objh.deletechannel.ax);
+        end
+    end
+
+    function main_signal_listener(objh)
+        if ~isempty(objh.main_signal)
+            signal = objh.main_signal;
+            rmwfs = signal.get_rmwfs(objh.tmin,objh.tmax);
+            if ~rmwfs.n
+                objh.rmwf = [];
+            else
+                if ~isempty(objh.rmwf) && rmwfs.contains(objh.rmwf)
+                    objh.rmwf = objh.rmwf;
+                else
+                    objh.rmwf = rmwfs.get(1);
+                end
             end
-            
-            function xaxis_listener(~,~)
-                obj.xlimits = xlim(gca);
-            end
         end
     end
-
-    function zoom_on_listener(~,~)
-        if obj.zoom_on
-            obj.pan_on = 0;
-            zoom(obj.main_axes,'on');
-        else
-            zoom(obj.main_axes,'off');
-        end
-        
-    end
-
-    function pan_on_listener(~,~)
-        if obj.pan_on
-            obj.zoom_on = 0;
-            pan(obj.plot_window,'on');
-        else
-            pan(obj.plot_window,'off');
-        end
-    end
-
-
-    function digital_channels_listener_pre(~,~)
-        if ~isempty(obj.digital_channels)
-            deletechannel = obj.digital_channels;
-        else
-            deletechannel = [];
-        end
-    end
-
-    function digital_channels_listener_post(~,~)
-        if ~isempty(deletechannel) && isobject(deletechannel) && ...
-                (isempty(obj.digital_channels) || obj.digital_channels ~= deletechannel)
-            delete(deletechannel.ax);
-        end
-    end
-
 
 end

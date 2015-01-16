@@ -4,6 +4,7 @@ classdef FilterOptions < PanelComponent
         ui_artifact_width
         ui_artifact_nbr_of_samples
         ui_scale_factor
+  %      ui_dc_remove_width
     end
     methods
         function obj = FilterOptions(panel)
@@ -25,9 +26,12 @@ classdef FilterOptions < PanelComponent
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Scale factor'),100);
             obj.ui_scale_factor = mgr.add(sc_ctrl('edit',[],@(~,~) obj.scale_factor_callback),100);
+%             mgr.newline(20);
+%             mgr.add(sc_ctrl('text','DC remove width'),100);
+%             obj.ui_dc_remove_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.dc_remove_width_callback),60);
+%             mgr.add(sc_ctrl('text','bins'),40);
             
             sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
-
         end
         
         function initialize(obj)
@@ -44,6 +48,7 @@ classdef FilterOptions < PanelComponent
             set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
             set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
             set(obj.ui_scale_factor,'string',obj.gui.main_signal.filter.scale_factor);
+   %         set(obj.ui_dc_remove_width,'string',obj.gui.main_signal.filter.dc_remove_width);
         end
         
         function smoothing_width_callback(obj)
@@ -81,6 +86,18 @@ classdef FilterOptions < PanelComponent
                 obj.show_panels(false);
             end
         end
+        
+%         function dc_remove_width_callback(obj)
+%             width = round(str2double(get(obj.ui_dc_remove_width,'string')));
+%             if ~isfinite(width) || width < 0
+%                  msgbox('Dc remove width has to be a non-negative integer. 0 or 1 = off');
+%                 set(obj.ui_dc_remove_width,'string',obj.gui.main_signal.filter.dc_remove_width);
+%             else
+%                 obj.gui.main_signal.filter.dc_remove_width = width;
+%                 obj.gui.has_unsaved_changes = true;
+%                 obj.show_panels(false);
+%             end
+%         end
 
     end
 end

@@ -23,7 +23,7 @@ if numel(stimpos) && filterwidth
             v_median(columns) = median(v_matrix,1);
             min_filter_width = max_filter_width+1;
         end
-        v_median = v_median - v_median(1);
+        %v_median = v_median - v_median(1);
         %     nbr_of_samples_per_stim = sum(pos,2);
         %     nbr_of_samples_per_stim = nbr_of_samples_per_stim(nbr_of_samples_per_stim <= filterwidth);
         %     for this_nbr_of_samples=unique(nbr_of_samples_per_stim)

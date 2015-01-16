@@ -40,6 +40,9 @@ classdef SequenceViewer < handle
         sc_file_folder      %char array
         raw_data_folder     %char array
     end
+    properties (SetAccess = 'private', GetAccess = 'private')
+        deletechannel
+    end
     properties (SetObservable)
         help_text           %char array
         

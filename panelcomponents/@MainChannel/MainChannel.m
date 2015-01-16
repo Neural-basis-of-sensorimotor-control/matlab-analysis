@@ -11,16 +11,9 @@ classdef MainChannel < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Main channel'),100);
-            obj.ui_channel = mgr.add(sc_ctrl('popupmenu',[],@channel_callback,...
+            obj.ui_channel = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.channel_callback,...
                 'visible','off'),100);
             mgr.newline(5);
-            
-            function channel_callback(~,~)
-                val = get(obj.ui_channel,'value');
-                str = get(obj.ui_channel,'string');
-                obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
-                obj.show_panels(false);
-            end
         end
         
         function initialize(obj)
@@ -35,7 +28,7 @@ classdef MainChannel < PanelComponent
             val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
             set(obj.ui_channel,'string',str,'value',val,'visible','on');
         end
-       
+        
         function updated = update(obj)
             if isempty(obj.gui.sequence) || ~obj.gui.sequence.signals.n
                 updated = false;
@@ -46,5 +39,14 @@ classdef MainChannel < PanelComponent
                 updated = true;
             end
         end
+    end
+    methods
+        function channel_callback(obj)
+            val = get(obj.ui_channel,'value');
+            str = get(obj.ui_channel,'string');
+            obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
+            obj.show_panels(false);
+        end
+        
     end
 end

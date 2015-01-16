@@ -34,7 +34,7 @@ classdef ScRemoveWaveform < ScTrigger
         %Assuming that tmin = 0 for conversion from time to discrete time
         %steps
         function calibrate(obj,v)
-            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt);
+            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt)+1;
             use_stimpos = obj.stimpos>1 & obj.stimpos+obj.width<numel(v);
             use_stimpos = use_stimpos & obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop;
             obj.stimpos = obj.stimpos(use_stimpos);
@@ -50,7 +50,7 @@ classdef ScRemoveWaveform < ScTrigger
                 obj.width = length(obj.v_median);
             else
                 [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
-                obj.interpolated_median = obj.v_interpolated_median(1:fwidth);
+                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth);
                 obj.v_median = obj.v_interpolated_median(2:end-1);
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
                 ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
@@ -119,11 +119,18 @@ classdef ScRemoveWaveform < ScTrigger
                 return
             end
             f = obj.sigm;
-            times = (0:(obj.width+1))'*obj.parent.dt;
-            pp = spaps(times,obj.v_interpolated_median,1e-6);
-            for k=1:numel(obj.stimpos)
-                pos = obj.stimpos(k) + (0:obj.width-1)';
-                v(pos) = v(pos) - f.*fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
+            if obj.apply_calibration
+                times = (0:(obj.width+1))'*obj.parent.dt;
+                pp = spaps(times,obj.v_interpolated_median,1e-6);
+                for k=1:numel(obj.stimpos)
+                    pos = obj.stimpos(k) + (0:obj.width-1)';
+                    v(pos) = v(pos) - f.*fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));%f.*obj.v_interpolated_median(2:end-1)';%
+                end
+            else
+                for k=1:numel(obj.stimpos)
+                    pos = obj.stimpos(k) + (0:obj.width-1)';
+                    v(pos) = v(pos) - f.*obj.v_median;%f.*obj.v_interpolated_median(2:end-1)';%
+                end
             end
         end
         
@@ -157,7 +164,7 @@ classdef ScRemoveWaveform < ScTrigger
         function initialize(obj,trigger)
             obj.tag = ['#' trigger.tag];
             obj.original_stimtimes = trigger.gettimes(0,inf);%round(/obj.parent.dt);
-            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt);
+            obj.stimpos = round(obj.original_stimtimes/obj.parent.dt)+1;
             obj.stimpos_offsets = obj.original_stimtimes - obj.stimpos*obj.parent.dt;
             below_one = find(obj.stimpos<1);
             above_max = find(obj.stimpos>obj.parent.N);

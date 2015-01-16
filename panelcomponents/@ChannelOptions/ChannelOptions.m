@@ -121,6 +121,9 @@ classdef ChannelOptions < PanelComponent
             obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
             obj.update_nbr_of_analog_axes();
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
     end
 end

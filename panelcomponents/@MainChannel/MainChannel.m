@@ -46,6 +46,9 @@ classdef MainChannel < PanelComponent
             str = get(obj.ui_channel,'string');
             obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
         
     end

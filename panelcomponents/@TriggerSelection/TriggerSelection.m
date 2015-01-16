@@ -62,6 +62,9 @@ classdef TriggerSelection < PanelComponent
             str = get(obj.ui_triggerparent,'string');
             obj.gui.triggerparent = obj.gui.triggerparents.get('tag',str{val});
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
         
         function trigger_callback(obj)
@@ -69,6 +72,9 @@ classdef TriggerSelection < PanelComponent
             str = get(obj.ui_trigger,'string');
             obj.gui.trigger = obj.gui.triggers.get('tag',str{val});
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
         
         function triggerparent_listener(obj)

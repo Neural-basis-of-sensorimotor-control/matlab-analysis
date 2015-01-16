@@ -21,29 +21,23 @@ classdef SubChannels < PanelComponent
         end
         
         function initialize(obj)
-%             if isempty(obj.gui.sequence)
-%                 set(obj.panel,'visible','off');
-%             else
-                str = obj.gui.sequence.signals.values('tag');
-                for k=1:obj.ui_extra_channels.n
-                    signal = obj.gui.analog_ch.get(k+1).signal;
-                    if isempty(signal)
+            str = obj.gui.sequence.signals.values('tag');
+            for k=1:obj.ui_extra_channels.n
+                signal = obj.gui.analog_ch.get(k+1).signal;
+                if isempty(signal)
+                    val = k+1;
+                else
+                    ind = find(cellfun(@(x) strcmp(x,signal.tag), str));
+                    if isempty(ind)
                         val = k+1;
                     else
-                        ind = find(cellfun(@(x) strcmp(x,signal.tag), str));
-                        if isempty(ind)
-                            val = k+1;
-                        else
-                            val = ind;
-                        end
+                        val = ind;
                     end
-                    set(obj.ui_extra_channels.get(k),'string',str,'value',val,...
-                        'visible','on');
                 end
-       %     end
-            
+                set(obj.ui_extra_channels.get(k),'string',str,'value',val,...
+                    'visible','on');
+            end
         end
-        
         
         function updated = update(obj)
             updated = true;

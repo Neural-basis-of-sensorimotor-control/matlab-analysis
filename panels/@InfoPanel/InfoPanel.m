@@ -14,12 +14,12 @@ classdef InfoPanel < UpdatablePanel
         end
         
         function setup_components(obj)   
+            obj.gui_components.add(AutomaticUpdate(obj));
             obj.gui_components.add(SaveLoadButton(obj));
             obj.gui_components.add(ExperimentOptions(obj));
             obj.gui_components.add(SequenceOptions(obj));
             obj.gui_components.add(SequenceTextBox(obj));
             obj.gui_components.add(FileCommentTextBox(obj));
-            
             obj.gui_components.add(ChannelOptions(obj));
             setup_components@UpdatablePanel(obj);
         end

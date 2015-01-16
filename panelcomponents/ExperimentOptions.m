@@ -27,7 +27,7 @@ classdef ExperimentOptions < PanelComponent
             sc_addlistener(obj.gui,'experiment',@(src,ext) obj.experiment_listener,obj.uihandle);
             sc_addlistener(obj.gui,'file',@(src,ext) obj.file_listener,obj.uihandle);
             sc_addlistener(obj.gui,'sequence',@(src,ext) obj.sequence_listener,obj.uihandle);
-
+            
         end
         
         function initialize(obj)
@@ -48,13 +48,13 @@ classdef ExperimentOptions < PanelComponent
                 set(obj.ui_experiment,'string',[],'visible','off');
             end
         end
-
+        
         function file_listener(obj,~,~)
             if ~isempty(obj.gui.file)
                 str = obj.gui.experiment.values('tag');
                 val = find(cellfun(@(x) strcmp(x,obj.gui.file.tag),str));
                 set(obj.ui_file,'string',str,'value',val,'visible','on');
-            else 
+            else
                 set(obj.ui_file,'visible','off');
             end
         end
@@ -64,7 +64,7 @@ classdef ExperimentOptions < PanelComponent
                 str = obj.gui.file.values('tag');
                 val = find(cellfun(@(x) strcmp(x,obj.gui.sequence.tag),str));
                 set(obj.ui_sequence,'string',str,'value',val,'visible','on');
-            else 
+            else
                 set(obj.ui_sequence,'visible','off');
             end
         end
@@ -74,14 +74,20 @@ classdef ExperimentOptions < PanelComponent
             val = get(obj.ui_file,'value');
             obj.gui.set_file(obj.gui.experiment.get('tag',str{val}));
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
         
-        function sequence_callback(obj)  
+        function sequence_callback(obj)
             str = get(obj.ui_sequence,'string');
             val = get(obj.ui_sequence,'value');
             obj.gui.set_sequence(obj.gui.file.get('tag',str{val}));
             obj.show_panels(false);
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
         end
-        
     end
+    
 end

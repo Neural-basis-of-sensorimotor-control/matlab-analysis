@@ -43,5 +43,11 @@ classdef PanelComponent < GuiComponent
             children = get(obj.uihandle,'children');
         end
         
+        function automatic_update(obj)
+            if obj.gui.automatic_update_on
+                obj.panel.update_panel;
+            end
+        end
+        
     end
 end

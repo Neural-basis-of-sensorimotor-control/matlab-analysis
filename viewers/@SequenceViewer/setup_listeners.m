@@ -36,16 +36,20 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
     end
 
     function sequence_listener(objh)
-        if ~isempty(objh.main_signal)
-            signal = objh.main_signal;
-            rmwfs = signal.get_rmwfs(objh.tmin,objh.tmax);
-            if ~rmwfs.n
-                objh.rmwf = [];
-            else
-                if ~isempty(objh.rmwf) && rmwfs.contains(objh.rmwf)
-                    objh.rmwf = objh.rmwf;
+        if isempty(objh.sequence)
+            objh.rmwf = [];
+        else
+            if ~isempty(objh.main_signal)
+                signal = objh.main_signal;
+                rmwfs = signal.get_rmwfs(objh.tmin,objh.tmax);
+                if ~rmwfs.n
+                    objh.rmwf = [];
                 else
-                    objh.rmwf = rmwfs.get(1);
+                    if ~isempty(objh.rmwf) && rmwfs.contains(objh.rmwf)
+                        objh.rmwf = objh.rmwf;
+                    else
+                        objh.rmwf = rmwfs.get(1);
+                    end
                 end
             end
         end

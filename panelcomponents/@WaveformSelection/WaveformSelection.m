@@ -17,8 +17,8 @@ classdef WaveformSelection < PanelComponent
             mgr.newline(20);
             obj.ui_nbr_of_spikes = mgr.add(sc_ctrl('text',[]),200);
             mgr.newline(20);
-            mgr.add(sc_ctrl('pushbutton','New waveform',@add_waveform_callback),100);
-            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove waveform',@remove_waveform_callback),100);
+            mgr.add(sc_ctrl('pushbutton','New waveform',@(~,~) add_waveform_callback(obj)),100);
+            obj.ui_remove = mgr.add(sc_ctrl('pushbutton','Remove waveform',@(~,~) remove_waveform_callback(obj)),100);
             mgr.newline(20)
             mgr.add(sc_ctrl('pushbutton','Export waveform',@(~,~) obj.export_waveform()),100);
             mgr.newline(20)
@@ -28,25 +28,27 @@ classdef WaveformSelection < PanelComponent
                         
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);
             
-            function add_waveform_callback(~,~)
-                obj.gui.create_new_waveform;
-                obj.show_panels(false);
+            function add_waveform_callback(objh)
+                objh.gui.create_new_waveform;
+                objh.show_panels(false);
+                objh.automatic_update();
             end
             
-            function remove_waveform_callback(~,~)
-                if isempty(obj.gui.waveform)
+            function remove_waveform_callback(objh)
+                if isempty(objh.gui.waveform)
                     msgbox('No waveform selected. Cannot remove');
                 else
                     answer = questdlg(sprintf('Are you sure you want to remove all thresholds belonging to waveform %s?',...
-                        obj.gui.waveform.tag));
+                        objh.gui.waveform.tag));
                     if strcmp(answer,'Yes')
-                        prev_index = obj.gui.panels.indexof(obj.panel)-1;
-                        prev_panel = obj.gui.panels.get(prev_index);
-                        obj.gui.disable_panels(prev_panel);
-                        obj.gui.main_signal.waveforms.remove(obj.gui.waveform);
-                        obj.gui.main_channel.signal = obj.gui.main_signal;
-                        obj.gui.has_unsaved_changes = true;
-                        obj.show_panels(false);
+                        prev_index = objh.gui.panels.indexof(objh.panel)-1;
+                        prev_panel = objh.gui.panels.get(prev_index);
+                        objh.gui.disable_panels(prev_panel);
+                        objh.gui.main_signal.waveforms.remove(objh.gui.waveform);
+                        objh.gui.main_channel.signal = objh.gui.main_signal;
+                        objh.gui.has_unsaved_changes = true;
+                        objh.show_panels(false);
+                        objh.automatic_update();
                     end
                 end
             end
@@ -88,6 +90,7 @@ classdef WaveformSelection < PanelComponent
             obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
             if obj.gui.main_channel.plot_raw
                 obj.show_panels(false);
+                objh.automatic_update();
             end
         end
         function export_waveform(obj)
@@ -130,12 +133,14 @@ classdef WaveformSelection < PanelComponent
             obj.gui.has_unsaved_changes = true;
             obj.gui.main_channel.signal.recalculate_all_waveforms();
             obj.gui.lock_screen(false);
+            obj.automatic_update();
         end
         function update_current_waveform(obj)
             obj.gui.lock_screen(true,'Recalculating curret waveform, might take a minute...');
             obj.gui.has_unsaved_changes = true;
             obj.gui.main_channel.signal.recalculate_waveform(obj.gui.waveform);
             obj.gui.lock_screen(false);
+            obj.automatic_update();
         end
     end
 end

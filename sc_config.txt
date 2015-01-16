@@ -1,3 +1,3 @@
-D:\MATLAB
-D:\Spike2\BNNR140319\
-BNNR_sc.mat
+D:\MATLAB\sc_mat filer\
+D:\Spike2\strt141103
+strt_sc.mat

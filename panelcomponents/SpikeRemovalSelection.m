@@ -80,7 +80,6 @@ classdef SpikeRemovalSelection < PanelComponent
                 set(obj.ui_tstart,'string',obj.gui.rmwf.tstart);
             else
                 obj.gui.rmwf.tstart = val;
-%                obj.gui.has_unsaved_changes = true;
                 obj.update_spike_removal_callback();
             end
         end
@@ -92,7 +91,6 @@ classdef SpikeRemovalSelection < PanelComponent
                 set(obj.ui_tstop,'string',obj.gui.rmwf.tstop);
             else
                 obj.gui.rmwf.tstop = val;
- %               obj.gui.has_unsaved_changes = true;
                 obj.update_spike_removal_callback();
             end
         end
@@ -121,21 +119,17 @@ classdef SpikeRemovalSelection < PanelComponent
         end
         function add_rmwf(obj,trg,width,apply_calibration)
             list = obj.gui.main_signal.remove_waveforms;
-%            str = list.values('tag');
-%             if sc_contains(str,sprintf('#%s',trg.tag));
-%                 msgbox('Waveform with same name already in list. (Possible cause: You must not give a waveform the same name as a trigger)');
-%             else
-                obj.gui.lock_screen(true,'Wait, calibrating waveform position...');
-                obj.gui.has_unsaved_changes = true;
-                obj.gui.main_channel.load_data();
-                obj.show_panels(false);
-                rmwf = ScRemoveWaveform(obj.gui.main_signal,trg,width,apply_calibration,obj.sequence.tmin,floor(obj.sequence.tmax));
-                rmwf.calibrate(obj.gui.main_channel.v);
-                list.add(rmwf);
-                obj.gui.rmwf = rmwf;
-                obj.gui.has_unsaved_changes = true;
-                obj.gui.lock_screen(false);
-  %          end
+            obj.gui.lock_screen(true,'Wait, calibrating waveform position...');
+            obj.gui.has_unsaved_changes = true;
+            obj.gui.main_channel.load_data();
+            obj.show_panels(false);
+            rmwf = ScRemoveWaveform(obj.gui.main_signal,trg,width,apply_calibration,obj.sequence.tmin,floor(obj.sequence.tmax));
+            rmwf.calibrate(obj.gui.main_channel.v);
+            list.add(rmwf);
+            obj.gui.rmwf = rmwf;
+            obj.gui.has_unsaved_changes = true;
+            obj.gui.lock_screen(false);
+            obj.automatic_update();
             
         end
         function delete_spike_removal_callback(obj)
@@ -144,8 +138,6 @@ classdef SpikeRemovalSelection < PanelComponent
                 msgbox('Cannot remove. List is empty.')
             else
                 val = get(obj.ui_list,'value');
-              % str = get(obj.ui_list,'string');
-              %  list.remove('tag',str{val});
                 rmwf = list.get(val);
                 obj.gui.main_signal.remove_waveforms.remove(rmwf);
                 list = obj.gui.main_signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);

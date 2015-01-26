@@ -24,7 +24,7 @@ uicontrol(ui_waveform_tag);
             obj.main_signal.waveforms.add(waveform);
             obj.waveform = waveform;
             obj.has_unsaved_changes = true;
-            resize_fcn = get(obj.plot_window,'ResizeFcn');
+            resize_fcn = get(obj.plot_window,'SizeChangedFcn');
             resize_fcn();
         else
             msgbox(['Waveform name must be non-empty and unique for '...

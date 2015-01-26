@@ -36,7 +36,7 @@ classdef GuiFigure < handle
         function window = get_window(obj)
             if isempty(obj.window) || ~ishandle(obj.window)
                 obj.window = figure();
-                set(obj.window,'ResizeFcn',@(~,~) obj.resize_window(),...
+                set(obj.window,'SizeChangedFcn',@(~,~) obj.resize_window(),...
                     'CloseRequestFcn',@(~,~) obj.close_request());
             end
             window = obj.window;

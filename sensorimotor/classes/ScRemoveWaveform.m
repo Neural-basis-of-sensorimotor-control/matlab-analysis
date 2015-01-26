@@ -129,7 +129,7 @@ classdef ScRemoveWaveform < ScTrigger
             else
                 for k=1:numel(obj.stimpos)
                     pos = obj.stimpos(k) + (0:obj.width-1)';
-                    v(pos) = v(pos) - f.*obj.v_median;%f.*obj.v_interpolated_median(2:end-1)';%
+                    v(pos) = v(pos) - f.*obj.v_median';%f.*obj.v_interpolated_median(2:end-1)';%
                 end
             end
         end

@@ -27,9 +27,11 @@ function gui = sc(varargin)
 %
 %   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
-
 if nargout, gui = [];    end
 addpath(genpath(fileparts(mfilename('fullpath'))));
+if ~sc_version_check
+    return
+end
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
 % close(findobj('Tag','Main Figure'));
 % if ~isempty(findobj('Tag','Main Figure'))
@@ -37,6 +39,7 @@ close all
 if ~isempty(findall(0,'type','figure'))
     return
 end
+
 args = varargin;
 
 if  exist('sc_config.txt','file') == 2

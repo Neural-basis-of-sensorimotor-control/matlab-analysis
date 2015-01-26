@@ -17,7 +17,7 @@ classdef SequenceViewer < handle
     end
     methods (Static)
         function str = version_str()
-            str = '>1.1.4';
+            str = '1.2';
         end
     end
     properties (SetObservable)
@@ -172,7 +172,7 @@ classdef SequenceViewer < handle
                 clf(obj.plot_window_pr,'reset');
                 set(obj.plot_window_pr,'ToolBar','None','MenuBar','none');
                 set(obj.plot_window_pr,'Color',[0 0 0]);
-                set(obj.plot_window_pr,'ResizeFcn',@(~,~) obj.resize_plot_window());
+                set(obj.plot_window_pr,'SizeChangedFcn',@(~,~) obj.resize_plot_window());
             end
             val = obj.plot_window_pr;
         end
@@ -182,7 +182,7 @@ classdef SequenceViewer < handle
         function val = get.histogram_window(obj)
             if isempty(obj.histogram_window_pr) || ~ishandle(obj.histogram_window_pr)
                 obj.histogram_window_pr = figure('Color',[0 0 0],...
-                    'ResizeFcn',@(~,~) obj.resize_histogram_window);
+                    'SizeChangedFcn',@(~,~) obj.resize_histogram_window);
                 if ~isempty(obj.histogram)
                     set(obj.histogram,'Parent',obj.histogram_window_pr);
                     if isempty(obj.histogram.ax) || ~ishandle(obj.histogram.ax)

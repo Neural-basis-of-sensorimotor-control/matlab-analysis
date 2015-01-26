@@ -153,6 +153,9 @@ classdef SequenceOptions < PanelComponent
             panel = uipanel('Parent',fig);
             mgr = ScLayoutManager(panel);
             mgr.newline(20);
+            mgr.add(sc_ctrl('pushbutton','Scroll down',@(~,~) scroll_down(fig,panel)),100);
+            mgr.add(sc_ctrl('pushbutton','Scroll up',@(~,~) scroll_up(fig,panel)),100);
+            mgr.newline(20);
             mgr.add(sc_ctrl('text',sprintf('File : %s',obj.file.tag),[],'fontweight','bold'),100);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Tag',[],'fontweight','bold'),100);
@@ -166,9 +169,27 @@ classdef SequenceOptions < PanelComponent
                 mgr.add(sc_ctrl('text',sprintf('%i - %i',round(seq.tmin),round(seq.tmax))),100);
                 mgr.add(sc_ctrl('text',seq.comment,[],'Value',2),200);
             end
+            mgr.newline(20);
+            mgr.add(sc_ctrl('pushbutton','Scroll down',@(~,~) scroll_down(fig,panel)),100);
+            mgr.add(sc_ctrl('pushbutton','Scroll up',@(~,~) scroll_up(fig,panel)),100);
+            setwidth(panel,400);
             mgr.trim;
-            setheight(fig,getheight(panel)+10);
-            sety(panel,5);
+            set(fig,'SizeChangedFcn',@(~,~) size_changed_fcn(fig,panel));
+            
+            function size_changed_fcn(fig,panel)
+               setx(panel,0); 
+               sety(panel,getheight(fig)-getheight(panel));
+            end
+            
+            function scroll_down(fig,panel)
+                windowheight = getheight(fig);
+                sety(panel,gety(panel)-.5*windowheight);
+            end
+            
+            function scroll_up(fig,panel)
+                windowheight = getheight(fig);
+                sety(panel,gety(panel)+.5*windowheight);
+            end
         end
         
         function print_experiment_status(obj)

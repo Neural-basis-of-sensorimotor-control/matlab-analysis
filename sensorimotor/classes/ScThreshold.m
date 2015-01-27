@@ -18,6 +18,7 @@ classdef ScThreshold < handle
     
     methods
         function obj = ScThreshold(position_offset, v_offset, lower_tolerance, upper_tolerance)
+            obj.min_isi = 1e2;
             obj.position_offset = position_offset;
             obj.v_offset = v_offset;%(ind);
             obj.lower_tolerance = lower_tolerance;%(ind);

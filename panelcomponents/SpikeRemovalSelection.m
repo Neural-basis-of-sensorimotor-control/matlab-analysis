@@ -18,7 +18,7 @@ classdef SpikeRemovalSelection < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Spike removal tool'),100);
-            obj.ui_list = mgr.add(sc_ctrl('popupmenu',[],[],'visible','off'),100);
+            obj.ui_list = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.list_callback,'visible','off'),100);
             mgr.newline(5);
             mgr.newline(20);
             mgr.add(sc_ctrl('text','tmin'),50);
@@ -71,6 +71,12 @@ classdef SpikeRemovalSelection < PanelComponent
                 set(obj.ui_nbr_of_artifacts,'visible','on','string',...
                     sprintf('Nbr of artifacts: %i\n',numel(obj.gui.rmwf.stimpos)));
             end
+        end
+        
+        function list_callback(obj)
+            list = obj.gui.main_signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
+            val = get(obj.ui_list,'value');
+            obj.gui.rmwf = list.get(val);
         end
         
         function tstart_callback(obj)
@@ -154,7 +160,9 @@ classdef SpikeRemovalSelection < PanelComponent
             obj.gui.main_channel.load_data(false);
             list = obj.gui.main_signal.remove_waveforms;
             for k=1:list.n
-                list.get(k).calibrate(obj.gui.main_channel.v);
+                rmwf = list.get(k);
+                rmwf.calibrate(obj.gui.main_channel.v);
+                obj.gui.main_channel.v = rmwf.remove_wf(obj.gui.main_channel.v);
             end
             set(obj.ui_nbr_of_artifacts,'string',...
                 sprintf('Nbr of artifacts: %i\n',numel(obj.gui.rmwf.stimpos)));

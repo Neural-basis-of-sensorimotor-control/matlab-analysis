@@ -1,5 +1,5 @@
 classdef ScCellList < handle
-    %Linked list and hash set that can hold multiple object types 
+    %Linked list and hash set that can hold multiple object types
     properties
         cell_list = {}
     end
@@ -13,13 +13,17 @@ classdef ScCellList < handle
             obj.cell_list(obj.n+1) = {val};
         end
         
-        function listobject = get(obj,index, val)    
+        function listobject = get(obj,index, val)
             if nargin==2
                 listobject = obj.cell_list{index};
             else
                 property = index;
                 index = cellfun(@(x) compare_fcn(x, property, val), obj.cell_list);
-                listobject = obj.cell_list{index};
+                if ~nnz(index)
+                    listobject = [];
+                else
+                    listobject = obj.cell_list{index};
+                end
             end
         end
         
@@ -39,7 +43,7 @@ classdef ScCellList < handle
         end
         
         function index = indexof(obj,item)
-            index = -1;   
+            index = -1;
             for k=1:obj.n
                 if obj.get(k)==item
                     index = k;
@@ -58,17 +62,25 @@ classdef ScCellList < handle
             end
         end
         
+        function object_exists = has(obj,property,val)
+            if ~obj.n
+                object_exists = false;
+            else
+                object_exists = ~isempty(obj.get(property,val));
+            end
+        end
+        
         function list = sublist(obj, pos)
             if islogical(pos)
                 if numel(pos)~=obj.n
                     error('For logical indexing, arrays must have same size');
                 end
-                pos = find(pos);    
+                pos = find(pos);
             end
             list = ScCellList();
             for k=1:numel(pos)
                 list.add(obj.get(pos(k)));
-            end 
+            end
         end
         
         function remove(obj, item)

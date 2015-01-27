@@ -38,19 +38,19 @@ classdef ScRemoveWaveform < ScTrigger
             use_stimpos = obj.stimpos>1 & obj.stimpos+obj.width<numel(v);
             use_stimpos = use_stimpos & obj.stimpos*obj.parent.dt>=obj.tstart & obj.stimpos*obj.parent.dt<obj.tstop;
             obj.stimpos = obj.stimpos(use_stimpos);
-            obj.stimpos_offsets = obj.original_stimtimes(use_stimpos) - obj.stimpos*obj.parent.dt;
+            obj.stimpos_offsets = obj.original_stimtimes(use_stimpos) - (obj.stimpos-1)*obj.parent.dt;
             if isempty(obj.stimpos)
                 obj.v_interpolated_median = [];
                 obj.v_median = [];
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
             elseif ~obj.apply_calibration
                 [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
-                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth);
+                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth)';
                 obj.v_median = obj.v_interpolated_median(2:end-1);
                 obj.width = length(obj.v_median);
             else
                 [~,obj.v_interpolated_median,fwidth] = sc_remove_artifacts(v,obj.width+2,obj.stimpos-1);
-                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth);
+                obj.v_interpolated_median = obj.v_interpolated_median(1:fwidth)';
                 obj.v_median = obj.v_interpolated_median(2:end-1);
                 obj.stimpos_offsets = zeros(size(obj.stimpos));
                 ranges = bsxfun(@plus,obj.stimpos,round([-obj.width/5 obj.width/5]));
@@ -129,7 +129,11 @@ classdef ScRemoveWaveform < ScTrigger
             else
                 for k=1:numel(obj.stimpos)
                     pos = obj.stimpos(k) + (0:obj.width-1)';
-                    v(pos) = v(pos) - f.*obj.v_median';%f.*obj.v_interpolated_median(2:end-1)';%
+                    if size(f,1)~=size(obj.v_median,1)
+                        warning('Matrix dimensions are not compatible, rearranging on the fly');
+                        obj.v_median = obj.v_median';
+                    end
+                    v(pos) = v(pos) - f.*obj.v_median;%f.*obj.v_interpolated_median(2:end-1)';%
                 end
             end
         end
@@ -165,7 +169,7 @@ classdef ScRemoveWaveform < ScTrigger
             obj.tag = ['#' trigger.tag];
             obj.original_stimtimes = trigger.gettimes(0,inf);%round(/obj.parent.dt);
             obj.stimpos = round(obj.original_stimtimes/obj.parent.dt)+1;
-            obj.stimpos_offsets = obj.original_stimtimes - obj.stimpos*obj.parent.dt;
+            obj.stimpos_offsets = obj.original_stimtimes - (obj.stimpos-1)*obj.parent.dt;
             below_one = find(obj.stimpos<1);
             above_max = find(obj.stimpos>obj.parent.N);
             obj.stimpos(below_one) = ones(size(below_one));

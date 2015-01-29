@@ -15,7 +15,7 @@ pretrigger = varargin{offset+3};
 posttrigger = varargin{offset+4};
 binwidth = varargin{offset+5};
 ksdensityargs  = varargin(offset+6:end);
-[freq, edges] = temp_neuro.sc_kernelfreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs{:});
+[freq, edges] = sc_kernelfreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs{:});
 plothandle = plot(axeshandle,edges,freq);
 if nargout>=1,  f = freq;       end
 if nargout>=2,  t=edges;        end

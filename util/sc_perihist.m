@@ -13,7 +13,7 @@ spiketimes = varargin{offset+2};
 pretrigger = varargin{offset+3};
 posttrigger = varargin{offset+4};
 binwidth  = varargin{offset+5};
-[freq, edges] = temp_neuro.sc_perifreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth);
+[freq, edges] = sc_perifreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth);
 
 plot(axeshandle,edges,freq);
 if nargout>=1,  f = freq;   end

@@ -80,7 +80,7 @@ classdef HistogramChannel < GuiAxes
                             set(obj.gui.rasterplot_window,'Name','Raster plot');
                         end
                         [t,sweep] = obj.gui.waveform.perievent(obj.gui.triggertimes, obj.gui.pretrigger, obj.gui.posttrigger);
-                        obj.rasterplot = subplot(8,1,1:4,'parent',obj.gui.rasterplot_window);
+                        obj.rasterplot = subplot(6,1,1:4,'parent',obj.gui.rasterplot_window);
                         plot(obj.rasterplot,t,sweep,'k.','markersize',1,'Color',[0 0 0]);
                         set(obj.rasterplot,'YDir','reverse')
                         set(obj.rasterplot,'FontSize',14);
@@ -88,7 +88,7 @@ classdef HistogramChannel < GuiAxes
                         ylabel(obj.rasterplot,'Sweep nbr')
                         xlim(obj.rasterplot,[obj.gui.pretrigger obj.gui.posttrigger])
                         title(obj.rasterplot,'Raster plot');
-                        histogram_axes = subplot(8,1,6,'parent',obj.gui.rasterplot_window);
+                        histogram_axes = subplot(6,1,5,'parent',obj.gui.rasterplot_window);
                         spiketimes = obj.gui.waveform.perievent(obj.gui.triggertimes,obj.gui.pretrigger,obj.gui.posttrigger);
                         if ~isempty(spiketimes)
                             edges = (obj.gui.pretrigger:obj.binwidth:obj.gui.posttrigger)';
@@ -99,7 +99,7 @@ classdef HistogramChannel < GuiAxes
                         end
                         xlim(histogram_axes,[obj.gui.pretrigger obj.gui.posttrigger])
                         title(histogram_axes,'Histogram');
-                        stimplot = subplot(8,1,8,'parent',obj.gui.rasterplot_window);
+                        stimplot = subplot(6,1,6,'parent',obj.gui.rasterplot_window);
                         hold(stimplot,'on');
                         stims = obj.gui.sequence.stims;
                         sweeps = 1:numel(obj.gui.triggertimes);

@@ -1,6 +1,6 @@
 function [f,t,h] = sc_kernelhist(varargin)
-%SC_KERNELHIST(stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
-%SC_KERNELHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
+%SC_KERNELHIST(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs)
+%SC_KERNELHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs)
 %SC_KERNELHIST(...,ksdensityargs)
 if ishandle(varargin{1})
     axeshandle = varargin{1};

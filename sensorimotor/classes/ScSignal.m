@@ -54,7 +54,15 @@ classdef ScSignal < ScChannel
                     msgbox('Error: Could not find channel %s in file %s\n',obj.channelname,obj.parent.filepath);
                     return
                 end
-                d = load(obj.parent.filepath,obj.channelname);
+                try
+                    d = load(obj.parent.filepath,obj.channelname);
+                catch exc
+                    warning('Could not read file, probably because it was too large for available RAM. Matlab error: %s\n',exc.message);
+                    obj.dt = 0;
+                    obj.N = 0;
+                    v_raw = [];
+                    return
+                end
                 obj.dt = d.(obj.channelname).interval;
                 obj.N = d.(obj.channelname).length;%numel(obj.v_raw);
                 v_raw = d.(obj.channelname).values;%(t>tmin & t<tmax);

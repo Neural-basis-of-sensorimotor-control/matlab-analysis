@@ -3,6 +3,9 @@ function gui = sc(varargin)
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
 %   
+%   SC -ADDPATH update current path (necessary for using other functions
+%   that also utilizes the ScExperiment classes
+%
 %   SC -LOADNEW suppress autoloading of previous experiment file
 %
 %   SC -VERSION get versioning number
@@ -25,10 +28,16 @@ function gui = sc(varargin)
 %   SC -WHAT print all available information about experiment files in
 %   chosen directory
 %
-%   Copyright 2014 Neural Basis of Sensorimotor Control, Lund University
+%   Copyright 2015 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 if nargout, gui = [];    end
 addpath(genpath(fileparts(mfilename('fullpath'))));
+if numel(varargin) && strcmpi(varargin{1},'-addpath')
+    return
+elseif numel(varargin) && strcmpi(varargin{1},'-eeg')
+    gui = Eeg;
+    return
+end
 if ~sc_version_check
     return
 end
@@ -75,9 +84,8 @@ if ~numel(args) || strcmpi(args{1},'-loadnew')
     end
 end
 
-if strcmpi(args{1},'-addpath')
-    return
-elseif strcmpi(args{1},'-help')
+
+if strcmpi(args{1},'-help')
     help(mfilename)
     return
 elseif strcmpi(args{1},'-what')
@@ -108,12 +116,6 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     for i=1:numel(rawdatafiles)
         fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
         file = ScFile(experiment, rawdatafiles{i});
-%         if strcmpi(args{1},'-newsp2')
-%             %Look for 'Pontus-style' files with spikes detected in Spike2 
-%             [~,name] = fileparts(rawdatafiles{i});
-%             spikefiles = cellfun(@(x) cell2mat(regexp(x,['^' name '_\w*\.mat.{0,0}'],'match')), rawdatafiles, 'UniformOutput',false);
-%             file.spikefiles = spikefiles(cellfun(@(x) ~isempty(x), spikefiles));
-%         end
         file.init();
         experiment.add(file);
     end

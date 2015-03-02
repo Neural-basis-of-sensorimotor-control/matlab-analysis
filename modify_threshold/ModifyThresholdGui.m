@@ -1,7 +1,7 @@
 classdef ModifyThresholdGui < GuiFigure
     methods (Static)
-        function modify(threshold,v,triggerpos,sweepnbr)
-            m = ModifyThresholdGui(threshold,v,triggerpos,sweepnbr);
+        function modify(root, parent_waveform, threshold,v,triggerpos,sweepnbr)
+            m = ModifyThresholdGui(root, parent_waveform, threshold,v,triggerpos,sweepnbr);
             m.show();
         end
     end
@@ -12,6 +12,8 @@ classdef ModifyThresholdGui < GuiFigure
         has_unsaved_changes
         sweep_gui
         
+        root
+        parent_waveform
         original_threshold
         threshold
         v
@@ -44,11 +46,13 @@ classdef ModifyThresholdGui < GuiFigure
     %%%% PUBLIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        function obj = ModifyThresholdGui(threshold,v,triggerpos,sweepnbr)
+        function obj = ModifyThresholdGui(root, parent_waveform, threshold,v,triggerpos,sweepnbr)
             obj@GuiFigure();
+            obj.root = root;
             obj.has_unsaved_changes = false;
             obj.original_threshold = threshold;
             obj.threshold = threshold.create_copy();
+            obj.parent_waveform = parent_waveform;
             obj.v = v;
             obj.sweep_gui = SweepThresholdGui(obj,round(triggerpos));
             obj.sweepnbr = sweepnbr;
@@ -320,9 +324,17 @@ classdef ModifyThresholdGui < GuiFigure
                 end
                 switch answ
                     case 'Yes'
-                        obj.original_threshold = obj.threshold.create_copy();
+                        % Update the old threshold with the modified one
+                        obj.parent_waveform.update(obj.original_threshold, obj.threshold);
                         delete(obj.window);
                         close(obj.sweep_gui.get_window());
+                        % Is is possible to use the function in
+                        % WaveformSelection.m?
+                        obj.root.gui.lock_screen(true,'Recalculating curret waveform, might take a minute...');
+                        obj.root.gui.has_unsaved_changes = true;
+                        obj.root.gui.main_channel.signal.recalculate_waveform(obj.root.gui.waveform);
+                        obj.root.gui.lock_screen(false);
+                        obj.root.automatic_update();
                     case 'No'
                         delete(obj.window);
                         close(obj.sweep_gui.get_window());

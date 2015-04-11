@@ -1,7 +1,7 @@
 classdef ModifyThresholdGui < GuiFigure
     methods (Static)
-        function modify(threshold,v,triggerpos,sweepnbr)
-            m = ModifyThresholdGui(threshold,v,triggerpos,sweepnbr);
+        function modify(root_panel_component, parent_waveform, threshold,v,triggerpos,sweepnbr)
+            m = ModifyThresholdGui(root_panel_component, parent_waveform, threshold,v,triggerpos,sweepnbr);
             m.show();
         end
     end
@@ -12,6 +12,8 @@ classdef ModifyThresholdGui < GuiFigure
         has_unsaved_changes
         sweep_gui
         
+        root_panel_component
+        parent_waveform
         original_threshold
         threshold
         v
@@ -44,11 +46,13 @@ classdef ModifyThresholdGui < GuiFigure
     %%%% PUBLIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
-        function obj = ModifyThresholdGui(threshold,v,triggerpos,sweepnbr)
+        function obj = ModifyThresholdGui(root_panel_component, parent_waveform, threshold,v,triggerpos,sweepnbr)
             obj@GuiFigure();
+            obj.root_panel_component = root_panel_component;
             obj.has_unsaved_changes = false;
             obj.original_threshold = threshold;
             obj.threshold = threshold.create_copy();
+            obj.parent_waveform = parent_waveform;
             obj.v = v;
             obj.sweep_gui = SweepThresholdGui(obj,round(triggerpos));
             obj.sweepnbr = sweepnbr;
@@ -320,9 +324,11 @@ classdef ModifyThresholdGui < GuiFigure
                 end
                 switch answ
                     case 'Yes'
-                        obj.original_threshold = obj.threshold.create_copy();
+                        % Update the old threshold with the modified one
+                        obj.parent_waveform.update(obj.original_threshold, obj.threshold);
                         delete(obj.window);
                         close(obj.sweep_gui.get_window());
+                        obj.root_panel_component.update_current_waveform();
                     case 'No'
                         delete(obj.window);
                         close(obj.sweep_gui.get_window());

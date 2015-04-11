@@ -34,6 +34,19 @@ classdef ScList < handle
             end 
         end
         
+        %If list contains reference to item, then replace item
+        %by new_item in list. Otherwise append newitem to list		
+        function update(obj, item, new_item)
+            % if object exists then update
+            if obj.contains(item)
+                index = obj.indexof(item);
+                obj.list(index) = new_item;
+            else
+                % if item does not exists then add it
+                obj.add(new_item);
+            end
+        end
+        
         %if nargin == 2
         %   index   index in list
         %if nargin == 3

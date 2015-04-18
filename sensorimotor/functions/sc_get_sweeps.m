@@ -1,4 +1,5 @@
-function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, posttrigger, dt)
+function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, ...
+    posttrigger, dt)
 if tmin>0,  warning('tmin > 0 in sc_get_sweeps'),   end
 if isempty(triggertimes)
     sweeps = [];    time = [];    return;

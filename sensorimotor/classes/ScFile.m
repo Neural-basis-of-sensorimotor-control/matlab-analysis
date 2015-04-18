@@ -86,7 +86,7 @@ classdef ScFile < ScList
                             return;
                 end
                 triggerparent.triggers.add(ScSpikeTrain('trg',triggertimes));
-                obj.stims.add(triggerparent);
+                obj.stims.update(triggerparent, triggerparent);
                 %Skip until start of sequence times
                 while ~end_of_file(line) && ~start_of_sequence(line)
                     line = fgetl(fid);
@@ -132,7 +132,7 @@ classdef ScFile < ScList
                         fclose(fid);
                         msgbox(['Could not find file ''' obj.tag '''in protocol file'])
                         return
-                    elseif strcmp(line, ['¤¤' obj.tag])
+                    elseif strcmp(line, ['ï¿½ï¿½' obj.tag])
                         break;
                     end
                 end
@@ -461,7 +461,7 @@ end
 
 %Return true if end of protocol file is reached
 function [stopParsing] = checkForEof(line)
-stopParsing = ~isempty(line) && ((isnumeric(line) && line == -1) || (length(line) > 2 && strcmp(line(1:2),'¤¤')));
+stopParsing = ~isempty(line) && ((isnumeric(line) && line == -1) || (length(line) > 2 && strcmp(line(1:2),'ï¿½ï¿½')));
 end
 
 %Return true if line contains a new event

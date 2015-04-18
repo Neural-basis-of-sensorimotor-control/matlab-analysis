@@ -1,4 +1,5 @@
-function [frequency, bintimes] = sc_kernelfreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,varargin)
+function [frequency, bintimes] = sc_kernelfreq(stimtimes,spiketimes,pretrigger,...
+    posttrigger,binwidth,varargin)
 times = sc_perieventtimes(stimtimes,spiketimes,pretrigger,posttrigger);
 bintimes = pretrigger:binwidth:posttrigger;
 if ~isempty(times)

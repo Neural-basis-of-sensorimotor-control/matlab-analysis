@@ -9,10 +9,17 @@ classdef ScCellList < handle
     end
     
     methods
+        
         function add(obj, val)
             obj.cell_list(obj.n+1) = {val};
         end
         
+        
+        %if nargin == 2
+        %   index   index in list
+        %if nargin == 3
+        %   index   property name (string)
+        %   val     desired value of property
         function listobject = get(obj,index, val)
             if nargin==2
                 listobject = obj.cell_list{index};
@@ -27,10 +34,62 @@ classdef ScCellList < handle
             end
         end
         
-        function n = get.n(obj)
-            n = numel(obj.cell_list);
+        
+        %if nargin == 2
+        %   item   index in list
+        %if nargin == 3
+        %   item    property name (string)
+        %   val     desired value of property
+        function remove(obj, item, value)
+            if nargin == 2
+                index = obj.indexof(item);
+                obj.cell_list(index) = [];
+            else
+                prop = item;
+                index = obj.indexof(prop,value);
+                obj.remove(index);
+            end
         end
         
+        
+        %If list contains reference to item, then replace item
+        %by new_item in list. Otherwise append newitem to list		
+        function update(obj, item, new_item)
+            % if object exists then update
+            if obj.contains(item)
+                index = obj.indexof(item);
+                obj.list(index) = {new_item};
+            else
+                % if item does not exists then add it
+                obj.add(new_item);
+            end
+        end
+        
+        
+        %Return true if there is an object with property property and value
+        %val
+        function object_exists = has(obj,property,val)
+            if ~obj.n
+                object_exists = false;
+            else
+                object_exists = ~isempty(obj.get(property,val));
+            end
+        end
+        
+        
+        %Return true if there is a reference to item in list
+        function exists = contains(obj,item)
+            exists = false;
+            for k = obj.cell_list
+                if item == k{1}
+                    exists = true;
+                    return
+                end
+            end
+        end
+        
+        
+        %get all values of a specific property, as a cell array
         function vals = values(obj,property)
             if ~obj.n
                 vals = {};
@@ -42,33 +101,35 @@ classdef ScCellList < handle
             end
         end
         
-        function index = indexof(obj,item)
+        %If nargin == 2
+        %return index of item in list
+        %if nargin == 3
+        %return index of item with property item and value value
+        function index = indexof(obj,item,value)
             index = -1;
-            for k=1:obj.n
-                if obj.get(k)==item
-                    index = k;
-                    return
+            if nargin==2
+                for k=1:obj.n
+                    if obj.get(k)==item
+                        index = k;
+                        return
+                    end
                 end
-            end
-        end
-        
-        function exists = contains(obj,item)
-            exists = false;
-            for k = obj.cell_list
-                if item == k{1}
-                    exists = true;
-                    return
-                end
-            end
-        end
-        
-        function object_exists = has(obj,property,val)
-            if ~obj.n
-                object_exists = false;
             else
-                object_exists = ~isempty(obj.get(property,val));
+                prop = item;
+                for k=1:obj.n
+                    if compare_fcn(value,obj.get(k).(prop))
+                        index = k;
+                        return
+                    end
+                end
             end
         end
+        
+        
+        function n = get.n(obj)
+            n = numel(obj.cell_list);
+        end
+        
         
         function list = sublist(obj, pos)
             if islogical(pos)
@@ -83,10 +144,7 @@ classdef ScCellList < handle
             end
         end
         
-        function remove(obj, item)
-            index = obj.indexof(item);
-            obj.cell_list(index) = [];
-        end
+
         
         %Add item to list att position index
         function insert_at(obj, index, item)

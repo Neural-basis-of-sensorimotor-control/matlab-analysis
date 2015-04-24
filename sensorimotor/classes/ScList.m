@@ -1,5 +1,5 @@
 classdef ScList < handle
-    %List structture with extra features. Can only contain a single type of
+    %List structure with extra features. Can only contain a single type of
     %objects. For a list of arbitray objects, see ScCellList
     properties (SetObservable)
         list
@@ -20,32 +20,6 @@ classdef ScList < handle
             end
         end
         
-        function remove(obj, item, value)
-            if nargin==2
-                index = obj.indexof(item);
-                if index==-1
-                    index = item;
-                end
-                obj.list(index) = [];
-            else
-                prop = item;
-                index = obj.indexof(prop,value);
-                obj.remove(index);
-            end 
-        end
-        
-        %If list contains reference to item, then replace item
-        %by new_item in list. Otherwise append newitem to list		
-        function update(obj, item, new_item)
-            % if object exists then update
-            if obj.contains(item)
-                index = obj.indexof(item);
-                obj.list(index) = new_item;
-            else
-                % if item does not exists then add it
-                obj.add(new_item);
-            end
-        end
         
         %if nargin == 2
         %   index   index in list
@@ -61,6 +35,36 @@ classdef ScList < handle
                 listobject = obj.list(index);
             end
         end
+        
+        function remove(obj, item, value)
+            if nargin==2
+                index = obj.indexof(item);
+                if index==-1
+                    index = item;
+                end
+                obj.list(index) = [];
+            else
+                prop = item;
+                index = obj.indexof(prop,value);
+                obj.remove(index);
+            end 
+        end
+        
+        
+        %If list contains reference to item, then replace item
+        %by new_item in list. Otherwise append newitem to list		
+        function update(obj, item, new_item)
+            % if object exists then update
+            if obj.contains(item)
+                index = obj.indexof(item);
+                obj.list(index) = new_item;
+            else
+                % if item does not exists then add it
+                obj.add(new_item);
+            end
+        end
+        
+        
         
         function object_exists = has(obj,property,val)
             if ~obj.n
@@ -117,6 +121,13 @@ classdef ScList < handle
             val = cell(obj.n,1);
             for k=1:obj.n
                 val(k) = {obj.get(k)};
+            end
+        end
+        
+        function newobj = convert_to_sc_cell_list(obj)
+            newobj = ScCellList;
+            for k=1:obj.n
+                newobj.add(obj.get(k));
             end
         end
     end

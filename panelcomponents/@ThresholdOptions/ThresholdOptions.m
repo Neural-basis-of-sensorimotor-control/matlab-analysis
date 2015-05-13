@@ -1,4 +1,4 @@
-classdef ThresholdOptions < PanelComponent
+classdef ThresholdOptions < AbstractWaveformPanelComponent
     properties
         ui_define_thresholds
         ui_remove_thresholds
@@ -17,7 +17,7 @@ classdef ThresholdOptions < PanelComponent
     
     methods
         function obj = ThresholdOptions(panel)
-            obj@PanelComponent(panel);
+            obj@AbstractWaveformPanelComponent(panel);
             sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,panel);
         end
         
@@ -259,7 +259,7 @@ classdef ThresholdOptions < PanelComponent
             black = sum(colors,2) < eps;
             colors(black,:) = ones(nnz(black),3);
             for i=1:size(v_remove,2)
-                [~,wfindex] = obj.gui.waveform.match_v(v_remove(:,i));
+                [~,wfindex] = obj.gui.waveform.match_v(v_remove(:,i),'index');
                 plot(obj.gui.main_axes,time_remove,v_remove(:,i),'Color',colors(end,:));
                 indexes = unique(wfindex);
                 indexes = indexes(indexes>0);
@@ -285,7 +285,7 @@ classdef ThresholdOptions < PanelComponent
         function btn_down_fcn_modify_threshold(obj,index,wfindex,ind,time_remove,v_remove,colors)
             sc_piecewiseplot(obj.gui.main_axes,time_remove(wfindex==index),v_remove(wfindex==index,ind),'Color',colors(index,:),...
                 'LineWidth',4);
-            option = questdlg('Modify selected threshold? Remember to re-clasify waveforms when you are done.','Modify',...
+            option = questdlg('Modify selected threshold?','Modify',...
                 'Yes','Cancel','Yes');
             if isempty(option), option = 'No';  end
             switch option

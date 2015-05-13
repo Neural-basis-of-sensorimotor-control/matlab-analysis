@@ -41,12 +41,16 @@ classdef ScWaveform < ScTrigger & ScList
             obj.imported_spiketimes = [];
         end
         
-        %match waveforms in ScThreshold list to Nx1 vector v
-        %Returns:
+        % match waveforms in ScThreshold list to Nx1 vector v
+        % Input:
+        %   obj         class object handle
+        %   v           Nx1 vector with analog signal
+        %   outputType  'logical' (default), or 'indexes'
+        % Returns:
         %   - spikepos      = positions in w with a match
         %   - spikearea     = Nx1 logical array with true for all points in v
         %   that are covered by a waveform
-        function [spikepos,spikearea] = match_v(obj,v)
+        function [spikepos, spikearea] = match_v(obj,v, outputType)
             if nargout<=1
                 if ~obj.n
                     spikepos = [];
@@ -61,16 +65,33 @@ classdef ScWaveform < ScTrigger & ScList
                     spikepos = cell2mat(spikes);
                 end
             else
-                spikepos = nan(ceil(numel(v)/100),1);
-                pos = 0;
-                spikearea = false(size(v));
-                for k=1:obj.n
-                    [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v);
-                    spikearea = spikearea | wfarea_temp;
-                    spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
-                    pos = pos+numel(spikepos_temp);
+                if nargin<3,    outputType = 'logical'; end
+                if strcmp(outputType,'logical')
+                    spikepos = nan(ceil(numel(v)/100),1);
+                    pos = 0;
+                    spikearea = false(size(v));
+                    for k=1:obj.n
+                        [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v);
+                        spikearea = spikearea | wfarea_temp;
+                        spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
+                        pos = pos+numel(spikepos_temp);
+                    end
+                    spikepos = spikepos(1:pos);
+                elseif strcmpi(outputType,'index')
+                    spikepos = nan(ceil(numel(v)/100),1);
+                    pos = 0;
+                    spikearea = zeros(size(v));
+                    for k=1:obj.n
+                        [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v);
+                        spikearea(wfarea_temp) = k*ones(nnz(wfarea_temp),1);
+                        spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
+                        pos = pos+numel(spikepos_temp);
+                    end
+                    spikepos = spikepos(1:pos);
+                else
+                    error('Illegal value of input parameter outputType: ''%s''',...
+                        outputType)
                 end
-                spikepos = spikepos(1:pos);
             end
         end
         

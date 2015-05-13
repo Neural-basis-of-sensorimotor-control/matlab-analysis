@@ -1,12 +1,12 @@
-classdef WaveformSelection < PanelComponent
+classdef WaveformSelection < AbstractWaveformPanelComponent
     properties
         ui_waveforms
         ui_remove
         ui_nbr_of_spikes
     end
     methods
-        function obj = WaveformSelection(panel)
-            obj@PanelComponent(panel);
+        function obj = WaveformSelection(varargin)
+            obj@AbstractWaveformPanelComponent(varargin{:});
         end
         
         function populate(obj,mgr)
@@ -38,7 +38,7 @@ classdef WaveformSelection < PanelComponent
                 if isempty(objh.gui.waveform)
                     msgbox('No waveform selected. Cannot remove');
                 else
-                    answer = questdlg(sprintf('Are you sure you want to remove all thresholds belonging to waveform %s?',...
+                    answer = questdlg(sprintf('Are you sure you want to remove waveform %s including all its thresholds (=templates)?',...
                         objh.gui.waveform.tag));
                     if strcmp(answer,'Yes')
                         prev_index = objh.gui.panels.indexof(objh.panel)-1;
@@ -126,21 +126,6 @@ classdef WaveformSelection < PanelComponent
                     end
                 end
             end
-        end
-        function update_all_waveforms(obj)
-            obj.gui.lock_screen(true,'Recalculating all waveforms, might take a minute...');
-            obj.show_panels(false);
-            obj.gui.has_unsaved_changes = true;
-            obj.gui.main_channel.signal.recalculate_all_waveforms();
-            obj.gui.lock_screen(false);
-            obj.automatic_update();
-        end
-        function update_current_waveform(obj)
-            obj.gui.lock_screen(true,'Recalculating curret waveform, might take a minute...');
-            obj.gui.has_unsaved_changes = true;
-            obj.gui.main_channel.signal.recalculate_waveform(obj.gui.waveform);
-            obj.gui.lock_screen(false);
-            obj.automatic_update();
         end
     end
 end

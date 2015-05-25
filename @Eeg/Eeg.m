@@ -49,10 +49,13 @@ classdef Eeg < handle
         eegtag = 'A_EEG'
     end
     methods
-        function obj = Eeg()
+        function obj = Eeg(filename)
             sc('-addpath');
-            [fname,pname] = uigetfile('_sc.mat');
-            obj.exp_path = fullfile(pname,fname);
+            if ~nargin
+                [fname,pname] = uigetfile('_sc.mat');
+                filename = fullfile(pname,fname);
+            end
+            obj.exp_path = filename;
             if isnumeric(obj.exp_path)
                 fprintf('No experiment chosen, cannot proceed\n');
             end

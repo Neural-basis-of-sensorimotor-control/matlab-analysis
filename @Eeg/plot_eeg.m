@@ -13,7 +13,8 @@ if ~eeg_classification_on
     eeg_classification=nan;
 end
 
-eegtag = 'EEG_classification';
+eegtag1 = 'EEG_classification';
+eegtag2 = 'A_EEG';
 d = load(obj.exp_path);
 experiment = d.obj;
 clear d;
@@ -21,11 +22,14 @@ for k=1:experiment.n
     file = experiment.get(k);
     file.sc_loadtimes();
     channels = file.signals;
-    if channels.has('tag',eegtag)
-        plot_eeg2(file,'patch',eegtag,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
-        plot_eeg2(file,'patch2',eegtag,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
+    if channels.has('tag',eegtag1)
+        plot_eeg2(file,'patch',eegtag1,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
+        plot_eeg2(file,'patch2',eegtag1,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
+    elseif channels.has('tag',eegtag2)
+        plot_eeg2(file,'patch',eegtag2,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
+        plot_eeg2(file,'patch2',eegtag2,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification);
     else
-        fprintf('File ''%s'' does not contain EEG channel ''%s''\n',file.tag,eegtag);
+        fprintf('File ''%s'' does not contain EEG channel ''%s'' or ''%s''\n',file.tag,eegtag1,eegtag2);
     end
     file.sc_clear();
 end
@@ -142,6 +146,11 @@ end
                     title(h2,'-2.5 <= EEG <= 2.5');
                     title(h3,'EEG > 2.5 <= 7.5');
                     title(h4,'EEG > 7.5');
+                end
+                handles = {h1 h2 h3 h4};
+                ymax = max(cellfun(@(x) max(ylim(x)), handles));
+                for mm=1:length(handles)
+                    ylim(handles{mm},[0 ymax])
                 end
             end
             %    print('-djpeg100',figname)

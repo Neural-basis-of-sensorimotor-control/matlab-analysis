@@ -16,6 +16,9 @@ dlgmgr.add(sc_ctrl('text','Trigger'),100);
 ui_trigger = dlgmgr.add(sc_ctrl('popupmenu',triggers.values('tag'),@triggers_callback),100);
 dlgmgr.newline(5)
 dlgmgr.newline(20);
+dlgmgr.add(sc_ctrl('text','Offset:'));
+ui_offset = dlgmgr.add(sc_ctrl('edit','0'));
+dlgmgr.newline(20);
 ui_nbr_of_times = dlgmgr.add(sc_ctrl('text',[]),200);
 dlgmgr.newline(20);
 dlgmgr.add(getuitext('Name:'),40);
@@ -29,12 +32,17 @@ uicontrol(ui_amplitude_tag);
     function add_amplitude_callback(~,~)
         tag = deblank(get(ui_amplitude_tag,'string'));
         ampls = obj.main_signal.amplitudes;
+        offset = str2double(get(ui_offset,'String'));
+        if ~isnumeric(offset)
+          msgbox('Invalid offset value')
+          return;
+        end
         if ~isempty(tag) && ~sc_contains(ampls.values('tag'),tag)
             str = get(ui_trigger,'string');
             val = get(ui_trigger,'value');
             trigger = triggers.get('tag',str{val});
-            ampl = ScAmplitude(obj.sequence,obj.main_signal,trigger,...
-                {'t1','v1','t2','v2'},tag);
+            ampl = ScAmplitude(obj.sequence, obj.main_signal, trigger,...
+                {'t1','v1','t2','v2'}, tag, offset);
             ampls.add(ampl);
             obj.set_amplitude(ampl);
             obj.has_unsaved_changes = true;

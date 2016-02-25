@@ -12,10 +12,10 @@ classdef ScAmplitude < handle
     end
     
     methods
-        function obj = ScAmplitude(parent_sequence, parent_signal, trigger, labels, tag)
+        function obj = ScAmplitude(parent_sequence, parent_signal, trigger, labels, tag, offset)
             obj.labels = labels;
             obj.parent_signal = parent_signal;
-            obj.stimtimes = trigger.gettimes(parent_sequence.tmin,parent_sequence.tmax);
+            obj.stimtimes = trigger.gettimes(parent_sequence.tmin,parent_sequence.tmax) + offset;
             obj.data = nan(numel(obj.stimtimes),numel(labels));
             obj.tag = tag;
         end

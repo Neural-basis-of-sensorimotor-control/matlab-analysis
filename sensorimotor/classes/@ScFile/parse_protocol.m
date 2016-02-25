@@ -84,7 +84,7 @@ else
             fclose(fid);
             msgbox(['Could not find file ''' obj.tag '''in protocol file'])
             return
-        elseif strcmp(line, ['��' obj.tag])
+        elseif strcmp(line, ['¤¤' obj.tag])
             break;
         end
     end

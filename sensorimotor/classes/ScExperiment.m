@@ -10,6 +10,13 @@ classdef ScExperiment < ScList
     properties (Dependent)
         abs_save_path
     end
+
+  methods (Static)
+    function expr = load_file(filepath)
+      d = load(filepath);
+      expr = d.obj;
+    end
+  end
     
     methods
         function obj = ScExperiment(varargin)
@@ -23,6 +30,10 @@ classdef ScExperiment < ScList
         function saved = sc_save(obj, showdialog)
             if nargin<2,    showdialog = true;  end
             saved = false;
+            if ischar(showdialog)
+              obj.save_name = showdialog;
+              showdialog = true;
+            end
             if showdialog || isempty(obj.abs_save_path) || exist(obj.abs_save_path,'file') ~= 2
                 [fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
                     obj.abs_save_path);
@@ -168,6 +179,13 @@ classdef ScExperiment < ScList
             end
         end
         
+        function set.abs_save_path(obj, val)
+          val = which(val);
+          [pname, fname, ext] = fileparts(val);
+          obj.sc_dir = pname;
+          obj.save_name = [fname ext];
+        end
+        
         function val = get.abs_save_path(obj)
             if isempty(obj.save_name)
                 val = [];
@@ -176,4 +194,12 @@ classdef ScExperiment < ScList
             end
         end
     end
+    
+%     methods (Static)
+%         function obj = loadobj(s)
+%             s.fdir = sc_update_dir(s.fdir, get_raw_data_dir, 'dir');
+%             s.sc_dir = fileparts(sc_update_dir([s.sc_dir filesep s.save_name], get_sc_data_dir, 'file'));
+%             obj = s;
+%         end
+%     end
 end

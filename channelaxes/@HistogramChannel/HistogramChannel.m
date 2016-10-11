@@ -11,7 +11,7 @@ classdef HistogramChannel < GuiAxes
     methods
         function obj = HistogramChannel(gui)
             obj@GuiAxes(gui);
-            setheight(obj.ax,250);
+            setheight(obj.ax, 250);
         end
         
         function clear_data(~), end

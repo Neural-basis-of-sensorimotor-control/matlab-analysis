@@ -128,6 +128,10 @@ classdef ScSignal < ScChannel
         function t = get.t(obj)
             t = (0:obj.N-1)'*obj.dt;
         end
+        
+        function sc_save(obj, varargin)
+          obj.parent.sc_save(varargin{:});
+        end
     end
     methods (Static)
         function obj = loadobj(a)

@@ -9,8 +9,9 @@ classdef AmplitudeSelection < PanelComponent
         function populate(obj,mgr)
             mgr.newline(20);
             mgr.add(sc_ctrl('text','Amplitude'),100);
+            mgr.newline(20);
             obj.ui_amplitude = mgr.add(sc_ctrl('popupmenu',[],...
-                @(~,~) obj.amplitude_callback,'visible','off'),100);
+                @(~,~) obj.amplitude_callback,'visible','off'),200);
             mgr.newline(5);
             mgr.newline(20);
             mgr.add(sc_ctrl('pushbutton','Add new amplitude',@(~,~) obj.create_new_amplitude),200);

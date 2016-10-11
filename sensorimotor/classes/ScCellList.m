@@ -6,6 +6,7 @@ classdef ScCellList < handle
     
     properties (Dependent)
         n
+        list
     end
     
     methods
@@ -47,7 +48,7 @@ classdef ScCellList < handle
             else
                 prop = item;
                 index = obj.indexof(prop,value);
-                obj.remove(index);
+                obj.cell_list(index) = [];
             end
         end
         
@@ -117,7 +118,7 @@ classdef ScCellList < handle
             else
                 prop = item;
                 for k=1:obj.n
-                    if compare_fcn(value,obj.get(k).(prop))
+                    if compare_fcn(obj.get(k), prop, value)
                         index = k;
                         return
                     end
@@ -171,6 +172,17 @@ classdef ScCellList < handle
             end
             obj.cell_list = obj.cell_list(1:obj.n-1);
         end
+        
+        function val = get.list(obj)
+          
+          val = [];
+          
+          for i=1:obj.n
+            val = [val; obj.get(i)]; %#ok<AGROW>
+          end
+          
+        end
+          
     end
 end
 

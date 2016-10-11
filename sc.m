@@ -2,11 +2,13 @@ function gui = sc(varargin)
 %SC View Spike2 or binary files from experiment
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
-%   
+%
 %   SC -ADDPATH update current path (necessary for using other functions
 %   that also utilizes the ScExperiment classes
 %
 %   SC -LOADNEW suppress autoloading of previous experiment file
+%
+%   SC -AMPLITUDE load program in amplitude analysis mode
 %
 %   SC -VERSION get versioning number
 %
@@ -33,132 +35,141 @@ function gui = sc(varargin)
 if nargout, gui = [];    end
 addpath(genpath(fileparts(mfilename('fullpath'))));
 if numel(varargin) && strcmpi(varargin{1},'-addpath')
-    return
+  return
 elseif numel(varargin) && strcmpi(varargin{1},'-eeg')
-    gui = Eeg;
-    return
+  gui = Eeg;
+  return
 end
 if ~sc_version_check
-    return
+  return
 end
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
 % close(findobj('Tag','Main Figure'));
 % if ~isempty(findobj('Tag','Main Figure'))
 close all
 if ~isempty(findall(0,'type','figure'))
-    return
+  return
 end
 
 args = varargin;
 
 if  exist('sc_config.txt','file') == 2
-    fid = fopen('sc_config.txt');
-    sc_file_folder = fgetl(fid);
-    raw_data_folder = fgetl(fid);
-    if ~numel(args)
-        str = fgetl(fid);
-        if ischar(str)
-            filename = fullfile(sc_file_folder,str);
-            if exist(filename,'file') == 2
-                args = {filename};
-            end
-        end
+  fid = fopen('sc_config.txt');
+  sc_file_folder = fgetl(fid);
+  raw_data_folder = fgetl(fid);
+  if ~numel(args)
+    str = fgetl(fid);
+    if ischar(str)
+      filename = fullfile(sc_file_folder,str);
+      if exist(filename,'file') == 2
+        args = {filename};
+      end
     end
-    fclose(fid);
-    if ~ischar(sc_file_folder), sc_file_folder = [];    end
-    if ~ischar(raw_data_folder),   raw_data_folder = [];      end
+  end
+  fclose(fid);
+  if ~ischar(sc_file_folder), sc_file_folder = [];    end
+  if ~ischar(raw_data_folder),   raw_data_folder = [];      end
 else
-    sc_file_folder = [];
-    raw_data_folder = [];
+  sc_file_folder = [];
+  raw_data_folder = [];
 end
 
 if ~numel(args) || strcmpi(args{1},'-loadnew')
-    %Force program to neglect sc_config.txt
-    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',sc_file_folder);
-    filename = fullfile(pname,fname);
-    if exist(filename,'file') == 2
-        args = {filename};
-    else
-        fprintf('Could not detect file\n');
-        return
-    end
+  %Force program to neglect sc_config.txt
+  [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',sc_file_folder);
+  filename = fullfile(pname,fname);
+  if exist(filename,'file') == 2
+    args = {filename};
+  else
+    fprintf('Could not detect file\n');
+    return
+  end
 end
 
 
 if strcmpi(args{1},'-help')
-    help(mfilename)
-    return
+  help(mfilename)
+  return
 elseif strcmpi(args{1},'-what')
-    directory = uigetdir(sc_file_folder,'Select file directory');
-    if ~isnumeric(directory)
-        w = what(directory);
-        clc
-        for k=1:numel(w.mat)
-            f = w.mat{k};
-            if numel(f)>7 && strcmpi(f(end-6:end),'_sc.mat')
-                d = load([directory filesep f]);
-                d.obj.print_status();
-            end
-        end
+  directory = uigetdir(sc_file_folder,'Select file directory');
+  if ~isnumeric(directory)
+    w = what(directory);
+    clc
+    for k=1:numel(w.mat)
+      f = w.mat{k};
+      if numel(f)>7 && strcmpi(f(end-6:end),'_sc.mat')
+        d = load([directory filesep f]);
+        d.obj.print_status();
+      end
     end
+  end
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
-    %Create new *_sc.mat file
-    experiment = ScExperiment();
-    if strcmpi(args{1},'-newsp2')
-        [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-        if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
-    else  %adq
-        [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-        if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
-    end
-    experiment.fdir = raw_data_folder;
-    rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x),rawdatafiles));
-    for i=1:numel(rawdatafiles)
-        fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
-        file = ScFile(experiment, rawdatafiles{i});
-        file.init();
-        experiment.add(file);
-    end
-    if ~experiment.n
-        msgbox('No files selected. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
-        return;
-    else
-        guimgr = GuiManager();
-        if nargout,    gui = guimgr;   end
-        guimgr.experiment = experiment; 
-        if ~experiment.sc_save();
-            msgbox('Experiment not saved. Aborting');
-        else
-            guimgr.show;
-        end
-    end
-elseif strcmpi(args{1},'-version')
-    fprintf('Version number: %s\n',SequenceViewer.version_str);
-    fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
-elseif numel(args{1}) && args{1}(1) == '-'
-    fprintf(['Illegal command : ' args{1}]);
+  %Create new *_sc.mat file
+  experiment = ScExperiment();
+  if strcmpi(args{1},'-newsp2')
+    [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+  else  %adq
+    [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+  end
+  experiment.fdir = raw_data_folder;
+  rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x),rawdatafiles));
+  for i=1:numel(rawdatafiles)
+    fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
+    file = ScFile(experiment, rawdatafiles{i});
+    file.init();
+    experiment.add(file);
+  end
+  if ~experiment.n
+    msgbox('No files selected. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
     return;
-else
-    if exist(args{1},'file') == 2
-        filename = args{1};
-    else
-        [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
-        filename = fullfile(pname,fname);
-        if exist(filename,'file') ~= 2
-            fprintf('Could not detect file\n');
-            return;
-        end
-    end
+  else
     guimgr = GuiManager();
     if nargout,    gui = guimgr;   end
-    guimgr.viewer.set_sc_file_folder(sc_file_folder);
-    guimgr.viewer.set_raw_data_folder(raw_data_folder);
-    d = load(filename);
-    
-    experiment = d.obj;
-    clear d
     guimgr.experiment = experiment;
-    guimgr.show;
+    experiment_name = experiment.get(1).tag;
+    experiment_name = [experiment_name(1:end-4) '_sc'];
+    if ~experiment.sc_save(experiment_name);
+      msgbox('Experiment not saved. Aborting');
+    else
+      guimgr.show;
+      assignin('base','guimgr',guimgr);
+      assignin('base','expr',experiment);
+    end
+  end
+elseif strcmpi(args{1},'-version')
+  fprintf('Version number: %s\n',SequenceViewer.version_str);
+  fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
+elseif strcmpi(args{1},'-amplitude')
+  gui_mgr = sc();
+  gui_mgr.mode = ScGuiState.ampl_analysis;
+elseif numel(args{1}) && args{1}(1) == '-'
+  fprintf(['Illegal command : ' args{1}]);
+  return;
+else
+  if exist(args{1},'file') == 2
+    filename = args{1};
+  else
+    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
+    filename = fullfile(pname,fname);
+    if exist(filename,'file') ~= 2
+      fprintf('Could not detect file\n');
+      return;
+    end
+  end
+  guimgr = GuiManager();
+  if nargout,    gui = guimgr;   end
+  guimgr.viewer.set_sc_file_folder(sc_file_folder);
+  guimgr.viewer.set_raw_data_folder(raw_data_folder);
+  d = load(filename);
+  
+  experiment = d.obj;
+  clear d
+  guimgr.experiment = experiment;
+  guimgr.show;
+  assignin('base','guimgr',guimgr);
+  assignin('base','expr',experiment);
 end
 
 end

@@ -40,7 +40,9 @@ classdef DigitalAxes < ChannelAxes
                 digch = obj.sequence.gettriggers(obj.gui.tmin,...
                     obj.gui.tmax);
                 switch obj.gui.plotmode
-                    case {PlotModes.default, PlotModes.plot_all}
+                    case {PlotModes.default, PlotModes.plot_all, ...
+                        PlotModes.plot_avg_all, PlotModes.plot_avg_selected, ...
+                        PlotModes.plot_avg_std_all, PlotModes.plot_avg_std_selected}
                         pretrigger = obj.gui.pretrigger;
                         posttrigger = obj.gui.posttrigger;
                         if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end

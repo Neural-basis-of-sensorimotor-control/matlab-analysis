@@ -1,9 +1,4 @@
 *.asv
-dcn.m
-slet.m
-DummyClass.m
-BNNR_sc.mat
 sc_config.txt
-sc_config.txt
-sc_config.txt
-sc_benchmark.m
+functions/get_raw_data_dir.m
+functions/get_sc_data_dir.m

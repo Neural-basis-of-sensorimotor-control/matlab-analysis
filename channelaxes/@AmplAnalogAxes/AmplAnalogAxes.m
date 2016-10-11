@@ -29,7 +29,7 @@ if gui.mouse_press>0
     p = get(gui.main_axes,'currentpoint');
     t0 = p(1,1); v0 = p(1,2);
     if t0<0
-        gui.help_text = sprintf('You must click to the right of trigger time.\n Awaiting mouse press #%i',gui.mouse_press);
+         gui.set_sweep(gui.sweep + 1);
     else
         stimtime = gui.triggertimes(gui.sweep(1));
         gui.amplitude.add_data(stimtime,2*gui.mouse_press-[1 0],[t0 v0]);

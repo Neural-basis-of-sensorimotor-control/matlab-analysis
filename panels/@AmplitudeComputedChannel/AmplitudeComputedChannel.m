@@ -26,7 +26,6 @@ classdef AmplitudeComputedChannel < AmplitudeChannel
         stop, is_pseudo, amplitude);
       middle = sc_get_middle_index(rise, .1);
       
-      is_pseudo = amplitude.valid_data;
       plot(obj.ax, start(~is_pseudo), rise(~is_pseudo), 'y+', 'Tag', 'Manual', 'LineStyle', 'None');
       plot(obj.ax, start(is_pseudo), rise(is_pseudo), 'r+', 'Tag', 'Automatic', 'LineStyle', 'None');
       plot(obj.ax, start(~middle), rise(~middle), 'wo', 'Tag', 'Outliers', 'LineStyle', 'None');

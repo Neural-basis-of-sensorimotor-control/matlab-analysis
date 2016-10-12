@@ -2,8 +2,8 @@ clc
 
 clear
 
-neurons = get_neurons();
-sc_dir = sc_get_sc_data_dir();
+neurons = get_intra_neurons();
+sc_dir = get_intra_experiment_dir();
 motifs = get_intra_motifs();
 motifs = sort(motifs);
 
@@ -26,9 +26,9 @@ for i=1:length(neurons)
   for j=1:length(motifs)
     amplitude = amplitudes.get('tag', motifs{j});
     if sc_amplitude_is_empty(amplitude)
-      fprintf('-\t');
+      fprintf('empty\t');
     else
-      fprintf('+\t');
+      fprintf('x\t');
     end
   end
 

@@ -9,7 +9,7 @@ classdef ScTextMark < ScChannel & ScTriggerParent
         obj.(varargin{k}) = varargin{k+1};
       end
     end
-    
+
     %Load digital channel values
     function sc_loadtimes(obj)
       obj.triggers = ScList;

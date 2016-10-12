@@ -20,6 +20,6 @@ classdef ScAdqTriggerParent < ScTriggerParent
         obj.triggers.get(k).sc_clear();
       end
     end
-    
+
   end
 end

@@ -5,7 +5,7 @@ classdef WfChannelPanel < ChannelPanel
       obj@ChannelPanel(gui);
       obj.layout();
     end
-    
+
     function setup_components(obj)
       obj.gui_components.add(MainChannel(obj));
       obj.gui_components.add(SubChannels(obj));
@@ -17,6 +17,6 @@ classdef WfChannelPanel < ChannelPanel
       obj.gui_components.add(SpikeRemovalSelection(obj));
       setup_components@UpdatablePanel(obj);
     end
-    
+
   end
 end

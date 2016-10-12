@@ -15,33 +15,33 @@ function plots = get_plots(axes_handles)
 if ~nargin
   plots = get_plots(gca);
   return
-  
+
 elseif isempty(axes_handles)
   plots = [];
   return
-  
+
 elseif isa(axes_handles(1), 'matlab.ui.Figure')
   plots = get_axes(axes_handles(1));
-  
+
   for i=2:length(axes_handles)
     p = get_axes(axes_handles(i));
     plots(length(plots) + (1:length(p))) = p;
   end
   return
-  
+
 elseif isa(axes_handles(1), 'matlab.graphics.axis.Axes')
   plots = axes_handles(1).Children;
-  
+
   for i=2:length(axes_handles)
     p = axes_handles(i).Children;
     plots(length(plots) + (1:length(p))) = p;
   end
-  
+
 else
   plots = [];
-  
+
   for i=1:length(axes_handles)
-  
+
     if isa(axes_handles(i), 'matlab.graphics.axis.Axes')
       plots = [plots; axes_handles(i)]; %#ok<AGROW>
     end

@@ -6,7 +6,7 @@ classdef DigitalAxes < ChannelAxes
       sequence_listener();
       sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
       sc_addlistener(obj.gui,'sequence',@sequence_listener,obj.ax);
-      
+
       function xlimits_listener(~,~)
         if obj.gui.xlimits(1)<obj.gui.xlimits(2)
           xlim(obj.ax,obj.gui.xlimits);
@@ -22,15 +22,15 @@ classdef DigitalAxes < ChannelAxes
           obj.height = height_;
         end
       end
-      
+
     end
-    
+
     function load_data(~)
     end
-    
+
     function clear_data(~)
     end
-    
+
     function plotch(obj,btn_down_fcn)
       if nargin==1
         btn_down_fcn = [];

@@ -14,7 +14,7 @@ end
 for i=1:length(template_tag)
   fseek(fid,(i-1)*template_size_bytes,-1);
   [template, channel_index] = read_wsg_template(fid);
-  
+
   if ~isempty(template)
     template.parent = file.signals.get(channel_index);
     template.tag = template_tag{i};

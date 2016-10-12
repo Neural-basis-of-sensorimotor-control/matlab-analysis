@@ -4,7 +4,7 @@ classdef ScStim < ScChannel
     triggers
     istrigger
   end
-  
+
   methods
     function obj = ScStim(parent, channelname,varargin)
       obj.parent  = parent;
@@ -14,7 +14,7 @@ classdef ScStim < ScChannel
         obj.(varargin{k}) = varargin{k+1};
       end
     end
-    
+
     function sc_loadtimes(obj)
       obj.triggers = ScList();
       if isempty(who('-file',obj.parent.filepath,obj.channelname))
@@ -37,11 +37,11 @@ classdef ScStim < ScChannel
         obj.triggers.add(ScSpikeTrain(obj.tag,times))
       end
     end
-    
+
     function sc_clear(obj)
       obj.triggers = ScList;
     end
-    
+
   end
   methods (Static)
     function obj = loadobj(a)

@@ -15,7 +15,7 @@ classdef GuiFigure < handle
   end
   methods
     function obj = GuiFigure()
-    
+
     end
     function show(obj)
       obj.get_window();

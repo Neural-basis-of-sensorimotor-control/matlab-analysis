@@ -4,14 +4,14 @@ classdef ScList < handle
   properties (SetObservable)
     list
   end
-  
+
   properties (Dependent)
     n
     cell_list
   end
-  
+
   methods
-  
+
     function add(obj, item)
       if ~obj.n
         obj.list = item;
@@ -19,8 +19,8 @@ classdef ScList < handle
         obj.list(obj.n+1) = item;
       end
     end
-    
-    
+
+
     %if nargin == 2
     %   index   index in list
     %if nargin == 3
@@ -35,7 +35,7 @@ classdef ScList < handle
         listobject = obj.list(index);
       end
     end
-    
+
     function remove(obj, item, value)
       if nargin==2
         index = obj.indexof(item);
@@ -49,8 +49,8 @@ classdef ScList < handle
         obj.remove(index);
       end 
     end
-    
-    
+
+
     %If list contains reference to item, then replace item
     %by new_item in list. Otherwise append newitem to list		
     function update(obj, item, new_item)
@@ -63,9 +63,9 @@ classdef ScList < handle
         obj.add(new_item);
       end
     end
-    
-    
-    
+
+
+
     function object_exists = has(obj,property,val)
       if ~obj.n
         object_exists = false;
@@ -73,7 +73,7 @@ classdef ScList < handle
         object_exists = ~isempty(obj.get(property,val));
       end
     end
-    
+
     function exists = contains(obj, item)
       exists = 0;
       for k=1:obj.n
@@ -83,7 +83,7 @@ classdef ScList < handle
         end
       end
     end
-    
+
     %get all values of a specific property, as a cell array
     function vals = values(obj, property)
       if isempty(obj.list)
@@ -92,7 +92,7 @@ classdef ScList < handle
         vals = {obj.list.(property)};
       end
     end
-    
+
     function index = indexof(obj,item,value)
       index = -1;   
       if nargin==2
@@ -112,18 +112,18 @@ classdef ScList < handle
         end
       end
     end
-    
+
     function n = get.n(obj)
       n = numel(obj.list);
     end
-    
+
     function val = get.cell_list(obj)
       val = cell(obj.n,1);
       for k=1:obj.n
         val(k) = {obj.get(k)};
       end
     end
-    
+
     function newobj = convert_to_sc_cell_list(obj)
       newobj = ScCellList;
       for k=1:obj.n

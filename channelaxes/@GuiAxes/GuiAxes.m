@@ -2,7 +2,7 @@ classdef GuiAxes < handle
   properties (SetAccess = 'private', GetAccess = 'private')
     gui_manager
   end
-  
+
   properties (SetObservable)
     ax_pr
     gui
@@ -18,28 +18,28 @@ classdef GuiAxes < handle
     plotch(obj,varargin)
   end
   methods
-  
+
     function obj = GuiAxes(gui)
       obj.gui = gui;
       obj.ax = axes;
       set(obj.ax,'Parent',gui.plot_window);
     end
-    
+
     function sequence = get.sequence(obj)
       sequence = obj.gui.sequence;
     end
-    
+
     function set(obj,varargin)
       set(obj.ax,varargin{:});
     end
-    
+
     function varargout = get(obj,varargin)
       varargout = get(obj.ax,varargin{:});
       if numel(varargout)
         varargout = {varargout};
       end
     end
-    
+
     function val = get.ax(obj)
       if isempty(obj.ax_pr) || ~ishandle(obj.ax_pr)
         obj.ax_pr = axes;
@@ -54,6 +54,6 @@ classdef GuiAxes < handle
     end
   end
   methods (Access='protected')   
-  
+
   end
 end

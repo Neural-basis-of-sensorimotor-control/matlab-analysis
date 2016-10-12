@@ -6,7 +6,7 @@ addlistener(obj,'triggerparent','PostSet',@(~,~) triggerparent_listener(obj));
 
   function main_channel_listener(objh)
     addlistener(objh.main_channel,'signal','PostSet',@(~,~) main_channel_signal_listener(objh));
-    
+
     function main_channel_signal_listener(objh)
       signal = objh.main_channel.signal;
       if ~isempty(signal)
@@ -20,7 +20,7 @@ addlistener(obj,'triggerparent','PostSet',@(~,~) triggerparent_listener(obj));
       end
     end
   end
-  
+
   function sequence_listener(objh)
     if ~isempty(objh.sequence)
       triggerparents = objh.triggerparents;
@@ -35,7 +35,7 @@ addlistener(obj,'triggerparent','PostSet',@(~,~) triggerparent_listener(obj));
       objh.triggerparent = [];
     end
   end
-  
+
   function triggerparent_listener(objh)
     if ~isempty(objh.triggerparent)
   %            all_triggers = objh.triggerparent.triggers;%

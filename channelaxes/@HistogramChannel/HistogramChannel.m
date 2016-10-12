@@ -7,16 +7,16 @@ classdef HistogramChannel < GuiAxes
     binwidth = 1e-2
     rasterplot
   end
-  
+
   methods
     function obj = HistogramChannel(gui)
       obj@GuiAxes(gui);
       setheight(obj.ax, 250);
     end
-    
+
     function clear_data(~), end
     function load_data(~), end
-    
+
     function plotch(obj,varargin)
       if obj.hist_type ~= HistogramType.raster
         cla(obj.gui.histogram.ax);

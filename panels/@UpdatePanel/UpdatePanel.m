@@ -7,12 +7,12 @@ classdef UpdatePanel < Panel
       obj.layout();
       obj.enabled = true;
     end
-    
+
     function setup_components(obj)   
       obj.gui_components.add(ResetButton(obj));
       obj.gui_components.add(HelpBox(obj));
     end
-    
+
   end
-  
+
 end

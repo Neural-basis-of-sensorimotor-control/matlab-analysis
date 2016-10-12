@@ -11,13 +11,13 @@ classdef ModifyThresholdGui < GuiFigure
   properties
     has_unsaved_changes
     sweep_gui
-    
+
     root_panel_component
     parent_waveform
     original_threshold
     threshold
     v
-    
+
     spikepos
     sweepnbr
   end
@@ -28,7 +28,7 @@ classdef ModifyThresholdGui < GuiFigure
     item
     item_index
     item_string
-    
+
     ui_reset
     ui_imin
     ui_imax
@@ -72,7 +72,7 @@ classdef ModifyThresholdGui < GuiFigure
       btns = get(obj.panel,'children');
     end
   end
-  
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%% GUI CALLBACKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

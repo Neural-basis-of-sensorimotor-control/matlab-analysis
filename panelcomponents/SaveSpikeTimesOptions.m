@@ -4,7 +4,7 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
     function obj = SaveSpikeTimesOptions(panel)
       obj@SavePlotOptions(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_filename = mgr.add(sc_ctrl('edit',[],@(~,~) obj.filename_callback()),150);
@@ -16,9 +16,9 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
       set(obj.ui_filename,'String',obj.filename);
       set(obj.ui_filenbr,'String',obj.filenbr);
     end
-    
+
   end
-  
+
   methods (Access = 'protected')
     function sequence_listener(obj)
       if ~isempty(obj.gui.sequence)
@@ -26,8 +26,8 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
         set(obj.ui_filename,'String',obj.filename);
       end
     end
-    
-    
+
+
     function save_spiketimes_callback(obj)
       alltriggers = obj.sequence.gettriggers(obj.sequence.tmin,obj.sequence.tmax);
       dlg = figure();
@@ -60,7 +60,7 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
           'Cancel','callback',@cancelbtn_callback),100);
         dialogmgr.newline(2);
         dialogmgr.trim;
-        
+
         function savetriggers_callback(src,index)
           value = get(src,'value');
           savetriggers(index) = value*ones(numel(index),1);
@@ -70,16 +70,16 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
             end
           end
         end
-        
+
         function labels_callback(src,index)
           str = get(src,'string');
           headers(index) = {str};
         end
-        
+
         function cancelbtn_callback(~,~)
           close(dlg);
         end
-        
+
         function okbtn_callback(~,~)
           close(dlg);
           obj.gui.lock_screen(true,'Saving spike data (might take some time ... ');
@@ -101,7 +101,7 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
                 error(['debugging error: command: ' answer]);
               end
             end
-            
+
             fid = fopen(savename,'w');
             for i=1:numel(headers)-1
               fprintf(fid,'%s,',headers{i});
@@ -138,7 +138,7 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
             set(obj.ui_filenbr,'String',obj.filenbr);
             obj.gui.lock_screen(false,'Done');
           end
-          
+
         end
         function filename_callback(obj)
           obj.filename = get(obj.ui_filename,'string');

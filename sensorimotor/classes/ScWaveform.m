@@ -10,19 +10,19 @@ classdef ScWaveform < ScTrigger & ScList
     imported_spiketimes     %imported from Spike2
     predefined_spiketimes   %e.g userdefined spiketimes
   end
-  
+
   properties (Dependent)
     width
     min_isi
   end
-  
+
   methods
     function obj = ScWaveform(parent, tag, spike2filename)
       obj.parent = parent;
       obj.tag = tag;
       obj.spike2filename = spike2filename;
     end
-    
+
     %Load spike times from separate Spike2 file
     function sc_loadtimes(obj)
       if ~isempty(obj.spike2filename)
@@ -35,12 +35,12 @@ classdef ScWaveform < ScTrigger & ScList
         end
       end
     end
-    
+
     %Clear data that is loaded from external file
     function sc_clear(obj)
       obj.imported_spiketimes = [];
     end
-    
+
     % match waveforms in ScThreshold list to Nx1 vector v
     % Input:
     %   obj         class object handle
@@ -94,24 +94,24 @@ classdef ScWaveform < ScTrigger & ScList
           end
         end
       end
-      
+
       %Return all spike times between tmin and tmax
       function times = gettimes(obj,tmin,tmax)
         times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
           obj.predefined_spiketimes]),obj.min_isi*obj.parent.dt);
         times = times(times>=tmin & times<tmax);
       end
-      
+
       %Run through v and redo all thresholding
       function recalculate_spiketimes(obj,v,dt)
         obj.detected_spiketimes = obj.match_v(v)*dt;
       end
-      
+
       %Get max width (in pixels) from ScThreshold object list
       function width = get.width(obj)
         width = max(cell2mat(obj.values('width')));
       end
-      
+
       function val = get.min_isi(obj)
         if ~obj.n
           val = 100;

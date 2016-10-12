@@ -7,7 +7,7 @@ classdef MainChannel < PanelComponent
     function obj = MainChannel(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       mgr.add(sc_ctrl('text','Main channel'),100);
@@ -15,7 +15,7 @@ classdef MainChannel < PanelComponent
         'visible','off'),100);
       mgr.newline(5);
     end
-    
+
     function initialize(obj)
       str = obj.gui.sequence.signals.values('tag');
       if isempty(obj.gui.main_channel.signal)
@@ -28,7 +28,7 @@ classdef MainChannel < PanelComponent
       val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
       set(obj.ui_channel,'string',str,'value',val,'visible','on');
     end
-    
+
     function updated = update(obj)
       if isempty(obj.gui.sequence) || ~obj.gui.sequence.signals.n
         updated = false;
@@ -50,6 +50,6 @@ classdef MainChannel < PanelComponent
         obj.panel.update_panel;
       end
     end
-    
+
   end
 end

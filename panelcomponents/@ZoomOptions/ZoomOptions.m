@@ -8,14 +8,14 @@ classdef ZoomOptions < PanelComponent
     ui_y_zoom_in
     ui_y_zoom_out
   end
-  
+
   methods
     function obj = ZoomOptions(panel)
       obj@PanelComponent(panel);
       sc_addlistener(obj.gui,'zoom_on',@(~,~) obj.toggle_button('zoom_on',obj.ui_zoom),panel);
       sc_addlistener(obj.gui,'pan_on',@(~,~) obj.toggle_button('pan_on',obj.ui_pan),panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_zoom = mgr.add(sc_ctrl('pushbutton','Manual zoom',@(~,~) obj.zoom_callback),100);
@@ -31,11 +31,11 @@ classdef ZoomOptions < PanelComponent
       obj.gui.zoom_controls = [obj.ui_zoom obj.ui_pan obj.ui_reset ...
         obj.ui_x_zoom_in obj.ui_x_zoom_out obj.ui_y_zoom_in obj.ui_y_zoom_out ];
       end
-      
+
     end
-    
+
     methods (Access = 'protected')
-    
+
       function toggle_button(obj,property, button)
         if obj.gui.(property)
           set(button,'FontWeight','bold');
@@ -43,15 +43,15 @@ classdef ZoomOptions < PanelComponent
           set(button,'FontWeight','normal');
         end
       end
-      
+
       function zoom_callback(obj)
         obj.gui.zoom_on = ~obj.gui.zoom_on;
       end
-      
+
       function pan_callback(obj)
         obj.gui.pan_on = ~obj.gui.pan_on;
       end
-      
+
       function reset_callback(obj)
         for k=1:obj.gui.analog_ch.n
           ylim(obj.gui.analog_ch.get(k).ax,'auto');
@@ -66,14 +66,14 @@ classdef ZoomOptions < PanelComponent
         xlimits(2) = xlimits(2) -xdiff/4;
         xlim(obj.gui.main_axes,xlimits);
       end
-      
+
       function x_zoom_out_callback(obj)
         xlimits = xlim(obj.gui.main_axes);
         xdiff = diff(xlimits);
         xlimits = xlimits + [-xdiff/2 xdiff/2];
         xlim(obj.gui.main_axes,xlimits);
       end
-      
+
       function y_zoom_in_callback(obj)
         ylimits = ylim(obj.gui.main_axes);
         ydiff = diff(ylimits);
@@ -81,14 +81,14 @@ classdef ZoomOptions < PanelComponent
         ylimits(2) = ylimits(2) -ydiff/4;
         ylim(obj.gui.main_axes,ylimits);
       end
-      
+
       function y_zoom_out_callback(obj)
         ylimits = ylim(obj.gui.main_axes);
         ydiff = diff(ylimits);
         ylimits = ylimits + [-ydiff/2 ydiff/2];
         ylim(obj.gui.main_axes,ylimits);
       end
-      
+
     end
-    
+
   end

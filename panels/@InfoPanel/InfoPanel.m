@@ -8,11 +8,11 @@ classdef InfoPanel < UpdatablePanel
       obj@UpdatablePanel(gui,panel);
       obj.layout();
     end
-    
+
     function layout(obj)
       layout@Panel(obj);
     end
-    
+
     function setup_components(obj)   
       obj.gui_components.add(AutomaticUpdate(obj));
       obj.gui_components.add(ReImportRawData(obj));
@@ -24,7 +24,7 @@ classdef InfoPanel < UpdatablePanel
       obj.gui_components.add(ChannelOptions(obj));
       setup_components@UpdatablePanel(obj);
     end
-    
+
     function update_panel(obj)
       update_panel@Panel(obj);
       if isempty(obj.gui.sequence)
@@ -43,16 +43,16 @@ classdef InfoPanel < UpdatablePanel
         obj.gui.resize_btn_window();
       end
     end
-    
+
   end
-  
+
   methods %(Access = 'protected')
     function enabled_listener(obj)
       if ~obj.enabled && obj.dynamic_panels_exist
         obj.gui.delete_dynamic_panels();
         obj.dynamic_panels_exist = false;
       end
-      
+
     end
   end
 end

@@ -6,21 +6,21 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
     ui_cancel_thresholds
     ui_undo_last
     ui_added_done
-    
-    
+
+
     endpoint
     endpoint_index = -1
     endpoint_str
-    
+
     t0 = []; v0 = []; tabs = []; vabs = []; lower = []; upper = [];
   end
-  
+
   methods
     function obj = ThresholdOptions(panel)
       obj@AbstractWaveformPanelComponent(panel);
       sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_define_thresholds = mgr.add(sc_ctrl('pushbutton','Add thresholds',...
@@ -30,19 +30,19 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
       mgr.newline(20);
       obj.ui_modify_thresholds = mgr.add(sc_ctrl('pushbutton','Modify thresholds',...
         @(~,~) obj.modify_thresholds_callback),200);
-        
+
       mgr.newline(20);
       obj.ui_cancel_thresholds = mgr.add(sc_ctrl('pushbutton','Cancel',...
         @(~,~) obj.cancel_thresholds_callback,'visible','off'),100);
-        
+
       obj.ui_undo_last = mgr.add(sc_ctrl('pushbutton','Undo last',...
         @(~,~) obj.undo_last_callback,'visible','off'),100);
-        
+
       mgr.newline(20);
       obj.ui_added_done = mgr.add(sc_ctrl('pushbutton','Done',...
         @(~,~) obj.added_done_callback,'Visible','off'),100);
       end
-      
+
       function initialize(obj)
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
         set(obj.gui.plot_window,'WindowButtonMotionFcn',[]);
@@ -56,11 +56,11 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         end
         obj.waveform_listener();
       end
-      
+
     end
-    
+
     methods (Access = 'protected')
-    
+
       function modify_thresholds_callback(obj)
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
         obj.set_visible(0);
@@ -68,7 +68,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         set(obj.ui_cancel_thresholds,'Enable','on');
         obj.remove_threshold_plotfcn(false);
       end
-      
+
       function remove_thresholds_callback(obj)
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
         obj.set_visible(0);
@@ -76,7 +76,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         set(obj.ui_cancel_thresholds,'Enable','on');
         obj.remove_threshold_plotfcn();
       end
-      
+
       function define_thresholds_callback(obj)
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
         %Reset waveform parameters
@@ -89,12 +89,12 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         set(obj.gui.zoom_controls,'Enable','on');
         obj.define_threshold_plothandle();
       end
-      
+
       function cancel_thresholds_callback(obj)
         obj.initialize();
         obj.gui.plot_channels();
       end
-      
+
       function undo_last_callback(obj)
         if isempty(obj.tabs)
           obj.t0 = [];
@@ -113,7 +113,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         end
         obj.define_threshold_plothandle();
       end
-      
+
       function set_visible(obj,on)
         if on
           visible = 'on';
@@ -133,7 +133,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         end
         drawnow('expose')
       end
-      
+
       function waveform_listener(obj)
         controls = [obj.ui_define_thresholds
           obj.ui_remove_thresholds
@@ -149,7 +149,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
           set(controls(k),'Enable',enabledstr);
         end
       end
-      
+
       function added_done_callback(obj)
         obj.gui.lock_screen(true,'Adding waveform, wait...');
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
@@ -170,12 +170,12 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
         obj.gui.plot_channels();
         obj.set_visible(1)
       end
-      
+
       function define_threshold_plothandle(obj)
-      
+
         obj.gui.zoom_on = false; obj.gui.pan_on = false;
         obj.gui.plot_channels(@(~,~) obj.btn_down_fcn_addition);
-        
+
         if ~isempty(obj.t0)
           plot(obj.gui.main_axes,obj.t0,obj.v0,'LineWidth',2,'LineStyle','None',...
             'Marker','s','Color',[0 0 1]);
@@ -193,32 +193,32 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
             obj.endpoint = [];
             obj.endpoint_index = -1;
             obj.endpoint_str = [];
-            
-            
+
+
             set(obj.gui.plot_window,'WindowButtonMotionFcn',@(~,~) obj.move_endpoint);
-            
+
             set(obj.gui.plot_window,'WindowButtonUpFcn',@(~,~) obj.drop_endpoint);
           end
-          
+
           function move_endpoint(obj)
-          
+
             if ~isempty(obj.endpoint)
               p = get(obj.gui.main_axes,'CurrentPoint');
               set(obj.endpoint,'YData',p(1,2));
             end
-            
+
           end
-          
+
           function drag_endpoint(obj, index,str,src)
-          
+
             obj.endpoint = src;
             obj.endpoint_index = index;
             obj.endpoint_str = str;
-            
+
           end
-          
+
           function drop_endpoint(obj)
-          
+
             if ~isempty(obj.endpoint)
               p = get(obj.gui.main_axes,'CurrentPoint');
               set(obj.endpoint,'YData',p(1,2));
@@ -231,9 +231,9 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
                 end
                 obj.define_threshold_plothandle();
               end
-              
+
             end
-            
+
             function remove_threshold_plotfcn(obj,remove)
               if isempty(obj.gui.waveform)
                 return
@@ -284,7 +284,7 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
                   obj.show_panels(true);
                   obj.set_visible(0);
                 end
-                
+
                 function btn_down_fcn_modify_threshold(obj,index,wfindex,ind,time_remove,v_remove,colors)
                   sc_piecewiseplot(obj.gui.main_axes,time_remove(wfindex==index),v_remove(wfindex==index,ind),'Color',colors(index,:),...
                     'LineWidth',4);
@@ -302,9 +302,9 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
                       end
                       obj.show_panels(0);
                     end
-                    
+
                     function btn_down_fcn_removal(obj,index,wfindex,ind,time_remove,v_remove,colors)
-                    
+
                       sc_piecewiseplot(obj.gui.main_axes,time_remove(wfindex==index),v_remove(wfindex==index,ind),'Color',colors(index,:),...
                         'LineWidth',4);
                       option = questdlg('Delete highlighted threshold?','Delete',...
@@ -328,9 +328,9 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
                           %do nothing
                         end
                         obj.show_panels(0);
-                        
+
                       end
-                      
+
                       function btn_down_fcn_addition(obj)
                         p = get(obj.gui.main_axes,'currentpoint');
                         if isempty(obj.t0)
@@ -355,8 +355,8 @@ classdef ThresholdOptions < AbstractWaveformPanelComponent
                         end
                         obj.define_threshold_plothandle();
                       end
-                      
-                      
+
+
                     end
-                    
+
                   end

@@ -4,18 +4,18 @@ classdef ScThreshold < handle
     v_offset
     lower_tolerance
     upper_tolerance
-    
+
     max_matrix_size = 1e7   %can be changed to optimize speed and memory
     %usage, optimal value depends on available
     %RAM
     min_isi                 %min inter-spike interval (ISI) in bins
   end
-  
+
   properties (Dependent)
     n
     width
   end
-  
+
   methods
     function obj = ScThreshold(position_offset, v_offset, lower_tolerance, upper_tolerance)
       obj.min_isi = 1e2;
@@ -37,7 +37,7 @@ classdef ScThreshold < handle
       obj.lower_tolerance(2:end) = obj.lower_tolerance(ind+1);
       obj.upper_tolerance(2:end) = obj.upper_tolerance(ind+1);
     end
-    
+
     function newobj = create_copy(obj)
       newobj = ScThreshold(obj.position_offset,obj.v_offset,...
         obj.lower_tolerance, obj.upper_tolerance);
@@ -50,7 +50,7 @@ classdef ScThreshold < handle
         end
       end
     end
-    
+
     %see ScWaveform for explanation
     %Uses no parfor loop - suitable when there is parallel computation
     %of several ScThreshold objects
@@ -72,7 +72,7 @@ classdef ScThreshold < handle
       end
       spikepos = sc_separate(spikepos,obj.width);
     end
-    
+
     %see ScWaveform for explanation
     %Uses parfor loop - suitable when there is no parallel computation
     %of several ScThreshold objects
@@ -112,7 +112,7 @@ classdef ScThreshold < handle
         vcell(k) = {v((startpos(k):stoppos(k)))};
       end
     end
-    
+
     %Rearrange spike from cell structure to matrix structure
     function spikepos = deconv_spikes(obj,spikes)
       for k=1:length(spikes)
@@ -121,7 +121,7 @@ classdef ScThreshold < handle
       spikepos = cell2mat(spikes');
       spikepos = sc_separate(spikepos,obj.min_isi);
     end
-    
+
     %Reaturn logical vector where true means that bin is part of
     %threshold
     function spikearea = compute_spikearea(obj,spikepos,original_dim_v)
@@ -133,16 +133,16 @@ classdef ScThreshold < handle
         spikearea(wfs(:)) = true(size(wfs(:)));
       end
     end
-    
+
     function n = get.n(obj)
       n = numel(obj.position_offset);
     end
-    
+
     function width = get.width(obj)
       width = max(obj.position_offset);
     end
   end
-  
+
   methods (Static)
     function obj = loadobj(obj)
       if isempty(obj.min_isi)

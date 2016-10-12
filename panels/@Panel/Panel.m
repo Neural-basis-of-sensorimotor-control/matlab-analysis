@@ -7,16 +7,16 @@ classdef Panel < GuiComponent
     %to invoke enabled_listener function
     enabled = false
   end
-  
+
   properties
     %ScCellList of PanelComponent objects
     gui_components
   end
-  
+
   properties (Dependent)
     height
   end
-  
+
   methods
     %overriding classes have to call obj.layout after creation of
     %constructor
@@ -24,7 +24,7 @@ classdef Panel < GuiComponent
       obj@GuiComponent(gui,panel);
       addlistener(obj,'enabled','PostSet',@(~,~) obj.enabled_listener);
     end
-    
+
     %Populate PanelComponents objects
     function layout(obj)
       obj.gui_components = ScCellList();
@@ -37,14 +37,14 @@ classdef Panel < GuiComponent
       mgr.newline(2);
       mgr.trim();
     end
-    
+
     %Update values in text boxes, popupmenus, etc
     function initialize_panel(obj)
       for k=1:obj.gui_components.n
         obj.gui_components.get(k).initialize();
       end
     end
-    
+
     %Reload values and update enabled property
     function update_panel(obj)
       updated = true;
@@ -53,7 +53,7 @@ classdef Panel < GuiComponent
       end
       obj.enabled = updated;
     end
-    
+
     %Make panel inaccessible to user
     %   do_lock:    true    -> lock
     %               false   -> unlock
@@ -66,21 +66,21 @@ classdef Panel < GuiComponent
       children = get(obj.uihandle,'children');
       set(children,'Enable',enablestr);
     end
-    
+
     %Height of graphical object
     function height = get.height(obj)
       height = getheight(obj.uihandle);
     end
   end
-  
-  
+
+
   methods (Static)
     %Margin between top of uipanel and first PanelComponent object 
     function val = upper_margin()
       val = 15;
     end
   end
-  
+
   methods %(Access = 'protected')
     %If enabled is set to false, the subsequent panels will be hidden
     %If previous panel is disabled, this panel will be hidden, unless

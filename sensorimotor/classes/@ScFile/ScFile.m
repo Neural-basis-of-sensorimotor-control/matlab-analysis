@@ -6,13 +6,13 @@ classdef ScFile < ScList
     filename    %name of .mat / .adq file
     comment
     spikefiles  %extra files with spike data imported from Spike2
-    
+
     signals         %List of analog channels (ScSignal)
     stims           %List of digital channels (ScStim / ScAdqTriggerParent)
     textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
     user_comment
   end
-  
+
   properties (Dependent)
     is_adq_file
     tag
@@ -20,7 +20,7 @@ classdef ScFile < ScList
     fdir
     channels
   end
-  
+
   methods
     %ScFile
     %   filename    ends either with .mat or .adq
@@ -31,22 +31,22 @@ classdef ScFile < ScList
       obj.stims = ScList();
       obj.textchannels = ScList();
     end
-    
+
     function tag = get.tag(obj)
       [~,tag] = fileparts(obj.filename);
     end
-    
+
     function filepath = get.filepath(obj)
       filepath = fullfile(obj.parent.fdir,obj.filename);
     end
-    
+
     %Parse experimental protocol (.txt)
     function update_from_protocol(obj, protocolfile)
       obj.parse_protocol(protocolfile);
     end
-    
-    
-    
+
+
+
     %Load all spiketimes + digital channels, but not analog channels
     function success = sc_loadtimes(obj)
       success = obj.check_fdir;
@@ -61,28 +61,28 @@ classdef ScFile < ScList
         obj.signals.get(i).sc_loadtimes;
       end
     end
-    
+
     %Load analog signals
     function sc_loadsignals(obj)
       for i=1:obj.signals.n
         obj.signals.get(i).sc_loadsignal();
       end
     end
-    
+
     %Clear transient data
     function sc_clearsignals(obj)
       for i=1:obj.signals.n
         obj.signals.get(i).sc_clear();
       end
     end
-    
+
     %Clear all data
     function sc_clear(obj)
       for i=1:obj.channels.n
         obj.channels.get(i).sc_clear();
       end
     end
-    
+
     %Check that raw data file exists on hard drive
     function success = check_fdir(obj)
       success = false;
@@ -110,7 +110,7 @@ classdef ScFile < ScList
           end
         end
       end
-      
+
       % Initialize object by populating signals, stims and textchannels
       % To be done right after object creation, normally only once during
       % objects lifetime
@@ -128,7 +128,7 @@ classdef ScFile < ScList
           success = obj.init_spike2_file();
         end
       end
-      
+
       %Triggers = objects that can be triggered on
       %Implement function gettimes, and property istrigger returns true
       %Only returns objects where numel(times)>0
@@ -166,7 +166,7 @@ classdef ScFile < ScList
           end
         end
       end
-      
+
       %channels = all channels from raw data file
       function channels = get.channels(obj)
         channels = ScCellList();
@@ -180,7 +180,7 @@ classdef ScFile < ScList
           channels.add(obj.textchannels.get(i));
         end
       end
-      
+
       %Triggerparent = a channel with child object that can be triggered
       %on
       %implements istrigger (return false), and triggers (return all
@@ -216,21 +216,21 @@ classdef ScFile < ScList
           end
         end
       end
-      
+
       function fdir = get.fdir(obj)
         fdir = obj.parent.fdir;
       end
-      
+
       function saved = sc_save(obj,varargin)
         saved = obj.parent.sc_save(varargin{:});
       end
-      
+
       %File is either adq file or spike2 file
       function is_adq_file = get.is_adq_file(obj)
         [~,~,ext] = fileparts(obj.filename);
         is_adq_file = strcmpi(ext,'.adq');
       end
-      
+
       function add_spike2_channels(obj)
         % success = false;
         channelnames = who('-file',obj.filepath);
@@ -267,7 +267,7 @@ classdef ScFile < ScList
       end
     end
   end
-  
+
   methods (Access = private)
     success = init_spike2_file(obj)
     success = init_adq_file(obj)

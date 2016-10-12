@@ -6,7 +6,7 @@ classdef SubChannels < PanelComponent
     function obj = SubChannels(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       obj.ui_extra_channels = ScList();
       for k=2:obj.gui.analog_ch.n
@@ -17,9 +17,9 @@ classdef SubChannels < PanelComponent
         mgr.newline(5);
         obj.ui_extra_channels.add(ui_channel);
       end
-      
+
     end
-    
+
     function initialize(obj)
       str = obj.gui.sequence.signals.values('tag');
       for k=1:obj.ui_extra_channels.n
@@ -38,7 +38,7 @@ classdef SubChannels < PanelComponent
           'visible','on');
         end
       end
-      
+
       function updated = update(obj)
         updated = true;
         signals = obj.gui.sequence.signals;%.values('tag');

@@ -4,12 +4,12 @@ classdef ChannelOptions < PanelComponent
     ui_show_digital_channels
     ui_nbr_of_channels
   end
-  
+
   methods
     function obj = ChannelOptions(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_show_digital_channels = mgr.add(sc_ctrl('checkbox',...
@@ -21,9 +21,9 @@ classdef ChannelOptions < PanelComponent
         @(~,~) obj.nbr_of_channels_callback,'visible','off'),100);
       sc_addlistener(obj.gui,'sequence',@(~,~) obj.update_nbr_of_analog_axes, ...
         obj.uihandle);
-        
+
       end
-      
+
       function initialize(obj)
         set(obj.ui_show_digital_channels,'value',obj.gui.show_digital_channels);
         if ~obj.gui.file.signals.n
@@ -36,7 +36,7 @@ classdef ChannelOptions < PanelComponent
             'on');
           end
         end
-        
+
         function updated = update(obj)
           ch = get(obj.gui.plot_window,'children');
           for k=1:numel(ch)
@@ -54,11 +54,11 @@ classdef ChannelOptions < PanelComponent
             updated = false;
           end
         end
-        
+
       end
-      
+
       methods (Access = 'protected')
-      
+
         function update_nbr_of_analog_axes(obj)
           signals = obj.gui.file.signals;
           analog_subch = obj.gui.analog_subch;
@@ -101,7 +101,7 @@ classdef ChannelOptions < PanelComponent
           end
           obj.gui.resize_plot_window();
         end
-        
+
         function show_digital_channels_callback(obj,hide_panels)
           val = get(obj.ui_show_digital_channels,'value');
           if val
@@ -116,7 +116,7 @@ classdef ChannelOptions < PanelComponent
             obj.show_panels(false);
           end
         end
-        
+
         function nbr_of_channels_callback(obj)
           obj.gui.nbr_of_analog_channels = get(obj.ui_nbr_of_channels,'value');
           obj.update_nbr_of_analog_axes();
@@ -127,4 +127,4 @@ classdef ChannelOptions < PanelComponent
         end
       end
     end
-    
+

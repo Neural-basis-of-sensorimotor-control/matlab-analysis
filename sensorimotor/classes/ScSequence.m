@@ -7,17 +7,17 @@ classdef ScSequence < ScListElement
     tmin
     tmax
   end
-  
+
   properties (Dependent)
     filepath
     channels
     fdir
-    
+
     signals
     stims
     textchannels
   end
-  
+
   methods
     function obj = ScSequence(parent, tag, tmin, tmax)
       obj.parent = parent;
@@ -27,7 +27,7 @@ classdef ScSequence < ScListElement
         obj.tmax = tmax;
       end
     end
-    
+
     %clear all transient data
     function sc_clear(obj)
       ch = obj.channels;
@@ -35,36 +35,36 @@ classdef ScSequence < ScListElement
         ch.get(i).sc_clear();
       end
     end
-    
+
     function filepath = get.filepath(obj)
       filepath = obj.parent.filepath;
     end
-    
+
     function channels = get.channels(obj)
       channels = obj.parent.channels;
     end
-    
+
     function fdir = get.fdir(obj)
       fdir = obj.parent.fdir;
     end
-    
+
     function triggerparents = gettriggerparents(obj,tmin,tmax)
       triggerparents = obj.parent.gettriggerparents(tmin,tmax);
       triggerparents.add(ScClockTriggerParent(obj));
     end
-    
+
     function triggers = gettriggers(obj,tmin,tmax)
       triggers = obj.parent.gettriggers(tmin,tmax);
     end
-    
+
     function signals = get.signals(obj)
       signals = obj.parent.signals;
     end
-    
+
     function stims = get.stims(obj)
       stims = obj.parent.stims;
     end
-    
+
     function textchannels = get.textchannels(obj)
       textchannels = obj.parent.textchannels;
     end
@@ -72,5 +72,5 @@ classdef ScSequence < ScListElement
       saved = obj.parent.sc_save();
     end
   end
-  
+
 end

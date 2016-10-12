@@ -13,7 +13,7 @@ classdef PlotAmplitude < PanelComponent
         @(~,~) obj.clear_sweep_callback()),200);
       mgr.newline(20);
       obj.ui_nbr_of_triggers = mgr.addsc('text',[],200);
-      
+
       sc_addlistener(obj.gui,'mouse_press',@(~,~) obj.mouse_press_listener,...
         obj.ui_clear_sweep);
       sc_addlistener(obj.gui,'amplitude',@(~,~) obj.amplitude_listener(),...

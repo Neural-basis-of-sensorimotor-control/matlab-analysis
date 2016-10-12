@@ -21,7 +21,7 @@ classdef ScRemoveWaveform < ScTrigger
     original_stimpos
   end
   methods
-  
+
     function obj = ScRemoveWaveform(parent_signal,trigger,width,apply_calibration,tstart,tstop)
       obj.parent = parent_signal;
       obj.width = width;
@@ -30,7 +30,7 @@ classdef ScRemoveWaveform < ScTrigger
       obj.apply_calibration = apply_calibration;
       obj.initialize(trigger);
     end
-    
+
     %Assuming that tmin = 0 for conversion from time to discrete time
     %steps
     function calibrate(obj,v)
@@ -59,7 +59,7 @@ classdef ScRemoveWaveform < ScTrigger
         overlap = ranges(1:end-1,2)>=ranges(2:end,1);
         ranges(overlap,2) = floor((obj.stimpos([overlap; false])+obj.stimpos([false; overlap]))/2);
         ranges([false; overlap],1) = ranges([overlap; false],2)+1;
-        
+
         max_nbr_of_iterations = 5;
         it = 1;
         prev_stimpos = [];
@@ -81,7 +81,7 @@ classdef ScRemoveWaveform < ScTrigger
         times = t_index*obj.parent.dt;
         sp = spaps(times,obj.v_interpolated_median,1e-6);
         obj.v_interpolated_median = fnval(sp,times);
-        
+
         it=1;
         max_nbr_of_iterations = 3;
         %todo: add check for convergence
@@ -99,7 +99,7 @@ classdef ScRemoveWaveform < ScTrigger
           fprintf('%i offsets out of %i out of bounds\n',nnz(above_bounds | below_bounds),numel(obj.stimpos_offsets));
           obj.stimpos_offsets = obj.parent.dt*obj.stimpos_offsets;
           new_v_median = nan(obj.width,numel(obj.stimpos));
-          
+
           pp = spaps(times,obj.v_interpolated_median,1e-6);
           for k=1:numel(obj.stimpos)
             new_v_median(:,k) = fnval(pp,times(2:end-1)+obj.stimpos_offsets(k));
@@ -110,7 +110,7 @@ classdef ScRemoveWaveform < ScTrigger
         end
       end
     end
-    
+
     function [v]=remove_wf(obj,v,~)
       if isempty(obj.v_interpolated_median)
         if ~isempty(obj.stimpos)
@@ -137,7 +137,7 @@ classdef ScRemoveWaveform < ScTrigger
         end
       end
     end
-    
+
     function times = gettimes(obj,tmin,tmax)
       times = obj.stimpos*obj.parent.dt + obj.stimpos_offsets;
       times = times(times>=tmin & times<tmax);

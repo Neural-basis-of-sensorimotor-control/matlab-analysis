@@ -6,13 +6,13 @@ classdef SetAxesHeight < PanelComponent
     function obj = SetAxesHeight(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       mgr.add(sc_ctrl('pushbutton','Set plot heights',@(~,~) obj.setheights_callback),200);
     end
   end
-  
+
   methods (Access = 'protected')
     function setheights_callback(obj)
       obj.fighandle = figure('WindowStyle','modal','CloseRequestFcn',@(~,~) obj.close_req_fcn,...
@@ -39,7 +39,7 @@ classdef SetAxesHeight < PanelComponent
       figmgr.trim();
     end
   end
-  
+
   methods (Access = 'protected')
     function edit_callback(~,thisedit,ax)
       height = str2double(get(thisedit,'string'));

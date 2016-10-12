@@ -6,12 +6,12 @@ classdef SequenceOptions < PanelComponent
     ui_edit_sequence
     ui_remove_sequence
   end
-  
+
   methods
     function obj = SequenceOptions(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_add_sequence = mgr.add(sc_ctrl('pushbutton','Add sequence',...
@@ -27,7 +27,7 @@ classdef SequenceOptions < PanelComponent
       obj.ui_remove_sequence = mgr.add(sc_ctrl('pushbutton','Remove sequence',...
         @(~,~) obj.affect_sequence_callback(obj.ui_remove_sequence)),100);
       end
-      
+
     end
     methods (Access='protected')
       function parse_protocol_callback(obj)
@@ -48,15 +48,15 @@ classdef SequenceOptions < PanelComponent
           obj.gui.lock_screen(false);
         end
       end
-      
-      
+
+
       function affect_sequence_callback(obj,src)
         obj.show_panels(false);
         dlg = figure();
         set(dlg,'windowStyle','modal','Name','Add sequence');
         setwidth(dlg,355);
         setheight(dlg,62);
-        
+
         dialogmgr = ScLayoutManager(dlg);
         dialogmgr.newline();
         dialogmgr.add(uicontrol('style','text','string','Tag:'),50);
@@ -66,9 +66,9 @@ classdef SequenceOptions < PanelComponent
         dialogmgr.add(uicontrol('style','text','string','tmax:'),50);
         ui_tmax = dialogmgr.add(uicontrol('style','edit','string',[]),50);
         dialogmgr.add(uicontrol('style','text','string','(seconds)'),50);
-        
+
         dialogmgr.newline();
-        
+
         switch src
           case obj.ui_add_sequence
             if obj.gui.file.signals.n
@@ -94,14 +94,14 @@ classdef SequenceOptions < PanelComponent
               otherwise
                 error(['debugging error: ' src])
               end
-              
+
               dialogmgr.add(uicontrol('style','pushbutton','String','Cancel',...
                 'Callback',@(src,evt) close(dlg)),175);
-                
+
               end
-              
+
             end
-            
+
             methods (Access = 'protected')
               function max_time_span_callback(obj,ui_tmin,ui_tmax,ui_new_tag)
                 set(ui_tmin,'string',0);
@@ -110,7 +110,7 @@ classdef SequenceOptions < PanelComponent
                 set(ui_tmax,'string',max(N.*dt));
                 set(ui_new_tag,'string','full');
               end
-              
+
               function sequence_callback(obj,src,dlg,ui_tmin,ui_tmax,ui_new_tag)
                 tmin = str2double(get(ui_tmin,'string'));
                 tmax = str2double(get(ui_tmax,'string'));
@@ -140,14 +140,14 @@ classdef SequenceOptions < PanelComponent
                 obj.gui.has_unsaved_changes = true;
                 close(dlg);
               end
-              
+
               function remove_sequence_callback(obj,dlg)
                 obj.gui.file.list(obj.gui.sequence.index) = [];
                 obj.gui.has_unsaved_changes = true;
                 close(dlg);
                 obj.gui.set_file(obj.gui.file);
               end
-              
+
               function show_protocol(obj)
                 fig = figure;
                 panel = uipanel('Parent',fig);
@@ -175,23 +175,23 @@ classdef SequenceOptions < PanelComponent
                 setwidth(panel,400);
                 mgr.trim;
                 set(fig,'SizeChangedFcn',@(~,~) size_changed_fcn(fig,panel));
-                
+
                 function size_changed_fcn(fig,panel)
                   setx(panel,0); 
                   sety(panel,getheight(fig)-getheight(panel));
                 end
-                
+
                 function scroll_up(fig,panel)
                   windowheight = getheight(fig);
                   sety(panel,gety(panel)-.5*windowheight);
                 end
-                
+
                 function scroll_down(fig,panel)
                   windowheight = getheight(fig);
                   sety(panel,gety(panel)+.5*windowheight);
                 end
               end
-              
+
               function print_experiment_status(obj)
                 clc
                 obj.experiment.print_status();

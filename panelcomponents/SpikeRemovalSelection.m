@@ -72,13 +72,13 @@ classdef SpikeRemovalSelection < PanelComponent
           sprintf('Nbr of artifacts: %i\n',numel(obj.gui.rmwf.stimpos)));
         end
       end
-      
+
       function list_callback(obj)
         list = obj.gui.main_signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);
         val = get(obj.ui_list,'value');
         obj.gui.rmwf = list.get(val);
       end
-      
+
       function tstart_callback(obj)
         val = str2double(get(obj.ui_tstart,'string'));
         if ~isnumeric(val)
@@ -89,7 +89,7 @@ classdef SpikeRemovalSelection < PanelComponent
           obj.update_spike_removal_callback();
         end
       end
-      
+
       function tstop_callback(obj)
         val = str2double(get(obj.ui_tstop,'string'));
         if ~isnumeric(val)
@@ -100,7 +100,7 @@ classdef SpikeRemovalSelection < PanelComponent
           obj.update_spike_removal_callback();
         end
       end
-      
+
       function width_callback(obj)
         val = str2double(get(obj.ui_width,'string'));
         if ~isnumeric(val) || val<1 || mod(val,1)
@@ -111,7 +111,7 @@ classdef SpikeRemovalSelection < PanelComponent
           obj.gui.has_unsaved_changes = true;
         end
       end
-      
+
       function import_wf_callback(obj)
         if isempty(obj.gui.waveform)
           msgbox('Cannot add. First choose a waveform');
@@ -136,7 +136,7 @@ classdef SpikeRemovalSelection < PanelComponent
         obj.gui.has_unsaved_changes = true;
         obj.gui.lock_screen(false);
         obj.automatic_update();
-        
+
       end
       function delete_spike_removal_callback(obj)
         list = obj.gui.main_signal.get_rmwfs(obj.sequence.tmin,obj.sequence.tmax);%remove_waveforms;

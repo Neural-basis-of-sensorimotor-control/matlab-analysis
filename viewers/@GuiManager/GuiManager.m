@@ -4,20 +4,20 @@ classdef GuiManager < handle
     mode
     experiment
   end
-  
+
   properties (SetAccess = 'private', GetAccess = 'private')
     viewer_
   end
-  
+
   methods
     function obj = GuiManager()
       obj.viewer = WaveformViewer(obj);
     end
-    
+
     function show(obj)
       obj.viewer.show();
     end
-    
+
     %Important: all references to previous viewer in graphics objects must be cleared
     function set.viewer(obj,new_viewer)   
   %             close all
@@ -25,11 +25,11 @@ classdef GuiManager < handle
     obj.viewer_ = new_viewer;
   %             end
     end
-    
+
     function viewer = get.viewer(obj)
       viewer = obj.viewer_;
     end
-    
+
     function set.mode(obj,mode)
       %Store data for the new viewer
       sc_file_folder = obj.viewer.sc_file_folder;
@@ -56,7 +56,7 @@ classdef GuiManager < handle
         obj.viewer = new_viewer;
         obj.viewer.show();
       end
-      
+
       function mode = get.mode(obj)
         if isempty(obj.viewer)
           mode = [];
@@ -64,7 +64,7 @@ classdef GuiManager < handle
           mode = obj.viewer.mode;
         end
       end
-      
+
       function set.experiment(obj,experiment)
         obj.viewer.set_experiment(experiment);
       end

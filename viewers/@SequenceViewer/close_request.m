@@ -23,7 +23,7 @@ if obj.has_unsaved_changes
     close_all_windows(obj);
   end
   end
-  
+
   function close_all_windows(obj)
   delete(obj.btn_window);
   % if ~isempty(obj.plot_window_pr) && ishandle(obj.plot_window_pr)

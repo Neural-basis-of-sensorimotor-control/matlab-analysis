@@ -5,12 +5,12 @@ classdef HistogramParameters < PanelComponent
     ui_posttrigger
     ui_binwidth
   end
-  
+
   methods
     function obj = HistogramParameters(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       mgr.add(sc_ctrl('text','Pretrigger'),100);
@@ -28,7 +28,7 @@ classdef HistogramParameters < PanelComponent
       %             mgr.newline(20);
       %             mgr.add(sc_ctrl('pushbutton','Update',@(~,~) obj.update()),200);
         end
-        
+
         function initialize(obj)
           if ~isempty(obj.gui.histogram)
             set(obj.ui_pretrigger,'string',obj.gui.histogram.pretrigger);
@@ -39,7 +39,7 @@ classdef HistogramParameters < PanelComponent
             set(obj.ui_hist_type,'string',str,'Value',val,'Visible','on');
           end
         end
-        
+
         function updated = update(obj)
           if ~isempty(obj.gui.histogram)
             obj.gui.histogram.plotch();
@@ -49,7 +49,7 @@ classdef HistogramParameters < PanelComponent
           updated = true;
         end
       end
-      
+
       methods (Access = 'protected')
         function pretrigger_callback(obj)
           obj.gui.histogram.pretrigger = str2double(get(obj.ui_pretrigger,'string'));

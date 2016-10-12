@@ -5,7 +5,7 @@ if numel(stimpos) && filterwidth
   interspacing = min(interspacing, numel(v)-stimpos);
   filterinput = bsxfun(@plus,stimpos,(1:filterwidth)-1);
   pos = filterinput - repmat(stimpos,1,filterwidth) <= repmat(interspacing,1,filterwidth);
-  
+
   if any(~all(pos,1))
     fwidth = find(all(pos,1),1,'last');
     [v,v_median] = sc_remove_artifacts(v,fwidth,stimpos);

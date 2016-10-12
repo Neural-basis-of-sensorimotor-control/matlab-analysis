@@ -16,9 +16,9 @@ switch options
   end
   [~,ind] = min(abs(x-appr));
   near = x(ind);
-  
+
   if nargout>=2
     index = ind;
   end
-  
+
   end

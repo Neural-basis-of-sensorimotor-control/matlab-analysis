@@ -34,7 +34,7 @@ classdef NcCell < ObjectList & NcParent
         ind = inds(end);
       end
     end
-    
+
     function plotdata(obj,removeartifacts,eegopt)
       for k=1:obj.n
         figure(k)

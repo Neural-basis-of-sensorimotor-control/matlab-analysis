@@ -16,13 +16,13 @@ mergeto_expr = ScExperimentWrapper.load_file(fullfile(mergeto_dir, mergeto_file)
 
 for i=1:mergefrom_expr.n
   mergefrom_file = mergefrom_expr.get(i);
-  
+
   if mergeto_expr.has('tag', mergefrom_file.tag)
     mergeto_file = mergeto_expr.get('tag', mergefrom_file.tag);
-    
+
     merge_files(mergefrom_file, mergeto_file);
   end
-  
+
 end
 
 mergeto_expr.sc_save(true);

@@ -8,13 +8,13 @@ classdef ScSignal < ScChannel
     amplitudes          %ScCellList
     N                   %nbr of data points (1x1 double)
   end
-  
+
   properties (Dependent)
     t
     istrigger
     triggers
   end
-  
+
   methods
     function obj = ScSignal(parent,channelname,varargin)
       obj.parent = parent;
@@ -27,21 +27,21 @@ classdef ScSignal < ScChannel
         obj.(varargin{k}) = varargin{k+1};
       end
     end
-    
+
     %Clear all properties
     function sc_clear(obj)
       for i=1:obj.waveforms.n
         obj.waveforms.get(i).sc_clear();
       end
     end
-    
+
     %Load non-transient properties
     function sc_loadtimes(obj)
       for i=1:obj.waveforms.n
         obj.waveforms.get(i).sc_loadtimes();
       end
     end
-    
+
     %Load transient properties (only)
     function v_raw = sc_loadsignal(obj)%,tmin,tmax)
       if obj.is_adq_file
@@ -68,7 +68,7 @@ classdef ScSignal < ScChannel
         v_raw = d.(obj.channelname).values;%(t>tmin & t<tmax);
       end
     end
-    
+
     %Recalculate all waveform times with correct order vs filtering
     function recalculate_all_waveforms(obj)
       v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
@@ -82,7 +82,7 @@ classdef ScSignal < ScChannel
         wf.recalculate_spiketimes(v,obj.dt);
       end
     end
-    
+
     function recalculate_waveform(obj,wf)
       v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
       for k=1:obj.remove_waveforms.n
@@ -92,7 +92,7 @@ classdef ScSignal < ScChannel
       end
       wf.recalculate_spiketimes(v,obj.dt);
     end
-    
+
     function rmwfs = get_rmwfs(obj,tmin,tmax)
       rmwfs = ScList();
       for k=1:obj.remove_waveforms.n
@@ -114,7 +114,7 @@ classdef ScSignal < ScChannel
     function istrigger = get.istrigger(~)
       istrigger = false;
     end
-    
+
     function triggers = get.triggers(obj)
       triggers = ScCellList();
       for k=1:obj.waveforms.n
@@ -124,11 +124,11 @@ classdef ScSignal < ScChannel
         triggers.add(obj.remove_waveforms.get(k));
       end
     end
-    
+
     function t = get.t(obj)
       t = (0:obj.N-1)'*obj.dt;
     end
-    
+
     function sc_save(obj, varargin)
       obj.parent.sc_save(varargin{:});
     end

@@ -5,7 +5,7 @@ classdef ChannelAxes < GuiAxes
       obj@GuiAxes(gui);
       addlistener(obj,'ax_pr','PostSet',@(~,~) obj.ax_pr_listener_post);
     end
-    
+
     function sweep = setup_axes(obj)
       switch obj.gui.plotmode
         case {PlotModes.default PlotModes.plot_avg_selected ...
@@ -19,7 +19,7 @@ classdef ChannelAxes < GuiAxes
     hold(obj.ax,'on');
     xlim(obj.ax,obj.gui.xlimits);
   end
-  
+
 end
 methods (Access='protected')
   function axes_position_listener(obj)
@@ -39,7 +39,7 @@ methods (Access='protected')
       obj.gui.xlimits = xlim(obj.ax);
     end
   end
-  
+
   function xlimits_listener(obj)
     if obj.gui.xlimits(1) < obj.gui.xlimits(2)
       xlim(obj.ax,obj.gui.xlimits);

@@ -45,7 +45,7 @@ end
       fprintf('File ''%s'' does not contain patch channel ''%s''\n',file.tag,patchtag);
     end
   end
-  
+
   function plot_eeg3(file,wf,eegtag,obj,pretrigger,posttrigger,plottype,eeg_classification_on,eeg_classification)
     spiketimes = wf.gettimes(0,inf);
     eegc = file.signals.get('tag',eegtag);%load(file.filepath,'A_EEG');
@@ -58,7 +58,7 @@ end
       eegctimes = eegc.t;%(0:(numel(eegcvalues)-1))*eegc.A_EEG.interval;
       clear eeg
       vtags = {'V1', 'V2', 'V3', 'V4', 'V5', 'V6'};
-      
+
       matchstr1 = '333 ms ITI';
       matchstr2 = '1p ';
       triggers = file.gettriggers(0,inf);
@@ -106,13 +106,13 @@ end
             h4=subplot(numel(electrodes),4,(j-1)*4+4);
             stimtimes = electrodes{j};
             eegtype = interp1(eegctimes,eegcvalues,stimtimes);
-            
+
             if ~plottype
               f=sc_perihist(h1,stimtimes(eegtype<-2.5),spiketimes,pretrigger,posttrigger,binwidth);
             else
               f=sc_kernelhist(h1,stimtimes(eegtype<-2.5),spiketimes,pretrigger,posttrigger,binwidth,'bandwidth',bandwidth);
             end
-            
+
             if ~nnz(f), set(h1,'xtick',[],'ytick',[]); end
             if ~plottype
               f=sc_perihist(h2,stimtimes(eegtype>=-2.5 & eegtype<=2.5),spiketimes,pretrigger,posttrigger,binwidth);
@@ -157,4 +157,4 @@ end
         end
       end
     end
-    
+

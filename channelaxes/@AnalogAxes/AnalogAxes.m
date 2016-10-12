@@ -6,13 +6,13 @@ classdef AnalogAxes < ChannelAxes
     plot_waveforms = false
     v_equals_zero_for_t     %leave empty to disable
   end
-  
+
   properties (Transient)
     b_highlighted
     v_raw
     v
   end
-  
+
   methods
     function obj = AnalogAxes(gui,signal)%,varargin)
       obj@ChannelAxes(gui);
@@ -20,14 +20,14 @@ classdef AnalogAxes < ChannelAxes
         obj.signal = signal;
       end
     end
-    
+
     function clear_data(obj)
       obj.data_loaded = false;
       obj.v = [];
       obj.v_raw = [];
       obj.b_highlighted = [];
     end
-    
+
     function load_data(obj,apply_remove_waveforms)
       if nargin<2,    apply_remove_waveforms = true;   end
       obj.data_loaded = true;
@@ -47,7 +47,7 @@ classdef AnalogAxes < ChannelAxes
         obj.extract_b_highlighted();
       end
     end
-    
+
     function plotch(obj,btn_down_fcn)
       if nargin<=1,   btn_down_fcn = [];  end
       sweep = obj.setup_axes();
@@ -71,7 +71,7 @@ classdef AnalogAxes < ChannelAxes
       end
       xlim(obj.ax,obj.gui.xlimits);
     end
-    
+
     function [v_out, time_out, handles_out] = plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
       handles = nan(size(v_signal,2));
       pretrigger = obj.gui.pretrigger;
@@ -93,7 +93,7 @@ classdef AnalogAxes < ChannelAxes
             v_signal(:,i) = v_signal(:,i) - v_signal(ind,i);
           end
         end
-        
+
         if isempty(b_signal) || ~plothighlighted
           for i=1:size(v_signal,2)
             plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor);%,'LineWidth',2);

@@ -4,11 +4,11 @@ classdef SequenceViewer < handle
     triggertimes
     nbr_of_constant_panels
   end
-  
+
   methods (Abstract, Static)
     mode            %see ScGuiState enums
   end
-  
+
   methods (Abstract)
     %Add panels that will never be deleted during usage
     add_constant_panels(obj)
@@ -17,29 +17,29 @@ classdef SequenceViewer < handle
     add_dynamic_panels(obj)
     %Delete deletable panels
     delete_dynamic_panels(obj)
-    
+
     set_main_signal(obj, signal)
   end
-  
+
   methods (Static)
     function str = version_str()
       str = 'master 2016-Oct-10';
     end
   end
-  
+
   properties (SetObservable)
     parent              %GuiManager
-    
+
     panels              %CascadeList
-    
+
     btn_window          %Figure
-    
+
     digital_channels    %DigitalAxes
     analog_subch        %ScCellList
     histogram           %HistogramChannel
     rmwf                %ScRemoveWaveform
   end
-  
+
   properties (SetObservable, SetAccess = 'protected')
     experiment          %ScExperiment
     file                %ScFile
@@ -52,35 +52,35 @@ classdef SequenceViewer < handle
   end
   properties (SetObservable)
     help_text           %char array
-    
+
     has_unsaved_changes
-    
+
     main_channel        %AnalogAxes
-    
+
     nbr_of_analog_channels
-    
+
     pretrigger = -.1
     posttrigger = .1
     xlimits = [-.1 .1]              %xlim value
-    
+
     sweep = 1
     sweep_increment = 1
     plotmode = PlotModes.default
-    
+
     zoom_on = 0
     pan_on = 0
-    
+
     debug_indent = 0
-    
+
     automatic_update_on = true
   end
-  
+
   properties
     zoom_controls       %uicontrol array
     filepath            %char array
     reset_btn           %uicontrol
   end
-  
+
   properties (Dependent)
     plots
     tmin
@@ -90,18 +90,18 @@ classdef SequenceViewer < handle
     main_axes
     show_digital_channels
     show_histogram
-    
+
     plot_window
     histogram_window
     rasterplot_window
   end
-  
+
   properties
     plot_window_pr          %Figure
     histogram_window_pr     %Figure
     rasterplot_window_pr    %Figure
   end
-  
+
   properties (Constant)
     panel_width = 205;
     margin = 40
@@ -119,7 +119,7 @@ classdef SequenceViewer < handle
       obj.zoom_controls = ScList();
       obj.parent = guimanager;
     end
-    
+
     %override to use customized channel classes
     function create_channels(obj)
       obj.analog_subch = ScCellList();
@@ -128,12 +128,12 @@ classdef SequenceViewer < handle
       obj.digital_channels = DigitalAxes(obj);
       obj.histogram = HistogramChannel(obj);
     end
-    
+
     function add_reset_panel(obj)
       obj.panels.add(UpdatePanel(obj));
       obj.panels.add(ModePanel(obj));
     end
-    
+
     function analog_ch = get.analog_ch(obj)
       analog_ch = ScCellList();
       analog_ch.add(obj.main_channel);
@@ -141,7 +141,7 @@ classdef SequenceViewer < handle
         analog_ch.add(obj.analog_subch.get(k));
       end
     end
-    
+
     function plots = get.plots(obj)
       plots = ScCellList();
       if ~isempty(obj.digital_channels)
@@ -151,19 +151,19 @@ classdef SequenceViewer < handle
         plots.add(obj.analog_ch.get(k));
       end
     end
-    
+
     function tmin = get.tmin(obj)
       tmin = obj.sequence.tmin;
     end
-    
+
     function tmax = get.tmax(obj)
       tmax = obj.sequence.tmax;
     end
-    
+
     function main_signal = get.main_signal(obj)
       main_signal = obj.main_channel.signal;
     end
-    
+
     function main_axes = get.main_axes(obj)
       main_axes = obj.main_channel.ax;
     end

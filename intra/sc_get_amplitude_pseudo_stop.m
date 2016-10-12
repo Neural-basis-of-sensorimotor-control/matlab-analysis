@@ -24,7 +24,7 @@ for i=1:length(indx)
   tmp_stop = amplitude.stimtimes(ind) + stop_max;
   v = sc_get_sweeps(gui.main_channel.v, 0, amplitude.stimtimes(ind), ...
     stop_min, stop_max, dt);
-    
+
   stims = amplitude.parent_signal.parent.stims;
   artifact_indx = false(size(v)); 
   for j=1:stims.n

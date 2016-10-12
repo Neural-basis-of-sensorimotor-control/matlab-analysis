@@ -3,12 +3,12 @@ classdef UiWrapper < handle
   properties
     uihandle
   end 
-  
+
   methods 
     function obj = UiWrapper(uihandle)
       obj.uihandle = uihandle;
     end
-    
+
     function argout = get(obj,varargin)
       if nargout
         argout = get(obj.uihandle,varargin{:});
@@ -16,7 +16,7 @@ classdef UiWrapper < handle
         get(obj.uihandle,varargin{:});
       end
     end
-    
+
     function argout = set(obj,varargin)
       if nargout
         argout = set(obj.uihandle,varargin{:});
@@ -24,7 +24,7 @@ classdef UiWrapper < handle
         set(obj.uihandle,varargin{:});
       end
     end
-    
+
     function delete(obj)
       if ~isempty(obj.uihandle) && (ishandle(obj.uihandle) || isobject(obj.uihandle))
         delete(obj.uihandle)

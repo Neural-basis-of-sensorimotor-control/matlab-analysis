@@ -6,11 +6,11 @@ classdef ScExperiment < ScList
     save_name   %for saving this class, ends with _sc.mat
     last_gui_version
   end
-  
+
   properties (Dependent)
     abs_save_path
   end
-  
+
 methods (Static)
   function expr = load_file(filepath)
     d = load(filepath);
@@ -24,7 +24,7 @@ end
         obj.(varargin{i}) = varargin{i+1};
       end
     end
-    
+
     %Save current object
     %   showdialog  if true, user can update obj.save_name
     function saved = sc_save(obj, showdialog)
@@ -48,14 +48,14 @@ end
         saved = true;
       end
     end
-    
+
     %clear all transient data
     function sc_clear(obj)
       for i=1:obj.n
         obj.get(i).sc_clear();
       end
     end
-    
+
     %Populate all children
     function init(obj)
       for i=1:obj.n
@@ -63,7 +63,7 @@ end
         obj.get(i).init();
       end
     end
-    
+
     function add_spike2_channels(obj)
       for k=1:obj.n
         fprintf('reading file: %i out of %i\n',k,obj.n);
@@ -77,7 +77,7 @@ end
         obj.get(i).update_from_protocol(protocolfile);
       end
     end
-    
+
     %Get all spike times for trigger/spike object
     function spiketimes = get_spiketimes(obj,tag)
       t0 = 0;
@@ -110,7 +110,7 @@ end
         end
       end
     end
-    
+
     function is_ok = sc_version_check(obj)
       if ~isempty(obj.last_gui_version)
         switch obj.last_gui_version
@@ -143,7 +143,7 @@ end
             is_ok = true;
           end
         end
-        
+
         function print_status(obj)
           fprintf('Experiment: %s\n',obj.save_name);
           fprintf('Files:\n');
@@ -178,14 +178,14 @@ end
             end
           end
         end
-        
+
         function set.abs_save_path(obj, val)
           val = which(val);
           [pname, fname, ext] = fileparts(val);
           obj.sc_dir = pname;
           obj.save_name = [fname ext];
         end
-        
+
         function val = get.abs_save_path(obj)
           if isempty(obj.save_name)
             val = [];
@@ -194,7 +194,7 @@ end
           end
         end
       end
-      
+
     %     methods (Static)
     %         function obj = loadobj(s)
     %             s.fdir = sc_update_dir(s.fdir, get_raw_data_dir, 'dir');

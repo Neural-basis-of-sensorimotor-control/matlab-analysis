@@ -8,7 +8,7 @@ end
   function main_channel_listener(objhandle)
     addlistener(objhandle.main_channel,'signal','PostSet',@main_channel_signal_listener);
   end
-  
+
   function main_channel_signal_listener(objhandle)
     signal = objhandle.main_channel.signal;
     if isempty(signal)

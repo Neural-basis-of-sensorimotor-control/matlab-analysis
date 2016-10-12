@@ -4,7 +4,7 @@ classdef WfPlotPanel < PlotPanel
       obj@PlotPanel(gui);
       obj.layout();
     end
-    
+
     function setup_components(obj)
       obj.gui_components.add(OffsetAtTime(obj));
       obj.gui_components.add(SweepOptions(obj));
@@ -18,11 +18,11 @@ classdef WfPlotPanel < PlotPanel
       obj.gui_components.add(SaveSpikeTimesOptions(obj));
       setup_components@UpdatablePanel(obj);
     end
-    
-    
+
+
   end
-  
+
   methods
-  
+
   end
 end

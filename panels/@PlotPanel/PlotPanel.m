@@ -10,11 +10,11 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
       obj@UpdatablePanel(gui,panel);
       obj.layout();
     end
-    
+
     function initialize_panel(obj)
       initialize_panel@UpdatablePanel(obj);
     end
-    
+
     function update_panel(obj)
       update_panel@UpdatablePanel(obj);
       if obj.enabled    
@@ -22,8 +22,8 @@ classdef PlotPanel < UpdatablePanel%SequenceDependentPanel
       end
     end
   end
-  
+
   methods
-  
+
   end
 end

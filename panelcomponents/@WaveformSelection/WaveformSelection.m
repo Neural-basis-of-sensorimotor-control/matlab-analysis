@@ -5,13 +5,13 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
     ui_remove
     ui_nbr_of_spikes
   end
-  
+
   methods
-  
+
     function obj = WaveformSelection(varargin)
       obj@AbstractWaveformPanelComponent(varargin{:});
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       mgr.add(sc_ctrl('text','Waveform'),100);
@@ -28,15 +28,15 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
       mgr.add(sc_ctrl('pushbutton','Detect all waveforms again',@(~,~) obj.update_all_waveforms),200);
       mgr.newline(20)
       mgr.add(sc_ctrl('pushbutton','Detect this waveform again',@(~,~) obj.update_current_waveform),200);
-      
+
       sc_addlistener(obj.gui,'waveform',@(~,~) obj.waveform_listener,obj.uihandle);
-      
+
       function add_waveform_callback(objh)
         objh.gui.create_new_waveform;
         objh.show_panels(false);
         objh.automatic_update();
       end
-      
+
       function remove_waveform_callback(objh)
         if isempty(objh.gui.waveform)
           msgbox('No waveform selected. Cannot remove');
@@ -56,7 +56,7 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
         end
       end
     end
-    
+
     function initialize(obj)
       if isempty(obj.gui.main_signal)
         obj.gui.waveform = [];
@@ -69,7 +69,7 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
       else
         obj.gui.waveform = obj.gui.main_signal.waveforms.get(1);
       end
-      
+
       if ~isempty(obj.gui.waveform)
         wf = obj.gui.waveform;
         str = obj.gui.main_signal.waveforms.values('tag');
@@ -83,14 +83,14 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
           numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin, ...
           obj.gui.sequence.tmax))));
         end
-        
+
         if isempty(obj.gui.waveform)
           set(obj.ui_waveforms,'visible','off');
         else
           set(obj.ui_waveforms,'visible','on');
         end
       end
-      
+
       function waveform_listener(obj)
         if isempty(obj.gui.waveform)
           set(obj.ui_remove,'enable','off');
@@ -101,9 +101,9 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
         obj.initialize();
       end
     end
-    
+
     methods (Access = 'protected')
-    
+
       function waveform_callback(obj)
         str = get(obj.ui_waveforms,'string');
         val = get(obj.ui_waveforms,'value');
@@ -113,7 +113,7 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
           objh.automatic_update();
         end
       end
-      
+
       function export_waveform(obj)
         if isempty(obj.gui.waveform)
           msgbox('Cannot export. No waveform chosen');

@@ -13,7 +13,7 @@ classdef ScAmplitude < handle
     is_pseudo       %Mx1 logical
     middle_index    %M%1 logical
   end
-  
+
   properties (Dependent)
     tstart
     tstop
@@ -22,9 +22,9 @@ classdef ScAmplitude < handle
     width
     valid_data
   end
-  
+
   methods
-  
+
     function obj = ScAmplitude(parent_sequence, parent_signal, trigger, ...
       labels, tag, offset)
     obj.labels = labels;
@@ -34,7 +34,7 @@ classdef ScAmplitude < handle
     obj.tag = tag;
     obj.is_updated = false;
   end
-  
+
   function add_data(obj, stimtime, ind, x)
     [~,pos] = min(abs(stimtime-obj.stimtimes));
     for k=1:numel(ind)
@@ -42,7 +42,7 @@ classdef ScAmplitude < handle
     end
     obj.is_updated = false;
   end
-  
+
   function val = get_data(obj, stimtime, ind)
     if nargin<3,    ind = numel(obj.labels);    end
     [~,pos] = min(abs(stimtime-obj.stimtimes));
@@ -53,15 +53,15 @@ classdef ScAmplitude < handle
       end
     end
   end
-  
+
   function times  =  gettimes(obj, tmin, tmax)
     times = obj.stimtimes(obj.stimtimes >= tmin & obj.stimtimes < tmax);
   end
-  
+
   function sc_save(obj, varargin)
     obj.parent_signal.sc_save(varargin{:});
   end
-  
+
   function ret = get.tstart(obj)
     if isempty(obj.stimtimes)
       ret = inf;
@@ -69,7 +69,7 @@ classdef ScAmplitude < handle
       ret = min(obj.stimtimes);
     end
   end
-  
+
   function ret = get.tstop(obj)
     if isempty(obj.stimtimes)
       ret = -inf;
@@ -77,22 +77,22 @@ classdef ScAmplitude < handle
       ret = max(obj.stimtimes);
     end
   end
-  
+
   function val = get.rise_amplitude(obj)
     ind = obj.valid_data;
     val = obj.data(ind,4) - obj.data(ind,2);
   end
-  
+
   function val = get.latency(obj)
     ind = obj.valid_data;
     val = obj.data(ind,1);
   end
-  
+
   function val = get.width(obj)
     ind = obj.valid_data;
     val = obj.data(ind,3) - obj.data(ind,1);
   end
-  
+
   function val = get.valid_data(obj)
     val = all(isfinite(obj.data), 2);
   end

@@ -11,7 +11,7 @@ classdef SaveLoadButton < PanelComponent
     function obj = SaveLoadButton(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_save = mgr.add(sc_ctrl('pushbutton','Save',@(~,~) obj.save_callback),100);
@@ -32,7 +32,7 @@ classdef SaveLoadButton < PanelComponent
         obj.gui.has_unsaved_changes = false;
       end
     end
-    
+
     function save_as_callback(obj)
       obj.gui.experiment.last_gui_version = SequenceViewer.version_str;
       saved = obj.gui.experiment.sc_save(true);
@@ -40,24 +40,24 @@ classdef SaveLoadButton < PanelComponent
         obj.gui.has_unsaved_changes = false;
       end
     end
-    
+
     function load_callback(obj)
       mode = obj.gui.mode;
       gui_mgr = sc('-loadnew');
-      
+
       if mode == ScGuiState.ampl_analysis
         gui_mgr.mode = ScGuiState.ampl_analysis;
       end
     end
-    
+
     function new_sp2_set(~)
       sc -newsp2;
     end
-    
+
     function new_adq_set(~)
       sc -newadq;
     end
-    
+
     function has_unsaved_changes_listener(obj)
       if obj.gui.has_unsaved_changes
         set(obj.ui_save,'Enable','on');

@@ -2,25 +2,25 @@ classdef HistogramCheckbox < PanelComponent
   properties
     ui_show_histogram
   end
-  
+
   methods
     function obj = HistogramCheckbox(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_show_histogram = mgr.add(sc_ctrl('checkbox',...
         'Show histogram',@(~,~) obj.show_histogram_callback),...
         200);
       end
-      
+
       function initialize(obj)
         set(obj.ui_show_histogram,'value',obj.gui.show_histogram);
         obj.hide_all_options_but_enable(~obj.gui.show_histogram);
       end
     end
-    
+
     methods (Access = 'protected')
       function show_histogram_callback(obj)
         val = get(obj.ui_show_histogram,'value');

@@ -8,14 +8,14 @@ classdef ScListElement < handle
     index
   end
   methods
-  
+
     function index = get.index(obj)
       index = find(cell2mat(cellfun(@(x) x == obj, {obj.parent.list},'UniformOutput',0)));
     end
     function last = islast(obj)
       last = obj.index == obj.parent.n;
     end
-    
+
     function el = next(obj)
       if obj.islast()
         el = [];

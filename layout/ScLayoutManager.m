@@ -4,17 +4,17 @@ classdef ScLayoutManager < handle
     leftindent = 0       
     rowheight = 20
   end
-  
+
   properties (SetAccess = 'private')
     panel
-    
+
     xpos
     ypos
-    
+
     panelheight
     panelwidth
   end
-  
+
   methods
     function obj = ScLayoutManager(panel, varargin)
       obj.panel = panel;
@@ -28,13 +28,13 @@ classdef ScLayoutManager < handle
       obj.xpos = obj.leftindent;
       obj.ypos = obj.panelheight;
     end
-    
+
     function dummy = add_dummy_button(obj,string,width)
       dummy = obj.add(uicontrol('style','pushbutton','string',string,...
         'callback',@(~,~) msgbox('This feature is not yet implemented'...
         )),width);
       end
-      
+
       function tile = add(obj, tile, width)
         if nargin>2
           setwidth(tile,width);   
@@ -45,14 +45,14 @@ classdef ScLayoutManager < handle
         sety(tile,obj.ypos);
         obj.xpos = obj.xpos + getwidth(tile);
       end
-      
+
       function tile = addsc(obj,varargin)
         args = varargin(1:end-1);
         width = varargin{end};
         tile = sc_ctrl(args{:});
         obj.add(tile,width);
       end
-      
+
       function tile = addobject(obj, tile, width)
         obj.newline(getheight(tile));
         if nargin<3
@@ -61,7 +61,7 @@ classdef ScLayoutManager < handle
           obj.add(tile,width);
         end
       end
-      
+
         function newline(obj, rowheight)
           obj.xpos = obj.leftindent;
           if nargin==1
@@ -71,11 +71,11 @@ classdef ScLayoutManager < handle
             obj.rowheight = rowheight;
           end
         end
-        
+
         function trim(obj)
           set(obj.panel,'unit','pixel');
           pos = get(obj.panel,'position');
-          
+
           if strcmp(get(obj.panel,'Type'),'figure')
             panelheightdiff = getheight(obj.panel) - obj.panelheight;
             tiles = get(obj.panel,'children');

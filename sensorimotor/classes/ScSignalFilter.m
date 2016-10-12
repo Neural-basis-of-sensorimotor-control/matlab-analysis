@@ -7,7 +7,7 @@ classdef ScSignalFilter < handle
   %    dc_remove_width
     artifactchannels
   end
-  
+
   methods
     function obj = ScSignalFilter(parent)
       obj.scale_factor = 1;
@@ -17,7 +17,7 @@ classdef ScSignalFilter < handle
       obj.parent = parent;
       obj.artifactchannels = ScList();
     end
-    
+
     %add all stim channels from parent file to artifact filter
     function update_stims(obj)
       stimchannels = obj.parent.parent.stims;
@@ -34,7 +34,7 @@ classdef ScSignalFilter < handle
         end
       end
     end
-    
+
     function v = filt(obj,v,tmin,tmax)
       v = obj.raw_filt(v);
       v = obj.artifact_removal(v,tmin,tmax);
@@ -59,7 +59,7 @@ classdef ScSignalFilter < handle
             end
           end
         end
-        
+
       end
     %         function v = dc_remove(obj,v)
     %             if obj.dc_remove_width>1
@@ -98,7 +98,7 @@ classdef ScSignalFilter < handle
         end
       end
     end
-    
+
     methods (Static)
       function obj = loadobj(obj)
         if isempty(obj.scale_factor)
@@ -107,8 +107,8 @@ classdef ScSignalFilter < handle
       %             if isempty(obj.dc_remove_width)
       %                 obj.dc_remove_width = 1;
       %             end
-      
+
         end
       end
-      
+
     end

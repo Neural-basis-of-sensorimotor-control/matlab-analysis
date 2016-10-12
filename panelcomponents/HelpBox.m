@@ -15,7 +15,7 @@ classdef HelpBox < PanelComponent
       set(obj.ui_text,'string',obj.gui.help_text);
     end
   end
-  
+
   methods (Access='protected')
   end
 end

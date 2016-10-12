@@ -32,12 +32,12 @@ uicontrol(ui_waveform_tag);
       end
       close(dlg);
     end
-    
+
   dlgmgr.add(uicontrol('style','pushbutton','string',...
     'Cancel','callback',@cancel_callback),100);
-    
+
     function cancel_callback(~,~)
       close(dlg);
     end
-    
+
   end

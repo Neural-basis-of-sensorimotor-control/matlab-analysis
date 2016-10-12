@@ -52,14 +52,14 @@ uicontrol(ui_amplitude_tag);
       end
       close(dlg);
     end
-    
+
   dlgmgr.add(uicontrol('style','pushbutton','string',...
     'Cancel','callback',@cancel_callback),100);
-    
+
     function cancel_callback(~,~)
       close(dlg);
     end
-    
+
   dlgmgr.newline(2);
   dlgmgr.trim;
   % 

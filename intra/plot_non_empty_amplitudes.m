@@ -20,9 +20,9 @@ for i=1:length(neurons)
   fdir = [sc_dir neuron.expr_file];
   signal = sc_load_signal(fdir, neuron.file_str, neuron.signal_str);
   amplitudes = signal.amplitudes;
-  
+
   fprintf('%s\t', neuron.file_str);
-  
+
   for j=1:length(motifs)
     amplitude = amplitudes.get('tag', motifs{j});
     if sc_amplitude_is_empty(amplitude)
@@ -31,7 +31,7 @@ for i=1:length(neurons)
       fprintf('+\t');
     end
   end
-  
+
   fprintf('\n');
-  
+
 end

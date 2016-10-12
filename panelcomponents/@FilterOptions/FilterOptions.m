@@ -10,9 +10,9 @@ classdef FilterOptions < PanelComponent
       function obj = FilterOptions(panel)
         obj@PanelComponent(panel);
       end
-      
+
       function populate(obj,mgr)
-      
+
         mgr.newline(20);
         mgr.add(sc_ctrl('text','Smoothing width'),100);
         obj.ui_smoothing_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.smoothing_width_callback,...
@@ -30,27 +30,27 @@ classdef FilterOptions < PanelComponent
       %             mgr.add(sc_ctrl('text','DC remove width'),100);
       %             obj.ui_dc_remove_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.dc_remove_width_callback),60);
       %             mgr.add(sc_ctrl('text','bins'),40);
-      
+
         sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
       end
-      
+
       function initialize(obj)
         obj.main_signal_listener();
       end
     end
-    
+
     methods (Access = 'protected')
       function main_channel_listener(obj)
         sc_addlistener(obj.gui.main_channel,'signal',@(~,~) obj.main_signal_listener,obj.uihandle);
       end
-      
+
       function main_signal_listener(obj)
         set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
         set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
         set(obj.ui_scale_factor,'string',obj.gui.main_signal.filter.scale_factor);
       %         set(obj.ui_dc_remove_width,'string',obj.gui.main_signal.filter.dc_remove_width);
         end
-        
+
         function smoothing_width_callback(obj)
           smoothing_width = round(str2double(get(obj.ui_smoothing_width,'string')));
           if ~isfinite(smoothing_width) || ~smoothing_width
@@ -62,7 +62,7 @@ classdef FilterOptions < PanelComponent
             obj.show_panels(false);
           end
         end
-        
+
         function artifact_width_callback(obj)
           width = round(str2double(get(obj.ui_artifact_width,'string')));
           if ~isfinite(width) || width < 0
@@ -74,7 +74,7 @@ classdef FilterOptions < PanelComponent
           obj.show_panels(false);
         end
       end
-      
+
       function scale_factor_callback(obj)
         scale_factor = str2double(get(obj.ui_scale_factor,'string'));
         if ~isfinite(scale_factor)
@@ -86,7 +86,7 @@ classdef FilterOptions < PanelComponent
           obj.show_panels(false);
         end
       end
-      
+
     %         function dc_remove_width_callback(obj)
     %             width = round(str2double(get(obj.ui_dc_remove_width,'string')));
     %             if ~isfinite(width) || width < 0
@@ -98,6 +98,6 @@ classdef FilterOptions < PanelComponent
     %                 obj.show_panels(false);
     %             end
     %         end
-    
+
       end
     end

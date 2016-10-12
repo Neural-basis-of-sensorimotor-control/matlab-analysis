@@ -9,6 +9,6 @@ classdef NcParent < handle
     function ret = get.v_binned(obj)
       ret = cell2mat(obj.vals('v_binned'));
     end
-    
+
   end
 end

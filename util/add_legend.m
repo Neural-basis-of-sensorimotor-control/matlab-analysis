@@ -35,66 +35,66 @@ if ~nargin
     add_legend(gca);
   end
   return
-  
+
 elseif isempty(plot_handles)
   if nargout, h = []; end
   return
-  
+
 elseif isa(plot_handles(1), 'matlab.ui.Figure')
   if nargout
     h = add_legend(get_plots(plot_handles));
   else
     add_legend(get_plots(plot_handles));
   end
-  
+
   return
-  
+
 elseif isa(plot_handles(1), 'matlab.graphics.axis.Axes')
   if nargout
     h = add_legend(get_plots(plot_handles));
   else
     add_legend(get_plots(plot_handles));
   end
-  
+
   return
-  
+
 elseif ~isa(plot_handles(1), 'matlab.graphics.chart.primitive.Line')
   error('Function not defined for input class ''%s''', ...
     class(plot_handles(1)));
   end
-  
+
   tags = {plot_handles.Tag};
   unique_tags = unique(tags);
-  
+
   colors = varycolor(length(unique_tags));
-  
+
   ax_handles = {plot_handles.Parent};
   unique_ax_handles = ax_handles{1};
-  
+
   for i=2:length(ax_handles)
     if ~any(unique_ax_handles == ax_handles{i})
       unique_ax_handles = [unique_ax_handles; ax_handles{i}]; %#ok<AGROW>
     end
   end
-  
+
   for i=1:length(plot_handles)
     indx = find(cellfun(@(x) strcmp(x, tags{i}), unique_tags), 1);
     plot_handles(i).Color = colors(indx, :);
   end
-  
+
   empty_tag_indx = cellfun(@isempty, unique_tags);
   unique_tags(empty_tag_indx) = [];
-  
+
   if isempty(unique_tags)
     return;
   end
-  
+
   sample_plots(length(unique_tags)) = plot_handles(end);
   for i=1:length(unique_tags)
     indx = find(cellfun(@(x) strcmp(x, unique_tags{i}), tags), 1);
     sample_plots(i) = plot_handles(indx);
   end
-  
+
   for i=1:length(unique_ax_handles)
     if nargout
       h(i) = legend(unique_ax_handles(i), sample_plots, unique_tags{:}); %#ok<AGROW>

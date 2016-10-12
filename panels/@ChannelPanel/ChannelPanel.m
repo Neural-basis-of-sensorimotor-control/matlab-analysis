@@ -10,7 +10,7 @@ classdef ChannelPanel < UpdatablePanel
       panel = uipanel('Parent',gui.btn_window,'Title','Channel selection');
       obj@UpdatablePanel(gui,panel);
     end
-    
+
     function update_panel(obj)
       if isempty(obj.gui.sequence)
         obj.enabled = false;

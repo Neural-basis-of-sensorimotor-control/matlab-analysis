@@ -18,5 +18,5 @@ classdef AmplChannelPanel_ < ChannelPanel
       setup_components@UpdatablePanel(obj);
     end
   end
-  
+
 end

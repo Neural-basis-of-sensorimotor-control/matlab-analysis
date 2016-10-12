@@ -3,12 +3,12 @@ classdef ModeSelection < PanelComponent
   properties
     ui_mode
   end
-  
+
   methods
     function obj = ModeSelection(panel)
       obj@PanelComponent(panel);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(5);
       mgr.newline(20);
@@ -18,15 +18,15 @@ classdef ModeSelection < PanelComponent
     %             mgr.newline(20);
     %             mgr.add(sc_ctrl('pushbutton','Update',@(~,~) obj.update_callback()),200);
       end
-      
+
       function initialize(obj)
-      
+
         [~,str_] = enumeration('ScGuiState');
         set(obj.ui_mode,'string',str_,'value',find(obj.gui.parent.mode == enumeration('ScGuiState')),...
           'visible','on');
-          
+
         end
-        
+
       %         function updated = update(obj)
       %             str = get(obj.ui_mode,'string');
       %             val = get(obj.ui_mode,'value');
@@ -36,7 +36,7 @@ classdef ModeSelection < PanelComponent
       %             updated = mode == obj.gui.mode;
       %         end
         end
-        
+
         methods (Access = 'protected')
           function viewer_callback(obj)
             obj.gui.lock_screen(true,'Changing viewing mode');

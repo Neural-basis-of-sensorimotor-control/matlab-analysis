@@ -18,9 +18,9 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
         main_signal_listener(objh);
       end
     end
-    
+
     addlistener(objh.main_channel,'ax_pr','PostSet',@(~,~) main_channel_ax_listener(objh));
-    
+
     function main_channel_ax_listener(objh)
       if ~isempty(objh.main_axes)
         z = zoom(objh.main_axes);
@@ -28,13 +28,13 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
         p = pan(objh.plot_window);
         set(p,'ActionPostCallback',@(~,~) xaxis_listener(objh));
       end
-      
+
       function xaxis_listener(objh)
         objh.xlimits = xlim(gca);
       end
     end
   end
-  
+
   function sequence_listener(objh)
     if isempty(objh.sequence)
       objh.rmwf = [];
@@ -54,7 +54,7 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
       end
     end
   end
-  
+
   function zoom_on_listener(objh)
     if objh.zoom_on
       objh.pan_on = 0;
@@ -63,7 +63,7 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
       zoom(objh.main_axes,'off');
     end
   end
-  
+
   function pan_on_listener(objh)
     if objh.pan_on
       objh.zoom_on = 0;
@@ -72,8 +72,8 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
       pan(objh.plot_window,'off');
     end
   end
-  
-  
+
+
   function digital_channels_listener_pre(objh)
     if ~isempty(objh.digital_channels)
       objh.deletechannel = objh.digital_channels;
@@ -81,7 +81,7 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
       objh.deletechannel = [];
     end
   end
-  
+
   function digital_channels_listener_post(objh)
     if ~isempty(objh.deletechannel) && isobject(objh.deletechannel) && ...
       (isempty(objh.digital_channels) || objh.digital_channels ~= objh.deletechannel)

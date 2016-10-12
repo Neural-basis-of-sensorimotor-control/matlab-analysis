@@ -12,7 +12,7 @@ classdef SavePlotOptions < PanelComponent
       obj.sequence_listener();
       sc_addlistener(obj.gui,'sequence',@(~,~) obj.sequence_listener(),obj.uihandle);
     end
-    
+
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_filename = mgr.add(sc_ctrl('edit',[],@(~,~) obj.filename_callback()),150);
@@ -25,7 +25,7 @@ classdef SavePlotOptions < PanelComponent
       set(obj.ui_filenbr,'String',obj.filenbr);
     end
   end
-  
+
   methods (Access = 'protected')
     function sequence_listener(obj)
       if ~isempty(obj.gui.sequence)
@@ -33,7 +33,7 @@ classdef SavePlotOptions < PanelComponent
         set(obj.ui_filename,'String',obj.filename);
       end
     end
-    
+
     function save_plot_callback(obj)
       plothandles = get(obj.gui.main_axes,'Children');
       xl = get(obj.gui.main_axes,'xlim');

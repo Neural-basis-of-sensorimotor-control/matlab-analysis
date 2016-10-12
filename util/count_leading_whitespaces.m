@@ -16,7 +16,7 @@ while true
   if val + 1 > length(str) || str(val+1) ~= ' '
     return
   end
-  
+
   val = val + 1;
-  
+
 end

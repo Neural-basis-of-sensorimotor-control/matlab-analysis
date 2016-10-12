@@ -1,5 +1,5 @@
 classdef SequenceViewer < handle
-  
+
   properties (Dependent, Abstract)
     triggertimes
     nbr_of_constant_panels

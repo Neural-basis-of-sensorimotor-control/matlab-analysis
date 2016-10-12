@@ -9,16 +9,16 @@ if isempty(appr),   near = []; return;  end
 if nargin<3,    options = 'abs';   end
 
 switch options
-    case 'lower'
-        x = x(x<=appr);
-    case 'upper'
-        x = x(x>=appr);
-end
-[~,ind] = min(abs(x-appr));
-near = x(ind);
-
-if nargout>=2
+  case 'lower'
+    x = x(x<=appr);
+  case 'upper'
+    x = x(x>=appr);
+  end
+  [~,ind] = min(abs(x-appr));
+  near = x(ind);
+  
+  if nargout>=2
     index = ind;
-end
-
-end
+  end
+  
+  end

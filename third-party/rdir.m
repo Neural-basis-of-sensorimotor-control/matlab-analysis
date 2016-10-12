@@ -87,14 +87,14 @@ if isempty(wildpath),
       D(ii).name = [prepath D(ii).name];
     end;
   end;
-
+  
   % disp(sprintf('Scanning "%s"   %g files found',[prepath postpath],length(D)));
-
+  
 elseif strcmp(wildpath,'**'), % a double wild directory means recurs down into sub directories
 
   % first look for files in the current directory (remove extra filesep)
   D = rdir([prepath postpath(2:end)]);
-
+  
   % then look for sub directories
   Dt = dir(''); 
   tmp = dir([prepath '*']);
@@ -105,7 +105,7 @@ elseif strcmp(wildpath,'**'), % a double wild directory means recurs down into s
     end;
   end;
   D = [D; Dt];
-
+  
 else
   % Process directory wild card looking for sub directories that match
   tmp = dir([prepath wildpath]);
@@ -124,7 +124,7 @@ if (nargin>=2 && ~isempty(varargin{1})),
   date = [D.date];
   datenum = [D.datenum];
   bytes = [D.bytes];
-
+  
   try
     eval(sprintf('D((%s)==0) = [];',varargin{1})); 
   catch

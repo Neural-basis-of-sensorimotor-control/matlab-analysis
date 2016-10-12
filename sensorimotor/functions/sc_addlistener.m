@@ -5,8 +5,8 @@ userdata = get(temporaryobject,'userdata');
 userdata = [userdata, listener];
 set(temporaryobject,'DeleteFcn',@delete_listener,'userdata',userdata);
 
-    function delete_listener(~,~)
-        listeners = get(temporaryobject,'userdata');
-        delete(listeners);
-    end
+  function delete_listener(~,~)
+    listeners = get(temporaryobject,'userdata');
+    delete(listeners);
+  end
 end

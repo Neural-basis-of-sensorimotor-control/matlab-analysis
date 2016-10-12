@@ -1,11 +1,11 @@
 classdef AmplitudeComputedChannel < AmplitudeChannel
-  
+
   properties
     subplot_index = 1
   end
   
   methods
-    
+  
     function obj = AmplitudeComputedChannel(gui)
       obj@AmplitudeChannel(gui);
     end
@@ -29,7 +29,7 @@ classdef AmplitudeComputedChannel < AmplitudeChannel
       plot(obj.ax, start(~is_pseudo), rise(~is_pseudo), 'y+', 'Tag', 'Manual', 'LineStyle', 'None');
       plot(obj.ax, start(is_pseudo), rise(is_pseudo), 'r+', 'Tag', 'Automatic', 'LineStyle', 'None');
       plot(obj.ax, start(~middle), rise(~middle), 'wo', 'Tag', 'Outliers', 'LineStyle', 'None');
-        
+      
       h = add_legend(obj.ax);
       set(h, 'TextColor', 'w');
     end

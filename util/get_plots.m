@@ -41,7 +41,7 @@ else
   plots = [];
   
   for i=1:length(axes_handles)
-    
+  
     if isa(axes_handles(i), 'matlab.graphics.axis.Axes')
       plots = [plots; axes_handles(i)]; %#ok<AGROW>
     end

@@ -1,11 +1,11 @@
 function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, ...
-    posttrigger, dt)
+  posttrigger, dt)
 if tmin>0,  warning('tmin > 0 in sc_get_sweeps'),   end
 if isempty(triggertimes)
-    sweeps = [];    time = [];    return;
+  sweeps = [];    time = [];    return;
 end
 if size(triggertimes,2)==1
-    triggertimes = triggertimes';
+  triggertimes = triggertimes';
 end
 triggerpos = round((triggertimes-tmin)/dt)+1;
 sweeppos = (round(pretrigger/dt):round(posttrigger/dt))';
@@ -13,12 +13,12 @@ pos = bsxfun(@plus,triggerpos,sweeppos);
 
 min_pos = min(pos(:));
 if min_pos<1
-    v = [zeros(abs(min_pos)+1,1); v];
-    pos = pos + abs(min_pos)+1;
+  v = [zeros(abs(min_pos)+1,1); v];
+  pos = pos + abs(min_pos)+1;
 end
 max_pos = max(pos(:));
 if max_pos>numel(v)
-    v = [v; zeros(abs(max_pos)-numel(v),1)];
+  v = [v; zeros(abs(max_pos)-numel(v),1)];
 end
 sweeps = v(pos);
 

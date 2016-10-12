@@ -1,4 +1,5 @@
 *.asv
+*.zip
 sc_config.txt
 functions/get_raw_data_dir.m
 functions/get_sc_data_dir.m

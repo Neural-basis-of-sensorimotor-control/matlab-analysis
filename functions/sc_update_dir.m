@@ -35,32 +35,32 @@ for j=1:length(filesep_ind)
       switch answer
         case 'Yes'
           new_dir = temp_dir;
+        end
+      else
+        new_dir = temp_dir;
       end
-    else
-      new_dir = temp_dir;
+      return
     end
-    return
   end
-end
-
-
-%
-%
-%
-%
-% save_dir_separated = strsplit(new_dir, filesep);
-% save_dir_separated = save_dir_separated(length(save_dir_separated):-1:1);
-%
-% for i=1:length(base_dir)
-%   path_str = '';
-%   for j=1:length(save_dir_separated)
-%     path_str = [save_dir_separated{j} filesep path_str]; %#ok<AGROW>
-%     temp_dir = [base_dir{i} path_str];
-%     if exist(temp_dir, searchfor)
-%       new_dir = temp_dir;
-%       return
-%     end
-%   end
-% end
-%
-end
+  
+  
+  %
+  %
+  %
+  %
+  % save_dir_separated = strsplit(new_dir, filesep);
+  % save_dir_separated = save_dir_separated(length(save_dir_separated):-1:1);
+  %
+  % for i=1:length(base_dir)
+  %   path_str = '';
+  %   for j=1:length(save_dir_separated)
+  %     path_str = [save_dir_separated{j} filesep path_str]; %#ok<AGROW>
+  %     temp_dir = [base_dir{i} path_str];
+  %     if exist(temp_dir, searchfor)
+  %       new_dir = temp_dir;
+  %       return
+  %     end
+  %   end
+  % end
+  %
+  end

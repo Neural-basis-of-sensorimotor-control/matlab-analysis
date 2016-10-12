@@ -1,5 +1,5 @@
 classdef WaveformSelection < AbstractWaveformPanelComponent
-  
+
   properties
     ui_waveforms
     ui_remove
@@ -7,7 +7,7 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
   end
   
   methods
-    
+  
     function obj = WaveformSelection(varargin)
       obj@AbstractWaveformPanelComponent(varargin{:});
     end
@@ -82,66 +82,67 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
           sprintf('Nbr of spikes in this sequence: %i', ...
           numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin, ...
           obj.gui.sequence.tmax))));
+        end
+        
+        if isempty(obj.gui.waveform)
+          set(obj.ui_waveforms,'visible','off');
+        else
+          set(obj.ui_waveforms,'visible','on');
+        end
       end
       
-      if isempty(obj.gui.waveform)
-        set(obj.ui_waveforms,'visible','off');
-      else
-        set(obj.ui_waveforms,'visible','on');
+      function waveform_listener(obj)
+        if isempty(obj.gui.waveform)
+          set(obj.ui_remove,'enable','off');
+        else
+          set(obj.ui_remove,'enable','on');
+          set(obj.ui_nbr_of_spikes,'string',sprintf('Nbr of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
+        end
+        obj.initialize();
       end
     end
     
-    function waveform_listener(obj)
-      if isempty(obj.gui.waveform)
-        set(obj.ui_remove,'enable','off');
-      else
-        set(obj.ui_remove,'enable','on');
-        set(obj.ui_nbr_of_spikes,'string',sprintf('Nbr of spikes in this sequence: %i',numel(obj.gui.waveform.gettimes(obj.gui.sequence.tmin,obj.gui.sequence.tmax))));
-      end
-      obj.initialize();
-    end
-  end
-  
-  methods (Access = 'protected')
+    methods (Access = 'protected')
     
-    function waveform_callback(obj)
-      str = get(obj.ui_waveforms,'string');
-      val = get(obj.ui_waveforms,'value');
-      obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
-      if obj.gui.main_channel.plot_raw
-        obj.show_panels(false);
-        objh.automatic_update();
+      function waveform_callback(obj)
+        str = get(obj.ui_waveforms,'string');
+        val = get(obj.ui_waveforms,'value');
+        obj.gui.waveform = obj.gui.main_signal.waveforms.get('tag',str{val});
+        if obj.gui.main_channel.plot_raw
+          obj.show_panels(false);
+          objh.automatic_update();
+        end
       end
-    end
-    
-    function export_waveform(obj)
-      if isempty(obj.gui.waveform)
-        msgbox('Cannot export. No waveform chosen');
-        return
-      end
-      sgnl = obj.gui.main_signal;
-      wf = obj.gui.waveform;
-      file = obj.gui.file;
-      experiment = obj.gui.experiment;
-      for k=1:experiment.n
-        this_file = experiment.get(k);
-        if this_file~=file
-          for j=1:this_file.signals.n
-            this_signal = this_file.signals.get(j);
-            if strcmp(this_signal.tag,sgnl.tag)
-              wfs = this_signal.waveforms;
-              if wfs.contains(wf)
-                msgbox(sprintf('Waveform %s already exists in file %s',wf.tag,this_file.tag));
-              elseif sc_contains(wfs.values('tag'),wf.tag)
-                msgbox(sprintf('Other waveform with same tag (%s) already exists in file %s',wf.tag,this_file.tag));
-              else
-                obj.gui.has_unsaved_changes = true;
-                this_wf = ScWaveform(this_signal,wf.tag,[]);
-                for m=1:wf.n
-                  threshold = wf.get(m);
-                  this_wf.add(threshold.create_copy());
+      
+      function export_waveform(obj)
+        if isempty(obj.gui.waveform)
+          msgbox('Cannot export. No waveform chosen');
+          return
+        end
+        sgnl = obj.gui.main_signal;
+        wf = obj.gui.waveform;
+        file = obj.gui.file;
+        experiment = obj.gui.experiment;
+        for k=1:experiment.n
+          this_file = experiment.get(k);
+          if this_file~=file
+            for j=1:this_file.signals.n
+              this_signal = this_file.signals.get(j);
+              if strcmp(this_signal.tag,sgnl.tag)
+                wfs = this_signal.waveforms;
+                if wfs.contains(wf)
+                  msgbox(sprintf('Waveform %s already exists in file %s',wf.tag,this_file.tag));
+                elseif sc_contains(wfs.values('tag'),wf.tag)
+                  msgbox(sprintf('Other waveform with same tag (%s) already exists in file %s',wf.tag,this_file.tag));
+                else
+                  obj.gui.has_unsaved_changes = true;
+                  this_wf = ScWaveform(this_signal,wf.tag,[]);
+                  for m=1:wf.n
+                    threshold = wf.get(m);
+                    this_wf.add(threshold.create_copy());
+                  end
+                  wfs.add(this_wf);
                 end
-                wfs.add(this_wf);
               end
             end
           end
@@ -149,4 +150,3 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
       end
     end
   end
-end

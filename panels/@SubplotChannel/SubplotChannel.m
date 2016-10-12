@@ -1,5 +1,5 @@
 classdef SubplotChannel < handle
-  
+
   methods (Abstract)
     plot_channel(obj)
   end
@@ -21,7 +21,7 @@ classdef SubplotChannel < handle
   end
   
   methods
-    
+  
     function obj = SubplotChannel(gui)
       obj.gui = gui;
     end

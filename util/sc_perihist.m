@@ -2,11 +2,11 @@ function [f,t] = sc_perihist(varargin)
 %SC_PERIHIST(stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
 %SC_PERIHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
 if ishandle(varargin{1})
-    axeshandle = varargin{1};
-    offset = 1;
+  axeshandle = varargin{1};
+  offset = 1;
 else
-    axeshandle = gca;
-    offset = 0;
+  axeshandle = gca;
+  offset = 0;
 end
 stimtimes = varargin{offset+1};
 spiketimes = varargin{offset+2};

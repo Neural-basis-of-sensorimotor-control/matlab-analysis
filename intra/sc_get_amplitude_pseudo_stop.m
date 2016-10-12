@@ -17,14 +17,14 @@ indx = find(~amplitude.valid_data);
 for i=1:length(indx)
   ind = indx(i);
   if stop_min == stop_max
-      stop(ind) = stop_min;
-      continue
+    stop(ind) = stop_min;
+    continue
   end
   tmp_start = amplitude.stimtimes(ind) + stop_min;
   tmp_stop = amplitude.stimtimes(ind) + stop_max;
   v = sc_get_sweeps(gui.main_channel.v, 0, amplitude.stimtimes(ind), ...
     stop_min, stop_max, dt);
-  
+    
   stims = amplitude.parent_signal.parent.stims;
   artifact_indx = false(size(v)); 
   for j=1:stims.n

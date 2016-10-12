@@ -1,11 +1,11 @@
 classdef AmplitudeRealTimeChannel < AmplitudeChannel
-  
+
   properties
     subplot_index = 1
   end
   
   methods
-    
+  
     function obj = AmplitudeRealTimeChannel(gui)
       obj@AmplitudeChannel(gui);
     end

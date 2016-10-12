@@ -2,8 +2,8 @@ function success = init_adq_file(obj)
 success = false;
 [fid, errmsg] = fopen(obj.filepath);%,'r');%,'b');%,'UTF-8');
 if fid==-1
-    fprintf('Error reading adq file: %s\n',errmsg);
-    return
+  fprintf('Error reading adq file: %s\n',errmsg);
+  return
 end
 %00 buffersize
 buffersize = fread(fid,1,'uint16');
@@ -26,12 +26,12 @@ fclose(fid);
 %update sampletime
 dt = dt*nbrofchannels;
 for k=1:nbrofchannels
-    tag = sprintf('ch%i',k);
-    signal = ScSignal(obj,256+(k-1)*N,'tag',tag,...
-        'dt',dt,'N',N);
-    signal.filter.smoothing_width = 1;
-    signal.filter.artifact_width = 0;
-    obj.signals.add(signal);
+  tag = sprintf('ch%i',k);
+  signal = ScSignal(obj,256+(k-1)*N,'tag',tag,...
+    'dt',dt,'N',N);
+  signal.filter.smoothing_width = 1;
+  signal.filter.artifact_width = 0;
+  obj.signals.add(signal);
 end
 triggerparent = ScAdqTriggerParent();
 triggerparent.triggers.add(ScAdqSweeps(nbrofsweeps, buffersize*dt));

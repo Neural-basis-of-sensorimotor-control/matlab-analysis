@@ -5,9 +5,9 @@ nbrofrows = ceil(sqrt(totnbr));
 nbrofcols = ceil(totnbr/nbrofrows);
 
 if nargout
-    h = subplot(nbrofrows,nbrofcols,i);
+  h = subplot(nbrofrows,nbrofcols,i);
 else
-    subplot(nbrofrows,nbrofcols,i);
+  subplot(nbrofrows,nbrofcols,i);
 end
 
 

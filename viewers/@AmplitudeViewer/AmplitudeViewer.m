@@ -1,5 +1,5 @@
 classdef AmplitudeViewer < SequenceViewer
-  
+
   properties (SetObservable, SetAccess = 'private')
     amplitude
     mouse_press = 1
@@ -16,7 +16,7 @@ classdef AmplitudeViewer < SequenceViewer
   end
   
   methods
-    
+  
     function obj = AmplitudeViewer(guimanager,varargin)
       obj@SequenceViewer(guimanager,varargin{:});
       obj.create_channels();
@@ -105,7 +105,7 @@ classdef AmplitudeViewer < SequenceViewer
   end
   
   methods (Static)
-    
+  
     function val = mode(~)
       val = ScGuiState.ampl_analysis;
     end

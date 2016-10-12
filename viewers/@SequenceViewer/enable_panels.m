@@ -4,7 +4,7 @@ for k=index:obj.panels.n
   %  obj.panels.get(k).update_panel();
     obj.panels.get(k).initialize_panel();
     if ~obj.panels.get(k).enabled
-        break;
+      break;
     end
-end
-end
+  end
+  end

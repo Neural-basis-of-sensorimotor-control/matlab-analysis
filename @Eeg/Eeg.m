@@ -1,64 +1,64 @@
 classdef Eeg < handle
-    % Eeg   class object to evaluate EEG data. Quick n dirty
-    % Instruktioner:
-    % 1. Skriv 'h = Eeg' i kommandoprompten (en gång)
-    %       Välj vilken *_sc.mat fil som skall användas
-    %
-    % 2. Du kan nu avända följande kommandon:
-    % a) Kontrollera automatisk detektion av stigande flank på EEG:t
-    %   h.modify_eeg(width, threshold, nbr_of_consecutive, filenbr)
-    %   h.modify_eeg(width, threshold, nbr_of_consecutive, filenbr, xlimits)
-    %
-    %   width = antal bins i moving average filtrering av derivatan av
-    %       EEG-signalen (ett positivt heltal)
-    %   threshold = vilket värde som derivatan skall överstiga för att
-    %       EEG:t skall klassifieras som stigande flank (valfritt tal)
-    %   nbr_of_consecutive = hur många derivatapunkter måste vara över
-    %       threshold i följd för att det skall klassifieras som stigande flank
-    %       (ett positivt heltal)
-    %   filenbr = fil-nummer i det aktuella experimentet (ett positivt heltal)
-    %   xlimits [optional] = gränser för x-värdet plottning av data, mätt i
-    %       bin index (vektor med två positiva heltal, stigande)
-    %
-    % b) Visa resultaten:
-    %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype)
-    %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype,bandwidth)
-    %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype,bandwidth,eeg_classification)
-    %   
-    %   pretrigger, posttrigger, binwidth = värden för histogrammet i
-    %       sekunder
-    %   plottype = 0 för peristimulus histogram, 1 för kernel density
-    %       estimering
-    %   bandwidth [optional] = standard dev för kernels, ej relevant för
-    %       peristimulus histogram 
-    %   eeg_classification [optional] = vektor med tre värden: 
-    %       [width threshold nbr_of_consecutive] enligt funktionen ovan.
-    %       Om man använder peristimulus histogram så får man skriva in ett
-    %       godtyckligt värde för bandwidth
-    %
-    % c) Spara data från figur till .dat fil:
-    %   h.save_to_dat
-    %       <Välj figur nummer>
-    %   Nu sparas all data från denna figur som en dat fil. Första kolumnen 
-    %   är tiden (i millisekunder), andra kolumnen är spikfrekvens för histogrammet 
-    %   i första raden första kolumnen, sedan första raden andra kolumnen, 
-    %   första raden tredje kolumnen, andra raden, första kolumnen etc.
-    %
-    properties
-        exp_path
-        eegtag = 'A_EEG'
+  % Eeg   class object to evaluate EEG data. Quick n dirty
+  % Instruktioner:
+  % 1. Skriv 'h = Eeg' i kommandoprompten (en gï¿½g)
+  %       Vï¿½j vilken *_sc.mat fil som skall anvï¿½das
+  %
+  % 2. Du kan nu avï¿½da fï¿½jande kommandon:
+  % a) Kontrollera automatisk detektion av stigande flank pï¿½EEG:t
+  %   h.modify_eeg(width, threshold, nbr_of_consecutive, filenbr)
+  %   h.modify_eeg(width, threshold, nbr_of_consecutive, filenbr, xlimits)
+  %
+  %   width = antal bins i moving average filtrering av derivatan av
+  %       EEG-signalen (ett positivt heltal)
+  %   threshold = vilket vï¿½de som derivatan skall ï¿½erstiga fï¿½ att
+  %       EEG:t skall klassifieras som stigande flank (valfritt tal)
+  %   nbr_of_consecutive = hur mï¿½ga derivatapunkter mï¿½te vara ï¿½er
+  %       threshold i fï¿½jd fï¿½ att det skall klassifieras som stigande flank
+  %       (ett positivt heltal)
+  %   filenbr = fil-nummer i det aktuella experimentet (ett positivt heltal)
+  %   xlimits [optional] = grï¿½ser fï¿½ x-vï¿½det plottning av data, mï¿½t i
+  %       bin index (vektor med tvï¿½positiva heltal, stigande)
+  %
+  % b) Visa resultaten:
+  %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype)
+  %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype,bandwidth)
+  %   h.plot_eeg(pretrigger,posttrigger,binwidth,plottype,bandwidth,eeg_classification)
+  %   
+  %   pretrigger, posttrigger, binwidth = vï¿½den fï¿½ histogrammet i
+  %       sekunder
+  %   plottype = 0 fï¿½ peristimulus histogram, 1 fï¿½ kernel density
+  %       estimering
+  %   bandwidth [optional] = standard dev fï¿½ kernels, ej relevant fï¿½
+  %       peristimulus histogram 
+  %   eeg_classification [optional] = vektor med tre vï¿½den: 
+  %       [width threshold nbr_of_consecutive] enligt funktionen ovan.
+  %       Om man anvï¿½der peristimulus histogram sï¿½fï¿½ man skriva in ett
+  %       godtyckligt vï¿½de fï¿½ bandwidth
+  %
+  % c) Spara data frï¿½ figur till .dat fil:
+  %   h.save_to_dat
+  %       <Vï¿½j figur nummer>
+  %   Nu sparas all data frï¿½ denna figur som en dat fil. Fï¿½sta kolumnen 
+  %   ï¿½ tiden (i millisekunder), andra kolumnen ï¿½ spikfrekvens fï¿½ histogrammet 
+  %   i fï¿½sta raden fï¿½sta kolumnen, sedan fï¿½sta raden andra kolumnen, 
+  %   fï¿½sta raden tredje kolumnen, andra raden, fï¿½sta kolumnen etc.
+  %
+  properties
+    exp_path
+    eegtag = 'A_EEG'
+  end
+  methods
+    function obj = Eeg(filename)
+      sc('-addpath');
+      if ~nargin
+        [fname,pname] = uigetfile('_sc.mat');
+        filename = fullfile(pname,fname);
+      end
+      obj.exp_path = filename;
+      if isnumeric(obj.exp_path)
+        fprintf('No experiment chosen, cannot proceed\n');
+      end
     end
-    methods
-        function obj = Eeg(filename)
-            sc('-addpath');
-            if ~nargin
-                [fname,pname] = uigetfile('_sc.mat');
-                filename = fullfile(pname,fname);
-            end
-            obj.exp_path = filename;
-            if isnumeric(obj.exp_path)
-                fprintf('No experiment chosen, cannot proceed\n');
-            end
-        end
-    end
+  end
 end

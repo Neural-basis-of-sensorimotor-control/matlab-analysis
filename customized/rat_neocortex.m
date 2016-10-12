@@ -44,11 +44,11 @@ triggerparent = triggerparents.get('tag','TextMark');
 triggers = file.gettriggers(sequence.tmin,sequence.tmax);
 electrode_stimtimes = cell(10,1);
 for k=1:length(electrode_stimtimes)
-    tag = sprintf('V%i',k);
-    if triggers.has('tag',tag)
-        stim = triggers.get('tag',tag);
-        electrode_stimtimes(k) = {stim.gettimes(sequence.tmin,sequence.tmax)};
-    end
+  tag = sprintf('V%i',k);
+  if triggers.has('tag',tag)
+    stim = triggers.get('tag',tag);
+    electrode_stimtimes(k) = {stim.gettimes(sequence.tmin,sequence.tmax)};
+  end
 end
 nc = NcCell;
 % figure(101)
@@ -64,8 +64,8 @@ nc = NcCell;
 % clf
 % set(gcf,'Color',[1 1 1]);
 for k=1:length(remove_stims_struct)
-    trigger = triggerparent.triggers.get('tag',remove_stims_struct(k).label);
-    triggertimes = trigger.gettimes(sequence.tmin,sequence.tmax);
+  trigger = triggerparent.triggers.get('tag',remove_stims_struct(k).label);
+  triggertimes = trigger.gettimes(sequence.tmin,sequence.tmax);
 %     figure(101)
 %     sc_square_subplot(length(remove_stims_struct),k);
 %     sc_perihist(triggertimes,spikes1,-1e-1,1e-1,1e-3);
@@ -84,27 +84,27 @@ for k=1:length(remove_stims_struct)
 %     sc_kernelhist(triggertimes,spikes2,-1e-1,1e-1,1e-3,'bandwidth',5e-4);
 %     title(remove_stims_struct(k).label);
 %     
-    type = NcType();
-    type.label = remove_stims_struct(k).label;
-    artifacts = [];
-    for j=1:length(electrode_stimtimes)
-        artifacts = [artifacts; sc_perieventtimes(triggertimes,electrode_stimtimes{j},0,posttrigger)];
-    end
-    type.artifacts = unique(artifacts);
-    [sweeps,time] = sc_perieventsweep(v,round(triggertimes/1e-5)+1,pretrigger,posttrigger-1,1e-5);
-    vm = nan(length(triggertimes),nnz(time>=0));
-    for j=1:size(vm,1)
-        vm0 = sweeps(j,time<0);
-        vm0 = mean(vm0(end-10:end));
-        vm(j,:) = sweeps(j,time>=0) - vm0;%mean(sweeps(j,time<0));
-    end
-    for j=1:size(vm,1)
-        sw = NcSweep();
-        sw.v = vm(j,:);
-        sw.rising_edge = any(remove_stims_struct(k).remove == j);
-        type.add(sw);
-    end
-    nc.add(type);
+  type = NcType();
+  type.label = remove_stims_struct(k).label;
+  artifacts = [];
+  for j=1:length(electrode_stimtimes)
+    artifacts = [artifacts; sc_perieventtimes(triggertimes,electrode_stimtimes{j},0,posttrigger)];
+  end
+  type.artifacts = unique(artifacts);
+  [sweeps,time] = sc_perieventsweep(v,round(triggertimes/1e-5)+1,pretrigger,posttrigger-1,1e-5);
+  vm = nan(length(triggertimes),nnz(time>=0));
+  for j=1:size(vm,1)
+    vm0 = sweeps(j,time<0);
+    vm0 = mean(vm0(end-10:end));
+    vm(j,:) = sweeps(j,time>=0) - vm0;%mean(sweeps(j,time<0));
+  end
+  for j=1:size(vm,1)
+    sw = NcSweep();
+    sw.v = vm(j,:);
+    sw.rising_edge = any(remove_stims_struct(k).remove == j);
+    type.add(sw);
+  end
+  nc.add(type);
 end
 
 %nc.plotdata(removeartifacts,eegopt);

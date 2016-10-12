@@ -1,11 +1,11 @@
 classdef AmplitudeChannel < SubplotChannel
-  
+
   methods (Abstract)
     plot_amplitude(obj)
   end
   
   methods
-    
+  
     function obj = AmplitudeChannel(gui)
       obj@SubplotChannel(gui);
     end

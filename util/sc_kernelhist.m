@@ -3,11 +3,11 @@ function [f,t,h] = sc_kernelhist(varargin)
 %SC_KERNELHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs)
 %SC_KERNELHIST(...,ksdensityargs)
 if ishandle(varargin{1})
-    axeshandle = varargin{1};
-    offset = 1;
+  axeshandle = varargin{1};
+  offset = 1;
 else
-    axeshandle = gca;
-    offset = 0;
+  axeshandle = gca;
+  offset = 0;
 end
 stimtimes = varargin{offset+1};
 spiketimes = varargin{offset+2};

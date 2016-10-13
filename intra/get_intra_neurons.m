@@ -26,7 +26,7 @@ neurons(23).expr_file = 'BHNR_sc.mat';   neurons(23).file_str = 'BHNR0002';    n
 neurons(24).expr_file = 'BGNR_sc.mat';   neurons(24).file_str = 'BGNR0000';    neurons(24).signal_str = 'patch'; neurons(24).tag = 'NeuronXX';
 neurons(25).expr_file = 'DJNR_sc.mat';   neurons(25).file_str = 'DJNR0005';    neurons(25).signal_str = 'patch'; neurons(25).tag = 'NeuronXX'; neurons(25).tmin = 900; neurons(25).tmax = inf;
 
-%neurons(26).expr_file = 'BPNRtst_sc.mat';   neurons(26).file_str = 'BPNR0000';    neurons(26).signal_str = 'patch'; neurons(26).tag = 'NeuronXX';
-%neurons(27).expr_file = 'BPNRtst_sc.mat';   neurons(27).file_str = 'BPNR0001';    neurons(27).signal_str = 'patch'; neurons(27).tag = 'NeuronXX';
+neurons(26).expr_file = 'BPNRtst_sc.mat';   neurons(26).file_str = 'BPNR0000';    neurons(26).signal_str = 'patch'; neurons(26).tag = 'NeuronXX';
+neurons(27).expr_file = 'BPNRtst_sc.mat';   neurons(27).file_str = 'BPNR0001';    neurons(27).signal_str = 'patch'; neurons(27).tag = 'NeuronXX';
 
 end

@@ -134,7 +134,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
       msgbox('Experiment not saved. Aborting');
     else
       guimgr.show;
-      assignin('base','guimgr',guimgr);
+      assignin('base','h',guimgr);
       assignin('base','expr',experiment);
     end
   end
@@ -168,7 +168,7 @@ else
   clear d
   guimgr.experiment = experiment;
   guimgr.show;
-  assignin('base','guimgr',guimgr);
+  assignin('base','h',guimgr);
   assignin('base','expr',experiment);
 end
 

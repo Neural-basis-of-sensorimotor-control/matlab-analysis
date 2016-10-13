@@ -1,4 +1,4 @@
-classdef AmplitudeViewer < SequenceViewer
+classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
 
   properties (SetObservable, SetAccess = 'private')
     amplitude

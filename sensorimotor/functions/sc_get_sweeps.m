@@ -1,5 +1,8 @@
 function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, ...
   posttrigger, dt)
+
+input_is_logical = islogical(v);
+
 if tmin>0,  warning('tmin > 0 in sc_get_sweeps'),   end
 if isempty(triggertimes)
   sweeps = [];    time = [];    return;
@@ -21,6 +24,10 @@ if max_pos>numel(v)
   v = [v; zeros(abs(max_pos)-numel(v),1)];
 end
 sweeps = v(pos);
+
+if input_is_logical
+	sweeps = logical(sweeps);
+end
 
 time = sweeppos*dt;
 

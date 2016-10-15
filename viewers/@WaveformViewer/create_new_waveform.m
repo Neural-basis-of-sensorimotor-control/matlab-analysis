@@ -22,7 +22,7 @@ uicontrol(ui_waveform_tag);
     if ~isempty(tag) && ~obj.main_signal.waveforms.has('tag',tag)
       waveform = ScWaveform(obj.main_signal,tag,[]);
       obj.main_signal.waveforms.add(waveform);
-      obj.waveform = waveform;
+      obj.set_waveform(waveform);
       obj.has_unsaved_changes = true;
       resize_fcn = get(obj.plot_window,'SizeChangedFcn');
       resize_fcn();

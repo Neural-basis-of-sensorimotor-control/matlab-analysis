@@ -1,10 +1,20 @@
-function set_file(obj,file)
+function set_file(obj, file)
+
+if isnumeric(file)
+	file = obj.experiment.get(file);
+elseif ischar(file)
+	file = obj.experiment.get('tag', file);
+end
+
 obj.file = file;
+
 if isempty(file)
   obj.set_sequence([]);
   return
 end
+
 file.sc_loadtimes();
+
 if ~file.n
   N = cell2mat(file.signals.values('N'));
   dt = cell2mat(file.signals.values('dt'));

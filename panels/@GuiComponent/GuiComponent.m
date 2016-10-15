@@ -47,7 +47,7 @@ classdef GuiComponent < UiWrapper
       val = obj.gui.sequence;
     end
     function set.sequence(obj,val)
-      obj.gui.sequence = val;
+      obj.gui.set_sequence(val);
     end
   end
 end

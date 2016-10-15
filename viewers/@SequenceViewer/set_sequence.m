@@ -1,4 +1,5 @@
 function set_sequence(obj,sequence)
+
 obj.sequence = sequence;
 
 if ~isempty(sequence) && sequence.signals.n

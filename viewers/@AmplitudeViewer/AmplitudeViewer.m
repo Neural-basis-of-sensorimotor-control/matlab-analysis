@@ -17,10 +17,9 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
 
   methods
 
-    function obj = AmplitudeViewer(guimanager,varargin)
-      obj@SequenceViewer(guimanager,varargin{:});
+    function obj = AmplitudeViewer(guimanager, varargin)
+      obj@SequenceViewer(guimanager, varargin{:});
       obj.create_channels();
-      obj.av_setup_listeners();
     end
 
     %Overriding method in SequenceViewer

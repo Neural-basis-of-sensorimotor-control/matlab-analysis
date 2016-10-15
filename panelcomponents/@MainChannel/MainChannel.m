@@ -20,9 +20,9 @@ classdef MainChannel < PanelComponent
       str = obj.gui.sequence.signals.values('tag');
       if isempty(obj.gui.main_channel.signal)
         if any(cellfun(@(x) strmcpi(x.tag,'patch'),str))
-          obj.gui.main_channel.signal = obj.gui.sequence.get('tag','patch');
+          obj.gui.set_main_signal(obj.gui.sequence.get('tag','patch'));
         else
-          obj.gui.main_channel.signal = obj.gui.sequence.signals.get(1);
+          obj.gui.set_main_signal(obj.gui.sequence.signals.get(1));
         end
       end
       val = find(cellfun(@(x) strcmp(x,obj.gui.main_signal.tag), str));
@@ -35,16 +35,19 @@ classdef MainChannel < PanelComponent
       else
         val = get(obj.ui_channel,'value');
         str = get(obj.ui_channel,'string');
-        obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
+        obj.gui.set_main_signal(obj.gui.sequence.signals.get('tag',str{val}));
         updated = true;
       end
-    end
-  end
+		end
+		
+	end
+	
   methods
+		
     function channel_callback(obj)
       val = get(obj.ui_channel,'value');
       str = get(obj.ui_channel,'string');
-      obj.gui.main_channel.signal = obj.gui.sequence.signals.get('tag',str{val});
+      obj.gui.set_main_signal(obj.gui.sequence.signals.get('tag',str{val}));
       obj.show_panels(false);
       if obj.gui.automatic_update_on
         obj.panel.update_panel;

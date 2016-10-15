@@ -1,6 +1,6 @@
 classdef WaveformViewer < SequenceViewer
 
-  properties (SetObservable)
+  properties (SetObservable, SetAccess='private')
     triggerparent
     trigger
     waveform
@@ -23,9 +23,6 @@ classdef WaveformViewer < SequenceViewer
     function obj = WaveformViewer(guimanager,varargin)
       obj@SequenceViewer(guimanager,varargin{:});
       obj.create_channels();
-      obj.wf_setup_listeners();
-      addlistener(obj,'sequence','PostSet',@(~,~) obj.sequence_listener());
-      addlistener(obj,'triggerparent','PostSet',@(~,~) obj.triggerparent_listener);            
     end
 
     function add_constant_panels(obj)
@@ -75,54 +72,5 @@ classdef WaveformViewer < SequenceViewer
       ret = 3;
     end
 
-  end
-  methods (Access = 'protected')
-    function sequence_listener(obj)
-      if isempty(obj.sequence) || ~obj.triggerparents.n
-        obj.triggerparent = [];
-      elseif isempty(obj.triggerparent)
-        str = obj.triggerparents.values('tag');
-        if sc_contains(str,'DigMark')
-          obj.triggerparent = obj.triggerparents.get('tag','DigMark');
-        else
-          obj.triggerparent = obj.triggerparents.get(1);
-        end    
-      elseif obj.triggerparents.contains(obj.triggerparent)
-        obj.triggerparent = obj.triggerparent;
-      else
-        tag = obj.triggerparent.tag;
-        if sc_contains(obj.triggerparents.values('tag'),tag)
-          obj.triggerparent = obj.triggerparents.get('tag',tag);
-        else
-          obj.triggerparent = obj.triggerparents.get(1);
-        end
-      end
-    end
-
-    function triggerparent_listener(obj)
-      if isempty(obj.triggerparent) || ~obj.triggerparent.triggers.n
-        obj.trigger = [];
-      else
-        triggers = obj.triggerparent.triggers;
-        if isempty(obj.trigger)
-          obj.trigger = triggers.get(1);
-        elseif triggers.contains(obj.trigger)
-          obj.trigger = obj.trigger;
-        else
-          tag = obj.trigger.tag;
-          if sc_contains(triggers.values('tag'),tag)
-            obj.trigger = triggers.get('tag',tag);
-          else
-            obj.trigger = triggers.get(1);
-          end
-        end
-      end
-    end
-    function trigger_listener(obj)
-      obj.sweep = obj.sweep(obj.sweep<=numel(obj.triggertimes));
-      if isempty(obj.sweep) && numel(obj.triggertimes)
-        obj.sweep = 1;
-      end
-    end
-  end
+	end
 end

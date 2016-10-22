@@ -12,6 +12,7 @@ classdef ScAmplitude < handle
 		stop            %Mx1 double
 		is_pseudo       %Mx1 logical
 		middle_index    %M%1 logical
+    automatic_xpsp_detected
 		last_edited_by
 	end
 	
@@ -110,6 +111,19 @@ classdef ScAmplitude < handle
 			val = all(isfinite(obj.data), 2);
 		end
 		
-	end
+  end
+  
+  methods (Static)
+    
+    function obj = loadobj(a)
+      
+      if isempty(a.automatic_xpsp_detected)
+        a.automatic_xpsp_detected = false(size(a.stimtimes));
+      end
+      
+      obj = a;
+    end
+    
+  end
 	
 end

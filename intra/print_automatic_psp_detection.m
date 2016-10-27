@@ -1,7 +1,8 @@
+function print_automatic_psp_detection
 clc
-clear
-
-neurons = get_intra_neurons();
+%clear
+neuron_indx = [12 13];
+neurons = get_intra_neurons(neuron_indx);
 stims = get_intra_motifs();
 
 fprintf('\tAvg spont\t\t');
@@ -15,7 +16,7 @@ fprintf('\n');
 for i=1:length(neurons)
 	%fprintf('%d out of %d\n', i, length(neurons))
 	
-	[signal, spont_activity] = automatic_psp_detection(i);%sc_load_signal(neurons(i));
+	[signal, spont_activity] = automatic_psp_detection(neuron_indx(i));%sc_load_signal(neurons(i));
 	
 	amplitudes = signal.amplitudes;
 	

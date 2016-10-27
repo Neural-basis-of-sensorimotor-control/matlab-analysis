@@ -1,4 +1,4 @@
-function neurons = get_intra_neurons()
+function neurons = get_intra_neurons(indx)
 
 neurons(1).expr_file = 'IHNR_sc.mat';    neurons(1).file_str = 'IHNR0000';     neurons(1).signal_str = 'patch';   neurons(1).tag = 'Neuron01';
 neurons(2).expr_file = 'HPNR_sc.mat';    neurons(2).file_str = 'HPNR0003';     neurons(2).signal_str = 'patch2';  neurons(2).tag = 'Neuron02';
@@ -28,5 +28,9 @@ neurons(25).expr_file = 'DJNR_sc.mat';   neurons(25).file_str = 'DJNR0005';    n
 
 neurons(26).expr_file = 'BPNRtst_sc.mat';   neurons(26).file_str = 'BPNR0000';    neurons(26).signal_str = 'patch'; neurons(26).tag = 'NeuronXX';
 neurons(27).expr_file = 'BPNRtst_sc.mat';   neurons(27).file_str = 'BPNR0001';    neurons(27).signal_str = 'patch'; neurons(27).tag = 'NeuronXX';
+
+if nargin
+	neurons = neurons(indx);
+end
 
 end

@@ -11,18 +11,23 @@ classdef ScAmplitude < handle
 		start           %Mx1 double
 		stop            %Mx1 double
 		is_pseudo       %Mx1 logical
+		automatic_xpsp_detected %Mx1 logical
+		is_median				%Mx1 logical
 		middle_index    %M%1 logical
-    automatic_xpsp_detected
-		last_edited_by
 	end
 	
 	properties (Dependent)
+		rise_automatic_detection
+		width_automatic_detection
+		
 		tstart
 		tstop
 		rise_amplitude
 		latency
 		width
 		valid_data
+		N
+		parent
 	end
 	
 	methods
@@ -44,8 +49,6 @@ classdef ScAmplitude < handle
 				obj.data(pos,ind(k)) = (x(k));
 			end
 			obj.is_updated = false;
-			
-			obj.last_edited_by = getenv('USER');
 		end
 		
 		
@@ -109,6 +112,30 @@ classdef ScAmplitude < handle
 		
 		function val = get.valid_data(obj)
 			val = all(isfinite(obj.data), 2);
+		end
+		
+		
+		function val = get.N(obj)
+			val = length(obj.stimtimes);
+		end
+		
+		function val = get.rise_automatic_detection(obj)
+			val = obj.rise(obj.is_median);
+		end
+		
+		
+		function val = get.width_automatic_detection(obj)
+			val = obj.width(obj.is_median);
+		end
+		
+		
+		function set.parent(obj, val)
+			obj.parent_signal = val;
+		end
+		
+		
+		function val = get.parent(obj)
+			val = obj.parent_signal;
 		end
 		
   end

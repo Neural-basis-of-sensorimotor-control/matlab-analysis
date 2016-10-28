@@ -8,10 +8,10 @@ classdef AmplAnalogAxes < AnalogAxes
 		
 		
 		function plotv(obj, varargin)
-      [v,time, handles] = plotv@AnalogAxes(obj, varargin{:});
+      [v,time] = plotv@AnalogAxes(obj, varargin{:});
 			
       if size(v,2)==1
-        set(handles,'HitTest','off');
+        set('HitTest','off');
         [~,ind] = min(abs(time));
         text(0,double(v(ind)),'start','HorizontalAlignment',...
           'center','Color',[0 1 0],'parent',obj.ax,'HitTest','off');

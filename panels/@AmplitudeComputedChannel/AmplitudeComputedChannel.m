@@ -20,10 +20,10 @@ classdef AmplitudeComputedChannel < AmplitudeChannel
       end
 
       start = sc_get_amplitude_pseudo_start(amplitude);
-      stop = sc_get_amplitude_pseudo_stop(obj.gui, amplitude);
+      stop = sc_get_amplitude_pseudo_stop(amplitude, obj.gui.main_channel.v);
       is_pseudo = sc_is_amplitude_data_pseudo(amplitude);
-      rise = sc_get_amplitude_pseudo_rise(obj.gui, start, ...
-        stop, is_pseudo, amplitude);
+      rise = sc_get_amplitude_pseudo_rise(start, stop, is_pseudo, ...
+        amplitude, obj.gui.main_channel.v);
       middle = sc_get_middle_index(rise, .1);
 
       plot(obj.ax, start(~is_pseudo), rise(~is_pseudo), 'y+', 'Tag', 'Manual', 'LineStyle', 'None');

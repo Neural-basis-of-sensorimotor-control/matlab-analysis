@@ -74,6 +74,14 @@ else
   raw_data_folder = [];
 end
 
+if isempty(sc_file_folder)
+    sc_file_folder = get_intra_experiment_dir;
+end
+
+if isempty(raw_data_folder)
+    raw_data_folder = get_raw_data_dir;
+end
+
 if ~numel(args) || strcmpi(args{1},'-loadnew')
   %Force program to neglect sc_config.txt
   [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',sc_file_folder);

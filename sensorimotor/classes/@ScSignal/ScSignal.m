@@ -1,21 +1,23 @@
 classdef ScSignal < ScChannel
   %Analog imported channel
   properties
-    dt                  %time resolution (1x1 double)
-    waveforms           %ScWaveform
-    filter              %ScSignalFilter
-    remove_waveforms    %ScList
-    amplitudes          %ScCellList
-    N                   %nbr of data points (1x1 double)
+    dt                              %time resolution (1x1 double)
+    waveforms                       %ScWaveform
+    filter                          %ScSignalFilter
+    simple_artifact_filter          %ScSimpleArtifactRemovalFilter
+    remove_waveforms                %ScList
+    amplitudes                      %ScCellList
+    N                               %nbr of data points (1x1 double)
   end
-
+  
   properties (Dependent)
     t
     istrigger
     triggers
   end
-
+  
   methods
+    
     function obj = ScSignal(parent,channelname,varargin)
       obj.parent = parent;
       obj.channelname = channelname;
@@ -23,52 +25,50 @@ classdef ScSignal < ScChannel
       obj.filter = ScSignalFilter(obj);
       obj.remove_waveforms = ScList();
       obj.amplitudes = ScCellList();
+      
       for k=1:2:numel(varargin)
         obj.(varargin{k}) = varargin{k+1};
       end
     end
-
+    
+    
     %Clear all properties
     function sc_clear(obj)
       for i=1:obj.waveforms.n
         obj.waveforms.get(i).sc_clear();
       end
     end
-
+    
+    
     %Load non-transient properties
     function sc_loadtimes(obj)
       for i=1:obj.waveforms.n
         obj.waveforms.get(i).sc_loadtimes();
       end
     end
-
+    
+    
     %Load transient properties (only)
-    function v_raw = sc_loadsignal(obj)%,tmin,tmax)
+    function v_raw = sc_loadsignal(obj)
+      
+      if ~obj.parent.check_fdir()
+        error('Could not find file');
+      end
+      
       if obj.is_adq_file
         fid = fopen(obj.parent.filepath);
         fread(fid,obj.channelname,'uint16');
         v_raw = fread(fid,obj.N,'bit12',4);
         fclose(fid);
       else
-        if isempty(who('-file',obj.parent.filepath,obj.channelname))
-          msgbox('Error: Could not find channel %s in file %s\n',obj.channelname,obj.parent.filepath);
-          return
-        end
-        try
-          d = load(obj.parent.filepath,obj.channelname);
-        catch exc
-          warning('Could not read file, probably because it was too large for available RAM. Matlab error: %s\n',exc.message);
-          obj.dt = 0;
-          obj.N = 0;
-          v_raw = [];
-          return
-        end
+        d = load(obj.parent.filepath,obj.channelname);
+        
         obj.dt = d.(obj.channelname).interval;
-        obj.N = d.(obj.channelname).length;%numel(obj.v_raw);
-        v_raw = d.(obj.channelname).values;%(t>tmin & t<tmax);
+        obj.N = d.(obj.channelname).length;
+        v_raw = d.(obj.channelname).values;
       end
     end
-
+    
     %Recalculate all waveform times with correct order vs filtering
     function recalculate_all_waveforms(obj)
       v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
@@ -82,7 +82,7 @@ classdef ScSignal < ScChannel
         wf.recalculate_spiketimes(v,obj.dt);
       end
     end
-
+    
     function recalculate_waveform(obj,wf)
       v = obj.filter.filt(obj.sc_loadsignal(),0,inf);
       for k=1:obj.remove_waveforms.n
@@ -92,7 +92,7 @@ classdef ScSignal < ScChannel
       end
       wf.recalculate_spiketimes(v,obj.dt);
     end
-
+    
     function rmwfs = get_rmwfs(obj,tmin,tmax)
       rmwfs = ScList();
       for k=1:obj.remove_waveforms.n
@@ -114,7 +114,7 @@ classdef ScSignal < ScChannel
     function istrigger = get.istrigger(~)
       istrigger = false;
     end
-
+    
     function triggers = get.triggers(obj)
       triggers = ScCellList();
       for k=1:obj.waveforms.n
@@ -124,24 +124,33 @@ classdef ScSignal < ScChannel
         triggers.add(obj.remove_waveforms.get(k));
       end
     end
-
+    
     function t = get.t(obj)
-      t = (0:obj.N-1)'*obj.dt;
+      t = (1:obj.N)'*obj.dt;
     end
-
+    
     function sc_save(obj, varargin)
       obj.parent.sc_save(varargin{:});
     end
   end
   methods (Static)
     function obj = loadobj(a)
+      
       a = loadobj@ScChannel(a);
+      
       if isempty(a.remove_waveforms)
         a.remove_waveforms = ScList();
       end
+      
       if isempty(a.amplitudes)
         a.amplitudes = ScCellList();
       end
+      
+      if isempty(a.simple_artifact_filter)
+        a.simple_artifact_filter = ScSimpleArtifactFilter(a);
+        a.simple_artifact_filter.is_on = false;
+      end
+      
       obj = a;
     end
   end

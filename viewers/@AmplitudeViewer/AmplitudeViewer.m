@@ -35,8 +35,13 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
       obj.histogram = [];
     end
 
-    function plot_channels(obj)
-      plot_channels@SequenceViewer(obj);
+    function plot_channels(obj, btn_dwn_fcn)
+      if nargin<2,
+        btn_dwn_fcn = [];
+      end
+      
+      plot_channels@SequenceViewer(obj, btn_dwn_fcn);
+      
       obj.amplitude_computed_channel.update();
     end
 
@@ -86,7 +91,7 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
       else
         obj.help_text = 'Amplitude is set for this sweep';
       end
-      obj.plot_channels();
+      obj.plot_channels(@(~,~) obj.main_channel.define_amplitude_btndown());
     end
 
     function ret = get.triggertimes(obj)

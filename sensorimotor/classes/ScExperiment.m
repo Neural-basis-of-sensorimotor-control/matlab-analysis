@@ -30,25 +30,29 @@ classdef ScExperiment < ScList
 		
 		%Save current object
 		%   showdialog  if true, user can update obj.save_name
-		function saved = sc_save(obj, showdialog)
-			
-			if nargin<2
-				showdialog = true;  
-			end
-			
-			saved = false;
-			
-			if ischar(showdialog)
-				obj.save_name = showdialog;
-				showdialog = true;
-			end
-			
-			if ~exist(obj.abs_save_path, 'file')
-				filepath = update_filepath(obj.abs_save_path, get_intra_experiment_dir);
-				obj.abs_save_path = filepath;
-			end
+    function saved = sc_save(obj, showdialog)
+      
+      if nargin<2
+        showdialog = true;
+      end
+      
+      saved = false;
+      
+      if ischar(showdialog)
+        obj.save_name = showdialog;
+        showdialog = true;
+      end
+      
+      if ~exist(obj.abs_save_path, 'file')
+        
+        sc_data_dir = get_intra_experiment_dir();
+        
+        if exist([sc_data_dir obj.save_name], 'file')
+          obj.sc_dir = sc_data_dir;
+        end
+      end
 				
-			if showdialog || isempty(obj.abs_save_path) || ~exist(obj.abs_save_path,'file')
+			if showdialog || isempty(obj.abs_save_path) || ~exist(obj.abs_save_path, 'file')
 				[fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
 					obj.abs_save_path);
 			

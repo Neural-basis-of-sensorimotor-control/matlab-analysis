@@ -4,20 +4,18 @@ classdef ScSignalFilter < handle
     scale_factor
     smoothing_width
     artifact_width
-  %    dc_remove_width
     artifactchannels
   end
-
+  
   methods
     function obj = ScSignalFilter(parent)
       obj.scale_factor = 1;
       obj.smoothing_width = 5;
       obj.artifact_width = 0;
-    %         obj.dc_remove_width = 1;
       obj.parent = parent;
       obj.artifactchannels = ScList();
     end
-
+    
     %add all stim channels from parent file to artifact filter
     function update_stims(obj)
       stimchannels = obj.parent.parent.stims;
@@ -34,33 +32,35 @@ classdef ScSignalFilter < handle
         end
       end
     end
-
+    
     function v = filt(obj,v,tmin,tmax)
       v = obj.raw_filt(v);
       v = obj.artifact_removal(v,tmin,tmax);
     end
+    
     function v = raw_filt(obj,v)
       v = obj.smoothing(v);
-    %       v = obj.dc_remove(v);
+    end
+    
+    function v = smoothing(obj,v)
+      if obj.scale_factor~=1
+        v = v*obj.scale_factor;
       end
-      function v = smoothing(obj,v)
-        if obj.scale_factor~=1
-          v = v*obj.scale_factor;
-        end
-        v = filter(ones(1,obj.smoothing_width)/obj.smoothing_width,1,v);
-      end
-      function v = artifact_removal(obj,v,tmin,tmax)
-        if obj.artifact_width
-          for i=1:obj.artifactchannels.n
-            stimtimes = obj.artifactchannels.get(i).gettimes(tmin,tmax);
-            if numel(stimtimes)>=10
-              stimpos = round((stimtimes-tmin)/obj.parent.dt)+1;
-              v = sc_remove_artifacts(v,obj.artifact_width,stimpos);
-            end
+      v = filter(ones(1,obj.smoothing_width)/obj.smoothing_width,1,v);
+    end
+    
+    function v = artifact_removal(obj,v,tmin,tmax)
+      if obj.artifact_width
+        for i=1:obj.artifactchannels.n
+          stimtimes = obj.artifactchannels.get(i).gettimes(tmin,tmax);
+          if numel(stimtimes)>=10
+            stimpos = round((stimtimes-tmin)/obj.parent.dt)+1;
+            v = sc_remove_artifacts(v,obj.artifact_width,stimpos);
           end
         end
-
       end
+      
+    end
     %         function v = dc_remove(obj,v)
     %             if obj.dc_remove_width>1
     %                 halfwidth = floor(obj.dc_remove_width/2);
@@ -85,30 +85,29 @@ classdef ScSignalFilter < handle
     % %                 stopind(stopind>length(v)-halfwidth) = ones(find(stopind>length(v)-halfwidth));
     % %                 for k=1:length(startind)
     % %                     ind = startind(k):stopind(k);
-    % %                     inds = bsxfun(@plus,ind,(-halfwidth:halfwidth)'); 
+    % %                     inds = bsxfun(@plus,ind,(-halfwidth:halfwidth)');
     % %                     v_filtered(ind) = v(ind) - mean(v(inds),1)';
     % %                 end
     % %                 v = v_filtered;
     % %             end
     %         end
-      function v = remove_waveforms(obj,v,tmin,tmax)
-        rmwfs = obj.parent.get_rmwfs(tmin,tmax);
-        for k=1:rmwfs.n
-          v = rmwfs.get(k).remove_wf(v,0);
-        end
+    
+    function v = remove_waveforms(obj,v,tmin,tmax)
+      rmwfs = obj.parent.get_rmwfs(tmin,tmax);
+      for k=1:rmwfs.n
+        v = rmwfs.get(k).remove_wf(v,0);
       end
     end
-
-    methods (Static)
-      function obj = loadobj(obj)
-        if isempty(obj.scale_factor)
-          obj.scale_factor = 1;
-        end
-      %             if isempty(obj.dc_remove_width)
-      %                 obj.dc_remove_width = 1;
-      %             end
-
-        end
+  end
+  
+  methods (Static)
+    function obj = loadobj(obj)
+      
+      if isempty(obj.scale_factor)
+        obj.scale_factor = 1;
       end
-
+      
     end
+  end
+  
+end

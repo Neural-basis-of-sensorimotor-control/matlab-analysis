@@ -21,12 +21,6 @@ classdef SequenceViewer < handle
     set_main_signal(obj, signal)
   end
 
-  methods (Static)
-    function str = version_str()
-      str = 'master 2016-Oct-10';
-    end
-  end
-
   properties (SetObservable)
     parent              %GuiManager
 
@@ -47,9 +41,11 @@ classdef SequenceViewer < handle
     sc_file_folder      %char array
     raw_data_folder     %char array
   end
+  
   properties (SetAccess = 'private', GetAccess = 'private')
     deletechannel
   end
+  
   properties (SetObservable)
     help_text           %char array
 

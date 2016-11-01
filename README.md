@@ -11,6 +11,23 @@ Eeg analysis
 
 >> help Eeg
 
+Configure file: 
+==========================
+
+Create a file named sc.xml, and put in your working directory
+
+
+Structure of sc.xml file:
+
+
+<sc_settings>
+  <intra_experiment_dir>path\to\default\sc_mat\dir </intra_experiment_dir>
+  <raw_data_dir>path\to\raw\data\dir</raw_data_dir>
+</sc_settings>
+
+
+
+
 Folder structure:
 =================
 

@@ -1,4 +1,7 @@
 function print_automatic_psp_detection
+response_min = 5e-3;
+response_max = 30e-3;
+
 clc
 %clear
 neuron_indx = [12 13];
@@ -16,7 +19,7 @@ fprintf('\n');
 for i=1:length(neurons)
 	%fprintf('%d out of %d\n', i, length(neurons))
 	
-	[signal, spont_activity] = automatic_psp_detection(neuron_indx(i));%sc_load_signal(neurons(i));
+	[signal, spont_activity] = automatic_psp_detection(neuron_indx(i), response_min, response_max);%sc_load_signal(neurons(i));
 	
 	amplitudes = signal.amplitudes;
 	

@@ -1,14 +1,18 @@
-function [signal, spont_activity] = automatic_psp_detection(neuron_indx)
+function [signal, spont_activity] = automatic_psp_detection(neuron_indx, ...
+  response_min, response_max)
 %Automatic PSP detection
 
-response_min = 5e-3;
-response_max = 30e-3;
+if length(neuron_indx)~=1
+  error('Input parameter neuron_indx has length %d, only length is allowed', length(neuron_indx));
+end
 
 response_range = response_max - response_min;
 
-neurons = get_intra_neurons();
+neuron = get_intra_neurons(neuron_indx);
+ic_tmin = neuron.tmin;
+ic_tmax = neuron.tmax;
 
-signal = sc_load_signal(neurons(neuron_indx));
+signal = sc_load_signal(neuron);
 waveforms = signal.waveforms;
 amplitudes = signal.amplitudes;
 patterns = get_intra_patterns();
@@ -47,7 +51,7 @@ for i=1:length(patterns)
   pattern = patterns{i};
   
   trigger = signal.parent.gettriggers(0, inf).get('tag', pattern);
-  triggertimes = trigger.gettimes(0, inf);
+  triggertimes = trigger.gettimes(ic_tmin, ic_tmax);
   
   for j=2:length(triggertimes)
 		

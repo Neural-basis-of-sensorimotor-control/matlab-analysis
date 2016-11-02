@@ -3,7 +3,7 @@ function [signal, spont_activity] = automatic_psp_detection(neuron_indx, ...
 %Automatic PSP detection
 
 if length(neuron_indx)~=1
-  error('Input parameter neuron_indx has length %d, only length is allowed', length(neuron_indx));
+  error('Input parameter neuron_indx has length %d, only length 1 is allowed', length(neuron_indx));
 end
 
 response_range = response_max - response_min;

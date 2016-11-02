@@ -12,7 +12,7 @@ classdef ScAmplitude < handle
 		stop            %Mx1 double
 		is_pseudo       %Mx1 logical
 		automatic_xpsp_detected %Mx1 logical
-		is_median				%Mx1 logical
+		is_median_and_automatic				%Mx1 logical
 		middle_index    %M%1 logical
 	end
 	
@@ -120,12 +120,12 @@ classdef ScAmplitude < handle
 		end
 		
 		function val = get.rise_automatic_detection(obj)
-			val = obj.rise(obj.is_median);
+			val = obj.rise(obj.is_median_and_automatic);
 		end
 		
 		
 		function val = get.width_automatic_detection(obj)
-			val = obj.width(obj.is_median);
+			val = obj.width(obj.is_median_and_automatic);
 		end
 		
 		

@@ -1,4 +1,4 @@
-function median_all = sc_get_is_median(obj, remove_fraction)
+function median_all = sc_get_is_median_and_automatic(obj, remove_fraction)
 
 median_all = true(size(obj.rise));
 median_all(~obj.automatic_xpsp_detected) = false;

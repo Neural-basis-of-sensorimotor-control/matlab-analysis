@@ -1,4 +1,4 @@
-function val = get_intra_patterns()
+function val = get_intra_patterns(indx)
 
 val = {'0.5 fa'
 	'0.5 sa'
@@ -12,5 +12,9 @@ val = {'0.5 fa'
 	'2.0 sa'
 	'flat fa'
 	'flat sa'};
+
+if nargin
+  val = val(indx);
+end
 
 end

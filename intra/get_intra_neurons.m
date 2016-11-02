@@ -11,7 +11,8 @@ data ={
   'ICNR_sc.mat',    'ICNR0003',   'patch',  -inf, inf
   'ICNR_sc.mat',    'ICNR0002',   'patch',  -inf, inf
   'HRNR_sc.mat',    'HRNR0000',   'patch2', -inf, inf
-  'BENR_sc.mat',    'BENR0005',   'patch',  -inf, inf
+ % 'BENR_sc.mat',    'BENR0005',   'patch',  -inf, inf Removed because of
+ % low PSP response to single pulse stimulation (only dendrite spikes)
   'BJNR_sc.mat',    'BJNR0005',   'patch',  -inf, inf
   'BONR_sc.mat',    'BONR0009',   'patch',  -inf, inf
   'BONR_sc.mat',    'BONR0006',   'patch',  -inf, inf

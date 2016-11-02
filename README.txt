@@ -12,7 +12,7 @@ Eeg analysis
 >> help Eeg
 
 Configure file: 
-==========================
+===============
 
 Create a file named sc.xml, and put in your working directory
 
@@ -25,6 +25,30 @@ Structure of sc.xml file:
 </sc_settings>
 
 
+Artfact blanking: 
+=================
+
+An additional simple artifact removal filter is added. To see whether the artifact blanking filter is on, type the following in the command prompt:
+
+>> h.viewer.main_signal.simple_artifact_filter.is_on
+
+ans =
+
+     0
+
+If the answer is 0 it is off, if the answer is 1 it is on. To turn on simple artifact removal, type
+
+>> h.viewer.main_signal.simple_artifact_filter.is_on = true
+
+To turn off, type
+
+>> h.viewer.main_signal.simple_artifact_filter.is_on = false
+
+Then remember to save if you want to keep it on, either from the GUI or by typing
+
+>> >> h.viewer.main_signal.sc_save(false)
+
+If the file is opened on a computer with an earlier version of the program, where the simple artifact removal tool is not installed, the artifact removal tool will be turned off by default next time it is loaded by an updated version of the program. If you prefer the default behavior to be 'on' instead of 'off', let me know.
 
 
 Folder structure:

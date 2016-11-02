@@ -1,4 +1,4 @@
-function val = get_intra_motifs()
+function val = get_intra_motifs(indx)
 
 val = {
   '0.5 fa#V2#9'
@@ -54,5 +54,9 @@ val = {
   'flat sa#V3#3'
   'flat sa#V3#4'
   };
+
+if nargin
+  val = val(indx);
+end
 
 end

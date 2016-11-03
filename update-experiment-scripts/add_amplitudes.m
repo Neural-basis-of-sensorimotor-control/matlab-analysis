@@ -8,7 +8,7 @@ channel_str = 'patch';
 
 signal = add_amplitudes_subfct(experiment_file, file_str, channel_str);
 
-signal.sc_save(false);
+signal.sc_save(true);
 
 end
 

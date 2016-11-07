@@ -102,9 +102,7 @@ classdef SequenceViewer < handle
     panel_width = 205;
     margin = 40
   end
-  methods (Access = 'protected')
-    has_unsaved_changes_listener(obj)
-  end
+
   methods
     %obj.create_channels must be called in inheriting class right
     %after calling SequenceViewer constructor

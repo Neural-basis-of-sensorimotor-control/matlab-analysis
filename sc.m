@@ -147,7 +147,6 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     end
   end
 elseif strcmpi(args{1},'-version')
-  fprintf('Version number: %s\n',SequenceViewer.version_str);
   fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
 elseif strcmpi(args{1},'-amplitude')
   gui_mgr = sc();

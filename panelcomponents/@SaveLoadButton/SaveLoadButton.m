@@ -26,7 +26,6 @@ classdef SaveLoadButton < PanelComponent
   end
   methods (Access='protected')
     function save_callback(obj)
-      obj.gui.experiment.last_gui_version = SequenceViewer.version_str;
       saved = obj.gui.experiment.sc_save(false);
       if saved
         obj.gui.has_unsaved_changes = false;
@@ -34,7 +33,6 @@ classdef SaveLoadButton < PanelComponent
     end
 
     function save_as_callback(obj)
-      obj.gui.experiment.last_gui_version = SequenceViewer.version_str;
       saved = obj.gui.experiment.sc_save(true);
       if saved
         obj.gui.has_unsaved_changes = false;

@@ -6,7 +6,6 @@ addlistener(obj,'digital_channels','PostSet',@(~,~) digital_channels_listener_po
 addlistener(obj,'zoom_on','PostSet',@(~,~) zoom_on_listener(obj));
 addlistener(obj,'pan_on','PostSet',@(~,~) pan_on_listener(obj));
 
-addlistener(obj,'has_unsaved_changes','PostSet',@(~,~) obj.has_unsaved_changes_listener());
 addlistener(obj,'sequence','PostSet',@(~,~) sequence_listener(obj));
 
 addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));

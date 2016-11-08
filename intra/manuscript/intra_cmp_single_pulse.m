@@ -3,10 +3,10 @@ clc
 clear
 fig = gcf;
 clf(fig);
-stim_electrode = '1';
+stim_electrode = '3';
 
 stims_str = get_single_amplitudes(stim_electrode);
-neuron_indx = 17;
+neuron_indx = 11;
 neuron = get_intra_neurons(neuron_indx);
 
 pretrigger = -.02;

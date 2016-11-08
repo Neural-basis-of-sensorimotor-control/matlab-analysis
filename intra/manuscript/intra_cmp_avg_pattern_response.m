@@ -4,14 +4,14 @@ clear
 fig = gcf;
 clf(fig);
 
-pattern_indx = [1 3 7];
+pattern_indx = [10 4 12];
 patterns_str = get_intra_patterns(pattern_indx);
 
-neurons_indx = [1 3 14];
+neurons_indx = [13 14 21];
 neurons = get_intra_neurons(neurons_indx);
 
 pretrigger = -.02;
-posttrigger = .1;
+posttrigger = .5;
 
 plot_color = 'k';
 vmin = inf; vmax = -inf;

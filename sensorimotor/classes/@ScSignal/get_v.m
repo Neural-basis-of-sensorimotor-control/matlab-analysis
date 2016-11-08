@@ -9,10 +9,6 @@ if isstruct(smooth)
   remove_artifacts_simple = s.remove_artifacts_simple;
 end
 
-if remove_artifacts_simple
-  remove_artifacts = false;
-end
-
 v = obj.sc_loadsignal;
 
 if smooth && ~remove_artifacts

@@ -32,10 +32,13 @@ experiment = dd.obj;
 file = experiment.get(filenbr);
 signal = file.signals.get('tag','patch');
 sequence = file.get('tag','proto');
-v = signal.sc_loadsignal();
-v = signal.filter.raw_filt(v);
-v = signal.filter.artifact_removal(v,sequence.tmin,sequence.tmax);
-v = signal.filter.remove_waveforms(v,sequence.tmin,sequence.tmax);
+
+s.smooth = true;
+s.remove_artifacts = true;
+s.remove_waveforms = true;
+s.remove_artifacts_simple = true;
+
+v = obj.get_v(s);
 
 spikes1 = signal.waveforms.get(1).gettimes(sequence.tmin,sequence.tmax);
 spikes2 = signal.waveforms.get(2).gettimes(sequence.tmin,sequence.tmax);

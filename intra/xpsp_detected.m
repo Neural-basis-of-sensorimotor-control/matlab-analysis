@@ -1,10 +1,10 @@
-function val = xpsp_detected(xpsps, tmin, tmax)
+function val = xpsp_detected(psps, tmin, tmax)
 
 val = false;
 
-for i=1:length(xpsps)
+for i=1:length(psps)
   
-  xpsp = xpsps(i);
+  xpsp = psps(i);
   val = ~isempty(xpsp.gettimes(tmin, tmax));
   
   if val

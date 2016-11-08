@@ -1,4 +1,4 @@
-classdef ScSignalFilter < handle
+classdef ScSignalFilter < ScFilter
   properties (SetObservable)
     parent
     scale_factor
@@ -15,6 +15,16 @@ classdef ScSignalFilter < handle
       obj.parent = parent;
       obj.artifactchannels = ScList();
     end
+    
+    
+    function update(varargin)
+    end
+    
+    
+    function v = apply(obj, v)
+      v = obj.filt(v, 0, inf);
+    end
+    
     
     %add all stim channels from parent file to artifact filter
     function update_stims(obj)

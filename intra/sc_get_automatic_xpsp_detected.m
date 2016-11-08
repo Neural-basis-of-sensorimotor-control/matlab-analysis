@@ -1,27 +1,19 @@
-function sc_get_automatic_xpsp_detected(obj, response_min, response_max)
-
-signal = obj.parent_signal;
-waveforms = signal.waveforms;
-
-xpsps = [];
-
-for i=1:waveforms.n
-
-  waveform = waveforms.get(i);
-
-  if startswithi(waveform.tag, 'EPSP') || startswithi(waveform.tag, 'IPSP')
-    xpsps = add_to_array(xpsps, waveform);
-  end
-end
+function sc_get_automatic_xpsp_detected(obj, v, dt, psps, response_min, response_max)
 
 stimtimes = obj.stimtimes;
+obj.automatic_xpsp_detected = false(size(stimtimes));
 
-for j=1:length(stimtimes)
+
+for i=1:length(stimtimes)
+  v_sweep = sc_get_sweeps(v, 0, stimtimes(i), response_min, response_max, dt);
 	
-	tmin = stimtimes(j) + response_min;
-	tmax = stimtimes(j) + response_max;
-	
-	obj.automatic_xpsp_detected(j) = xpsp_detected(xpsps, tmin, tmax);
+  for j=1:length(psps)
+    psp = get_item(psps, j);
+    if psp.spike_is_detected(v_sweep)
+      obj.automatic_xpsp_detected(i) = true;
+      continue
+    end
+  end
 	
 end
 

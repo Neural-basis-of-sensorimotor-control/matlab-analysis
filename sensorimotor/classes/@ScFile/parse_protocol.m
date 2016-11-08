@@ -38,7 +38,7 @@ if triggerparent.triggers.has('tag',trg_tag)
   return;
 end
 triggerparent.triggers.add(ScSpikeTrain('trg',triggertimes));
-obj.stims.update(triggerparent, triggerparent);
+obj.stims.update_with_item(triggerparent, triggerparent);
 %Skip until start of sequence times
 while ~end_of_file(line) && ~start_of_sequence(line)
   line = fgetl(fid);

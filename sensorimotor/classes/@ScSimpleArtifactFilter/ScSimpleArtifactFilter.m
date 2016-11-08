@@ -1,23 +1,12 @@
-classdef ScSimpleArtifactFilter < handle
-  
-  properties
-    parent
-    indx_width = 100
-    is_on = true
-  end
+classdef ScSimpleArtifactFilter < ScSimpleFilter
   
   methods
     
     function obj = ScSimpleArtifactFilter(parent)
-      obj.parent = parent;
+      obj@ScSimpleFilter(parent);
     end
     
-    
-    function v = apply(obj, v)
-      if ~obj.is_on
-        return
-      end
-      
+    function artifact_indx = get_filter_indx(obj)
       stims = obj.parent.parent.stims;
       artifact_times = nan(1000, 1);
       count = 0;
@@ -35,10 +24,12 @@ classdef ScSimpleArtifactFilter < handle
       artifact_times = artifact_times(1:count);
       
       artifact_indx = round(artifact_times/obj.parent.dt);
-        
-      v = simple_artifact_filter(v, obj.indx_width, artifact_indx);
     end
-    
-    
+  end
+  
+  methods (Static)
+    function obj = loadobj(a)
+      obj = loadobj@ScSimpleFilter(a);
+    end
   end
 end

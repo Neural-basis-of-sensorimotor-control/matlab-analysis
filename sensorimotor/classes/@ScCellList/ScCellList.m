@@ -55,7 +55,7 @@ classdef ScCellList < handle
 
     %If list contains reference to item, then replace item
     %by new_item in list. Otherwise append newitem to list		
-    function update(obj, item, new_item)
+    function update_with_item(obj, item, new_item)
       % if object exists then update
       if obj.contains(item)
         index = obj.indexof(item);

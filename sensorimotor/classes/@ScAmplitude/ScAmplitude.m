@@ -14,6 +14,7 @@ classdef ScAmplitude < handle
 		automatic_xpsp_detected %Mx1 logical
 		is_median_and_automatic				%Mx1 logical
 		middle_index    %M%1 logical
+    user_data
 	end
 	
 	properties (Dependent)
@@ -71,9 +72,14 @@ classdef ScAmplitude < handle
 		
 		function sc_save(obj, varargin)
 			obj.parent_signal.sc_save(varargin{:});
-		end
+    end
 		
-		
+		    
+    function val = response_is_significant(obj, threshold)
+      val = nnz(obj.automatic_xpsp_detected)/length(obj.stimtimes) >= threshold;
+    end
+    
+    
 		function ret = get.tstart(obj)
 			if isempty(obj.stimtimes)
 				ret = inf;
@@ -136,7 +142,7 @@ classdef ScAmplitude < handle
 		
 		function val = get.parent(obj)
 			val = obj.parent_signal;
-		end
+    end
 		
   end
   

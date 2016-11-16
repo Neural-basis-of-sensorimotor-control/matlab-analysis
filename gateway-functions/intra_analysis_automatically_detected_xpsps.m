@@ -15,7 +15,8 @@ for i=1:length(neurons)
 	signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
 	
 	signal.reset_amplitudes();
-	signal.update_amplitudes(response_min, response_max, remove_fraction);
+	signal.update_amplitudes(neuron.tmin, neuron.tmax, neuron.psp_templates, ...
+    response_min, response_max, remove_fraction, true);
 	signal.sc_save(false);
 end
 

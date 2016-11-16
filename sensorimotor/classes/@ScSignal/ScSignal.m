@@ -9,6 +9,7 @@ classdef ScSignal < ScChannel
     remove_waveforms                %ScList
     amplitudes                      %ScCellList
     N                               %nbr of data points (1x1 double)
+    userdata
   end
   
   properties (Dependent)

@@ -68,7 +68,8 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
           spikes = cell(obj.n, 1);
           thrs = obj.list;
           
-          parfor k=1:obj.n
+          %par
+          for k=1:obj.n
             spikes(k) = {thrs(k).match_v(v)};
           end
           

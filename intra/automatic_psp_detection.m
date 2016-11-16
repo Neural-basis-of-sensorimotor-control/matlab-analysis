@@ -1,32 +1,13 @@
-function [signal, spont_activity] = automatic_psp_detection(neuron_indx, ...
-  response_min, response_max)
+function spont_activity = automatic_psp_detection(signal, ...
+  ic_tmin, ic_tmax, xpsps_str, response_min, response_max)
 %Automatic PSP detection
-
-if length(neuron_indx)~=1
-  error('Input parameter neuron_indx has length %d, only length 1 is allowed', length(neuron_indx));
-end
 
 response_range = response_max - response_min;
 
-neuron = get_intra_neurons(neuron_indx);
-ic_tmin = neuron.tmin;
-ic_tmax = neuron.tmax;
-
-signal = sc_load_signal(neuron);
-waveforms = signal.waveforms;
 amplitudes = signal.amplitudes;
 patterns = get_intra_patterns();
 
-xpsps = [];
-
-for i=1:waveforms.n
-
-  waveform = waveforms.get(i);
-
-  if startswithi(waveform.tag, 'EPSP') || startswithi(waveform.tag, 'IPSP')
-    xpsps = add_to_array(xpsps, waveform);
-  end
-end
+xpsps = get_items(signal.waveforms.cell_list, 'tag', xpsps_str);
 
 for i=1:amplitudes.n
   

@@ -1,6 +1,26 @@
 classdef IntraAmplitudeViewer < handle
 	
+  properties
+    neuron
+  end
+  
 	methods
+    
+    function set_neuron(indx)
+      
+      if isnumeric(indx)
+        obj.neuron = get_intra_neurons(indx);
+      elseif ischar(indx)
+        neurons = get_intra_neurons();
+        obj.neuron = get_items(neurons, 'file_str', indx);
+      end
+      
+      if isempty(obj.neuron)
+        warning('Could not find neuron');
+        return
+      end
+      
+    end
 		
 		function set_intra(obj, index)
 			str = get_intra_motifs();

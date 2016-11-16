@@ -1,11 +1,11 @@
 function set_file(obj, file)
 
-if isnumeric(file)
-	file = obj.experiment.get(file);
-elseif ischar(file)
-	file = obj.experiment.get('tag', file);
-end
-
+% if isnumeric(file)
+% 	file = obj.experiment.get(file);
+% elseif ischar(file)
+% 	file = obj.experiment.get('tag', file);
+% end
+file = get_item(obj.experiment.list, file);
 obj.file = file;
 
 if isempty(file)

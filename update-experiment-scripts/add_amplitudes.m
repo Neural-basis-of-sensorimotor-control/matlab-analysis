@@ -52,7 +52,6 @@ dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 signal = sc_load_signal(experiment_file, file_str, channel_str);
 file = signal.parent;
 
-signal = file.signals.get('tag',channel_str);
 file.sc_loadtimes();
 textmark = file.textchannels.get('tag','TextMark');
 textmark.sc_loadtimes();

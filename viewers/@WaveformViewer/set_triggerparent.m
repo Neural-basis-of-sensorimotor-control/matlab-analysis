@@ -1,7 +1,5 @@
 function set_triggerparent(obj, val)
 
-val = get_item(obj.triggerparents.cell_list, val);
-
 obj.triggerparent = val;
 
 trigger = get_set_val(obj.triggers.cell_list, obj.trigger, 1);

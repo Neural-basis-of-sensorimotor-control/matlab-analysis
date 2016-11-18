@@ -4,7 +4,8 @@ val = false;
 
 for i=1:length(psps)
   
-  xpsp = psps(i);
+  xpsp = get_item(psps, i);
+  %TODO: add check if isempty
   val = ~isempty(xpsp.gettimes(tmin, tmax));
   
   if val

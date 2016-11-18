@@ -2,16 +2,11 @@ function neurons = get_intra_neurons(indx)
 %Experiment file, Raw data file tag, Channel tag, time start, time stop, xPSP template
 
 data ={
-%  'BENR_sc.mat',    'BENR0005',   'patch',  -inf, inf
-%  'BGNR_sc.mat',    'BGNR0000',   'patch',  -inf, inf
-%  'BHNR_sc.mat',    'BHNR0002',   'patch',  -inf, inf
   'BJNR_sc.mat',    'BJNR0005',   'patch',  -inf, inf,  'EPSP5'
-%  'BKNR_sc.mat',    'BKNR0000',   'patch',  -inf, inf
   'BKNR_sc.mat',    'BKNR0002',   'patch',  430,  1200,  'EPSP5'
-%  'BNNR_sc.mat',    'BNNR0007',   'patch',  -inf, inf
   'BONR_sc.mat',    'BONR0006',   'patch',  -inf, inf,  'EPSP5'
   'BONR_sc.mat',    'BONR0009',   'patch',  -inf, inf,  'EPSP5'
-  'BPNRtst_sc.mat', 'BPNR0000',   'patch',  -inf, inf,  'EPSP5' 
+  'BPNRtst_sc.mat', 'BPNR0000',   'patch',  -inf, inf,  'EPSP5'
   'BPNRtst_sc.mat', 'BPNR0001',   'patch',  -inf, inf,  'EPSP5'
   'CANR_sc.mat',    'CANR0001',   'patch',  -inf, inf,  'EPSP5'
   'CANR_sc.mat',    'CANR0008',   'patch',  -inf, inf,  'EPSP5'
@@ -40,7 +35,17 @@ for i=size(data,1):-1:1
 end
 
 if nargin
-  neurons = neurons(indx);
+  if isnumeric(indx)
+    neurons = neurons(indx);
+  elseif ischar(indx)
+    neurons = get_items(neurons, 'file_str', indx);
+  elseif iscell(indx)
+    neurons = get_items(neurons, 'file_str', indx);
+    
+    if iscell(neurons)
+      neurons = cell2mat(neurons);
+    end
+  end
 end
 
 end

@@ -4,6 +4,12 @@ function spont_activity = automatic_psp_detection(signal, ...
 
 response_range = response_max - response_min;
 
+ic_tmin = neuron.tmin;
+ic_tmax = neuron.tmax;
+
+signal = sc_load_signal(neuron);
+waveforms = neuron.
+
 amplitudes = signal.amplitudes;
 patterns = get_intra_patterns();
 

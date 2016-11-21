@@ -23,7 +23,7 @@ data ={
   'IKNR_sc.mat',    'IKNR0000',   'patch',  -inf, inf,  {'EPSP1', 'EPSP2', 'EPSP3'}
   'ILNR_sc.mat',    'ILNR0001',   'patch',  -inf, inf,  {'EPSP1', 'EPSP2', 'EPSP3'}
   'IDNR_sc.mat',    'IDNR0001',   'patch',  -inf, inf,  {}
-  };
+};
 
 for i=size(data,1):-1:1
   neurons(i).expr_file = data{i,1};
@@ -36,7 +36,17 @@ for i=size(data,1):-1:1
 end
 
 if nargin
-  neurons = neurons(indx);
+  if isnumeric(indx)
+    neurons = neurons(indx);
+  elseif ischar(indx)
+    neurons = get_items(neurons, 'file_str', indx);
+  elseif iscell(indx)
+    neurons = get_items(neurons, 'file_str', indx);
+    
+    if iscell(neurons)
+      neurons = cell2mat(neurons);
+    end
+  end
 end
 
 end

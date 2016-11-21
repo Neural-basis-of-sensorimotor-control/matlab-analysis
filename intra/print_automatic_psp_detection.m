@@ -1,11 +1,26 @@
-function print_automatic_psp_detection
-response_min = 5e-3;
-response_max = 30e-3;
+function print_automatic_psp_detection(neuron_indx, response_min, response_max)
 
-clc
-%clear
-neuron_indx = [12 13];
+%disp('Turning of warnings')
+
+if ~nargin
+  neuron_indx = input('File tag (e.g ABCD0000): ', 's');
+end
+
+if nargin<2
+  response_min = input('start response (ms): ')/1e3;
+end
+
+if nargin < 3
+  response_max = input('stop response (ms): ')/1e3;
+end
+
 neurons = get_intra_neurons(neuron_indx);
+
+if ~isfinite(response_min) || ~isfinite(response_max)
+  fprintf('start response or stop response stop parameters have the wrong value');
+  return
+end
+
 stims = get_intra_motifs();
 
 fprintf('\tAvg spont\t\t');

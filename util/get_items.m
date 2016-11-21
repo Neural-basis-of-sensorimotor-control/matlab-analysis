@@ -10,10 +10,8 @@ if iscell(value)
   for i=1:length(value)
     indx = indx | equals(get_values(list, property), value{i});
   end
-elseif ischar(value)
+elseif ischar(value) || isnumeric(value)
   indx = equals(get_values(list, property), value);
-else
-  indx = value;
 end
 
 val = list(indx);

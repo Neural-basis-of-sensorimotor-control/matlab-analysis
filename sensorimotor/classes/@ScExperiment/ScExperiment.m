@@ -26,47 +26,8 @@ classdef ScExperiment < ScList
 			for i=1:2:numel(varargin)
 				obj.(varargin{i}) = varargin{i+1};
 			end
-		end
-		
-		%Save current object
-		%   showdialog  if true, user can update obj.save_name
-    function saved = sc_save(obj, showdialog)
-      
-      if nargin<2
-        showdialog = true;
-      end
-      
-      saved = false;
-      
-      if ischar(showdialog)
-        obj.save_name = showdialog;
-        showdialog = true;
-      end
-      
-      if ~exist(obj.abs_save_path, 'file')
-        
-        sc_data_dir = get_intra_experiment_dir();
-        
-        if exist([sc_data_dir obj.save_name], 'file')
-          obj.sc_dir = sc_data_dir;
-        end
-      end
-				
-			if showdialog || isempty(obj.abs_save_path) || ~exist(obj.abs_save_path, 'file')
-				[fname, pname] = uiputfile('*_sc.mat','Choose file to save',...
-					obj.abs_save_path);
-			
-				if ~isnumeric(fname)
-					obj.sc_dir = pname;
-					obj.save_name = fname;
-					save(obj.abs_save_path,'obj');
-					saved = true;
-				end
-			else
-				save(obj.abs_save_path,'obj');
-				saved = true;
-			end
-		end
+    end
+    
 		
 		%clear all transient data
 		function sc_clear(obj)

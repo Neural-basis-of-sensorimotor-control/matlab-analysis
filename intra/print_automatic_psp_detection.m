@@ -36,12 +36,8 @@ for i=1:length(neurons)
   neuron = neurons(i);
   
 	signal = sc_load_signal(neuron);
-  ic_tmin = neuron.tmin;
-  ic_tmax = neuron.tmax;
-  xpsps_str = neuron.psp_templates;
   
-	spont_activity = automatic_psp_detection(signal, ...
-    ic_tmin, ic_tmax, xpsps_str, response_min, response_max);
+	spont_activity = automatic_psp_detection(neuron, response_min, response_max);
   
 	amplitudes = signal.amplitudes;
 	

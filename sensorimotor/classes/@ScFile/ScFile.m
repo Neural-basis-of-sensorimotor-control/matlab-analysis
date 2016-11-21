@@ -254,8 +254,15 @@ classdef ScFile < ScList
       fdir = obj.parent.fdir;
     end
     
-    function saved = sc_save(obj,varargin)
-      saved = obj.parent.sc_save(varargin{:});
+    function saved = sc_save(obj, prompt_before_saving)
+      if ischar(prompt_before_saving)
+        save_path = prompt_before_saving;
+        prompt_before_saving = false;
+        saved = save_experiment(obj.parent, save_path, prompt_before_saving);
+      else
+        saved = save_experiment(obj.parent, obj.parent.abs_save_path, ...
+          prompt_before_saving);
+      end
     end
     
     %File is either adq file or spike2 file

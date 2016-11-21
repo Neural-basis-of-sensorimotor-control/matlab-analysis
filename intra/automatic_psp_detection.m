@@ -1,5 +1,4 @@
-function spont_activity = automatic_psp_detection(signal, ...
-  ic_tmin, ic_tmax, xpsps_str, response_min, response_max)
+function spont_activity = automatic_psp_detection(neuron, response_min, response_max)
 %Automatic PSP detection
 
 response_range = response_max - response_min;
@@ -8,27 +7,10 @@ ic_tmin = neuron.tmin;
 ic_tmax = neuron.tmax;
 
 signal = sc_load_signal(neuron);
-waveforms = neuron.
-
-amplitudes = signal.amplitudes;
+xpsps_str = neuron.psp_templates;
 patterns = get_intra_patterns();
 
 xpsps = get_items(signal.waveforms.cell_list, 'tag', xpsps_str);
-
-for i=1:amplitudes.n
-  
-  amplitude = amplitudes.get(i);
-  stimtimes = amplitude.stimtimes;
-  
-  for j=1:length(stimtimes)
-    
-    tmin = stimtimes(j) + response_min;
-    tmax = stimtimes(j) + response_max;
-        
-    amplitude.automatic_xpsp_detected(j) = xpsp_detected(xpsps, tmin, tmax);
-    
-  end
-end
 
 nbr_of_stims = 0;
 nbr_of_responses = 0;

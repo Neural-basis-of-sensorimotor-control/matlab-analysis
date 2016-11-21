@@ -1,7 +1,7 @@
 function val = equals(x1, x2)
 %val = equals(x1, x2)
 % x1 is a singular value or an array
-% x2 in a singular value
+% x2 is a singular value
 % x1 and x2 may contain values that are numeric, characters or objects
 
 if isnumeric(x2)

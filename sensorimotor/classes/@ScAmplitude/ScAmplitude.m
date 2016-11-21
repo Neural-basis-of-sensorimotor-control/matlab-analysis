@@ -7,14 +7,7 @@ classdef ScAmplitude < handle
 		data
 		tag
 		is_updated
-		rise            %Mx1 double
-		start           %Mx1 double
-		stop            %Mx1 double
-		is_pseudo       %Mx1 logical
-		automatic_xpsp_detected %Mx1 logical
-		is_median_and_automatic				%Mx1 logical
-		middle_index    %M%1 logical
-    user_data
+    userdata
 	end
 	
 	properties (Dependent)
@@ -23,7 +16,7 @@ classdef ScAmplitude < handle
 		
 		tstart
 		tstop
-		rise_amplitude
+		height
 		latency
 		width
 		valid_data
@@ -98,7 +91,7 @@ classdef ScAmplitude < handle
 		end
 		
 		
-		function val = get.rise_amplitude(obj)
+		function val = get.height(obj)
 			ind = obj.valid_data;
 			val = obj.data(ind,4) - obj.data(ind,2);
 		end

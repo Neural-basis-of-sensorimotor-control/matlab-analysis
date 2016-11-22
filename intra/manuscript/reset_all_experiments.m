@@ -8,6 +8,14 @@ response_max = 22e-3;
 
 neurons = get_intra_neurons();
 
+for i0=1:length(neurons)
+  signal = sc_load_signal(neurons(i0));
+  file = signal.parent;
+  experiment = signal.parent.parent;
+  experiment.fdir = update_raw_data_path(file.filepath);
+  save_experiment(experiment, experiment.abs_save_path, false);
+end
+
 for i1=1:length(neurons)
    fprintf('%d out of %d\n', i1, length(neurons));
    neuron = neurons(i1);

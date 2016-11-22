@@ -1,5 +1,6 @@
 classdef ScExperiment < ScList
 	%Children: ScFile
+  
 	properties
 		fdir        %directory containing .mat / .adq files
 		sc_dir      %directory for save_name (where this object is saved)
@@ -12,17 +13,20 @@ classdef ScExperiment < ScList
 	end
 	
 	methods (Static)
-		function expr = load_file(filepath)
-			
-			filepath = update_file_path(filepath, get_intra_experiment_dir);
+    
+		function expr = load_file(filepath)		
+			filepath = update_file_path(filepath, get_default_experiment_dir());
 						
 			d = load(filepath);
 			expr = d.obj;
-		end
+    end
+    
+    experiment = load_experiment(fpath);
 	end
 	
 	methods
 		function obj = ScExperiment(varargin)
+      
 			for i=1:2:numel(varargin)
 				obj.(varargin{i}) = varargin{i+1};
 			end
@@ -34,30 +38,36 @@ classdef ScExperiment < ScList
 			for i=1:obj.n
 				obj.get(i).sc_clear();
 			end
-		end
+    end
 		
-		%Populate all children
+    
+		%Initialize all children
 		function init(obj)
 			for i=1:obj.n
 				fprintf('reading file: %i out of %i\n',i,obj.n);
 				obj.get(i).init();
 			end
-		end
+    end
 		
+    
 		function add_spike2_channels(obj)
 			for k=1:obj.n
 				fprintf('reading file: %i out of %i\n',k,obj.n);
 				obj.get(k).add_spike2_channels();
 			end
-		end
+    end
+    
+    
 		%Parse experimental protocol (*.txt)
 		function update_from_protocol(obj, protocolfile)
+      
 			for i=1:obj.n
 				fprintf('parsing file %i out of %i\n',i,obj.n);
 				obj.get(i).update_from_protocol(protocolfile);
 			end
-		end
+    end
 		
+    
 		%Get all spike times for trigger/spike object
 		function spiketimes = get_spiketimes(obj,tag)
 			t0 = 0;
@@ -89,40 +99,8 @@ classdef ScExperiment < ScList
 					msgbox(sprintf('No analog signal found in file %s. Cannot compute file time length',file.tag));
 				end
 			end
-		end
-		
-		function is_ok = sc_version_check(obj)
-			if ~isempty(obj.last_gui_version)
-				switch obj.last_gui_version
-					case '1.0.6'
-						option1 =  'Yes, delete waveforms (save manually afterwards).';
-						option2 = 'No, close down and ask Hannes to make workaround';
-						userinput = questdlg(sprintf('This file was last saved with sc version %s. It might be compromised. Remove all waveforms? Alternately, ask Hannes to create a workaround for this file',obj.last_gui_version),...
-							'Error loading this version',option1,option2,option2);
-						if isempty(userinput)
-							userinput = option2;
-						end
-						switch userinput
-							case option1
-								for k=1:obj.n
-									file = obj.get(k);
-									signals = file.signals;
-									for j=1:signals.n
-										signal = signals.get(j);
-										signal.waveforms = ScList();
-									end
-								end
-								is_ok = true;
-							case option2
-								is_ok = false;
-						end
-					otherwise
-						is_ok = true;
-				end
-			else
-				is_ok = true;
-			end
-		end
+    end
+    
 		
 		function print_status(obj)
 			fprintf('Experiment: %s\n',obj.save_name);
@@ -175,11 +153,4 @@ classdef ScExperiment < ScList
 		end
 	end
 	
-	%     methods (Static)
-	%         function obj = loadobj(s)
-	%             s.fdir = sc_update_dir(s.fdir, get_raw_data_dir, 'dir');
-	%             s.sc_dir = fileparts(sc_update_dir([s.sc_dir filesep s.save_name], get_sc_data_dir, 'file'));
-	%             obj = s;
-	%         end
-	%     end
 end

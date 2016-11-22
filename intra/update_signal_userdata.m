@@ -2,7 +2,7 @@ clc
 clear
 
 neurons = get_intra_neurons();
-sc_dir = get_intra_experiment_dir;
+sc_dir = get_default_experiment_dir();
 for i=1:length(neurons)
   fprintf('%d out of %d\n', i, length(neurons));
   neuron = neurons(i);

@@ -38,8 +38,14 @@ classdef ScFile < ScList
     end
     
     
-    function filepath = get.filepath(obj)
-      filepath = fullfile(obj.parent.fdir, obj.filename);
+    function set.filepath(obj, val)
+      [pname, fname, ext] = fileparts(val);
+      obj.parent.fdir = pname;
+      obj.filename = [fname ext];
+    end
+    
+    function val = get.filepath(obj)
+      val = fullfile(obj.parent.fdir, obj.filename);
     end
     
     
@@ -50,14 +56,9 @@ classdef ScFile < ScList
     
     
     %Load all spiketimes + digital channels, but not analog channels
-    function success = sc_loadtimes(obj)
-      obj.update_fdir;
+    function sc_loadtimes(obj)
       
-      success = obj.check_fdir;
-      
-      if ~success
-        error('Could not find raw data file %s', obj.filepath);
-      end
+      obj.check_raw_data_dir();
       
       for i=1:obj.stims.n
         obj.stims.get(i).sc_loadtimes();
@@ -75,7 +76,8 @@ classdef ScFile < ScList
     
     %Load analog signals
     function sc_loadsignals(obj)
-      obj.update_fdir();
+      
+      obj.check_raw_data_dir();
       
       for i=1:obj.signals.n
         obj.signals.get(i).sc_loadsignal();
@@ -100,46 +102,26 @@ classdef ScFile < ScList
     
     
     %Check that raw data file exists on hard drive
-    function success = check_fdir(obj)
-      success = false;
-      
-      if exist(obj.filepath, 'file') == 2
-        success = true;
-        return
-      end
-      
-      folders = sep_folders(obj.fdir);
-      default_dir = get_raw_data_dir();
-      default_dir = strrep(default_dir, '\', filesep);
-      default_dir = strrep(default_dir, '/', filesep);
-      
-      if ~isempty(folders)
-        raw_data_dir = [default_dir folders{end} filesep];
-        
-        if exist([raw_data_dir obj.filename], 'file')
-          obj.parent.fdir = raw_data_dir;
-          success = true;
-          return
-        end
-      end
-            
-      while  exist(obj.filepath, 'file') ~= 2
+    function success = prompt_for_raw_data_dir(obj)
+
+      success = true;
+
+      while ~exist(obj.filepath, 'file')
         answer = questdlg(['File ' obj.filename ' could not be ' ...
           'found in current directory. Abort program?'],'',...
-          'Yes, abort','No, choose new directory',...
+          'Yes, abort', 'No, choose new directory',...
           'No, choose new directory');
-        switch answer
-          case 'Yes, abort'
-            return
-          case 'No, choose new directory'
-          otherwise
-            error(['debugging error: ' answer ' could not be found'])
+        
+        if strcmp(answer, 'Yes, abort')
+          success = false;
+          return
         end
         
-        dname = uigetdir(obj.parent.fdir,'Choose load directory');
+        dname = uigetdir(obj.parent.fdir, ...
+          ['Choose load directory for ' obj.tag]);
+        
         if ~isnumeric(dname)
           obj.parent.fdir = dname;
-          success = true;
         end
       end
     end
@@ -270,6 +252,7 @@ classdef ScFile < ScList
       [~,~,ext] = fileparts(obj.filename);
       is_adq_file = strcmpi(ext,'.adq');
     end
+    
     
     function add_spike2_channels(obj)
       % success = false;

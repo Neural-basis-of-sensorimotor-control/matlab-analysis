@@ -53,7 +53,7 @@ classdef ScSignal < ScChannel
     %Load transient properties (only)
     function v_raw = sc_loadsignal(obj)
       
-      if ~obj.parent.check_fdir()
+      if ~obj.parent.prompt_for_raw_data_dir()
         error('Could not find file');
       end
       

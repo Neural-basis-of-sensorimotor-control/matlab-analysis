@@ -2,7 +2,7 @@ function [signal, file, expr] = sc_load_signal(experiment_file, file_str, ...
 	signal_str, varargin)
 
 if isa(experiment_file, 'struct')
-	sc_dir = get_intra_experiment_dir;
+	sc_dir = get_default_experiment_dir;
 	neuron = experiment_file;
 	
 	if nargin==1
@@ -35,14 +35,13 @@ if ~exist('experiment_file', 'var')
 	[fname, pname] = uigetfile('*_sc.mat');
 	experiment_file = fullfile(pname, fname)
 end
-d = load(experiment_file);
-expr = d.obj;
+expr = ScExperiment.load_experiment(experiment_file);
 
 if ~exist('file_str', 'var')
 	file_str = input('File tag: ','s')
 end
 file = expr.get('tag',file_str);
-if check_raw_data_dir && ~file.check_fdir()
+if check_raw_data_dir && ~file.prompt_for_raw_data_dir()
 	return
 end
 

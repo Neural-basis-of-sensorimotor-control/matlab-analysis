@@ -13,7 +13,7 @@ elseif isempty(old_val)
 elseif list_contains(list, old_val)
   indx = equals(list, old_val);
   new_val = get_item(list, indx(1));
-elseif list_contains(list, 'tag', old_val)
+elseif list_contains(list, 'tag', old_val.tag)
   new_val = get_items(list, 'tag', old_val.tag, 1);
 else
   new_val = get_item(list, 1);

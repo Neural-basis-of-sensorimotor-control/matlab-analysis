@@ -7,7 +7,7 @@ file_missing = isempty(save_path) || ~exist(save_path, 'file');
 if file_missing || prompt_before_saving
   
   if file_missing
-    default_dir = get_intra_experiment_dir;
+    default_dir = get_default_experiment_dir;
   else
     default_dir = save_path;
   end

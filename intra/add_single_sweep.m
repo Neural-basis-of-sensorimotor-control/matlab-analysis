@@ -1,6 +1,6 @@
 function add_single_sweep()
 
-sc_dir = get_intra_experiment_dir();
+sc_dir = get_default_experiment_dir();
 
 experiment_file = [sc_dir 'IDNR_sc.mat'];
 file_str = 'IDNR0001';

@@ -1,7 +1,7 @@
 clc
 clear
 
-sc_dir = get_intra_experiment_dir();
+sc_dir = get_default_experiment_dir();
 
 response_min = 4e-3;
 response_max = 22e-3;
@@ -12,7 +12,14 @@ for i0=1:length(neurons)
   signal = sc_load_signal(neurons(i0));
   file = signal.parent;
   experiment = signal.parent.parent;
-  experiment.fdir = update_raw_data_path(file.filepath);
+  if ~exist(file.filepath, 'file')
+    s1 = fileparts(file.filepath);
+    if exist(s1,'file')
+      file.filepath = s1;
+    end
+  end
+  
+  experiment.fdir = fileparts(update_raw_data_path(file.filepath));
   save_experiment(experiment, experiment.abs_save_path, false);
 end
 

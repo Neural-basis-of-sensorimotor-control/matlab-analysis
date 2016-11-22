@@ -1,4 +1,4 @@
-function val = get_intra_experiment_dir()
+function val = get_default_experiment_dir()
 
 filename = 'sc.xml';
 

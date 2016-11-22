@@ -44,8 +44,8 @@ classdef ScSequence < ScListElement
       channels = obj.parent.channels;
     end
 
-    function fdir = get.fdir(obj)
-      fdir = obj.parent.fdir;
+    function val = get.fdir(obj)
+      val = obj.parent.fdir;
     end
 
     function triggerparents = gettriggerparents(obj,tmin,tmax)

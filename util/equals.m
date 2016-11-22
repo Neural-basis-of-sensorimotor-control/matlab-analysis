@@ -18,7 +18,7 @@ elseif ischar(x2)
   end
 elseif isobject(x2)
   if iscell(x1)
-    val = cellfun(@(x) x == x2, x1);
+    val = cellfun(@(x) logical(x == x2), x1);
   else
     val = x1 == x2;
   end

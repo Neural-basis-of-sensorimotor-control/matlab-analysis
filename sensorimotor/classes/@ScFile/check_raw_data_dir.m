@@ -1,7 +1,11 @@
 function check_raw_data_dir(file)
 
 if ~exist(file.filepath, 'file')
-  file.filepath = update_raw_data_path(file.filepath);
+  new_filepath = update_raw_data_path(file.filepath);
+  
+  if exist(new_filepath, 'file')
+    file.filepath = new_filepath;
+  end
 end
 
 success = file.prompt_for_raw_data_dir();

@@ -1,5 +1,9 @@
 function set_experiment(obj, experiment)
 
+if ischar(experiment)
+  experiment = ScExperiment.load_experiment(experiment);
+end
+
 obj.experiment = experiment;
 
 if isempty(experiment)

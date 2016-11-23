@@ -35,7 +35,7 @@ classdef GuiManager < handle
 			%Store data for the new viewer
 			sc_file_folder = obj.viewer.sc_file_folder;
 			raw_data_folder = obj.viewer.raw_data_folder;
-			experiment = obj.viewer.experiment;
+			expr = obj.viewer.experiment;
 			file = obj.viewer.file;
 			sequence = obj.viewer.sequence;
 			%Close all windows and destroy previous viewer
@@ -51,7 +51,7 @@ classdef GuiManager < handle
 			end
 			new_viewer.set_sc_file_folder(sc_file_folder);
 			new_viewer.set_raw_data_folder(raw_data_folder);
-			new_viewer.set_experiment(experiment);
+			new_viewer.set_experiment(expr);
 			new_viewer.set_file(file);
 			new_viewer.set_sequence(sequence);
 			obj.viewer = new_viewer;

@@ -1,5 +1,5 @@
 classdef ScTextMark < ScChannel & ScTriggerParent
-
+  
   methods
     function obj = ScTextMark(parent, channelname,varargin)
       obj.parent = parent;
@@ -9,7 +9,7 @@ classdef ScTextMark < ScChannel & ScTriggerParent
         obj.(varargin{k}) = varargin{k+1};
       end
     end
-
+    
     %Load digital channel values
     function sc_loadtimes(obj)
       obj.triggers = ScList;
@@ -30,7 +30,14 @@ classdef ScTextMark < ScChannel & ScTriggerParent
         for i=1:numel(tags)
           pos = cellfun(@(x) strcmp(x,tags{i}), cellstr);
           tagtimes = times(pos);
+          
           if obj.parent.stims.has('tag','DigMark')
+            trigger = obj.parent.stims.get('tag','DigMark').triggers.get('tag','1000');
+            
+            if isempty(trigger)
+              continue
+            end
+            
             digmarktimes = obj.parent.stims.get('tag','DigMark').triggers.get('tag','1000').gettimes(-inf,inf);
             for j=1:numel(tagtimes)
               [~,ind] = min(abs(tagtimes(j)-digmarktimes));

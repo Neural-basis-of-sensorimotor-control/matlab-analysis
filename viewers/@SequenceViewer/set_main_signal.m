@@ -1,12 +1,10 @@
 function set_main_signal(obj, signal)
 
-% if isnumeric(signal)
-% 	signal = obj.file.signals.get(signal);
-% elseif ischar(signal)
-% 	signal = obj.file.signals.get('tag', signal);
-% end
-
-signal = get_item(obj.file.signals, signal);
+if isempty(obj.file)
+  signal = [];
+else
+  signal = get_item(obj.file.signals, signal);
+end
 
 obj.main_channel.signal = signal;
 

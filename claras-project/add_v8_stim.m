@@ -1,10 +1,10 @@
 function add_v8_stim(experiment)
 
 for i=1:experiment.n
-  add_v8_stim_to_file(experiment.get(k));
+  add_v8_stim_to_file(experiment.get(i));
 end
 
-experiment.sc_save(false);
+experiment.sc_save(true);
 
 end
 
@@ -35,16 +35,19 @@ for i=1:length(patterns_str)
   triggertimes = trigger.gettimes(0, inf);
   
   for j=1:length(v4_electrodes)
-    v8_times = [v8_times; triggertimes 0 v4_electrodes(j).time]; %#ok<AGROW>
+    v8_times = [v8_times; triggertimes + v4_electrodes(j).time]; %#ok<AGROW>
   end
   
 end
 
 v8_times = sort(v8_times);
 
-triggerparent = ScAdqTrigger('V8');
 emulated_v8_electrode = ScSpikeTrain('V8', v8_times);
-triggerparent.add(emulated_v8_electrode);
-file.stims.add(triggerparent);
+
+if isempty(file.discrete_signals)
+    file.discrete_signals = ScCellList();
+end
+
+file.discrete_signals.add(emulated_v8_electrode);
 
 end

@@ -10,6 +10,7 @@ classdef ScFile < ScList
     signals         %List of analog channels (ScSignal)
     stims           %List of digital channels (ScStim / ScAdqTriggerParent)
     textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
+    discrete_signals %ScList of any type of triggers
     user_comment
   end
   
@@ -70,6 +71,7 @@ classdef ScFile < ScList
       for i=1:obj.signals.n
         obj.signals.get(i).sc_loadtimes;
       end
+      
     end
     
     
@@ -166,7 +168,9 @@ classdef ScFile < ScList
     %Implement function gettimes, and property istrigger returns true
     %Only returns objects where numel(times)>0
     function triggers = gettriggers(obj,tmin,tmax)
+      
       triggers = ScCellList;
+      
       for i=1:obj.signals.n
         trgs = obj.signals.get(i).triggers;
         for j=1:trgs.n
@@ -176,6 +180,7 @@ classdef ScFile < ScList
           end
         end
       end
+      
       for i=1:obj.textchannels.n
         textchannel = obj.textchannels.get(i);
         for j=1:textchannel.triggers.n
@@ -185,6 +190,7 @@ classdef ScFile < ScList
           end
         end
       end
+      
       for i=1:obj.stims.n
         stim = obj.stims.get(i);
         if stim.istrigger && numel(stim.gettimes(tmin,tmax))
@@ -196,6 +202,12 @@ classdef ScFile < ScList
               triggers.add(stimtriggers.get(j));
             end
           end
+        end
+      end
+      
+      if ~isempty(obj.discrete_signals)
+        for i=1:obj.discrete_signals.n
+          triggers.add(obj.discrete_signals.get(i));
         end
       end
     end

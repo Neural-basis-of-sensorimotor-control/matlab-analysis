@@ -7,6 +7,7 @@ classdef ScAmplitude < handle
 		data
 		tag
 		is_updated
+    userdata
 		rise            %Mx1 double
 		start           %Mx1 double
 		stop            %Mx1 double

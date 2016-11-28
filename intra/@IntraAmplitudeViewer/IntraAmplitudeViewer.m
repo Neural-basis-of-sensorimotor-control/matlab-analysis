@@ -73,12 +73,15 @@ classdef IntraAmplitudeViewer < handle
         fraction_only_manual(i) = nnz(~automatic & manual)/nbr_of_stims;
         fraction_none(i) = nnz(~automatic & ~manual)/nbr_of_stims;
         
-        nbr_of_automatic_detections = 0;
-        nbr_of_time_intervals = 0;
       end
+      
+      spont_activity = nan(size(patterns_str));
       
       for i=1:length(patterns_str)
         fprintf('Processing %d out of %d patterns\n', i, length(patterns_str));
+        
+        nbr_of_automatic_detections = 0;
+        nbr_of_time_intervals = 0;
         
         trigger = signal.parent.gettriggers(0, inf).get('tag', ...
           patterns_str{i});
@@ -95,13 +98,30 @@ classdef IntraAmplitudeViewer < handle
             end
           end
         end
+        
+        spont_activity(i) = nbr_of_automatic_detections/...
+          nbr_of_time_intervals;
       end
       
-      spont_activity = nbr_of_automatic_detections/...
-        nbr_of_time_intervals;
+      avg_spont_activity = mean(spont_activity);
+      std_spont_activity = std(spont_activity);
+      
+      figure (17)
+      clf
+      plot(spont_activity, '+', 'LineStyle', '-')
+      set(gca, 'XTick', 1:length(patterns_str), 'XTickLabel', ...
+        patterns_str, 'XTickLabelRotation', 270);
+      xlabel(gca, 'Pattern');
+      ylabel(gca, 'Fraction detected');
+      ylim(gca, [0 1]);
+      title(obj.file.tag);
       
       fprintf('\n\n');
-      fprintf('%s\t%.2f\n', signal.parent.tag, spont_activity);
+      fprintf('%s\t%.3f\t%.3f\t%.3f\t%.3f\n', signal.parent.tag, ...
+        avg_spont_activity, avg_spont_activity + std_spont_activity, ...
+        avg_spont_activity + 2*std_spont_activity, ...
+        avg_spont_activity + 3*std_spont_activity);
+      
       print_results('Automatic', fraction_automatic);
       print_results('Manual', fraction_manual);
       print_results('Both', fraction_both);

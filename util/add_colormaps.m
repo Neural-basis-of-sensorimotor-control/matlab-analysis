@@ -1,52 +1,60 @@
-function add_colormaps(plothandle, varargin)
+function add_colormaps(plothandle, limits, varargin)
 % add_colormaps(z, [-inf 0], 'bone', [0 1], 'gray', [1 inf], 'hello']
 
 z = get(plothandle, 'ZData');
-
-m = round(128 / length(varargin)/2);
+nbr_of_limits = length(limits) + 1;
+m = round(128 / nbr_of_limits);
 
 c = zeros(size(z));
-c = nan(128, 3);
-last_max = 0;
+cmap_values = nan(128,3);
+
 last_cmap_indx = 0;
 
-for i=1:2:length(varargin)
-  limits = varargin{i};
-  cmap = varargin{i+1};
+for i=1:nbr_of_limits
   
-  if i+2<length(varargin)
-    nbr_of_cmap_entries = m;
+  if i == 1
+    lower_limit = -inf;
+    offset = 0;
   else
-    nbr_of_cmap_entries = size(cmaps, 1) - last_cmap_indx;
+    lower_limit = limits(i-1);
+    offset = lower_limit;
   end
+  
+  if i == nbr_of_limits
+    upper_limit = inf;
+    nbr_of_cmap_entries = size(cmap_values, 1) - last_cmap_indx;
+  else
+    upper_limit = limits(i);
+    nbr_of_cmap_entries = m;
+  end
+  
+  cmap = varargin{i};
   
   cmap_indx = last_cmap_indx + (1:nbr_of_cmap_entries);
   last_cmap_indx = last_cmap_indx + nbr_of_cmap_entries;
-  cmaps(cmap_indx) =  cmap(nbr_of_cmap_entries);
+  cmap_values(cmap_indx, :) =  cmap(nbr_of_cmap_entries);
   
-  lower_limit = limits(1);
-  upper_limit = limits(2);
+  z_ind = z >= lower_limit & z < upper_limit;
   
-  ind = z >= lower_limit & z < upper_limit;
+  if nnz(z_ind)
+    if isinf(lower_limit)
+      cmin = min(z(z_ind));
+    else
+      cmin = lower_limit;
+    end
+    
+    if isinf(upper_limit)
+      cmax = max(z(z_ind));
+    else
+      cmax = upper_limit;
+    end
   
-  if isinf(lower_limit)
-    cmin = min(z(ind));
-  else
-    cmin = lower_limit;
+    c(z_ind) = c(z_ind) + offset + ...
+      min(m, round((m-1)*(z(z_ind) - cmin) / (cmax - cmin)) + 1);
   end
-  
-  if isinf(upper_limit)
-    cmax = max(z(ind));
-  else
-    cmax = upper_limit;
-  end
-  
-  c(ind) = c(ind) + last_max + ...
-    min(m, round((m-1)*(z(ind) - cmin) / (cmax - cmin)) + 1);
-  
-  last_max = cmax;
 end
 
 set(plothandle, 'CData', c);
-caxis(plothandle, [min(c(:)) max(c(:))]);
+colormap(get(plothandle, 'Parent'), cmap_values);
+caxis(get(plothandle, 'Parent'), [min(c(:)) max(c(:))]);
 colorbar

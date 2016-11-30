@@ -40,24 +40,9 @@ end
 
 [x, y] = meshgrid((1:nbr_of_stims) - .5, (1:nbr_of_neurons) - .5);
 
-ind_negative = v<=0;
-ind_below_one = v>0 & v<=1;
-ind_above_one = v>1;
-
 clf(fig);
-
-x_negative = x; y_negative = y; v_negative = v;
-x_negative(~ind_negative) = nan; y_negative(~ind_negative) = nan; ...
-  v_negative(~ind_negative) = nan;
-
-pcolor(x_negative, y_negative, v_negative);
-
-h1 = pcolor(x(ind_negative), y(ind_negative), v(ind_negative));
-h2 = pcolor(x(ind_below_one), y(ind_below_one), v(ind_below_one));
-h3 = pcolor(x(ind_above_one), y(ind_above_one), v(ind_above_one));
-%pcolor(x, y, z);
-
-
+h = surface(x, y, v);
+add_colormaps(h, [0 1], @gray, @jet, @bone);
 
 set(gca, 'YTick', (1:nbr_of_neurons), ...
   'YTickLabel', get_values(neurons, 'file_str'), ...
@@ -73,9 +58,12 @@ str = strsplit(amplitude.tag, '#');
 str = str{2};
 ind = str2num(str(2));
 
+try
 val = mean(amplitude.height) / ...
   amplitude.parent.userdata.single_pulse_height(ind);
-
+catch
+  val = 0;
+end
 if val > 4
   val = nan;
 end

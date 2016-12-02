@@ -27,6 +27,7 @@ nbr_of_neurons = length(neurons);
 stims_str = get_intra_motifs();
 nbr_of_stims = length(stims_str);
 v = nan(nbr_of_neurons, nbr_of_stims);
+norm_constant_is_negative = false(size(v));
 
 for i=1:nbr_of_neurons
   signal = sc_load_signal(neurons(i));
@@ -34,36 +35,49 @@ for i=1:nbr_of_neurons
   for j=1:nbr_of_stims
     stim = get_item(signal.amplitudes.cell_list, stims_str{j});
     
-    v(i,j) = mosaik_fcn(stim);
+    [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
   end
 end
 
 [x, y] = meshgrid((1:nbr_of_stims) - .5, (1:nbr_of_neurons) - .5);
 
-clf(fig);
-h = surface(x, y, v);
-add_colormaps(h, [0 1], @gray, @jet, @bone);
+clf(fig, 'reset');
+h1 = surface(x, y, v);
+hold on
+concat_colormaps(h1, [0 1], @gray, @autumn, @winter);
+
+vmax = max(v(:));
+
+x_neg = x(norm_constant_is_negative) + .5;
+y_neg = y(norm_constant_is_negative) + .5;
+v_neg = vmax*ones(size(x_neg)) + 10;
+
+h2 = plot3(x_neg, y_neg, v_neg, 'k+', ...
+  x_neg, y_neg, v_neg, 'wo', ...
+  x_neg, y_neg, v_neg, 'ks', ...
+  x_neg, y_neg, v_neg, 'w*');
+uistack(h2, 'top');
 
 set(gca, 'YTick', (1:nbr_of_neurons), ...
   'YTickLabel', get_values(neurons, 'file_str'), ...
   'XTick', (1:nbr_of_stims), ...
   'XTickLabel', stims_str, ...
   'XTickLabelRotation', 270);
+axis(gca, 'fill');
 
 end
 
-function val = get_epsp_amplitude(amplitude)
+function [val, neg_normalization] = get_epsp_amplitude(amplitude)
 
 str = strsplit(amplitude.tag, '#');
 str = str{2};
 ind = str2num(str(2));
+norm_constant = amplitude.parent.userdata.single_pulse_height(ind);
 
-try
 val = mean(amplitude.height) / ...
-  amplitude.parent.userdata.single_pulse_height(ind);
-catch
-  val = 0;
-end
+  abs(norm_constant);
+
+neg_normalization = norm_constant < 0;
 if val > 4
   val = nan;
 end

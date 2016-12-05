@@ -42,7 +42,8 @@ classdef DigitalAxes < ChannelAxes
 				switch obj.gui.plotmode
 					case {PlotModes.default, PlotModes.plot_all, ...
 							PlotModes.plot_avg_all, PlotModes.plot_avg_selected, ...
-							PlotModes.plot_avg_std_all, PlotModes.plot_avg_std_selected}
+							PlotModes.plot_avg_std_all, PlotModes.plot_avg_std_selected, ...
+              PlotModes.plot_only_avg_std}
 						pretrigger = obj.gui.pretrigger;
 						posttrigger = obj.gui.posttrigger;
 						if pretrigger>obj.gui.xlimits(1),   pretrigger = obj.gui.xlimits(1);    end

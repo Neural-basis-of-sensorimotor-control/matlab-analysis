@@ -37,7 +37,7 @@ classdef AnalogAxes < ChannelAxes
       if nargin<2
         remove_waveforms = true;
       end
-           
+      
       if obj.plot_raw
         s.smooth = true;
         s.remove_artifacts = false;
@@ -45,12 +45,12 @@ classdef AnalogAxes < ChannelAxes
         s.remove_artifacts_simple = false;
         
         obj.v_raw = obj.signal.get_v(s);
-      
+        
         s.smooth = true;
         s.remove_artifacts = true;
         s.remove_waveforms = remove_waveforms;
         s.remove_artifacts_simple = true;
-      
+        
         obj.v = obj.signal.get_v(s);
       else
         obj.v_raw = [];
@@ -59,7 +59,7 @@ classdef AnalogAxes < ChannelAxes
         s.remove_artifacts = true;
         s.remove_waveforms = remove_waveforms;
         s.remove_artifacts_simple = true;
-      
+        
         obj.v = obj.signal.get_v(s);
       end
       
@@ -83,7 +83,7 @@ classdef AnalogAxes < ChannelAxes
       if ~isempty(sweep)
         if ~isempty(obj.v_raw)
           obj.plotv(obj.v_raw,sweep,[1 1 1],[],false);
-      
+          
           if ~isempty(obj.gui.rmwf)
             v_rmwf = zeros(size(obj.v_raw));
             v_rmwf = obj.gui.rmwf.remove_wf(v_rmwf);
@@ -132,47 +132,54 @@ classdef AnalogAxes < ChannelAxes
         end
       end
       
-      if isempty(b_signal) || ~plothighlighted
-        for i=1:size(v_signal,2)
-          plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor);%,'LineWidth',2);
-          
-          if ~isempty(btn_down_fcn)
-            set(plothandle,'ButtonDownFcn',btn_down_fcn);
-            set(plothandle, 'HitTest', 'on');
-          end
-          handles(i) = plothandle;
-        end
-      else
-        for i=1:size(v_signal,2)
-          pos = b_signal(:,i);
-          plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',[0 1 0],'LineWidth',2);
+      if obj.gui.plot_mode ~= PlotModes.plot_only_avg_std
         
-          if ~isempty(btn_down_fcn)
-            set(plothandle,'ButtonDownFcn',btn_down_fcn);
+        if isempty(b_signal) || ~plothighlighted
+          for i=1:size(v_signal,2)
+            plothandle = plot(obj.ax,time,v_signal(:,i),'Color',plotcolor);%,'LineWidth',2);
+            
+            if ~isempty(btn_down_fcn)
+              set(plothandle,'ButtonDownFcn',btn_down_fcn);
+              set(plothandle, 'HitTest', 'on');
+            end
+            handles(i) = plothandle;
           end
-        end
-        
-        for i=1:size(v_signal,2)
-          pos = ~b_signal(:,i);
-          plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',plotcolor,'LineWidth',2);
+        else
+          for i=1:size(v_signal,2)
+            pos = b_signal(:,i);
+            plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',[0 1 0],'LineWidth',2);
+            
+            if ~isempty(btn_down_fcn)
+              set(plothandle,'ButtonDownFcn',btn_down_fcn);
+            end
+          end
           
-          if ~isempty(btn_down_fcn)
-            set(plothandle,'ButtonDownFcn',btn_down_fcn);
+          for i=1:size(v_signal,2)
+            pos = ~b_signal(:,i);
+            plothandle = sc_piecewiseplot(obj.ax,time(pos),v_signal(pos,i),'Color',plotcolor,'LineWidth',2);
+            
+            if ~isempty(btn_down_fcn)
+              set(plothandle,'ButtonDownFcn',btn_down_fcn);
+            end
           end
         end
       end
       
-      if obj.gui.plotmode == PlotModes.plot_avg_all || ...
-          obj.gui.plotmode == PlotModes.plot_avg_selected || ...
-          obj.gui.plotmode == PlotModes.plot_avg_std_all || ...
-          obj.gui.plotmode == PlotModes.plot_avg_std_selected
+      if obj.gui.plotmode == PlotModes.plot_avg_all            || ...
+          obj.gui.plotmode == PlotModes.plot_avg_selected      || ...
+          obj.gui.plotmode == PlotModes.plot_avg_std_all       || ...
+          obj.gui.plotmode == PlotModes.plot_avg_std_selected  ||...
+          obj.gui.plotmode == PlotModes.plot_only_avg_std
+        
         avg = mean(v_signal,2);
         plot(obj.ax,time,avg,'Color',[0 1 0],...
           'LineWidth',2);
       end
       
-      if obj.gui.plotmode == PlotModes.plot_avg_std_all || ...
-          obj.gui.plotmode == PlotModes.plot_avg_std_selected
+      if obj.gui.plotmode == PlotModes.plot_avg_std_all       || ...
+          obj.gui.plotmode == PlotModes.plot_avg_std_selected || ...
+          obj.gui.plotmode == PlotModes.plot_only_avg_std
+        
         stddev = std(v_signal,0,2);
         plot(obj.ax,time,avg+stddev,'Color',[0 0 1],'LineWidth',2);
         plot(obj.ax,time,avg-stddev,'Color',[0 0 1],'LineWidth',2);

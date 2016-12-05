@@ -12,7 +12,7 @@ classdef ChannelAxes < GuiAxes
             PlotModes.plot_avg_std_selected}
           sweep = obj.gui.sweep;
         case {PlotModes.plot_all PlotModes.plot_avg_all ...
-            PlotModes.plot_avg_std_all}
+            PlotModes.plot_avg_std_all PlotModes.plot_only_avg_std}
           sweep = 1:numel(obj.gui.triggertimes);
       end
       cla(obj.ax);

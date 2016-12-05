@@ -7,7 +7,7 @@ classdef SweepOptions < PanelComponent
     ui_previous
     ui_next
   end
-
+  
   methods
     function obj = SweepOptions(panel)
       obj@PanelComponent(panel);
@@ -17,7 +17,7 @@ classdef SweepOptions < PanelComponent
       sc_addlistener(obj.gui,'posttrigger',@(~,~) obj.posttrigger_listener,obj.uihandle);
       sc_addlistener(obj.gui,'plotmode',@(~,~) obj.plotmode_listener,obj.uihandle);
     end
-
+    
     function populate(obj,mgr)
       mgr.newline(20);
       mgr.add(sc_ctrl('text','Pretrigger'),100);
@@ -35,10 +35,10 @@ classdef SweepOptions < PanelComponent
       obj.ui_increment = mgr.add(sc_ctrl('edit',[],@(~,~) obj.btn_callbacks('increment')),100);
       mgr.newline(20);
       obj.ui_previous = mgr.add(sc_ctrl('pushbutton','Previous',@(~,~) obj.btn_callbacks('previous')),100);
-
+      
       obj.ui_next = mgr.add(sc_ctrl('pushbutton','Next',@(~,~) obj.btn_callbacks('next')),100);
     end
-
+    
     function initialize(obj)
       obj.pretrigger_listener();
       obj.posttrigger_listener();
@@ -46,9 +46,9 @@ classdef SweepOptions < PanelComponent
       obj.increment_listener();
       obj.plotmode_listener();
     end
-
+    
   end
-
+  
   methods (Access = 'protected')
     function pretrigger_listener(obj)
       set(obj.ui_pretrigger,'string',obj.gui.pretrigger);
@@ -64,54 +64,57 @@ classdef SweepOptions < PanelComponent
     function increment_listener(obj)
       set(obj.ui_increment,'string',obj.gui.sweep_increment);
     end
-
+    
     function btn_callbacks(obj,btn_id)
       switch btn_id
         case 'pretrigger'
           obj.gui.pretrigger = str2double(get(obj.ui_pretrigger,'string'));
           if isfinite(obj.gui.pretrigger) && isfinite(obj.gui.posttrigger) ...
-            && obj.gui.pretrigger<obj.gui.posttrigger
-          xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
-          obj.gui.plot_channels();
-        end
-      case 'posttrigger'
-        obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
-        if isfinite(obj.gui.pretrigger) && isfinite(obj.gui.posttrigger) ...
-          && obj.gui.pretrigger<obj.gui.posttrigger
-        xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
-        obj.gui.plot_channels();
+              && obj.gui.pretrigger<obj.gui.posttrigger
+            xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
+            obj.gui.plot_channels();
+          end
+        case 'posttrigger'
+          obj.gui.posttrigger = str2double(get(obj.ui_posttrigger,'string'));
+          if isfinite(obj.gui.pretrigger) && isfinite(obj.gui.posttrigger) ...
+              && obj.gui.pretrigger<obj.gui.posttrigger
+            xlim(obj.gui.main_axes,[obj.gui.pretrigger obj.gui.posttrigger]);
+            obj.gui.plot_channels();
+          end
+        case 'sweep'
+          old_sweep = obj.gui.sweep;
+          obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));
+          if numel(old_sweep) ~= numel(obj.gui.sweep)
+            obj.gui.sweep_increment = numel(obj.gui.sweep);
+          end
+        case 'increment'
+          obj.gui.sweep_increment = str2double(get(obj.ui_increment,'string'));
+        case 'next'
+          obj.gui.set_sweep(obj.gui.sweep + obj.gui.sweep_increment);
+        case 'previous'
+          obj.gui.set_sweep(obj.gui.sweep - obj.gui.sweep_increment);
+        otherwise
+          warning(['id ' btn_id ' does not exist'])
       end
-    case 'sweep'
-      old_sweep = obj.gui.sweep;
-      obj.gui.set_sweep(str2num(get(obj.ui_sweep,'string')));
-      if numel(old_sweep) ~= numel(obj.gui.sweep)
-        obj.gui.sweep_increment = numel(obj.gui.sweep);
+    end
+    
+    
+    function plotmode_listener(obj)
+      if obj.gui.plotmode == PlotModes.plot_all          || ...
+          obj.gui.plotmode == PlotModes.plot_avg_std_all || ...
+          obj.gui.plotmode == PlotModes.plot_avg_all     || ...
+          obj.gui.plotmode == PlotModes.plot_only_avg_std
+        set(obj.ui_sweep,'enable','off');
+        set(obj.ui_increment,'enable','off');
+        set(obj.ui_next,'enable','off');
+        set(obj.ui_previous,'enable','off');
+      else
+        set(obj.ui_sweep,'enable','on');
+        set(obj.ui_increment,'enable','on');
+        set(obj.ui_next,'enable','on');
+        set(obj.ui_previous,'enable','on');
       end
-    case 'increment'
-      obj.gui.sweep_increment = str2double(get(obj.ui_increment,'string'));
-    case 'next'
-      obj.gui.set_sweep(obj.gui.sweep + obj.gui.sweep_increment);
-    case 'previous'
-      obj.gui.set_sweep(obj.gui.sweep - obj.gui.sweep_increment);
-    otherwise
-      warning(['id ' btn_id ' does not exist'])
     end
   end
-
-  function plotmode_listener(obj)
-    if obj.gui.plotmode == PlotModes.plot_all || ...
-      obj.gui.plotmode == PlotModes.plot_avg_std_all
-    set(obj.ui_sweep,'enable','off');
-    set(obj.ui_increment,'enable','off');
-    set(obj.ui_next,'enable','off');
-    set(obj.ui_previous,'enable','off');
-  else
-    set(obj.ui_sweep,'enable','on');
-    set(obj.ui_increment,'enable','on');
-    set(obj.ui_next,'enable','on');
-    set(obj.ui_previous,'enable','on');
-  end
-end
-end
-
+  
 end

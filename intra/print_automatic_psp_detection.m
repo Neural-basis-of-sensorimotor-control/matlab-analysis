@@ -37,7 +37,8 @@ for i=1:length(neurons)
   
 	signal = sc_load_signal(neuron);
   
-	spont_activity = automatic_psp_detection(neuron, response_min, response_max);
+	spont_activity = signal.update_spont_activity(get_intra_patterns, ...
+    response_min, response_max);
   
 	amplitudes = signal.amplitudes;
 	

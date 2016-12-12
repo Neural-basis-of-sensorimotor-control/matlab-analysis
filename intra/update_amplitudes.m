@@ -20,7 +20,6 @@ for i=1:length(stims)
   end
 end
 
-signal.userdata.spont_activity = automatic_psp_detection(neuron, response_min, response_max);
-
+signal.update_spont_activity(get_intra_patterns(), response_min, response_max);
 
 end

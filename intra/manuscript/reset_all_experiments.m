@@ -8,10 +8,12 @@ response_max = 22e-3;
 
 neurons = get_intra_neurons();
 
-for i0=1:length(neurons)
-  signal = sc_load_signal(neurons(i0));
+%Update raw data path
+for i1=1:length(neurons)
+  signal = sc_load_signal(neurons(i1));
   file = signal.parent;
   experiment = signal.parent.parent;
+  
   if ~exist(file.filepath, 'file')
     s1 = fileparts(file.filepath);
     if exist(s1,'file')
@@ -23,9 +25,10 @@ for i0=1:length(neurons)
   save_experiment(experiment, experiment.abs_save_path, false);
 end
 
-for i1=1:length(neurons)
-   fprintf('%d out of %d\n', i1, length(neurons));
-   neuron = neurons(i1);
+%Update filtering, template matching and amplitude epsps
+for i2=1:length(neurons)
+   fprintf('%d out of %d\n', i2, length(neurons));
+   neuron = neurons(i2);
 
   signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
   signal.simple_artifact_filter.is_on = true;
@@ -48,14 +51,15 @@ stims = get_intra_motifs();
 electrodes = {'V1', 'V2', 'V3', 'V4'};
 neurons = get_intra_neurons();
 
-for i2=1:length(electrodes)
-  fprintf('%d (%d)\n', i2, length(electrodes));
-  electrode = electrodes{i2};
+%Update userdata for amplitudes and parent signals
+for i3=1:length(electrodes)
+  fprintf('%d (%d)\n', i3, length(electrodes));
+  electrode = electrodes{i3};
   indx = find(cellfun(@(x) ~isempty(regexp(x, electrode, 'once')), stims));
   
   for j2=1:length(neurons)
     fprintf('\t%d (%d)\n', j2, length(neurons));
-    neuron = neurons(i2);
+    neuron = neurons(i3);
     signal = sc_load_signal(neuron);
     vals = nan(length(indx), 3);
     

@@ -13,7 +13,7 @@ zmin = min(z(:));
 zmax = max(z(:));
 
 zrange = zmax - zmin;
-n_colormap = 1024;
+n_colormap = 512;%1024;
 cmapvalues = [];
 
 for i=1:nbr_of_regions

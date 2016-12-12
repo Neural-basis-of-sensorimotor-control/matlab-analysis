@@ -5,22 +5,45 @@
 function make_mosaic
 close all
 
-evaluation_fcns = {@get_epsp_amplitude
-  @get_epsp_width
-  @get_onset_latency};
+evaluation_fcns = {@get_epsp_amplitude_single_pulse
+  @get_epsp_width_single_pulse
+  @get_onset_latency_single_pulse
+  @get_epsp_amplitude_abs
+  @get_epsp_width_abs
+  @get_onset_latency_abs
+  @get_epsp_amplitude_abs
+  @get_epsp_width_abs
+  @get_onset_latency_abs};
 
 titlestr = {'Amplitude height [single pulse response = 1], ''*'' = negative single pulse'
   'Time to peak [single pulse response = 1]'
-  'Latency [single pulse response = 1]'};
+  'Latency [single pulse response = 1]'
+  'Amplitude height [max value = 1]'
+  'Time to peak [max value = 1]'
+  'Latency [max value = 1]'
+  'Amplitude height [absolute value]'
+  'Time to peak [absolute value]'
+  'Latency [absolute value]'};
+
+normalization_fcns = {[]
+  []
+  []
+  @normalize_to_max
+  @normalize_to_max
+  @normalize_to_max
+  []
+  []
+  []
+  };
 
 for i=1:length(evaluation_fcns)
-  make_mosaic_subfct(evaluation_fcns{i}, figure(i));
+  make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, figure(i));
   title(titlestr{i});
 end
 
 end
 
-function make_mosaic_subfct(mosaik_fcn, fig)
+function make_mosaic_subfct(mosaik_fcn, normalization_fcn, fig)
 
 neurons = get_intra_neurons();
 nbr_of_neurons = length(neurons);
@@ -31,12 +54,22 @@ norm_constant_is_negative = false(size(v));
 
 for i=1:nbr_of_neurons
   signal = sc_load_signal(neurons(i));
+  activity_threshold = signal.userdata.avg_spont_activity + ...
+    3*signal.userdata.std_spont_activity;
   
   for j=1:nbr_of_stims
     stim = get_item(signal.amplitudes.cell_list, stims_str{j});
     
-    [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
+    if stim.userdata.fraction_detected >= activity_threshold
+      [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
+    else
+      v(i,j) = nan;
+    end
   end
+end
+
+if ~isempty(normalization_fcn)
+  v = v/normalization_fcn(v);
 end
 
 [x, y] = meshgrid((1:nbr_of_stims) - .5, (1:nbr_of_neurons) - .5);
@@ -63,11 +96,12 @@ set(gca, 'YTick', (1:nbr_of_neurons), ...
   'XTick', (1:nbr_of_stims), ...
   'XTickLabel', stims_str, ...
   'XTickLabelRotation', 270);
-axis(gca, 'fill');
+axis(gca, 'tight');
 
 end
 
-function [val, neg_normalization] = get_epsp_amplitude(amplitude)
+
+function [val, neg_normalization] = get_epsp_amplitude_single_pulse(amplitude)
 
 str = strsplit(amplitude.tag, '#');
 str = str{2};
@@ -78,14 +112,11 @@ val = mean(amplitude.height) / ...
   abs(norm_constant);
 
 neg_normalization = norm_constant < 0;
-if val > 4
-  val = nan;
-end
 
 end
 
 
-function val = get_epsp_width(amplitude)
+function [val, neg_normalization] = get_epsp_width_single_pulse(amplitude)
 
 str = strsplit(amplitude.tag, '#');
 str = str{2};
@@ -94,9 +125,11 @@ ind = str2num(str(2));
 val = mean(amplitude.width) / ...
   amplitude.parent.userdata.single_pulse_width(ind);
 
+neg_normalization = false;
+
 end
 
-function val = get_onset_latency(amplitude)
+function [val, neg_normalization] = get_onset_latency_single_pulse(amplitude)
 
 str = strsplit(amplitude.tag, '#');
 str = str{2};
@@ -104,5 +137,38 @@ ind = str2num(str(2));
 
 val = mean(amplitude.latency) / ...
   amplitude.parent.userdata.single_pulse_latency(ind);
+
+neg_normalization = false;
+
+end
+
+
+function [val, neg_normalization] = get_epsp_amplitude_abs(amplitude)
+
+val = mean(amplitude.height);
+
+neg_normalization = false;
+
+end
+
+
+function [val, neg_normalization] = get_epsp_width_abs(amplitude)
+
+val = mean(amplitude.width);
+
+neg_normalization = false;
+
+end
+
+function [val, neg_normalization] = get_onset_latency_abs(amplitude)
+
+val = mean(amplitude.latency);
+
+neg_normalization = false;
+end
+
+function v_normalized = normalize_to_max(v)
+
+v_normalized = abs(max(v(:)));
 
 end

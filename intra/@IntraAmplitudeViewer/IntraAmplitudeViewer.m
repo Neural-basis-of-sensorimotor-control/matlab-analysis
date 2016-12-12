@@ -29,14 +29,16 @@ classdef IntraAmplitudeViewer < handle
       signal = obj.main_signal;
       stims_str = get_intra_motifs();
       patterns_str = get_intra_patterns();
-      response_range = obj.max_latency - obj.min_latency;
+      
+      [avg_spont_activity, std_spont_activity] = ...
+        obj.main_signal.update_spont_activity(patterns_str, ...
+        obj.min_latency, obj.max_latency);
       
       neuron = get_intra_neurons(signal.parent.tag);
       
       if length(neuron) ~= 1
         error('Too many or too few neurons matched signal');
       end
-      
       
       dim = size(stims_str);
       
@@ -46,7 +48,6 @@ classdef IntraAmplitudeViewer < handle
       fraction_only_automatic = nan(dim);
       fraction_only_manual = nan(dim);
       fraction_none = nan(dim);
-      
       
       psp = signal.waveforms.get('tag', neuron.psp_templates{1});
       
@@ -61,7 +62,7 @@ classdef IntraAmplitudeViewer < handle
           tmin = t0 + obj.min_latency;
           tmax = t0 + obj.max_latency;
           
-          automatic(j) = xpsp_detected(psp, tmin, tmax);
+          automatic(j) = psp.spike_is_detected(tmin, tmax);
         end
         
         nbr_of_stims = length(amplitude.stimtimes);
@@ -74,38 +75,7 @@ classdef IntraAmplitudeViewer < handle
         fraction_none(i) = nnz(~automatic & ~manual)/nbr_of_stims;
         
       end
-      
-      spont_activity = nan(size(patterns_str));
-      
-      for i=1:length(patterns_str)
-        fprintf('Processing %d out of %d patterns\n', i, length(patterns_str));
-        
-        nbr_of_automatic_detections = 0;
-        nbr_of_time_intervals = 0;
-        
-        trigger = signal.parent.gettriggers(0, inf).get('tag', ...
-          patterns_str{i});
-        triggertimes = trigger.gettimes(neuron.tmin, neuron.tmax);
-        
-        for j=2:length(triggertimes)
-          for tstop=triggertimes(j):-response_range:(triggertimes(j)-.5)
-            tstart = tstop - response_range;
             
-            nbr_of_time_intervals = nbr_of_time_intervals + 1;
-            
-            if xpsp_detected(psp, tstart, tstop)
-              nbr_of_automatic_detections = nbr_of_automatic_detections + 1;
-            end
-          end
-        end
-        
-        spont_activity(i) = nbr_of_automatic_detections/...
-          nbr_of_time_intervals;
-      end
-      
-      avg_spont_activity = mean(spont_activity);
-      std_spont_activity = std(spont_activity);
-      
       figure (17)
       clf
       plot(spont_activity, '+', 'LineStyle', '-')

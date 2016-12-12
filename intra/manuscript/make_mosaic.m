@@ -63,7 +63,7 @@ for i=1:nbr_of_neurons
     if stim.userdata.fraction_detected >= activity_threshold
       [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
     else
-      v(i,j) = nan;
+      v(i,j) = 0;
     end
   end
 end

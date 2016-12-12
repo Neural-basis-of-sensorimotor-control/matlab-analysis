@@ -44,7 +44,7 @@ for i2=1:length(neurons)
   end
   signal.update_continuous_signal;
 
-  update_amplitudes(neuron, response_min, response_max, true);
+  signal = update_amplitudes(neuron, response_min, response_max, true);
   signal.sc_save([sc_dir signal.parent.parent.save_name]);
 end
 stims = get_intra_motifs();

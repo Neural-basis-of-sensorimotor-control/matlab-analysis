@@ -1,5 +1,5 @@
 function [avg_spont_activity, std_spont_activity] = ...
-  update_spont_activity(signal, patterns_str, min_latency, max_latency)
+  update_spont_activity(signal, psps_str, patterns_str, min_latency, max_latency)
 
 spont_activity = nan(size(patterns_str));
 response_range = max_latency - min_latency;
@@ -20,8 +20,12 @@ for i=1:length(patterns_str)
       
       nbr_of_time_intervals = nbr_of_time_intervals + 1;
       
-      if psp.spike_is_detected(tstart, tstop)
-        nbr_of_automatic_detections = nbr_of_automatic_detections + 1;
+      for k=1:length(psps_str)
+        psp = get_item(signal.waveforms.cell_list, psps_str{k});
+        if psp.spike_is_detected(tstart, tstop)
+          nbr_of_automatic_detections = nbr_of_automatic_detections + 1;
+          continue
+        end
       end
     end
   end

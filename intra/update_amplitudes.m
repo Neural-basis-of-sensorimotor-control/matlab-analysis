@@ -1,4 +1,4 @@
-function update_amplitudes(neuron, response_min, response_max, force_update)
+function signal = update_amplitudes(neuron, response_min, response_max, force_update)
 
 stims = get_intra_motifs();
 
@@ -20,6 +20,6 @@ for i=1:length(stims)
   end
 end
 
-signal.update_spont_activity(get_intra_patterns(), response_min, response_max);
+signal.update_spont_activity(neuron.psp_templates, get_intra_patterns(), response_min, response_max);
 
 end

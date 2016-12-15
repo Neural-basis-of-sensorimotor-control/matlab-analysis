@@ -32,21 +32,26 @@ function gui = sc(varargin)
 %
 %   Copyright 2015 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
-if nargout, gui = [];    end
+if nargout
+  gui = [];    
+end
+
 addpath(genpath(fileparts(mfilename('fullpath'))));
+
 if numel(varargin) && strcmpi(varargin{1},'-addpath')
   return
 elseif numel(varargin) && strcmpi(varargin{1},'-eeg')
   gui = Eeg;
   return
 end
+
 if ~sc_version_check
   return
 end
+
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
-% close(findobj('Tag','Main Figure'));
-% if ~isempty(findobj('Tag','Main Figure'))
 close all
+
 if ~isempty(findall(0,'type','figure'))
   return
 end
@@ -55,38 +60,36 @@ args = varargin;
 
 if  exist('sc_config.txt','file') == 2
   fid = fopen('sc_config.txt');
-  sc_file_folder = fgetl(fid);
-  raw_data_folder = fgetl(fid);
+  sc_file_folder = get_default_experiment_dir();
+
   if ~numel(args)
     str = fgetl(fid);
     if ischar(str)
-      filename = fullfile(sc_file_folder,str);
-      if exist(filename,'file') == 2
+      filename = fullfile(sc_file_folder, str);
+      if isfile(filename)
         args = {filename};
       end
     end
   end
   fclose(fid);
-  if ~ischar(sc_file_folder), sc_file_folder = [];    end
-  if ~ischar(raw_data_folder),   raw_data_folder = [];      end
+  
+  if ~ischar(sc_file_folder)
+    sc_file_folder = get_default_experiment_dir();    
+  end
 else
-  sc_file_folder = [];
-  raw_data_folder = [];
+  sc_file_folder = get_default_experiment_dir();
 end
 
 if isempty(sc_file_folder)
-    sc_file_folder = get_intra_experiment_dir;
+  sc_file_folder = get_default_experiment_dir();
 end
 
-if isempty(raw_data_folder)
-    raw_data_folder = get_raw_data_dir;
-end
-
-if ~numel(args) || strcmpi(args{1},'-loadnew')
+if ~numel(args) || strcmpi(args{1}, '-loadnew')
   %Force program to neglect sc_config.txt
-  [fname, pname] = uigetfile('*_sc.mat','Choose experiment file',sc_file_folder);
+  [fname, pname] = uigetfile('*_sc.mat','Choose experiment file', sc_file_folder);
   filename = fullfile(pname,fname);
-  if exist(filename,'file') == 2
+  
+  if exist(filename, 'file')
     args = {filename};
   else
     fprintf('Could not detect file\n');
@@ -95,16 +98,19 @@ if ~numel(args) || strcmpi(args{1},'-loadnew')
 end
 
 
-if strcmpi(args{1},'-help')
+if strcmpi(args{1}, '-help')
   help(mfilename)
   return
-elseif strcmpi(args{1},'-what')
+elseif strcmpi(args{1}, '-what')
   directory = uigetdir(sc_file_folder,'Select file directory');
+  
   if ~isnumeric(directory)
     w = what(directory);
     clc
+    
     for k=1:numel(w.mat)
       f = w.mat{k};
+  
       if numel(f)>7 && strcmpi(f(end-6:end),'_sc.mat')
         d = load([directory filesep f]);
         d.obj.print_status();
@@ -114,31 +120,51 @@ elseif strcmpi(args{1},'-what')
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
   %Create new *_sc.mat file
   experiment = ScExperiment();
+  
   if strcmpi(args{1},'-newsp2')
-    [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+    [rawdatafiles, raw_data_folder] = uigetfile('*.mat', ...
+      'Select all files with analog channels to be included', ...
+      get_raw_data_folder(), 'MultiSelect','on');
+  
+    if ~iscell(rawdatafiles)
+      rawdatafiles = {rawdatafiles};    
+    end
   else  %adq
-    [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+    [rawdatafiles, raw_data_folder] = uigetfile('*.adq', ...
+      'Select all files with analog channels to be included', ...
+      get_raw_data_folder(), ...
+      'MultiSelect','on');
+    
+    if ~iscell(rawdatafiles)
+      rawdatafiles = {rawdatafiles};    
+    end
   end
+  
   experiment.fdir = raw_data_folder;
   rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x),rawdatafiles));
+  
   for i=1:numel(rawdatafiles)
     fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
     file = ScFile(experiment, rawdatafiles{i});
     file.init();
     experiment.add(file);
   end
+  
   if ~experiment.n
     msgbox('No files selected. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
     return;
   else
     guimgr = GuiManager();
-    if nargout,    gui = guimgr;   end
+    
+    if nargout
+      gui = guimgr;   
+    end
+    
     guimgr.experiment = experiment;
     experiment_name = experiment.get(1).tag;
     experiment_name = [experiment_name(1:end-4) '_sc'];
-    if ~experiment.sc_save(experiment_name);
+    
+    if ~save_experiment(experiment, experiment_name, true);
       msgbox('Experiment not saved. Aborting');
     else
       guimgr.show;
@@ -148,27 +174,33 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
   end
 elseif strcmpi(args{1},'-version')
   fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
-elseif strcmpi(args{1},'-amplitude')
+elseif strcmpi(args{1}, '-amplitude')
   gui_mgr = sc();
   gui_mgr.mode = ScGuiState.ampl_analysis;
 elseif numel(args{1}) && args{1}(1) == '-'
   fprintf(['Illegal command : ' args{1}]);
-  return;
+  return
 else
-  if exist(args{1},'file') == 2
+  
+  if isfile(args{1})
     filename = args{1};
   else
-    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
-    filename = fullfile(pname,fname);
-    if exist(filename,'file') ~= 2
+    [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file', ...
+      sc_file_folder);
+    filename = fullfile(pname, fname);
+    
+    if ~exist(filename,'file')
       fprintf('Could not detect file\n');
       return;
     end
   end
+  
   guimgr = GuiManager();
-  if nargout,    gui = guimgr;   end
-  guimgr.viewer.set_sc_file_folder(sc_file_folder);
-  guimgr.viewer.set_raw_data_folder(raw_data_folder);
+  
+  if nargout
+    gui = guimgr;   
+  end
+  
   d = load(filename);
   
   experiment = d.obj;

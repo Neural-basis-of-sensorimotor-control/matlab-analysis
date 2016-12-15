@@ -9,7 +9,8 @@ for i=1:length(stimtimes)
 	
   for j=1:length(psps)
     psp = get_item(amplitude.parent.waveforms.cell_list, psps{j});
-    if psp.spike_is_detected(v_sweep)
+    
+    if ~isempty(psp) && psp.spike_is_detected(v_sweep)
       val(i) = true;
       continue
     end

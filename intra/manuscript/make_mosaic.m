@@ -3,7 +3,7 @@
 %TODO: Add star for negative single pulse!
 
 function make_mosaic
-close all
+%close all
 
 evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_epsp_width_single_pulse
@@ -13,7 +13,8 @@ evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_onset_latency_abs
   @get_epsp_amplitude_abs
   @get_epsp_width_abs
-  @get_onset_latency_abs};
+  @get_onset_latency_abs
+  @get_response_fraction};
 
 titlestr = {'Amplitude height [single pulse response = 1], ''*'' = negative single pulse'
   'Time to peak [single pulse response = 1]'
@@ -23,7 +24,8 @@ titlestr = {'Amplitude height [single pulse response = 1], ''*'' = negative sing
   'Latency [max value = 1]'
   'Amplitude height [absolute value]'
   'Time to peak [absolute value]'
-  'Latency [absolute value]'};
+  'Latency [absolute value]'
+  'Response fraction ''*'' = below threshold'};
 
 normalization_fcns = {[]
   []
@@ -34,16 +36,22 @@ normalization_fcns = {[]
   []
   []
   []
+  []
   };
 
-for i=1:length(evaluation_fcns)
-  make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, figure(i));
+apply_thresholds = [true(9,1); false(1)];
+
+for i=10:length(evaluation_fcns)
+  make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, ...
+    apply_thresholds(i), figure(i));
   title(titlestr{i});
 end
 
 end
 
-function make_mosaic_subfct(mosaik_fcn, normalization_fcn, fig)
+
+function make_mosaic_subfct(mosaik_fcn, normalization_fcn, apply_threshold, ...
+  fig)
 
 neurons = get_intra_neurons();
 nbr_of_neurons = length(neurons);
@@ -54,13 +62,13 @@ norm_constant_is_negative = false(size(v));
 
 for i=1:nbr_of_neurons
   signal = sc_load_signal(neurons(i));
-  activity_threshold = signal.userdata.avg_spont_activity + ...
-    3*signal.userdata.std_spont_activity;
+  activity_threshold = get_threshold(signal);
   
   for j=1:nbr_of_stims
     stim = get_item(signal.amplitudes.cell_list, stims_str{j});
     
-    if stim.userdata.fraction_detected >= activity_threshold
+    if ~apply_threshold || ...
+        stim.userdata.fraction_detected >= activity_threshold
       [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
     else
       v(i,j) = 0;
@@ -129,6 +137,7 @@ neg_normalization = false;
 
 end
 
+
 function [val, neg_normalization] = get_onset_latency_single_pulse(amplitude)
 
 str = strsplit(amplitude.tag, '#');
@@ -160,11 +169,30 @@ neg_normalization = false;
 
 end
 
+
 function [val, neg_normalization] = get_onset_latency_abs(amplitude)
 
 val = mean(amplitude.latency);
 
 neg_normalization = false;
+
+end
+
+
+function [val, under_threshold] = get_response_fraction(amplitude)
+
+val = amplitude.userdata.fraction_detected;
+
+under_threshold = val < get_threshold(amplitude.parent);
+
+end
+
+
+function activity_threshold = get_threshold(signal)
+
+activity_threshold = signal.userdata.avg_spont_activity + ...
+  3*signal.userdata.std_spont_activity;
+
 end
 
 function v_normalized = normalize_to_max(v)

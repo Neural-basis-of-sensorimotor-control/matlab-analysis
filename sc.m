@@ -66,7 +66,7 @@ if  exist('sc_config.txt','file') == 2
     str = fgetl(fid);
     if ischar(str)
       filename = fullfile(sc_file_folder, str);
-      if exist(filename,'file')
+      if isfile(filename)
         args = {filename};
       end
     end
@@ -182,7 +182,7 @@ elseif numel(args{1}) && args{1}(1) == '-'
   return
 else
   
-  if exist(args{1},'file')
+  if isfile(args{1})
     filename = args{1};
   else
     [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file', ...

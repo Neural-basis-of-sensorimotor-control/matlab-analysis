@@ -132,7 +132,7 @@ classdef AnalogAxes < ChannelAxes
         end
       end
       
-      if obj.gui.plot_mode ~= PlotModes.plot_only_avg_std
+      if obj.gui.plotmode ~= PlotModes.plot_only_avg_std
         
         if isempty(b_signal) || ~plothighlighted
           for i=1:size(v_signal,2)

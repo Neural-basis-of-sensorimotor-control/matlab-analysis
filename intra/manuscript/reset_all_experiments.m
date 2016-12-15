@@ -26,7 +26,7 @@ for i1=1:length(neurons)
 end
 
 %Update filtering, template matching and amplitude epsps
-for i2=16:length(neurons)
+for i2=1:length(neurons)
    fprintf('%d out of %d\n', i2, length(neurons));
    neuron = neurons(i2);
 

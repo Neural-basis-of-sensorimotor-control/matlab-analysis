@@ -60,8 +60,8 @@ args = varargin;
 
 if  exist('sc_config.txt','file') == 2
   fid = fopen('sc_config.txt');
-  sc_file_folder = get_default_experiment_dir();
-
+  sc_file_folder = fgetl(fid);
+  raw_data_folder = fgetl(fid);
   if ~numel(args)
     str = fgetl(fid);
     if ischar(str)
@@ -72,24 +72,26 @@ if  exist('sc_config.txt','file') == 2
     end
   end
   fclose(fid);
-  
-  if ~ischar(sc_file_folder)
-    sc_file_folder = get_default_experiment_dir();    
-  end
+  if ~ischar(sc_file_folder), sc_file_folder = [];    end
+  if ~ischar(raw_data_folder),   raw_data_folder = [];      end
 else
-  sc_file_folder = get_default_experiment_dir();
+  sc_file_folder = [];
+  raw_data_folder = [];
 end
 
 if isempty(sc_file_folder)
-  sc_file_folder = get_default_experiment_dir();
+    sc_file_folder = get_intra_experiment_dir;
 end
 
-if ~numel(args) || strcmpi(args{1}, '-loadnew')
+if isempty(raw_data_folder)
+    raw_data_folder = get_raw_data_dir;
+end
+
+if ~numel(args) || strcmpi(args{1},'-loadnew')
   %Force program to neglect sc_config.txt
   [fname, pname] = uigetfile('*_sc.mat','Choose experiment file', sc_file_folder);
   filename = fullfile(pname,fname);
-  
-  if exist(filename, 'file')
+  if exist(filename,'file') == 2
     args = {filename};
   else
     fprintf('Could not detect file\n');
@@ -122,22 +124,11 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
   experiment = ScExperiment();
   
   if strcmpi(args{1},'-newsp2')
-    [rawdatafiles, raw_data_folder] = uigetfile('*.mat', ...
-      'Select all files with analog channels to be included', ...
-      get_raw_data_folder(), 'MultiSelect','on');
-  
-    if ~iscell(rawdatafiles)
-      rawdatafiles = {rawdatafiles};    
-    end
+    [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
   else  %adq
-    [rawdatafiles, raw_data_folder] = uigetfile('*.adq', ...
-      'Select all files with analog channels to be included', ...
-      get_raw_data_folder(), ...
-      'MultiSelect','on');
-    
-    if ~iscell(rawdatafiles)
-      rawdatafiles = {rawdatafiles};    
-    end
+    [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
+    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
   end
   
   experiment.fdir = raw_data_folder;
@@ -163,8 +154,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     guimgr.experiment = experiment;
     experiment_name = experiment.get(1).tag;
     experiment_name = [experiment_name(1:end-4) '_sc'];
-    
-    if ~save_experiment(experiment, experiment_name, true);
+    if ~experiment.sc_save(experiment_name);
       msgbox('Experiment not saved. Aborting');
     else
       guimgr.show;
@@ -185,22 +175,18 @@ else
   if isfile(args{1})
     filename = args{1};
   else
-    [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file', ...
-      sc_file_folder);
-    filename = fullfile(pname, fname);
-    
-    if ~exist(filename,'file')
+    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
+    filename = fullfile(pname,fname);
+    if exist(filename,'file') ~= 2
       fprintf('Could not detect file\n');
       return;
     end
   end
   
   guimgr = GuiManager();
-  
-  if nargout
-    gui = guimgr;   
-  end
-  
+  if nargout,    gui = guimgr;   end
+  guimgr.viewer.set_sc_file_folder(sc_file_folder);
+  guimgr.viewer.set_raw_data_folder(raw_data_folder);
   d = load(filename);
   
   experiment = d.obj;

@@ -43,9 +43,7 @@ for i2=1:length(neurons)
     psp.process_order = 1;
   end
   signal.update_continuous_signal;
-  signal.sc_save([sc_dir signal.parent.parent.save_name])
-
-  signal = update_amplitudes(neuron, response_min, response_max, true);
+  signal.update_amplitudes(neuron, response_min, response_max, true);
   signal.sc_save([sc_dir signal.parent.parent.save_name]);
 end
 stims = get_intra_motifs();
@@ -75,6 +73,7 @@ for i3=1:length(electrodes)
     
     user_data_field = sprintf('epsp_%s', electrode);
     signal.userdata.(user_data_field) = vals;
+    
     signal.sc_save([sc_dir signal.parent.parent.save_name]);  
   end
 end

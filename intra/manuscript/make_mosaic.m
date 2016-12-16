@@ -3,7 +3,7 @@
 %TODO: Add star for negative single pulse!
 
 function make_mosaic
-%close all
+close all
 
 evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_epsp_width_single_pulse
@@ -41,7 +41,7 @@ normalization_fcns = {[]
 
 apply_thresholds = [true(9,1); false(1)];
 
-for i=10:length(evaluation_fcns)
+for i=1:length(evaluation_fcns)
   make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, ...
     apply_thresholds(i), figure(i));
   title(titlestr{i});

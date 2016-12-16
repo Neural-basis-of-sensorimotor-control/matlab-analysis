@@ -1,4 +1,4 @@
-function signal = update_amplitudes(neuron, response_min, response_max, force_update)
+function update_amplitudes(signal, neuron, response_min, response_max, force_update)
 
 stims = get_intra_motifs();
 
@@ -6,8 +6,6 @@ s.smooth = true;
 s.remove_artifacts = true;
 s.remove_waveforms = true;
 s.remove_artifacts_simple = true;
-
-signal = sc_load_signal(neuron);
 
 v = signal.get_v(s);
 

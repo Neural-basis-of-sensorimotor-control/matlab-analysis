@@ -17,7 +17,7 @@ data ={
   'ICNR_sc.mat',    'ICNR0002',   'patch',  -inf, inf,  {'EPSP5'}
   'ICNR_sc.mat',    'ICNR0003',   'patch',  -inf, inf,  {'EPSP5'}
   'IFNR_sc.mat',    'IFNR0002',   'patch',  -inf, inf,  {'EPSP5'}
-  'IFNR_sc.mat',    'IFNR0004',   'patch',  -inf, inf,  {'EPSP5'}
+  'IFNR_sc.mat',    'IFNR0004',   'patch',  -inf, inf,  {'EPSP1', 'EPSP2', 'EPSP3'}
   'IHNR_sc.mat',    'IHNR0000',   'patch',  -inf, inf,  {'EPSP5'}
   'IHNR_sc.mat',    'IHNR0001',   'patch',  -inf, inf,  {'EPSP5'}
   'IKNR_sc.mat',    'IKNR0000',   'patch',  -inf, inf,  {'EPSP5'}

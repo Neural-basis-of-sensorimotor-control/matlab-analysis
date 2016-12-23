@@ -1,6 +1,5 @@
 %Figure 4
 %Create mosaic
-%TODO: Add star for negative single pulse!
 
 function make_mosaic
 close all
@@ -42,10 +41,42 @@ normalization_fcns = {[]
 apply_thresholds = [true(9,1); false(1)];
 
 for i=1:length(evaluation_fcns)
+  fprintf('%d (%d)\n', i, length(evaluation_fcns));
   make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, ...
     apply_thresholds(i), figure(i));
   title(titlestr{i});
+  add_figure_filename(gca);
 end
+
+neurons = get_intra_neurons();
+stims_str = get_intra_motifs();
+
+figure(length(neurons)+1)
+clf('reset')
+hold on
+
+for i=1:length(neurons)
+  neuron = neurons(i);
+  signal = sc_load_signal(neuron);
+  
+  for j=1:length(stims_str)
+    amplitude = signal.amplitudes.get('tag', stims_str{j});
+    plot(i, amplitude.userdata.fraction_detected, '.', 'Tag', 'Amplitude response');
+  end
+  
+  avg_spont = signal.userdata.avg_spont_activity;
+  std_spont = signal.userdata.std_spont_activity;
+  
+  plot(i, avg_spont, '+', 'Tag', 'Spontaneuous activity');
+  plot(i, avg_spont+3*std_spont, '+', 'Tag', 'Threshold response');
+end
+
+set(gca,'XTick',1:length(neurons),'XTickLabel',{neurons.file_str}, ...
+  'XTickLabelRotation', 270, 'Color', [0 0 0]);
+ylabel('Reponse fraction');
+ylim([0 1]);
+add_legend(gca);
+add_figure_filename(gca);
 
 end
 
@@ -57,21 +88,22 @@ neurons = get_intra_neurons();
 nbr_of_neurons = length(neurons);
 stims_str = get_intra_motifs();
 nbr_of_stims = length(stims_str);
-v = nan(nbr_of_neurons, nbr_of_stims);
+v = nan(nbr_of_stims, nbr_of_neurons);
 norm_constant_is_negative = false(size(v));
 
 for i=1:nbr_of_neurons
+  fprintf('\t%d (%d)\n', i, nbr_of_neurons);
   signal = sc_load_signal(neurons(i));
-  activity_threshold = get_threshold(signal);
+  activity_threshold = get_activity_threshold(signal);
   
   for j=1:nbr_of_stims
     stim = get_item(signal.amplitudes.cell_list, stims_str{j});
     
     if ~apply_threshold || ...
         stim.userdata.fraction_detected >= activity_threshold
-      [v(i,j), norm_constant_is_negative(i,j)] = mosaik_fcn(stim);
+      [v(j,i), norm_constant_is_negative(j,i)] = mosaik_fcn(stim);
     else
-      v(i,j) = 0;
+      v(j,i) = 0;
     end
   end
 end
@@ -80,18 +112,15 @@ if ~isempty(normalization_fcn)
   v = v/normalization_fcn(v);
 end
 
-[x, y] = meshgrid((1:nbr_of_stims) - .5, (1:nbr_of_neurons) - .5);
-
 clf(fig, 'reset');
-h1 = surface(x, y, v);
+
+fill_matrix(v);
 hold on
-concat_colormaps(h1, [0 1], @gray, @autumn, @winter);
 
-vmax = max(v(:));
+concat_colormaps(v, gca, [0 1], @gray, @(x) invert_colormap(@autumn, x), @winter);
 
-x_neg = x(norm_constant_is_negative) + .5;
-y_neg = y(norm_constant_is_negative) + .5;
-v_neg = vmax*ones(size(x_neg)) + 10;
+[x_neg, y_neg] = find(norm_constant_is_negative);
+v_neg = 10*ones(size(x_neg));
 
 h2 = plot3(x_neg, y_neg, v_neg, 'k+', ...
   x_neg, y_neg, v_neg, 'wo', ...
@@ -109,94 +138,4 @@ axis(gca, 'tight');
 end
 
 
-function [val, neg_normalization] = get_epsp_amplitude_single_pulse(amplitude)
 
-str = strsplit(amplitude.tag, '#');
-str = str{2};
-ind = str2num(str(2));
-norm_constant = amplitude.parent.userdata.single_pulse_height(ind);
-
-val = mean(amplitude.height) / ...
-  abs(norm_constant);
-
-neg_normalization = norm_constant < 0;
-
-end
-
-
-function [val, neg_normalization] = get_epsp_width_single_pulse(amplitude)
-
-str = strsplit(amplitude.tag, '#');
-str = str{2};
-ind = str2num(str(2));
-
-val = mean(amplitude.width) / ...
-  amplitude.parent.userdata.single_pulse_width(ind);
-
-neg_normalization = false;
-
-end
-
-
-function [val, neg_normalization] = get_onset_latency_single_pulse(amplitude)
-
-str = strsplit(amplitude.tag, '#');
-str = str{2};
-ind = str2num(str(2));
-
-val = mean(amplitude.latency) / ...
-  amplitude.parent.userdata.single_pulse_latency(ind);
-
-neg_normalization = false;
-
-end
-
-
-function [val, neg_normalization] = get_epsp_amplitude_abs(amplitude)
-
-val = mean(amplitude.height);
-
-neg_normalization = false;
-
-end
-
-
-function [val, neg_normalization] = get_epsp_width_abs(amplitude)
-
-val = mean(amplitude.width);
-
-neg_normalization = false;
-
-end
-
-
-function [val, neg_normalization] = get_onset_latency_abs(amplitude)
-
-val = mean(amplitude.latency);
-
-neg_normalization = false;
-
-end
-
-
-function [val, under_threshold] = get_response_fraction(amplitude)
-
-val = amplitude.userdata.fraction_detected;
-
-under_threshold = val < get_threshold(amplitude.parent);
-
-end
-
-
-function activity_threshold = get_threshold(signal)
-
-activity_threshold = signal.userdata.avg_spont_activity + ...
-  3*signal.userdata.std_spont_activity;
-
-end
-
-function v_normalized = normalize_to_max(v)
-
-v_normalized = abs(max(v(:)));
-
-end

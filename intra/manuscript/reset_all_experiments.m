@@ -14,9 +14,9 @@ for i1=1:length(neurons)
   file = signal.parent;
   experiment = signal.parent.parent;
   
-  if ~exist(file.filepath, 'file')
+  if ~isfile(file.filepath)
     s1 = fileparts(file.filepath);
-    if exist(s1,'file')
+    if isfile(s1)
       file.filepath = s1;
     end
   end
@@ -32,17 +32,18 @@ for i2=1:length(neurons)
 
   signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
   signal.simple_artifact_filter.is_on = true;
-  signal.simple_spike_filter.is_on = true;
+  signal.simple_spike_filter.is_on = false;
 
   templates = signal.get_templates();
   psp_templates = get_items(templates, 'tag', neuron.psp_templates);
 
-  for j1=1:length(psp_templates)
-    psp = get_item(psp_templates, j1);
+  for j2=1:length(psp_templates)
+    psp = get_item(psp_templates, j2);
     %TODO: add check for isempty - remove if is empty
     psp.process_order = 1;
   end
-  signal.update_continuous_signal;
+  
+  signal.update_continuous_signal(false);
   signal.update_amplitudes(neuron, response_min, response_max, true);
   signal.sc_save([sc_dir signal.parent.parent.save_name]);
 end
@@ -56,19 +57,19 @@ for i3=1:length(electrodes)
   electrode = electrodes{i3};
   indx = find(cellfun(@(x) ~isempty(regexp(x, electrode, 'once')), stims));
   
-  for j2=1:length(neurons)
-    fprintf('\t%d (%d)\n', j2, length(neurons));
-    neuron = neurons(i3);
+  for j3=1:length(neurons)
+    fprintf('\t%d (%d)\n', j3, length(neurons));
+    neuron = neurons(j3);
     signal = sc_load_signal(neuron);
     vals = nan(length(indx), 3);
     
-    for k=1:length(indx)
-      stim = stims{indx(k)};
+    for k3=1:length(indx)
+      stim = stims{indx(k3)};
       amplitude = get_items(signal.amplitudes.cell_list, 'tag', stim);
       
-      vals(k, 1) = mean(amplitude.height);
-      vals(k, 2) = mean(amplitude.latency);
-      vals(k, 3) = mean(amplitude.width);
+      vals(k3, 1) = mean(amplitude.height);
+      vals(k3, 2) = mean(amplitude.latency);
+      vals(k3, 3) = mean(amplitude.width);
     end
     
     user_data_field = sprintf('epsp_%s', electrode);

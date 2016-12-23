@@ -55,35 +55,46 @@ classdef ScThreshold < handle
     %see ScWaveform for explanation
     %Uses no parfor loop - suitable when there is parallel computation
     %of several ScThreshold objects
-    function [spikepos, spikearea] = match_v(obj, v)
+    function [spikepos, spikearea] = match_v(obj, v, min_isi_on)
+      
+      if nargin<3
+        min_isi_on = true;
+      end
+      
       original_dim_v = size(v);
       
       if length(v)<=obj.max_matrix_size
         spikepos = ScThreshold.find_spikepos(obj, v);
-        spikepos = sc_separate(spikepos, obj.min_isi);
+        
+        if min_isi_on
+          spikepos = sc_separate(spikepos, obj.min_isi);
+        end
       else
         [vcell,spikes] = obj.conv_v(v);
         clear v
         for k=1:length(spikes)
           spikes(k) = {ScThreshold.find_spikepos(obj, vcell{k})};
         end
-        spikepos = obj.deconv_spikes(spikes);
+        spikepos = obj.deconv_spikes(spikes, min_isi_on);
       end
       if nargout>=2
         spikearea = obj.compute_spikearea(spikepos, original_dim_v);
       end
-      spikepos = sc_separate(spikepos, obj.width);
+      
+      if min_isi_on
+        spikepos = sc_separate(spikepos, obj.width);
+      end
     end
     
     %see ScWaveform for explanation
     %Uses parfor loop - suitable when there is no parallel computation
     %of several ScThreshold objects
-    function [spikepos, spikearea] = match_v_parallel(obj,v)
+    function [spikepos, spikearea] = match_v_parallel(obj, v, min_isi_on)
       if length(v)<=obj.max_matrix_size
         if nargout<=1
-          spikepos = obj.match_v(v);
+          spikepos = obj.match_v(v, min_isi_on);
         else
-          [spikepos,spikearea] = obj.match_v(v);
+          [spikepos,spikearea] = obj.match_v(v, min_isi_on);
         end
       else
         [vcell,spikes,original_dim_v] = obj.conv_v(v);
@@ -91,11 +102,14 @@ classdef ScThreshold < handle
         parfor k=1:length(spikes)
           spikes(k) = {ScThreshold.find_spikepos(obj,vcell{k})};
         end
-        spikepos = obj.deconv_spikes(spikes);
+        spikepos = obj.deconv_spikes(spikes, min_isi_on);
         if nargout>=2
           spikearea = obj.compute_spikearea(spikepos,original_dim_v);
         end
-        spikepos = sc_separate(spikepos,obj.width);
+        
+        if min_isi_on
+          spikepos = sc_separate(spikepos,obj.width);
+        end
       end
     end
     %Rearrange v from matrix to cell, and create cell for containing
@@ -116,12 +130,15 @@ classdef ScThreshold < handle
     end
     
     %Rearrange spike from cell structure to matrix structure
-    function spikepos = deconv_spikes(obj,spikes)
+    function spikepos = deconv_spikes(obj, spikes, min_isi_on)
       for k=1:length(spikes)
         spikes(k) = {(k-1)*obj.max_matrix_size+spikes{k}};
       end
       spikepos = cell2mat(spikes');
-      spikepos = sc_separate(spikepos,obj.min_isi);
+      
+      if min_isi_on
+        spikepos = sc_separate(spikepos, obj.min_isi);
+      end
     end
     
     %Reaturn logical vector where true means that bin is part of

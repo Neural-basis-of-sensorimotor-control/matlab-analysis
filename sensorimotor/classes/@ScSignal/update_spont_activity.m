@@ -1,4 +1,5 @@
-function update_spont_activity(obj, psps_str, patterns_str, min_latency, max_latency)
+function update_spont_activity(obj, psps_str, patterns_str, min_latency, max_latency, ...
+  tmin, tmax)
 
 spont_activity = nan(size(patterns_str));
 response_range = max_latency - min_latency;
@@ -11,7 +12,7 @@ for i=1:length(patterns_str)
   
   trigger = obj.parent.gettriggers(0, inf).get('tag', ...
     patterns_str{i});
-  triggertimes = trigger.gettimes(0, inf);
+  triggertimes = trigger.gettimes(tmin, tmax);
   
   for j=2:length(triggertimes)
     for tstop=triggertimes(j):-response_range:(triggertimes(j)-.5)

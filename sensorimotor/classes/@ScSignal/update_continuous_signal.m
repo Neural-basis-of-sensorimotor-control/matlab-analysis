@@ -1,4 +1,8 @@
-function update_continuous_signal(signal)
+function update_continuous_signal(signal, min_isi_on)
+
+if nargin<2
+  min_isi_on = true;
+end
 
 v = signal.get_v(false, false, false, false);
 
@@ -21,7 +25,7 @@ for i=1:length(unique_indx)
   
   for j=1:length(templates)
     template = get_item(templates, j);
-    template.update(v);    
+    template.update(v, min_isi_on);    
   end
   
 end

@@ -38,7 +38,7 @@ for i=1:length(neurons)
 	signal = sc_load_signal(neuron);
   
 	spont_activity = signal.update_spont_activity(get_intra_patterns, ...
-    response_min, response_max);
+    response_min, response_max, neuron.tmin, neuron.tmax);
   
 	amplitudes = signal.amplitudes;
 	

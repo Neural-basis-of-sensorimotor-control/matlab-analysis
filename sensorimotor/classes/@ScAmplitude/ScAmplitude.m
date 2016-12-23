@@ -138,18 +138,5 @@ classdef ScAmplitude < handle
     end
 		
   end
-  
-  methods (Static)
-    
-    function obj = loadobj(a)
-      
-      if isempty(a.automatic_xpsp_detected)
-        a.automatic_xpsp_detected = false(size(a.stimtimes));
-      end
-      
-      obj = a;
-    end
-    
-  end
 	
 end

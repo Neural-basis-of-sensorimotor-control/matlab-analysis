@@ -30,11 +30,11 @@ classdef IntraAmplitudeViewer < handle
       stims_str = get_intra_motifs();
       patterns_str = get_intra_patterns();
       
+      neuron = get_intra_neurons(signal.parent.tag);
+      
       [avg_spont_activity, std_spont_activity] = ...
         obj.main_signal.update_spont_activity(patterns_str, ...
-        obj.min_latency, obj.max_latency);
-      
-      neuron = get_intra_neurons(signal.parent.tag);
+        obj.min_latency, obj.max_latency, neuron.tmin, neuron.tmax);
       
       if length(neuron) ~= 1
         error('Too many or too few neurons matched signal');

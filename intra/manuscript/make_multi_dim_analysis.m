@@ -1,13 +1,30 @@
-function make_multi_dim_analysis()
+function make_multi_dim_analysis(varargin)
 % % %Make multidimensional analysis
 % % % Figure 5
 clc
 close all
 
+scaling_dim = 2;
 neurons = get_intra_neurons();
 stims = get_intra_motifs();
+exclude_neurons = {};
+
+for i=1:2:length(varargin)
+  switch varargin{i}
+    case '-scaling_dim'
+      scaling_dim = varargin{i+1};
+    case '-exclude'
+      exclude_neurons = varargin{i+1};
+    otherwise
+      error('Invalid input: %s', varargin{i});
+  end
+end
+
+neurons = rm_from_list(neurons, 'file_str', exclude_neurons);
 
 is_responses = generate_response_matrix(neurons, stims);
+% stims = stims(all(is_responses, 2));
+% is_responses = generate_response_matrix(neurons, stims);
 
 evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_epsp_width_single_pulse
@@ -53,22 +70,24 @@ titlestrs_3 = {{'Amplitude height [single pulse response = 1]', 'Time to peak [s
 
 normalization_fcns_3 = {{[], [], []}};
 
-i1 = 0;
 for i1=1:length(evaluation_fcns)
   fprintf('%d (%d)\n', i1, length(evaluation_fcns));
   
   fig = figure(i1);
-  make_mds(fig, evaluation_fcns{i1}, normalization_fcns{i1}, titlestrs{i1})
+  try
+    make_mds(fig, evaluation_fcns{i1}, normalization_fcns{i1}, titlestrs{i1})
+  catch exception
+    msgbox('Exception caught');
+    assignin('base', 'exception',exception);
+  end
 end
 
-i2 = 0;
 for i2=1:length(evaluation_fcns_2)
   fprintf('%d (%d)\n', i2, length(evaluation_fcns_2));
   
   fig = figure(i1+i2);
   make_mds_2(fig, evaluation_fcns_2{i2}, normalization_fcns_2{i2}, titlestrs_2{i2});
 end
-
 
 for i3=1:length(evaluation_fcns_3)
   fprintf('%d (%d)\n', i3, length(evaluation_fcns_3));
@@ -103,13 +122,13 @@ end
     setup_intra_axes(neurons, stims);
     
     d = pdist(response_values');
-    y = mdscale(d, 2);
+    y = mdscale(d, scaling_dim);
     
     subplot(223)
     plot_mda(y, neurons);
     title('Non-linear MDS');
     
-    y = cmdscale(d, 2);
+    y = cmdscale(d, scaling_dim);
     
     subplot(224)
     plot_mda(y, neurons);
@@ -163,13 +182,13 @@ end
     setup_intra_axes(neurons, stims);
     
     d = pdist([response_values1' response_values2']);
-    y = mdscale(d, 2);
+    y = mdscale(d, scaling_dim);
     
     subplot(223)
-    plot_mda(y, repmat(neurons, 1, 2));
+    plot_mda(y, neurons);
     title('Non-linear MDS');
     
-    y = cmdscale(d, 2);
+    y = cmdscale(d, scaling_dim);
     
     subplot(224)
     plot_mda(y, repmat(neurons, 1, 2));
@@ -242,17 +261,17 @@ end
     setup_intra_axes(neurons, stims);
     
     d = pdist([response_values1' response_values2' response_values3']);
-    y = mdscale(d, 2);
+    y = mdscale(d, scaling_dim);
     
     
     subplot(234)
-    plot_mda(y, repmat(neurons, 1, 3));
+    plot_mda(y, neurons);
     title('Non-linear MDS');
     
-    y = cmdscale(d, 2);
+    y = cmdscale(d, scaling_dim);
     
-    subplot(325)
-    plot_mda(y, repmat(neurons, 1, 3));
+    subplot(235)
+    plot_mda(y, neurons);
     title('Classical MDS');
     add_legend([subplot(234) subplot(235)]);
     

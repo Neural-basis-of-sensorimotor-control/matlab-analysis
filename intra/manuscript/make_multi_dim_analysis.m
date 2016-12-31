@@ -23,8 +23,8 @@ end
 neurons = rm_from_list(neurons, 'file_str', exclude_neurons);
 
 is_responses = generate_response_matrix(neurons, stims);
-% stims = stims(all(is_responses, 2));
-% is_responses = generate_response_matrix(neurons, stims);
+stims = stims(all(is_responses, 2));
+is_responses = generate_response_matrix(neurons, stims);
 
 evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_epsp_width_single_pulse

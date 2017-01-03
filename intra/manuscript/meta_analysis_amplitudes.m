@@ -39,9 +39,10 @@ clf reset
 for i=1:length(unique_patterns)
   %sc_square_subplot(length(unique_patterns), i);
   figure(i)
+  clf reset
   hold on
   title([unique_patterns{i} ' amplitude height (mV)'])
-  
+  xlabel('Time since first stim in pattern')
   fprintf('%d\t(%d)\n', i, length(unique_patterns));
   
   stimparams = get_items(intra_patterns.stim_electrodes, ...

@@ -26,4 +26,8 @@ else
   error('equals not implemented for %s', class(x2));
 end
 
+if size(x1,1) ~= size(val,1)
+  val = val';
+end
+
 end

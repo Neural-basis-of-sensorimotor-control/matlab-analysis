@@ -80,7 +80,7 @@ else
 end
 
 if isempty(sc_file_folder)
-    sc_file_folder = get_intra_experiment_dir;
+    sc_file_folder = get_default_experiment_dir;
 end
 
 if isempty(raw_data_folder)

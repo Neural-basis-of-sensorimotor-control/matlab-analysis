@@ -1,5 +1,5 @@
 neurons = get_intra_neurons();
-sc_dir = get_intra_experiment_dir();
+sc_dir = get_default_experiment_dir();
 
 %neuron_indx = 20;
 neuron = neurons(neuron_indx);

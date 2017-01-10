@@ -12,7 +12,7 @@ classdef SavePlotOptions < PanelComponent
       obj.sequence_listener();
       sc_addlistener(obj.gui,'sequence',@(~,~) obj.sequence_listener(),obj.uihandle);
     end
-
+    
     function populate(obj,mgr)
       mgr.newline(20);
       obj.ui_filename = mgr.add(sc_ctrl('edit',[],@(~,~) obj.filename_callback()),150);
@@ -25,7 +25,7 @@ classdef SavePlotOptions < PanelComponent
       set(obj.ui_filenbr,'String',obj.filenbr);
     end
   end
-
+  
   methods (Access = 'protected')
     function sequence_listener(obj)
       if ~isempty(obj.gui.sequence)
@@ -33,7 +33,7 @@ classdef SavePlotOptions < PanelComponent
         set(obj.ui_filename,'String',obj.filename);
       end
     end
-
+    
     function save_plot_callback(obj)
       plothandles = get(obj.gui.main_axes,'Children');
       xl = get(obj.gui.main_axes,'xlim');
@@ -80,7 +80,7 @@ classdef SavePlotOptions < PanelComponent
           end
         end
         m2 = m2(:,all(isfinite(m2),1));
-        m = [m m2];
+        m = [m m2]; %#ok<AGROW>
       end
       %Convert from s to ms
       m(:,1) = 1e3*m(:,1);
@@ -98,18 +98,18 @@ classdef SavePlotOptions < PanelComponent
             return;
           otherwise
             error(['debugging error: :' answer])
-          end
         end
-        dlmwrite(savename,m);
-        obj.filenbr = obj.filenbr+1;
-        set(obj.ui_filenbr,'string',obj.filenbr);
-        fprintf('Plot saved\n');
       end
-      function filename_callback(obj)
-        obj.filename = get(obj.ui_filename,'string');
-      end
-      function filenbr_callback(obj)
-        obj.filenbr = str2double(get(obj.ui_filenbr,'string'));
-      end
+      dlmwrite(savename,m);
+      obj.filenbr = obj.filenbr+1;
+      set(obj.ui_filenbr,'string',obj.filenbr);
+      fprintf('Plot saved\n');
+    end
+    function filename_callback(obj)
+      obj.filename = get(obj.ui_filename,'string');
+    end
+    function filenbr_callback(obj)
+      obj.filenbr = str2double(get(obj.ui_filenbr,'string'));
     end
   end
+end

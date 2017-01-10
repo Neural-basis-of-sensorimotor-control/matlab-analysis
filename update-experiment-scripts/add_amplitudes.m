@@ -1,6 +1,6 @@
 function add_amplitudes()
 
-sc_dir = get_intra_experiment_dir();
+sc_dir = get_default_experiment_dir();
 
 experiment_file = [sc_dir 'IDNR_sc.mat'];
 file_str = 'IDNR0001';
@@ -52,7 +52,6 @@ dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 signal = sc_load_signal(experiment_file, file_str, channel_str);
 file = signal.parent;
 
-signal = file.signals.get('tag',channel_str);
 file.sc_loadtimes();
 textmark = file.textchannels.get('tag','TextMark');
 textmark.sc_loadtimes();

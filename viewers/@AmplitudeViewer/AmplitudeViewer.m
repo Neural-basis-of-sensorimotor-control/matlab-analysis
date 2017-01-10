@@ -1,5 +1,10 @@
 classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
 
+  properties
+    download_amplitude_filebase
+    download_amplitude_fileindex
+  end
+  
   properties (SetObservable, SetAccess = 'private')
     amplitude
     mouse_press = 1
@@ -60,14 +65,6 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
         obj.panels.remove(panel);
         delete(panel);
       end
-    end
-
-    function set_amplitude(obj,amplitude)
-      obj.amplitude = amplitude;
-      if ~isempty(obj.amplitude) && numel(obj.triggertimes)
-        obj.set_mouse_press(1);
-      end
-      obj.amplitude_average_channel.update();
     end
 
     function set_sweep(obj,sweep)

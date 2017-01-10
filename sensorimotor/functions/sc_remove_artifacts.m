@@ -1,5 +1,5 @@
 function [v, v_median, filterwidth] = sc_remove_artifacts(v,filterwidth,stimpos)
-%offset_compensation_width = 5;
+
 if numel(stimpos) && filterwidth
   interspacing = [diff(stimpos)-1; numel(v)-stimpos(end)];
   interspacing = min(interspacing, numel(v)-stimpos);

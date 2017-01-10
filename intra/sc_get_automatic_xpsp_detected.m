@@ -1,28 +1,20 @@
-function sc_get_automatic_xpsp_detected(obj, response_min, response_max)
+function val = sc_get_automatic_xpsp_detected(amplitude, psps, response_min, response_max)
 
-signal = obj.parent_signal;
-waveforms = signal.waveforms;
+stimtimes = amplitude.stimtimes;
+val = false(size(stimtimes));
 
-xpsps = [];
 
-for i=1:waveforms.n
-
-  waveform = waveforms.get(i);
-
-  if startswithi(waveform.tag, 'EPSP') || startswithi(waveform.tag, 'IPSP')
-    xpsps = add_to_array(xpsps, waveform);
+for i=1:length(stimtimes)
+  for j=1:length(psps)
+    psp = get_item(amplitude.parent.waveforms.cell_list, psps{j});
+    
+    if ~isempty(psp) && psp.spike_is_detected(stimtimes(i) + response_min, ...
+        stimtimes(i) + response_max)
+      val(i) = true;
+      continue
+    end
   end
-end
-
-stimtimes = obj.stimtimes;
-
-for j=1:length(stimtimes)
-	
-	tmin = stimtimes(j) + response_min;
-	tmax = stimtimes(j) + response_max;
-	
-	obj.automatic_xpsp_detected(j) = xpsp_detected(xpsps, tmin, tmax);
-	
+  
 end
 
 end

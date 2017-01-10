@@ -33,9 +33,13 @@ fprintf('\n');
 
 for i=1:length(neurons)
 	%fprintf('%d out of %d\n', i, length(neurons))
-	neuron = neurons(i);
-	[signal, spont_activity] = automatic_psp_detection(neuron, response_min, response_max);%sc_load_signal(neurons(i));
-	
+  neuron = neurons(i);
+  
+	signal = sc_load_signal(neuron);
+  
+	spont_activity = signal.update_spont_activity(get_intra_patterns, ...
+    response_min, response_max, neuron.tmin, neuron.tmax);
+  
 	amplitudes = signal.amplitudes;
 	
 	fprintf('%s\t', signal.parent.tag);

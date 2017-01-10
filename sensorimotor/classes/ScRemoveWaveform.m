@@ -1,4 +1,4 @@
-classdef ScRemoveWaveform < ScTrigger
+classdef ScRemoveWaveform < ScTrigger & ScFilter
   properties
     parent
     original_stimtimes      %Spike times from original ScWaveform object
@@ -12,14 +12,11 @@ classdef ScRemoveWaveform < ScTrigger
     tstop                   %Only use stimpos where stimpos*parent.dt<tstop
     apply_calibration = true
   end
+  
   properties (Dependent)
     sigm
   end
-  %To avoid warnings when loading saved object created with previous
-  %version
-  properties (SetAccess = 'private', GetAccess = 'private')
-    original_stimpos
-  end
+  
   methods
 
     function obj = ScRemoveWaveform(parent_signal,trigger,width,apply_calibration,tstart,tstop)
@@ -31,6 +28,16 @@ classdef ScRemoveWaveform < ScTrigger
       obj.initialize(trigger);
     end
 
+    
+    function v = apply(obj, v)
+      v = obj.remove_wf(v);
+    end
+    
+    function update(obj, v)
+      obj.calibrate(v);
+    end
+    
+    
     %Assuming that tmin = 0 for conversion from time to discrete time
     %steps
     function calibrate(obj,v)
@@ -111,14 +118,17 @@ classdef ScRemoveWaveform < ScTrigger
       end
     end
 
-    function [v]=remove_wf(obj,v,~)
+    function v = remove_wf(obj,v,~)
+      
       if isempty(obj.v_interpolated_median)
         if ~isempty(obj.stimpos)
           msgbox(sprintf('You will need to calibrate ScRemoveWaveform %s',obj.tag));
         end
         return
       end
+      
       f = obj.sigm;
+      
       if obj.apply_calibration
         times = (0:(obj.width+1))'*obj.parent.dt;
         pp = spaps(times,obj.v_interpolated_median,1e-6);
@@ -142,6 +152,8 @@ classdef ScRemoveWaveform < ScTrigger
       times = obj.stimpos*obj.parent.dt + obj.stimpos_offsets;
       times = times(times>=tmin & times<tmax);
     end
+    
+    
     function val = get.sigm(obj)
       tail_length = min(ceil(obj.width/3),20);
       last_f_val =1e-3;

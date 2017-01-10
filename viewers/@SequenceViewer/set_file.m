@@ -1,11 +1,6 @@
 function set_file(obj, file)
 
-if isnumeric(file)
-	file = obj.experiment.get(file);
-elseif ischar(file)
-	file = obj.experiment.get('tag', file);
-end
-
+file = get_item(obj.experiment.list, file);
 obj.file = file;
 
 if isempty(file)
@@ -29,4 +24,5 @@ elseif sc_contains(file.values('tag'),'full')
 else
   obj.set_sequence(obj.file.get(1));
 end
+
 end

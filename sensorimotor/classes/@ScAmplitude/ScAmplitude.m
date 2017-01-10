@@ -8,13 +8,6 @@ classdef ScAmplitude < handle
 		tag
 		is_updated
     userdata
-		rise            %Mx1 double
-		start           %Mx1 double
-		stop            %Mx1 double
-		is_pseudo       %Mx1 logical
-		automatic_xpsp_detected %Mx1 logical
-		is_median_and_automatic				%Mx1 logical
-		middle_index    %M%1 logical
 	end
 	
 	properties (Dependent)
@@ -23,7 +16,7 @@ classdef ScAmplitude < handle
 		
 		tstart
 		tstop
-		rise_amplitude
+		height
 		latency
 		width
 		valid_data
@@ -72,9 +65,14 @@ classdef ScAmplitude < handle
 		
 		function sc_save(obj, varargin)
 			obj.parent_signal.sc_save(varargin{:});
-		end
+    end
 		
-		
+		    
+    function val = response_is_significant(obj, threshold)
+      val = nnz(obj.automatic_xpsp_detected)/length(obj.stimtimes) >= threshold;
+    end
+    
+    
 		function ret = get.tstart(obj)
 			if isempty(obj.stimtimes)
 				ret = inf;
@@ -93,7 +91,7 @@ classdef ScAmplitude < handle
 		end
 		
 		
-		function val = get.rise_amplitude(obj)
+		function val = get.height(obj)
 			ind = obj.valid_data;
 			val = obj.data(ind,4) - obj.data(ind,2);
 		end
@@ -137,21 +135,8 @@ classdef ScAmplitude < handle
 		
 		function val = get.parent(obj)
 			val = obj.parent_signal;
-		end
-		
-  end
-  
-  methods (Static)
-    
-    function obj = loadobj(a)
-      
-      if isempty(a.automatic_xpsp_detected)
-        a.automatic_xpsp_detected = false(size(a.stimtimes));
-      end
-      
-      obj = a;
     end
-    
+		
   end
 	
 end

@@ -30,7 +30,7 @@ for i=1:amplitudes.n
 	
 	amplitude = amplitudes.get(i);
 	
-	rise = amplitude.rise_amplitude;
+	rise = amplitude.height;
 	width = amplitude.width;
 	
 	if ~isempty(rise)

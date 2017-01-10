@@ -4,7 +4,8 @@ classdef ScSignal < ScChannel
     dt                              %time resolution (1x1 double)
     waveforms                       %ScWaveform
     filter                          %ScSignalFilter
-    simple_artifact_filter          %ScSimpleArtifactRemovalFilter
+    simple_artifact_filter          %ScSimpleArtifactFilter
+    simple_spike_filter             %ScSimpleSpikeFilter
     remove_waveforms                %ScList
     amplitudes                      %ScCellList
     N                               %nbr of data points (1x1 double)
@@ -52,7 +53,7 @@ classdef ScSignal < ScChannel
     %Load transient properties (only)
     function v_raw = sc_loadsignal(obj)
       
-      if ~obj.parent.check_fdir()
+      if ~obj.parent.prompt_for_raw_data_dir()
         error('Could not find file');
       end
       
@@ -146,6 +147,7 @@ classdef ScSignal < ScChannel
       obj.parent.sc_save(varargin{:});
     end
   end
+  
   methods (Static)
     function obj = loadobj(a)
       
@@ -159,12 +161,19 @@ classdef ScSignal < ScChannel
         a.amplitudes = ScCellList();
       end
       
-      if isempty(a.simple_artifact_filter)
-        a.simple_artifact_filter = ScSimpleArtifactFilter(a);
-        a.simple_artifact_filter.is_on = false;
+      if isempty(a.simple_artifact_filter) || isstruct(a.simple_artifact_filter)
+        a.simple_artifact_filter = ScSimpleArtifactFilter([]);
+        %a.simple_artifact_filter.is_on = false;
+      end
+      
+      if isempty(a.simple_spike_filter)  || isstruct(a.simple_spike_filter)
+        a.simple_spike_filter = ScSimpleSpikeFilter([]);
+        %a.simple_spike_filter.is_on = false;
       end
       
       obj = a;
+      obj.simple_artifact_filter.parent = obj;
+      obj.simple_spike_filter.parent = obj;
     end
   end
 end

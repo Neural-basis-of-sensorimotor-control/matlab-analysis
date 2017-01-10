@@ -19,7 +19,9 @@ uicontrol(ui_waveform_tag);
 
   function add_waveform_callback(~,~)
     tag = deblank(get(ui_waveform_tag,'string'));
+    
     if ~isempty(tag) && ~obj.main_signal.waveforms.has('tag',tag)
+    
       waveform = ScWaveform(obj.main_signal,tag,[]);
       obj.main_signal.waveforms.add(waveform);
       obj.set_waveform(waveform);
@@ -29,15 +31,15 @@ uicontrol(ui_waveform_tag);
     else
       msgbox(['Waveform name must be non-empty and unique for '...
         'signal ' obj.main_signal.tag '.']);
-      end
-      close(dlg);
     end
-
-  dlgmgr.add(uicontrol('style','pushbutton','string',...
-    'Cancel','callback',@cancel_callback),100);
-
-    function cancel_callback(~,~)
-      close(dlg);
-    end
-
+    close(dlg);
   end
+
+dlgmgr.add(uicontrol('style','pushbutton','string',...
+  'Cancel','callback',@cancel_callback),100);
+
+  function cancel_callback(~,~)
+    close(dlg);
+  end
+
+end

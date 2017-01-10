@@ -12,7 +12,7 @@ classdef AmplitudeRealTimeChannel < AmplitudeChannel
 
     function plot_amplitude(obj)
       amplitude = obj.gui.amplitude;
-      plot(obj.ax, amplitude.latency, amplitude.rise_amplitude, 'y+', 'LineStyle', 'None')
+      plot(obj.ax, amplitude.latency, amplitude.height, 'y+', 'LineStyle', 'None')
     end
   end
 end

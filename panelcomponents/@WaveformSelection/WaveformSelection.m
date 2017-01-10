@@ -15,7 +15,8 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
 		function populate(obj,mgr)
 			mgr.newline(20);
 			mgr.add(sc_ctrl('text','Waveform'),100);
-			obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu',[],@(~,~) obj.gui.waveform_callback(),'visible','off'),100);
+			obj.ui_waveforms = mgr.add(sc_ctrl('popupmenu', [], ...
+        @(~,~) obj.change_waveform_callback(),'visible','off'), 100);
 			mgr.newline(5)
 			mgr.newline(20);
 			obj.ui_nbr_of_spikes = mgr.add(sc_ctrl('text',[]),200);
@@ -93,18 +94,12 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
 	
 	methods (Access = 'protected')
 		
-		function waveform_callback(obj)
-			
-			str = get(obj.ui_waveforms,'string');
-			val = get(obj.ui_waveforms,'value');
-			obj.gui.set_waveform(obj.gui.main_signal.waveforms.get('tag',str{val}));
-			
-			if obj.gui.main_channel.plot_raw
-				obj.show_panels(false);
-				objh.automatic_update();
-			end
-		end
-		
+    function change_waveform_callback(obj)
+      indx = get(obj.ui_waveforms, 'Value');
+      obj.gui.set_waveform(indx);
+    end
+    
+    
 		function export_waveform(obj)
 			if isempty(obj.gui.waveform)
 				msgbox('Cannot export. No waveform chosen');

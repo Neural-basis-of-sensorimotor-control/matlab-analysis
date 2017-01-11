@@ -27,6 +27,8 @@ classdef ScSignal < ScChannel
       obj.filter = ScSignalFilter(obj);
       obj.remove_waveforms = ScList();
       obj.amplitudes = ScCellList();
+      obj.simple_artifact_filter = ScSimpleArtifactFilter(obj);
+      obj.simple_spike_filter = ScSimpleSpikeFilter(obj);
       
       for k=1:2:numel(varargin)
         obj.(varargin{k}) = varargin{k+1};

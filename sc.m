@@ -154,7 +154,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     guimgr.experiment = experiment;
     experiment_name = experiment.get(1).tag;
     experiment_name = [experiment_name(1:end-4) '_sc'];
-    if ~experiment.sc_save(experiment_name);
+    if ~experiment.save_experiment(experiment_name, false);
       msgbox('Experiment not saved. Aborting');
     else
       guimgr.show;

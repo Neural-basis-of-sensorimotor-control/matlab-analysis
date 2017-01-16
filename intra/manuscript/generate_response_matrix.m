@@ -5,7 +5,13 @@ m = false(length(stim_str), length(neurons));
 for i=1:length(neurons)
   
   neuron = neurons(i);
-  signal = sc_load_signal(neuron);
+  
+  if ~isa(neuron, 'ScSignal')
+    signal = sc_load_signal(neuron);
+  else
+    signal = neuron;
+  end
+  
   threshold = get_activity_threshold(signal);
   
   for j=1:length(stim_str)

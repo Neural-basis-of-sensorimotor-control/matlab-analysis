@@ -22,7 +22,7 @@ for i=1:length(patterns_str)
       
       for k=1:length(psps_str)
         psp = get_item(obj.waveforms.cell_list, psps_str{k});
-        if ~isempty(psp) && psp.spike_is_detected(tstart, tstop)
+        if ~isempty(psp) && psp.spike_is_detected(tstart, tstop, true)
           nbr_of_automatic_detections = nbr_of_automatic_detections + 1;
           continue
         end

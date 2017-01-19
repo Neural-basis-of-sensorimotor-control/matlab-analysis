@@ -35,4 +35,4 @@ end
 
 xlabel(h, 'Time [s]');
 ylabel(h, 'Amplitude [mV]');
-title(h, sprintf('Cell %s: Single pulse stim electrode %s', neuron.file_str, stim_electrode));
+title(h, sprintf('Cell %s: Single pulse stim electrode %s', neuron.file_tag, stim_electrode));

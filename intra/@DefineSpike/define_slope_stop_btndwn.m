@@ -21,10 +21,10 @@ else
 	upper_tol = obj.spike.upper_tol(obj.spike.n);
 end
 
-obj.spike.width = add_to_array(obj.spike.width, width);
-obj.spike.height = add_to_array(obj.spike.height, height);
-obj.spike.lower_tol = add_to_array(obj.spike.lower_tol, lower_tol);
-obj.spike.upper_tol = add_to_array(obj.spike.upper_tol, upper_tol);
+obj.spike.width = add_to_list(obj.spike.width, width);
+obj.spike.height = add_to_list(obj.spike.height, height);
+obj.spike.lower_tol = add_to_list(obj.spike.lower_tol, lower_tol);
+obj.spike.upper_tol = add_to_list(obj.spike.upper_tol, upper_tol);
 obj.spike.min_isi = sum(obj.spike.height);
 
 obj.x0 = x1;

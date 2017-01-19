@@ -1,7 +1,7 @@
-function hand_coord = load_hand_coord(file_str)
+function hand_coord = load_hand_coord(file_tag)
 %'Grepp - Flaska topp.txt'
 
-fid = fopen(file_str);
+fid = fopen(file_tag);
 
 hand_coord(30000, 1) = HandCoord();
 count = 0;

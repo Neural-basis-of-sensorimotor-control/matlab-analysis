@@ -26,12 +26,12 @@ data ={
   };
 
 for i=size(data,1):-1:1
-  neurons(i).expr_file = data{i,1};
-  neurons(i).file_str = data{i,2};
-  neurons(i).signal_str = data{i,3};
+  neurons(i).experiment_filename = data{i,1};
+  neurons(i).file_tag = data{i,2};
+  neurons(i).signal_tag = data{i,3};
   neurons(i).tmin = data{i,4};
   neurons(i).tmax = data{i,5};
-  neurons(i).psp_templates = data{i,6};
+  neurons(i).template_tag = data{i,6};
   neurons(i).tag = sprintf('IntraNeuron%03d', i);
 end
 
@@ -39,9 +39,9 @@ if nargin
   if isnumeric(indx)
     neurons = neurons(indx);
   elseif ischar(indx)
-    neurons = get_items(neurons, 'file_str', indx);
+    neurons = get_items(neurons, 'file_tag', indx);
   elseif iscell(indx)
-    neurons = get_items(neurons, 'file_str', indx);
+    neurons = get_items(neurons, 'file_tag', indx);
     
     if iscell(neurons)
       neurons = cell2mat(neurons);

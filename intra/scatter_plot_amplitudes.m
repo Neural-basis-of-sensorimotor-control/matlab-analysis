@@ -16,14 +16,14 @@ for i=1:waveforms.n
 	waveform = waveforms.get(i);
 	
 	if startswithi(waveform.tag, 'EPSP') || startswithi(waveform.tag, 'IPSP')
-		xpsps = add_to_array(xpsps, waveform);
+		xpsps = add_to_list(xpsps, waveform);
 	end
 end
 
 figure(10*neuron_indx + 3)
 clf
 hold on
-set(gcf, 'FileName', [neuron.file_str '_scatter.png']);
+set(gcf, 'FileName', [neuron.file_tag '_scatter.png']);
 set(gcf, 'Position', [0 0 1000 1000])
 
 for i=1:amplitudes.n

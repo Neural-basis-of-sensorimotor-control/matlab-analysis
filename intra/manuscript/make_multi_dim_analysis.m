@@ -20,7 +20,7 @@ for i=1:2:length(varargin)
   end
 end
 
-neurons = rm_from_list(neurons, 'file_str', exclude_neurons);
+neurons = rm_from_list(neurons, 'file_tag', exclude_neurons);
 
 is_responses = generate_response_matrix(neurons, stims);
 stims = stims(all(is_responses, 2));

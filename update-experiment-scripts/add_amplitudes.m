@@ -3,16 +3,16 @@ function add_amplitudes()
 sc_dir = get_default_experiment_dir();
 
 experiment_file = [sc_dir 'IDNR_sc.mat'];
-file_str = 'IDNR0001';
+file_tag = 'IDNR0001';
 channel_str = 'patch';
 
-signal = add_amplitudes_subfct(experiment_file, file_str, channel_str);
+signal = add_amplitudes_subfct(experiment_file, file_tag, channel_str);
 
 signal.sc_save(true);
 
 end
 
-function signal = add_amplitudes_subfct(experiment_file, file_str, channel_str, varargin)
+function signal = add_amplitudes_subfct(experiment_file, file_tag, channel_str, varargin)
 tmin = 0; tmax = inf;
 
 for i=1:2:length(varargin)
@@ -49,7 +49,7 @@ stim_strs = {'V1', 'V2', 'V3', 'V4', 'V5', 'V6'};
 
 dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 
-signal = sc_load_signal(experiment_file, file_str, channel_str);
+signal = sc_load_signal(experiment_file, file_tag, channel_str);
 file = signal.parent;
 
 file.sc_loadtimes();

@@ -35,7 +35,7 @@ for i2=1:length(neurons)
   signal.simple_spike_filter.is_on = false;
 
   templates = signal.get_templates();
-  psp_templates = get_items(templates, 'tag', neuron.psp_templates);
+  psp_templates = get_items(templates, 'tag', neuron.template_tag);
 
   for j2=1:length(psp_templates)
     psp = get_item(psp_templates, j2);

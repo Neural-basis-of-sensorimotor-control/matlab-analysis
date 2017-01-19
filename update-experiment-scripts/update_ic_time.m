@@ -18,4 +18,4 @@ for i=1:amplitudes.n
   
   fprintf('%d:\t %d\t (%d)\n', i, nnz(~indx), length(indx));
 end
-neuron.file_str
+neuron.file_tag

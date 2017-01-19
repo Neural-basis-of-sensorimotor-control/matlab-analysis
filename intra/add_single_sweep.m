@@ -3,22 +3,22 @@ function add_single_sweep()
 sc_dir = get_default_experiment_dir();
 
 experiment_file = [sc_dir 'IDNR_sc.mat'];
-file_str = 'IDNR0001';
+file_tag = 'IDNR0001';
 channel_str = 'patch';
 
-signal = add_single_sweep_subfct(experiment_file, file_str, channel_str);
+signal = add_single_sweep_subfct(experiment_file, file_tag, channel_str);
 
 signal.sc_save(true);
 
 end
 
-function signal = add_single_sweep_subfct(experiment_file, file_str, channel_str)
+function signal = add_single_sweep_subfct(experiment_file, file_tag, channel_str)
 
 tmin = -inf; tmax = inf;
 
 dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 
-signal = sc_load_signal(experiment_file, file_str, channel_str);
+signal = sc_load_signal(experiment_file, file_tag, channel_str);
 file = signal.parent;
 file.sc_loadtimes();
 textmark = file.textchannels.get('tag','TextMark');

@@ -36,5 +36,5 @@ for i=1:length(neurons)
     signal.userdata.single_pulse_latency(j) = mean(avg_latency);
   end
   
-  signal.sc_save([sc_dir neuron.expr_file]);
+  signal.sc_save([sc_dir neuron.experiment_filename]);
 end

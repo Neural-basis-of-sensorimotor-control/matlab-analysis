@@ -28,11 +28,11 @@ is_response = generate_response_matrix(neurons, stims);
 %       stim = signal.amplitudes.get('tag', stim_str);
 %
 %       for k=1:length(stim.height)
-%         plot(stim.height(k), j, 'k.', 'Tag', neuron.file_str)
+%         plot(stim.height(k), j, 'k.', 'Tag', neuron.file_tag)
 %       end
 %     end
 % 	end
-% 	title(neuron.file_str)
+% 	title(neuron.file_tag)
 % 	set(gca, 'YTick', 1:length(stims), 'YTickLabel', stims);
 %   axis_wide(gca, 'xy', 0, 1, true);
 % end
@@ -42,7 +42,7 @@ for i=1:length(stims)
   hold(gca, 'on');
   grid(gca, 'on');
   title(gca, [stims{i} ' - normalized ampitude']);
-  set(gca, 'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_str});
+  set(gca, 'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_tag});
 end
 
 for i=1:length(neurons)
@@ -66,7 +66,7 @@ for i=1:length(neurons)
             
       for k=1:length(stim.height)
         plot(stim.height(k)/norm_constant, i, 'k.', ...
-          'Tag', neuron.file_str, ...
+          'Tag', neuron.file_tag, ...
           'ButtonDownFcn', @btn_dwn_fcn);
       end
     end

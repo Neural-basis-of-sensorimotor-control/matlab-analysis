@@ -1,4 +1,4 @@
-function list = add_to_array(list, item)
+function list = add_to_list(list, item)
 
 if isempty(list)
   list = item;

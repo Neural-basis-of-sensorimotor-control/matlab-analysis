@@ -15,12 +15,12 @@ for i=1:length(stims)
   amplitude = signal.amplitudes.get('tag', stims{i});
   
   if force_update || ~amplitude.is_updated
-    amplitude.update(v, signal.dt, neuron.psp_templates, response_min, ...
+    amplitude.update(v, signal.dt, neuron.template_tag, response_min, ...
       response_max);
   end
 end
 
-signal.update_spont_activity(neuron.psp_templates, get_intra_patterns(), ...
+signal.update_spont_activity(neuron.template_tag, get_intra_patterns(), ...
   response_min, response_max, neuron.tmin, neuron.tmax);
 
 end

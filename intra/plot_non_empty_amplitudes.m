@@ -17,11 +17,11 @@ fprintf('\n');
 
 for i=1:length(neurons)
   neuron = neurons(i);
-  fdir = [sc_dir neuron.expr_file];
-  signal = sc_load_signal(fdir, neuron.file_str, neuron.signal_str);
+  fdir = [sc_dir neuron.experiment_filename];
+  signal = sc_load_signal(fdir, neuron.file_tag, neuron.signal_tag);
   amplitudes = signal.amplitudes;
 
-  fprintf('%s\t', neuron.file_str);
+  fprintf('%s\t', neuron.file_tag);
 
   for j=1:length(motifs)
     amplitude = amplitudes.get('tag', motifs{j});

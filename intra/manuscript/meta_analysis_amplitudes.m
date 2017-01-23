@@ -70,7 +70,7 @@ for i=1:length(unique_patterns)
     y(isnan(y)) = [];
     
     if length(x) > 1
-      plot(x,y,'Marker','+','LineStyle','-','Tag',neuron.file_str)
+      plot(x,y,'Marker','+','LineStyle','-','Tag',neuron.file_tag)
     end
   end
 end

@@ -1,4 +1,4 @@
-function [params, t, labels, frames] = load_hand(file_str)
+function [params, t, labels, frames] = load_hand(file_tag)
 
 labels = get_hand_labels();
 
@@ -9,7 +9,7 @@ params = nan(estimated_nbr_of_lines, nbr_of_params);
 t = nan(estimated_nbr_of_lines, 1);
 frames = nan(estimated_nbr_of_lines, 1);
 
-fid = fopen(file_str);
+fid = fopen(file_tag);
 count = 0;
 
 while true

@@ -42,7 +42,7 @@ neurons_str = {
 };
 
 neurons = get_intra_neurons;
-neurons = get_items(neurons, 'file_str', neurons_str);
+neurons = get_items(neurons, 'file_tag', neurons_str);
 
 clf reset
 hold on
@@ -55,7 +55,7 @@ for i=1:length(neurons)
    stim = signal.amplitudes.get('tag', stims{j});
    x = stim.height;
    y = j*length(stims)*ones(size(x)) - i;
-   plot(x, y, '.', 'Tag', neuron.file_str);
+   plot(x, y, '.', 'Tag', neuron.file_tag);
   end
 end
 

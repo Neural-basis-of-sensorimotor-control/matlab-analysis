@@ -68,9 +68,9 @@ make_figures(7, 'Euclidian distances amplitude height [mV], stims shuffled', d_s
     fill_matrix(d);
     colormap('gray')
     colorbar
-    set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_str}, ...
+    set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
       'XTickLabelRotation', 270, ...
-      'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_str});
+      'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_tag});
     axis tight
     title(titlestr);
     fig1.FileName = [titlestr '.png'];
@@ -79,9 +79,9 @@ make_figures(7, 'Euclidian distances amplitude height [mV], stims shuffled', d_s
     clf reset
     fill_matrix(d);
     concat_colormaps(d, gca, 8, @gray, @(x) invert_colormap(@autumn, x));
-    set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_str}, ...
+    set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
       'XTickLabelRotation', 270, ...
-      'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_str});
+      'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_tag});
     axis tight
     title(titlestr);
     fig2.FileName = [titlestr '.png'];

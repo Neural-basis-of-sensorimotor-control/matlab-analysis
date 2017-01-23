@@ -1,5 +1,5 @@
 classdef IntraAmplitudeViewer < handle
-
+  
   properties
     min_latency = 4e-3
     max_latency = 22e-3
@@ -49,7 +49,7 @@ classdef IntraAmplitudeViewer < handle
       fraction_only_manual = nan(dim);
       fraction_none = nan(dim);
       
-      psp = signal.waveforms.get('tag', neuron.psp_templates{1});
+      psp = signal.waveforms.get('tag', neuron.template_tag{1});
       
       for i=1:length(stims_str)
         fprintf('Processing %d out of %d stims\n', i, length(stims_str));
@@ -75,7 +75,7 @@ classdef IntraAmplitudeViewer < handle
         fraction_none(i) = nnz(~automatic & ~manual)/nbr_of_stims;
         
       end
-            
+      
       figure (17)
       clf
       plot(spont_activity, '+', 'LineStyle', '-')

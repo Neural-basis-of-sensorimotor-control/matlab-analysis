@@ -5,6 +5,6 @@ xlabel('Stims')
 ylabel('Neurons')
 % set(gca, 'XTick', 1:length(stims), 'XTickLabel', stims, ...
 %   'XTickLabelRotation', 270,  ...
-%   'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_str});
+%   'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_tag});
 
 end

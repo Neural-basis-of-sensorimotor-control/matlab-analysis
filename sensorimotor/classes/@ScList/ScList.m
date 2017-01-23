@@ -1,4 +1,4 @@
-classdef ScList < handle
+classdef ScList < ScBaseList
   %List structure with extra features. Can only contain a single type of
   %objects. For a list of arbitray objects, see ScCellList
   properties (SetObservable)

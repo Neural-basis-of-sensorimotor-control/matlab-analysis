@@ -1,6 +1,6 @@
 function set_file(obj, file)
 
-file = get_item(obj.experiment.list, file);
+file = get_item(obj.experiment, file);
 obj.file = file;
 
 if isempty(file)

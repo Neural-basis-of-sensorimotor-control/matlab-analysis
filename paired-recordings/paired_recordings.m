@@ -1,30 +1,21 @@
-clc
-clear
-clf reset
+data = {'BBNR_SSSA_sc.mat','BBNR0000'
+'BBNR_SSSA_sc.mat','BBNR0001'
+'BBNR_SSSA_sc.mat','BBNR0007'
+'BCNR_SSSA_sc.mat','BCNR0037'
+'BENR_SSSA_sc.mat','BENR0002'
+'BGNR_SSSA_sc.mat','BGNR0001'
+'BKNR_SSSA_sc.mat','BKNR0000'
+'BMNR_SSSA_sc.mat','BMNR0000'
+'BMNR_SSSA_sc.mat','BMNR0006'
+'CANR_SSSA_sc.mat','CANR0005'
+'CDNR_SSSA_sc.mat','CDNR0005'
+'CENR_SSSA_sc.mat','CENR0001'
+'CFNR_SSSA_sc.mat','CFNR0003'
+'CNNR_SSSA_sc.mat','CNNR0009'
+};
 
-pretrigger = -.5;
-posttrigger = .5;
-binwidth = 1e-3;
-bintimes = pretrigger:binwidth:posttrigger;
-
-signal = sc_load_signal(get_intra_neurons(2));
-
-neuron1 = signal.waveforms.get(1);
-neuron2 = signal.waveforms.get(2);
-
-[isi_1, spiketimes_1] = get_isi(neuron1);
-[isi_2, spiketimes_2] = get_isi(neuron2);
-
-observed_t_fwd = get_t_forward(spiketimes_1, spiketimes_2);
-observed_t_back = get_t_back(spiketimes_1, spiketimes_2);
-
-pdf_isi_1 = histc(isi_1, bintimes)/length(isi_1);
-pdf_obs_t_forward = histc(observed_t_fwd, bintimes)/length(observed_t_fwd);
-pdf_obs_t_back = histc(observed_t_back, bintimes)/length(observed_t_back);
-
-hold on
-plot(bintimes, pdf_isi_1, 'Tag', 'ISI');
-plot(bintimes, pdf_obs_t_forward, 'Tag', 'Observed t_f_o_r_w_a_r_d');
-plot(bintimes, pdf_obs_t_back, 'Tag', 'Observed t_b_a_c_k');
-add_legend
-%axis tight
+neurons = [];
+for i=1:size(data,1)
+  neurons = add_to_list(neurons, ...
+    ScNeuron('experiment_filename', data{i,1}, 'file_tag', data{i,2}));
+end

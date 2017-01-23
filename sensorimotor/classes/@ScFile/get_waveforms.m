@@ -5,7 +5,7 @@ val = [];
 for i=1:obj.signals.n
   signal = obj.signals.get(i);
   
-  val = concat_list(val, signal.waveforms.list);
+  val = concat_list(val, signal.waveforms);
 end
 
 end

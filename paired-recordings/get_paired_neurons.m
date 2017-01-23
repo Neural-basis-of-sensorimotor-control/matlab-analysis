@@ -6,7 +6,7 @@ experiment = ScExperiment.load_experiment(experiment_filename);
 if isempty(neuron.file_tag)
   files = neuron.list;
 else
-  files = get_items(experiment.list, 'tag', neuron.file_tag);
+  files = get_items(experiment, 'tag', neuron.file_tag);
 end
 
 val = [];

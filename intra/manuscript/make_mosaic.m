@@ -97,7 +97,7 @@ for i=1:nbr_of_neurons
   activity_threshold = get_activity_threshold(signal);
   
   for j=1:nbr_of_stims
-    stim = get_item(signal.amplitudes.cell_list, stims_str{j});
+    stim = get_item(signal.amplitudes, stims_str{j});
     
     if ~apply_threshold || ...
         stim.userdata.fraction_detected >= activity_threshold

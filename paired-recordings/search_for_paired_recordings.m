@@ -2,44 +2,45 @@
 clc
 clear
 
+paired_recordings;
+
 min_nbr_of_overlapping_neurons = 40;
 
 sc_dir = get_default_experiment_dir();
 
-neurons = get_intra_neurons();
 
-%% Reset all experiments
-for i=1:length(neurons)
-  
-  fprintf('Reset: %d out of %d\n', i, length(neurons)); 
-  
-  neuron = neurons(i);
-  experiment_filename = neuron.experiment_filename;
-  experiment = ScExperiment.load_experiment([sc_dir experiment_filename]);
-  
-  if isempty(neuron.file_tag)
-    files = experiment.list;
-  else
-    files = get_items(experiment.list, 'tag', neuron.file_tag);
-  end
-  
-  for j=1:length(files)
-    
-    file = files(j);
-    waveforms = file.get_waveforms();
-    
-    if ~isempty(neuron.template_tag)
-       waveforms = get_items(waveforms, 'tag', neuron.template_tag);
-    end
-    
-    for k=1:file.signals.n
-      signal = file.signals.get(k);
-      signal.update_continuous_signal(true, waveforms);
-    end
-  end
-  
-  experiment.save_experiment(experiment.abs_save_path, false);
-end
+% %% Reset all experiments
+% for i=1:length(neurons)
+%   
+%   fprintf('Reset: %d out of %d\n', i, length(neurons)); 
+%   
+%   neuron = neurons(i);
+%   experiment_filename = neuron.experiment_filename;
+%   experiment = ScExperiment.load_experiment([sc_dir experiment_filename]);
+%   
+%   if isempty(neuron.file_tag)
+%     files = experiment.list;
+%   else
+%     files = get_items(experiment, 'tag', neuron.file_tag);
+%   end
+%   
+%   for j=1:length(files)
+%     
+%     file = files(j);
+%     waveforms = file.get_waveforms();
+%     
+%     if ~isempty(neuron.template_tag)
+%        waveforms = get_items(waveforms, 'tag', neuron.template_tag);
+%     end
+%     
+%     for k=1:file.signals.n
+%       signal = file.signals.get(k);
+%       signal.update_continuous_signal(true, waveforms);
+%     end
+%   end
+%   
+%   experiment.save_experiment(experiment.abs_save_path, false);
+% end
 
 %% Find paired neurons
 paired_neurons = [];

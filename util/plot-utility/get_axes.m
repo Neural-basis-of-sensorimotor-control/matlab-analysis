@@ -8,18 +8,23 @@ function ax = get_axes(figures)
 % Hannes Mogensen, Neural Basis of Sensorimotor Control, Lund University
 % 2016-07-30
 
+ax = [];
+
 if ~nargin
   ax = get_axes(gcf);
-  return
   
-elseif isempty(figures)
-  ax = [];
+elseif ~isempty(figures)
   
-else
-  ax = figures(1).Children;
-  
-  for i=2:length(figures)
-    children = figures(1).Children;
-    ax(length(ax) + (1:length(children))) = children;
+  for i=1:length(figures)
+    
+    children = figures(i).Children;
+    
+    for j=1:length(children)
+      ch = children(j);
+      
+      if isa(ch, 'matlab.graphics.axis.Axes')
+        ax = add_to_list(ax, ch);
+      end
+    end
   end
 end

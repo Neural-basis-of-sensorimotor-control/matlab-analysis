@@ -1,4 +1,4 @@
-classdef ScCellList < handle
+classdef ScCellList < ScBaseList
   %Linked list and hash set that can hold multiple object types
   properties
     cell_list = {}

@@ -65,7 +65,7 @@ for i3=1:length(electrodes)
     
     for k3=1:length(indx)
       stim = stims{indx(k3)};
-      amplitude = get_items(signal.amplitudes.cell_list, 'tag', stim);
+      amplitude = get_items(signal.amplitudes, 'tag', stim);
       
       vals(k3, 1) = mean(amplitude.height);
       vals(k3, 2) = mean(amplitude.latency);

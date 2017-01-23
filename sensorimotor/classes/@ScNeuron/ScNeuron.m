@@ -4,7 +4,6 @@ classdef ScNeuron < handle
   % Must only contain primitive data types.
   
   properties
-    
     experiment_filename
     file_tag
     signal_tag
@@ -12,14 +11,12 @@ classdef ScNeuron < handle
     tmax
     template_tag
     tag
-    
   end
   
   
   methods
     
     function obj = ScNeuron(varargin)
-      
       obj.tmin = 0;
       obj.tmax = inf;
       

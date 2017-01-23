@@ -1,7 +1,6 @@
 function val = spike_is_detected(obj, varargin)
 
-
-narginchk(1, 3);
+narginchk(2, 4);
 
 if length(varargin) == 1
   v = varargin{1};

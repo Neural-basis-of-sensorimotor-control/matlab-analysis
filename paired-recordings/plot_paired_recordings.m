@@ -18,7 +18,7 @@ bintimes = pretrigger:binwidth:posttrigger;
 expr_fname = [get_default_experiment_dir() paired_neurons.experiment_filename];
 expr = ScExperiment.load_experiment(expr_fname);
 
-file = get_item(expr, paired_neurons.file_tag);
+file = get_item(expr.list, paired_neurons.file_tag);
 waveforms = file.get_waveforms();
 
 tmin = paired_neurons.tmin;

@@ -7,11 +7,11 @@ data = {'BBNR_SSSA_sc.mat','BBNR0000'
 'BKNR_SSSA_sc.mat','BKNR0000'
 'BMNR_SSSA_sc.mat','BMNR0000'
 'BMNR_SSSA_sc.mat','BMNR0006'
-'CANR_SSSA_sc.mat','CANR0005'
-'CDNR_SSSA_sc.mat','CDNR0005'
-'CENR_SSSA_sc.mat','CENR0001'
-'CFNR_SSSA_sc.mat','CFNR0003'
-'CNNR_SSSA_sc.mat','CNNR0009'
+%'CANR_SSSA_sc.mat','CANR0005'
+%'CDNR_SSSA_sc.mat','CDNR0005'
+%'CENR_SSSA_sc.mat','CENR0001'
+%'CFNR_SSSA_sc.mat','CFNR0003'
+%'CNNR_SSSA_sc.mat','CNNR0009'
 };
 
 neurons = [];

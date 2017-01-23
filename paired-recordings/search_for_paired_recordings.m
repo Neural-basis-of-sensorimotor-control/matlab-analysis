@@ -21,7 +21,7 @@ sc_dir = get_default_experiment_dir();
 %   if isempty(neuron.file_tag)
 %     files = experiment.list;
 %   else
-%     files = get_items(experiment, 'tag', neuron.file_tag);
+%     files = get_items(experiment.list, 'tag', neuron.file_tag);
 %   end
 %   
 %   for j=1:length(files)

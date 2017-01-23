@@ -6,7 +6,7 @@ val = false(size(stimtimes));
 
 for i=1:length(stimtimes)
   for j=1:length(psps)
-    psp = get_item(amplitude.parent.waveforms, psps{j});
+    psp = get_item(amplitude.parent.waveforms.cell_list, psps{j});
     
     if ~isempty(psp) && psp.spike_is_detected(stimtimes(i) + response_min, ...
         stimtimes(i) + response_max)

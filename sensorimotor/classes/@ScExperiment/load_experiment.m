@@ -18,7 +18,10 @@ if ~isfile(fpath)
 end
 
 d = load(fpath, 'obj');
+
+[~, name, ext] = fileparts(fpath);
 experiment = d.obj;
+experiment.save_name = [name ext];
 
 experiment.sc_dir = fileparts(fpath);
 

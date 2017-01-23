@@ -24,8 +24,8 @@ for i=1:length(neurons)
     for k=1:length(single_stims_str)
       single_str = single_stims_str{k};
       
-      if list_contains(signal.amplitudes, 'tag', single_str)
-        single_pulse = get_item(signal.amplitudes, single_str);
+      if list_contains(signal.amplitudes.cell_list, 'tag', single_str)
+        single_pulse = get_item(signal.amplitudes.cell_list, single_str);
         avg_height = [avg_height; single_pulse.height];
         avg_width = [avg_width; single_pulse.width];
         avg_latency = [avg_latency; single_pulse.latency];

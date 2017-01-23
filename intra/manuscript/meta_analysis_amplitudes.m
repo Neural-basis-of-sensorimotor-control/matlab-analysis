@@ -55,7 +55,7 @@ for i=1:length(unique_patterns)
     signal = sc_load_signal(neuron);
     activity_threshold = get_activity_threshold(signal);
 
-    amplitudes = get_items(signal.amplitudes, 'tag', {stimparams.tag});
+    amplitudes = get_items(signal.amplitudes.list, 'tag', {stimparams.tag});
     
     x = cell2mat({stimparams.time});
     y = nan(size(x));

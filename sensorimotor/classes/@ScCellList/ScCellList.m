@@ -1,21 +1,21 @@
-classdef ScCellList < ScBaseList
+classdef ScCellList < handle
   %Linked list and hash set that can hold multiple object types
   properties
     cell_list = {}
   end
-
+  
   properties (Dependent)
     n
     list
   end
-
+  
   methods
-
+    
     function add(obj, val)
       obj.cell_list(obj.n+1) = {val};
     end
-
-
+    
+    
     %if nargin == 2
     %   index   index in list
     %if nargin == 3
@@ -34,8 +34,8 @@ classdef ScCellList < ScBaseList
         end
       end
     end
-
-
+    
+    
     %if nargin == 2
     %   item   index in list
     %if nargin == 3
@@ -51,10 +51,10 @@ classdef ScCellList < ScBaseList
         obj.cell_list(index) = [];
       end
     end
-
-
+    
+    
     %If list contains reference to item, then replace item
-    %by new_item in list. Otherwise append newitem to list		
+    %by new_item in list. Otherwise append newitem to list
     function update_with_item(obj, item, new_item)
       % if object exists then update
       if obj.contains(item)
@@ -65,8 +65,8 @@ classdef ScCellList < ScBaseList
         obj.add(new_item);
       end
     end
-
-
+    
+    
     %Return true if there is an object with property property and value
     %val
     function object_exists = has(obj,property,val)
@@ -76,8 +76,8 @@ classdef ScCellList < ScBaseList
         object_exists = ~isempty(obj.get(property,val));
       end
     end
-
-
+    
+    
     %Return true if there is a reference to item in list
     function exists = contains(obj,item)
       exists = false;
@@ -88,8 +88,8 @@ classdef ScCellList < ScBaseList
         end
       end
     end
-
-
+    
+    
     %get all values of a specific property, as a cell array
     function vals = values(obj,property)
       if ~obj.n
@@ -101,7 +101,7 @@ classdef ScCellList < ScBaseList
         end
       end
     end
-
+    
     %If nargin == 2
     %return index of item in list
     %if nargin == 3
@@ -125,13 +125,13 @@ classdef ScCellList < ScBaseList
         end
       end
     end
-
-
+    
+    
     function n = get.n(obj)
       n = numel(obj.cell_list);
     end
-
-
+    
+    
     function list = sublist(obj, pos)
       if islogical(pos)
         if numel(pos)~=obj.n
@@ -144,9 +144,9 @@ classdef ScCellList < ScBaseList
         list.add(obj.get(pos(k)));
       end
     end
-
-
-
+    
+    
+    
     %Add item to list att position index
     function insert_at(obj, index, item)
       newlist = cell(obj.n+1,1);
@@ -159,12 +159,12 @@ classdef ScCellList < ScBaseList
       end
       obj.cell_list = newlist;
     end
-
+    
     %Replace item at index with this item
     function replace_at(obj, index, item)
       obj.cell_list(index) = {item};
     end
-
+    
     function item = remove_at(obj,index)
       item = obj.cell_list{index};
       for k=index:obj.n-1
@@ -172,15 +172,15 @@ classdef ScCellList < ScBaseList
       end
       obj.cell_list = obj.cell_list(1:obj.n-1);
     end
-
+    
     function val = get.list(obj)
-
+      
       val = [];
-
+      
       for i=1:obj.n
         val = [val; obj.get(i)]; %#ok<AGROW>
       end
-
+      
     end
 
   end

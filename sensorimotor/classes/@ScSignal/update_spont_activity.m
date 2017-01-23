@@ -21,7 +21,7 @@ for i=1:length(patterns_str)
       nbr_of_time_intervals = nbr_of_time_intervals + 1;
       
       for k=1:length(psps_str)
-        psp = get_item(obj.waveforms, psps_str{k});
+        psp = get_item(obj.waveforms.cell_list, psps_str{k});
         if ~isempty(psp) && psp.spike_is_detected(tstart, tstop, true)
           nbr_of_automatic_detections = nbr_of_automatic_detections + 1;
           continue

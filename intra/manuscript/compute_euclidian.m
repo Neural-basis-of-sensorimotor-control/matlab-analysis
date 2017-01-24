@@ -78,7 +78,7 @@ make_figures(7, 'Euclidian distances amplitude height [mV], stims shuffled', d_s
     fig2 = figure(fignbr+1);
     clf reset
     fill_matrix(d);
-    concat_colormaps(d, gca, 8, @gray, @(x) invert_colormap(@autumn, x));
+    concat_colormaps(d, gca, 8, @gray, invert_colormap(@autumn));
     set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
       'XTickLabelRotation', 270, ...
       'YTick', 1:length(neurons), 'YTickLabel', {neurons.file_tag});

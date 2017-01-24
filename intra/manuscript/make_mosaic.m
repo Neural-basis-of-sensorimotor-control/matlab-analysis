@@ -117,7 +117,7 @@ clf(fig, 'reset');
 fill_matrix(v);
 hold on
 
-concat_colormaps(v, gca, [0 1], @gray, @(x) invert_colormap(@autumn, x), @winter);
+concat_colormaps(v, gca, [0 1], @gray, invert_colormap(@autumn), @winter);
 
 [x_neg, y_neg] = find(norm_constant_is_negative);
 v_neg = 10*ones(size(x_neg));

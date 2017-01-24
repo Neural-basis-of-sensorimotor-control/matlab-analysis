@@ -116,8 +116,6 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %    concat_colormaps(response_values, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %      @winter)
     colorbar
     setup_intra_axes(neurons, stims);
     
@@ -165,8 +163,6 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %     concat_colormaps(response_values1, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %       @winter)
     colorbar
     setup_intra_axes(neurons, stims);
     
@@ -176,8 +172,7 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %     concat_colormaps(response_values2, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %       @winter)
+
     colorbar
     setup_intra_axes(neurons, stims);
     
@@ -232,8 +227,7 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %     concat_colormaps(response_values1, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %       @winter)
+    
     colorbar
     setup_intra_axes(neurons, stims);
     
@@ -243,8 +237,7 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %     concat_colormaps(response_values2, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %       @winter)
+
     colorbar
     setup_intra_axes(neurons, stims);
     
@@ -255,8 +248,7 @@ end
     hold on
     [x,y] = find(~is_responses);
     add_square(x, y, 'w');
-    %     concat_colormaps(response_values3, gca, 0, @(x) invert_colormap(@autumn, x), ...
-    %       @winter)
+
     colorbar
     setup_intra_axes(neurons, stims);
     

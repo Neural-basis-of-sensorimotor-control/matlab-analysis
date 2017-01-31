@@ -44,12 +44,12 @@ intra_cmp_cells_and_stims(2, {'ICNR0002', 'ICNR0003', 'IDNR0001'}, {'1.0 sa#V4#1
 
 ***
 
-Plot IC response to individual stimulations
+Plot average IC response to patterns
 
-intra_cmp_avg_pattern_response(fig, stims, neurons)
-    fig     figure handle, or figure number
-    stims   which stimulations to view (numeric array or cell array of chars)
-    neurons which neurons to view (numeric array or cell array of chars)
+intra_cmp_avg_pattern_response(fig, patterns, neurons)
+    fig      figure handle, or figure number
+    patterns which patterns to view (numeric array or cell array of chars)
+    neurons  which neurons to view (numeric array or cell array of chars)
 
 EXAMPLES:
 intra_cmp_avg_pattern_response(3, [10 4 12], [13 14 21])

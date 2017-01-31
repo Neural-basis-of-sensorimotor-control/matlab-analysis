@@ -1,6 +1,12 @@
 function indx = get_list_indx(list, property, value)
 
 if nargin == 2
+  
+  if isnumeric(property)
+    indx = property;
+    return
+  end
+  
   value = property;
 end
 

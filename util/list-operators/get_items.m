@@ -4,7 +4,11 @@ if nargin<4
   max_nbr_of_elements = inf;
 end
 
-indx = get_list_indx(list, property, value);
+if nargin<=2
+  indx = get_list_indx(list, property);
+else
+  indx = get_list_indx(list, property, value);
+end
 
 val = list(indx);
 val = val(1:min([length(val) max_nbr_of_elements]));

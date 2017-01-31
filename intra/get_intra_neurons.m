@@ -38,9 +38,7 @@ end
 if nargin
   if isnumeric(indx)
     neurons = neurons(indx);
-  elseif ischar(indx)
-    neurons = get_items(neurons, 'file_tag', indx);
-  elseif iscell(indx)
+  elseif ischar(indx) || iscell(indx)
     neurons = get_items(neurons, 'file_tag', indx);
     
     if iscell(neurons)

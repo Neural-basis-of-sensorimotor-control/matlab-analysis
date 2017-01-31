@@ -1,13 +1,20 @@
-%Figure 3
+function  intra_cmp_cells_and_stims(fig, stims_indx, neurons_indx)
+
 clc
-% clear
-fig = figure(7);
-clf(fig);
 
-stims_indx = [19 27 40 48];
-stims_str = get_intra_motifs(stims_indx);
+if isnumeric(fig)
+  fig = figure(fig);
+end
+clf(fig, 'reset');
 
-neurons_indx = [13 14 21];
+%stims_indx = [19 27 40 48];
+if isnumeric(stims_indx)
+  stims_str = get_intra_motifs(stims_indx);
+else
+  stims_str = stims_indx;
+end
+
+%neurons_indx = [13 14 21];
 neurons = get_intra_neurons(neurons_indx);
 
 pretrigger = -.02;
@@ -49,7 +56,7 @@ for i=1:length(neurons)
     
     plot(h, t, mean(v_sweep, 2), 'Color', plot_avg_color);
     
-    title(h, sprintf('Cell #%d: %s', i, stims_str{j}));
+    title(h, sprintf('%s: %s', neuron.file_tag, stims_str{j}));
     grid(h, 'on')
   end
 end

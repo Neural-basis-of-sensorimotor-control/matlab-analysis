@@ -1,13 +1,20 @@
-%Figure 2
+function intra_cmp_avg_pattern_response(fig, patterns_indx, neurons_indx)
+
 clc
-clear
-fig = gcf;
-clf(fig);
 
-pattern_indx = [10 4 12];
-patterns_str = get_intra_patterns(pattern_indx);
+if isnumeric(fig)
+  fig = figure(fig);
+end
+clf(fig, 'reset');
 
-neurons_indx = [13 14 21];
+%patterns_indx = [10 4 12];
+if isnumeric(patterns_indx)
+  patterns_str = get_intra_patterns(patterns_indx);
+else
+  patterns_str = patterns_indx;
+end
+
+%neurons_indx = [13 14 21];
 neurons = get_intra_neurons(neurons_indx);
 
 pretrigger = -.02;
@@ -36,10 +43,7 @@ for i=1:length(neurons)
     vmax = max([vmax; v_avg]);
     
     plot(h, t, v_avg, 'Color', plot_color);
-%     for k=1:size(v_sweep,2)
-%       plot(h, t, v_sweep(:,k), 'Color', plot_color);
-%     end
-    title(h, sprintf('Avg response: cell #%d, %s', i, patterns_str{j}));
+    title(h, sprintf('Avg response: %s, %s', neuron.file_tag, patterns_str{j}));
     grid(h, 'on')
   end
 end

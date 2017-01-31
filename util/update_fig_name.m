@@ -22,6 +22,7 @@ for i=1:length(figs)
       
       if ~isempty(a.Title.String)
         filename = a.Title.String;
+        filename = strrep(filename, ':', '_');
         break
       end
     end

@@ -1,5 +1,10 @@
 function plot_mda(y, neuron_tag)
 
+if nargin==1
+  neuron_tag = cell(size(y,1), 1);
+  neuron_tag = cellfun(@(x) '', neuron_tag, 'UniformOutput', false);
+end
+
 if ~iscell(neuron_tag)
 	neuron_tag = {neurons.file_tag};
 end

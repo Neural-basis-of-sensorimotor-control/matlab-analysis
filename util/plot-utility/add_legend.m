@@ -24,10 +24,10 @@ elseif isa(plot_handles(1), 'matlab.graphics.axis.Axes')
 	
 	h = add_legend(get_plots(plot_handles), add_only_one_legend);
 	
-elseif ~isa(plot_handles(1), 'matlab.graphics.chart.primitive.Line')
-	
-	error('Function not defined for input class ''%s''', ...
-		class(plot_handles(1)));
+% elseif ~isa(plot_handles(1), 'matlab.graphics.chart.primitive.Line')
+% 	
+% 	error('Function not defined for input class ''%s''', ...
+% 		class(plot_handles(1)));
 	
 else
 	
@@ -47,7 +47,7 @@ else
 	
 	for i=1:length(plot_handles)
 		indx = find(cellfun(@(x) strcmp(x, tags{i}), unique_tags), 1);
-		plot_handles(i).Color = colors(indx, :);
+		set_plot_color(plot_handles(i), colors(indx, :));
 	end
 	
 	empty_tag_indx = cellfun(@isempty, unique_tags);

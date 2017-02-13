@@ -40,7 +40,7 @@ intra_cmp_cells_and_stims(fig, stims, neurons)
 
 EXAMPLES:
 intra_cmp_cells_and_stims(1, [19 27 40 48], [13 14 21])
-intra_cmp_cells_and_stims(2, {'ICNR0002', 'ICNR0003', 'IDNR0001'}, {'1.0 sa#V4#1', '2.0 fa#V3#1', '2.0 sa#V3#9', 'flat sa#V3#1'})
+intra_cmp_cells_and_stims(2, {'1.0 sa#V4#1', '2.0 fa#V3#1', '2.0 sa#V3#9', 'flat sa#V3#1'}, {'ICNR0002', 'ICNR0003', 'IDNR0001'})
 
 ***
 

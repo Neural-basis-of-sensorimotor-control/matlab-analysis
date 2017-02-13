@@ -186,7 +186,7 @@ end
     y = cmdscale(d, scaling_dim);
     
     subplot(224)
-    plot_mda(y, repmat(neurons, 1, 2));
+    plot_mda(y, neurons);
     title('Classical MDS');
     add_legend([subplot(223) subplot(224)]);
     

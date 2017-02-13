@@ -3,7 +3,6 @@ function plot_binomial_distribution(neurons, response_min, response_max)
 %Example: plot_binomial_distribution({'HRNR0000', 'ICNR0002', 'ICNR0003'}, ...
 %  4e-3, 22e-3);
 %
-%hannes.mogensen@med.lu.se
 
 stims = get_intra_motifs();
 patterns = get_values(stims, @get_pattern);

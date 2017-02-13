@@ -10,6 +10,6 @@ end
 
 val = figure(fig_indx);
 
-clf(val);
+clf(val, 'reset');
 
 end

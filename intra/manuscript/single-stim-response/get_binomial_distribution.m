@@ -1,6 +1,7 @@
 function [binomial_distribution, binomial_permutations, nbr_of_positives, ...
   avg_response_rate, shuffled_distribution] = ...
-  get_binomial_distribution(neuron, stims_str, response_min, response_max)
+  get_binomial_distribution(neuron, stims_str, response_min, response_max, ...
+  normalize)
 
 [binomial_permutations, nbr_of_positives] = get_binomial_permutations(length(stims_str));
 binomial_permutations = logical(binomial_permutations);
@@ -29,13 +30,15 @@ for i=1:nbr_of_repetitions
   end
 end
 
-binomial_distribution = get_binomial(response_profiles, binomial_permutations);
+binomial_distribution = get_binomial(response_profiles, binomial_permutations, ...
+  normalize);
 
 if nargout>=5
   indx = randperm(numel(response_profiles));
   shuffled_response_profiles = nan(size(response_profiles));
   shuffled_response_profiles(indx) = response_profiles;
-  shuffled_distribution = get_binomial(shuffled_response_profiles, binomial_permutations);
+  shuffled_distribution = get_binomial(shuffled_response_profiles, ...
+    binomial_permutations, normalize);
 end
 
 avg_response_rate = mean(response_profiles(:));
@@ -43,7 +46,7 @@ avg_response_rate = mean(response_profiles(:));
 end
 
 function binomial_distribution = ...
-  get_binomial(response_profiles, binomial_permutations)
+  get_binomial(response_profiles, binomial_permutations, normalize)
 
 nbr_of_occurences = zeros(size(binomial_permutations,1), 1);
 
@@ -55,6 +58,10 @@ for i=1:length(nbr_of_occurences)
   end
 end
 
-binomial_distribution = nbr_of_occurences/sum(nbr_of_occurences);
+if normalize
+  binomial_distribution = nbr_of_occurences/sum(nbr_of_occurences);
+else
+  binomial_distribution = nbr_of_occurences;
+end
 
 end

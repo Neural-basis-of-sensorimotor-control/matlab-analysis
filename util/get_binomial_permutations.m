@@ -13,3 +13,5 @@ end
 
 nbr_of_positives = sum(permutations, 2);
 
+% [nbr_of_positives, indx] = sort(nbr_of_positives);
+% permutations = permutations(indx, :);

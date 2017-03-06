@@ -10,6 +10,10 @@ else
   indx = get_list_indx(list, property, value);
 end
 
+if ischar(list)
+  list = {list};
+end
+
 val = list(indx);
 val = val(1:min([length(val) max_nbr_of_elements]));
 

@@ -4,6 +4,8 @@ if isempty(list)
   list = item;
 elseif iscell(list)
   list(length(list)+1) = {item};
+elseif ischar(list)
+  list = {list};
 else
   list(length(list)+1) = item;
 end

@@ -13,7 +13,7 @@ end
 if iscell(value)
   indx = false(size(list));
   
-  for i=1:length(value)
+  for i=1:get_list_length(value)
     
     if nargin == 2
       indx = indx | equals(list, value{i});

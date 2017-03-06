@@ -1,4 +1,4 @@
-function [unique_vals, counts] = count_list(list, property)
+function [unique_vals, counts] = count_items_in_list(list, property)
 
 if nargin>1
   list = get_values(list, property);

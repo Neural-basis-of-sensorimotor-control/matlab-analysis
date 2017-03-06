@@ -5,7 +5,7 @@ function [neuron_distribution, statistical_distribution_avg_response, ...
   response_min, response_max, normalize)
 
 stims_str = get_items(stims_str, @get_pattern, pattern_str);
-electrodes = count_list(stims_str, @get_electrode);
+electrodes = count_items_in_list(stims_str, @get_electrode);
 stims_str = get_items(stims_str, @get_electrode, get_item(electrodes,1));
 
 [neuron_distribution, binomial_permutations, nbr_of_positives, ...

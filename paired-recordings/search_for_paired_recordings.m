@@ -43,19 +43,7 @@ sc_dir = get_default_experiment_dir();
 % end
 
 %% Find paired neurons
-paired_neurons = [];
-
-for i=1:length(neurons)
-  
-  fprintf('Find paired neurons: %d out of %d\n', i, length(neurons));
-  
-  neuron = neurons(i);
-  
-  tmp_paired_neurons = get_paired_neurons(neuron, min_nbr_of_overlapping_neurons);
-  
-  paired_neurons = concat_list(paired_neurons, tmp_paired_neurons);
-
-end
+paired_neurons = scan_for_paired_neurons(neurons, min_nbr_of_overlapping_neurons);
 
 %% Plot results
 for i=1:length(paired_neurons)

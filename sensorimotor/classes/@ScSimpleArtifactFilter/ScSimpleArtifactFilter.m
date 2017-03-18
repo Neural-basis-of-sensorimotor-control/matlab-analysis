@@ -27,9 +27,4 @@ classdef ScSimpleArtifactFilter < ScSimpleFilter
     end
   end
   
-  methods (Static)
-    function obj = loadobj(a)
-      obj = loadobj@ScSimpleFilter(a);
-    end
-  end
 end

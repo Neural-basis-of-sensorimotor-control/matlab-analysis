@@ -8,8 +8,12 @@ else
   fig_indx = fig_indx + 1;
 end
 
-val = figure(fig_indx);
+fig = figure(fig_indx);
 
-clf(val, 'reset');
+clf(fig, 'reset');
+
+if nargout
+  val = fig;
+end
 
 end

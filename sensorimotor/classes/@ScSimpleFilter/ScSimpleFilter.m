@@ -33,9 +33,4 @@ classdef ScSimpleFilter < ScFilter
     
   end
   
-  methods (Static)
-    function obj = loadobj(a)
-      obj = loadobj@ScFilter(a);
-    end
-  end
 end

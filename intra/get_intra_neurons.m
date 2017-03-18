@@ -25,14 +25,21 @@ data ={
   'IDNR_sc.mat',    'IDNR0001',   'patch',  -inf, inf,  {'EPSP5'}
   };
 
-for i=size(data,1):-1:1
-  neurons(i).experiment_filename = data{i,1};
-  neurons(i).file_tag = data{i,2};
-  neurons(i).signal_tag = data{i,3};
-  neurons(i).tmin = data{i,4};
-  neurons(i).tmax = data{i,5};
-  neurons(i).template_tag = data{i,6};
-  neurons(i).tag = sprintf('IntraNeuron%03d', i);
+neurons = [];
+
+for i=1:size(data,1)
+  
+  neuron = ScNeuron(...
+    'experiment_filename', data{i,1}, ...
+    'file_tag',            data{i,2}, ...
+    'signal_tag',          data{i,3}, ...
+    'tmin',                data{i,4}, ...
+    'tmax',                data{i,5}, ...
+    'template_tag',        data{i,6}, ...
+    'tag',                 sprintf('IntraNeuron%03d', i));
+  
+  neurons = add_to_list(neurons, neuron);
+  
 end
 
 if nargin

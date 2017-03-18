@@ -26,10 +26,5 @@ classdef ScSimpleSpikeFilter < ScSimpleFilter
       artifact_indx = round(artifact_times/obj.parent.dt);
     end
   end
-  
-  methods (Static)
-    function obj = loadobj(a)
-      obj = loadobj@ScSimpleFilter(a);
-    end
-  end
+
 end

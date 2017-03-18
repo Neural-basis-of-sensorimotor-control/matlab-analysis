@@ -9,6 +9,7 @@ classdef ScNeuron < handle
     signal_tag
     tmin
     tmax
+    time_sequences
     template_tag
     tag
   end

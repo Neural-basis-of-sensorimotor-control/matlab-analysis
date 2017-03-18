@@ -1,10 +1,12 @@
 % Find all recordings with paired recordings
-clc
 clear
+sc_clf_all
 
-paired_recordings;
+neurons = concat_list(get_sssa_neurons(), get_intra_neurons);
 
-min_nbr_of_overlapping_neurons = 40;
+max_inactivity_time = 10;
+min_nbr_of_spikes_per_sequence = 5;
+min_time_span_per_sequence = 2;
 
 sc_dir = get_default_experiment_dir();
 
@@ -43,16 +45,21 @@ sc_dir = get_default_experiment_dir();
 % end
 
 %% Find paired neurons
-paired_neurons = scan_for_paired_neurons(neurons, min_nbr_of_overlapping_neurons);
+paired_neurons = scan_for_paired_neurons(neurons, max_inactivity_time, ...
+    min_nbr_of_spikes_per_sequence, min_time_span_per_sequence);
 
 %% Plot results
+reset_fig_indx();
+
 for i=1:length(paired_neurons)
   
   fprintf('Plot paired neurons: %d out of %d\n', i, length(paired_neurons));
   
-  figure(i)
+  incr_fig_indx();
   clf reset
   
   plot_paired_recordings(paired_neurons(i));
   
 end
+
+plot_raster_paired_recordings(paired_neurons);

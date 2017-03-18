@@ -1,4 +1,4 @@
-function axis_wide(ax, use_axes, xmargin, ymargin, set_tight)
+function axis_wide(ax, xy_axes, xmargin, ymargin, set_tight)
 
 if nargin<1
   ax = gca;
@@ -10,8 +10,8 @@ if nargin<2
   use_x = true;
   use_y = true;
 else
-  use_x = any(use_axes == 'x');
-  use_y = any(use_axes == 'y');
+  use_x = any(xy_axes == 'x');
+  use_y = any(xy_axes == 'y');
 end
 
 if nargin<3

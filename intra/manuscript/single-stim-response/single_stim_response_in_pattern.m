@@ -208,41 +208,65 @@ avg_response = nan(length(unique_patterns_str), length(neurons));
 lsq_fit = nan(length(unique_patterns_str), length(neurons));
 
 for i=1:length(neurons)
-  incr_fig_indx();
-  hold on
-  
-  dummy_y = 1:dim(1);
-  linestyle = '-';
-  markersize = 12;
-  
   avg_response(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response(:,i));
-  plot(avg_response(:,i), dummy_y, ...
-    'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
-    'Tag', 'Avg response');
   
   lsq_fit(:,i) = log(dist_neuron_to_lsqfit(:,i)./dist_shuffled_to_lsqfit(:,i));
-  plot(lsq_fit, dummy_y, ...
-    'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
-    'Tag', 'Lsq fit');
-  
-  add_legend()
-  
-  title(neurons(i).file_tag);
-  
-  hold off
 end
 
-%%
-p = .01;
-alpha = tinv(1-p/2, length(neurons)-1);
 
-mean_avg_response = mean(avg_response,2);
-std_avg_response = std(avg_response,1,2);
-mean_avg_response - alpha*std_avg_response/sqrt(length(neurons))
+incr_fig_indx();
+fig1 = incr_fig_indx();
+hold(gca, 'on');
+grid on
+set(gca, 'Color', 'k');
+
+incr_fig_indx();
+fig2 = incr_fig_indx();
+hold(gca, 'on');
+grid on
+set(gca, 'Color', 'k');
+
+linestyle = 'None';
+markersize = 12;
+
+for i=1:length(unique_patterns_str)
+  dummy_y = i*ones(length(neurons), 1);
+
+  figure(fig1)
+  plot(avg_response(i,:), dummy_y, 'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
+    'Tag', 'Avg response');
+  figure(fig2)
+  plot(lsq_fit(i,:), dummy_y, 'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
+    'Tag', 'Lsq fit');
+end
+
+add_legend([fig1 fig2], false, 'TextColor', 'r')
+figure(fig1)
+plot(mean(avg_response,2), 1:dim(1))
+axis_wide(gca);
+set(gca, 'GridColor', 'r');
+set(gca, 'YTick', 1:length(unique_patterns_str), 'YTickLabel', unique_patterns_str);
+figure(fig2)
+plot(mean(lsq_fit,2), 1:dim(1))
+axis_wide(gca);
+set(gca, 'GridColor', 'r');
+set(gca, 'YTick', 1:length(unique_patterns_str), 'YTickLabel', unique_patterns_str);
+
+
+%%
+p = .001;
+alpha = tinv(1-p, length(neurons)-1);
+
+% mean_avg_response = mean(avg_response,2);
+% std_avg_response = std(avg_response,1,2);
+% mean_avg_response - alpha*std_avg_response/sqrt(length(neurons))
 
 mean_lsq_fit = mean(lsq_fit,2);
 std_lsq_fit = std(lsq_fit,1,2);
 mean_lsq_fit - alpha*std_lsq_fit/sqrt(length(neurons))
+
+
+
 % for i=1:length(neurons)
 %   incr_fig_indx();
 %

@@ -1,4 +1,4 @@
-classdef ScFile < ScList
+classdef ScFile < ScList & ScDynamicClass
   %One for each spike2 / adq file
   %children: ScSequence
   properties

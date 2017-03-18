@@ -1,4 +1,5 @@
-classdef ScSignal < ScChannel
+classdef ScSignal < ScChannel & ScDynamicClass
+  
   %Analog imported channel
   properties
     dt                              %time resolution (1x1 double)

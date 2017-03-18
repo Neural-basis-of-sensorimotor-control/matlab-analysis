@@ -8,6 +8,7 @@ if isempty(file)
   return
 end
 
+file.update_property_values();
 file.sc_loadtimes();
 
 if ~file.n

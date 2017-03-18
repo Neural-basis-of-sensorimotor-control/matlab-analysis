@@ -1,4 +1,4 @@
-classdef ScFilter < handle
+classdef ScFilter < ScDynamicClass
   
   methods (Abstract)
     update(obj, v)
@@ -9,12 +9,4 @@ classdef ScFilter < handle
     process_order = 0
   end
   
-  methods (Static)
-    function obj = loadobj(a)
-      if isempty(a.process_order)
-        a.process_order = 0;
-      end
-      obj = a;
-    end
-  end
 end

@@ -1,5 +1,11 @@
 function [pdf_isi_1, pdf_obs_t_forward, pdf_obs_t_back, pdf_predicted_t_forward] = ...
   get_pdf_paired_neuron_values(spiketimes1, spiketimes2, bintimes)
+% Implementation of eq (2) Blot, (...), Léna: Time-invariant
+% feed-forward inhibition of PC in the cerebellar cortex in vivo (Journal
+% of Physiology 2016)
+if std(diff(bintimes))>10*eps
+  error('Input parameter bintimes must be evenly spaced');
+end
 
 [isi1, spiketimes1] = get_isi(spiketimes1);
 
@@ -15,30 +21,33 @@ pdf_obs_t_forward = pdf_obs_t_forward / sum(pdf_obs_t_forward);
 pdf_obs_t_back = histc(observed_t_back, bintimes);
 pdf_obs_t_back = pdf_obs_t_back / sum(pdf_obs_t_back(:));
 
-ind = bintimes > 0;
+t0_min = 0;
+[~, ind_t0_min] = min(abs(bintimes - t0_min));
+ind_t0_max = length(bintimes);
+[~, ind_t_zero] = min(abs(bintimes));
 
+ind_t0_range = ind_t0_max - ind_t0_min;
 pdf_predicted_t_forward = zeros(size(bintimes));
 
-p_isi = pdf_isi_1(ind);
+ind_t = ind_t_zero:(ind_t_zero+ind_t0_range);
+dt = mean(diff(bintimes));
 
-p_back = zeros(size(p_isi));
-p_back_tmp = pdf_obs_t_back(bintimes < 0);
-p_back_tmp = p_back_tmp(length(p_back_tmp):-1:1);
-p_back(1:length(p_back_tmp)) = p_back_tmp;
-p_back(length(p_back)>length(p_isi)) = [];
+denominator = cumsum(pdf_isi_1(reverse_array(ind_t)));
+denominator = reverse_array(denominator)*dt;
+ind_t_back = ind_t_zero:-1:-ind_t0_range;
+numerator1 = pdf_obs_t_back(ind_t_back(ind_t_back>0));
+numerator1(end+1:ind_t0_range+1,:) = 0;
 
-indx = find(ind);
-indx0 = min(indx)-1;
-
-for i=1:(length(indx)-1)
-  pdf_predicted_t_forward(indx(i)) = p_prediction(indx-indx0, indx(i)-indx0);
+for tmp_ind=ind_t0_min:ind_t0_max
+  ind_t_plus_t0 = tmp_ind:length(bintimes);
+  numerator2 = pdf_isi_1(ind_t_plus_t0);
+  numerator2(end+1:ind_t0_range+1,1) = 0;
+  product_numerators = numerator1 .* numerator2;
+  function_to_be_integrated = product_numerators ./ denominator;
+  function_to_be_integrated(product_numerators == 0 & denominator == 0) = 0;
+  
+  pdf_predicted_t_forward(tmp_ind) = sum(function_to_be_integrated) * dt;
 end
-
-  function val = p_prediction(t_ind, t0_ind)
-    
-    val = p_back(t_ind) .* p_isi(t_ind + t0_ind) ./ sum( p_isi(t_ind:end));
-    
-  end
 
 end
 

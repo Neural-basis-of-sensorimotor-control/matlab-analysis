@@ -1,3 +1,4 @@
+function single_stim_response_in_pattern
 %@todo: Compensate for different stimulation electrodes!
 clc
 clear
@@ -7,17 +8,13 @@ sc_clf_all('reset')
 
 exclude_neurons = {};%{'CANR0001'};
 response_min = 4e-3;
-response_max = 22e-3;
+response_max = 18e-3;
 neurons = get_intra_neurons();
 neurons = rm_from_list(neurons, 'file_tag', exclude_neurons);
 
 stims_str = get_intra_motifs();
 
-load intra_data.mat
-stim_params = get_items(intra_patterns.stim_electrodes, 'tag', stims_str);
-indx = cell2mat({stim_params.time_to_subsequent_stim}) > response_max - response_min;
-stims_str = stims_str(indx);
-
+%% Select only neurons with 100 repetitions
 nbr_of_sweeps = nan(size(neurons));
 
 for i=1:length(nbr_of_sweeps)
@@ -27,274 +24,184 @@ end
 
 neurons = neurons(nbr_of_sweeps == 100);
 
-% for i=1:4
-%   stims_str = concat_list(stims_str, get_single_amplitudes(sprintf('%d', i)));
-% end
-%
+%% Select only electrodes with > 1 selected pulse
 patterns_str = get_values(stims_str, @get_pattern);
 unique_patterns_str = unique(patterns_str);
-%
-% single_pulse_prefix = '1p electrode ';
-%
-% unique_patterns_str = [unique_patterns_str(~startsWith(unique_patterns_str, single_pulse_prefix)); ...
-%   unique_patterns_str(startsWith(unique_patterns_str, single_pulse_prefix))];
 
+stim_pulses = [];
 
-nbr_of_stim_occurences = [];
-
-for i=length(unique_patterns_str):-1:1
-  tmp_stims_str = get_items(stims_str, @get_pattern, unique_patterns_str{i});
-  [~, counts] = count_items_in_list(tmp_stims_str, @get_electrode);
+for i=1:length(unique_patterns_str)
+  tmp_pattern = unique_patterns_str{i};
   
-  if isempty(counts) || counts(1) <= 1
-    unique_patterns_str = rm_from_list(unique_patterns_str, i);
-  else
-    nbr_of_stim_occurences = add_to_list(nbr_of_stim_occurences, counts(1));
+  tmp_stims_str = get_items(stims_str, @get_pattern, tmp_pattern);
+  [tmp_electrodes, counts] = count_items_in_list(tmp_stims_str, @get_electrode);
+  tmp_ind = counts>1;
+  tmp_electrodes = tmp_electrodes(tmp_ind);
+  tmp_counts = counts(tmp_ind);
+  
+  for j=1:length(tmp_electrodes)
+    stim_pulses = add_to_list(stim_pulses, struct('pattern', tmp_pattern, ...
+      'electrode', tmp_electrodes{j}, 'electrode_count', tmp_counts(j)));
   end
+  
 end
-nbr_of_stim_occurences = nbr_of_stim_occurences(length(nbr_of_stim_occurences):-1:1);
 
-scaling_dim = 2;
+% Sort stim pulses
+[~, ind1] = sort({stim_pulses.pattern});
+stim_pulses = stim_pulses(ind1);
 
-% %% Generate binomial distribution for each neuron
-%
-% for i=1:length(neurons)
-%   fprintf('%d out of %d\n', i, length(neurons));
-%
-%   neuron = neurons(i);
-%
-%   for j=1:length(unique_patterns_str)
-%     incr_fig_indx();
-%
-%     pattern_str = unique_patterns_str{j};
-%
-%     [neuron_distribution, statistical_distribution_avg_response, ...
-%       statistical_distribution_lsqfit, shuffled_distribution, ...
-%       binomial_permutations, nbr_of_positives] = ...
-%       compute_binomial_distribution(neuron, stims_str, pattern_str, ...
-%       response_min, response_max, false);
-%
-%     plot_neuronal_binomial_distribution(binomial_permutations, nbr_of_positives, ...
-%       [neuron.file_tag ': ' pattern_str], ...
-%       {'Recorded data', 'Null hypothesis (avg response)', 'Null hypothesis (lsq fit)', 'Shuffled data'}, ...
-%       neuron_distribution, statistical_distribution_avg_response, ...
-%       statistical_distribution_lsqfit, shuffled_distribution);
-%
-%   end
-%
-% end
+[~, ind1] = sort({stim_pulses.electrode});
+stim_pulses = stim_pulses(ind1);
 
-% %% Make PCA plot for a) all neurons together, and b) neuron vs each control (if relevant)
-%
-% for i=1:length(unique_patterns_str)
-%   fprintf('%d out of %d\n', i, length(unique_patterns_str));
-%
-%   pattern_str = unique_patterns_str{i};
-%
-%   dim = [2^nbr_of_stim_occurences(i) length(neurons)];
-%   neuron_distribution = nan(dim);
-%   stat_distribution_avg_response = nan(dim);
-%   stat_distribution_lsqfit = nan(dim);
-%   shuffled_distribution = nan(dim);
-%
-%   for j=1:length(neurons)
-%     fprintf('\t%d out of %d\n', j, length(neurons));
-%
-%     neuron = neurons(j);
-%
-%     [neuron_distribution(:,j), stat_distribution_avg_response(:,j), ...
-%       stat_distribution_lsqfit(:,j), shuffled_distribution(:,j)] ...
-%       = compute_binomial_distribution(neuron, stims_str, pattern_str, ...
-%       response_min, response_max, true);
-%   end
-%
-%   tags = repmat({neurons.file_tag}, 1, 4);
-%   markers = [repmat({'+'}, 1, length(neurons)) repmat({'<'}, 1, length(neurons)) repmat({'>'}, 1, length(neurons)) repmat({'*'}, 1, length(neurons))];
-%
-%   d = pdist([neuron_distribution stat_distribution_avg_response stat_distribution_lsqfit shuffled_distribution]');
-%   y1 = mdscale(d, scaling_dim);
-%   y2 = cmdscale(d, scaling_dim);
-%
-%   incr_fig_indx();
-%
-%   subplot(121)
-%   plot_mda(y1, tags, markers);
-%   title([pattern_str ' (non-linear MDS)']);
-%
-%   subplot(122)
-%   plot_mda(y2, tags, markers);
-%   title([pattern_str ' (classical MDS)']);
-%   add_legend(gcf, true);
-%
-% end
-
+[~, ind1] = sort(cell2mat({stim_pulses.electrode_count}));
+stim_pulses = stim_pulses(ind1);
 
 %% Make a summary for each pattern how many neurons for which the distance from recorded data to null hypothesis is larger than shuffled data to null hypothesis
 
-dim = [length(unique_patterns_str), length(neurons)];
+dim = [length(stim_pulses), length(neurons)];
 
 dist_neuron_to_avg_response   = nan(dim);
-dist_neuron_to_lsqfit         = nan(dim);
 dist_neuron_to_shuffled       = nan(dim);
 dist_shuffled_to_avg_response = nan(dim);
-dist_shuffled_to_lsqfit       = nan(dim);
-dist_avg_response_to_lsqfit   = nan(dim);
 
-for i=1:length(unique_patterns_str)
-  fprintf('%d out of %d\n', i, length(unique_patterns_str));
-  pattern_str = unique_patterns_str{i};
+for i=1:length(stim_pulses)
+  fprintf('%d out of %d\n', i, length(stim_pulses));
+  
+  pattern_str = stim_pulses(i).pattern;
+  electrode_str = stim_pulses(i).electrode;
+  tmp_stims = get_items(stims_str, @get_pattern, pattern_str);
+  tmp_stims = get_items(tmp_stims, @get_electrode, electrode_str);
   
   for j=1:length(neurons)
     fprintf('\t%d out of %d\n', j, length(neurons));
     
     neuron = neurons(j);
-    signal = sc_load_signal(neuron);
     
-    tmp_stims_str = stims_str;
-    
-    for k=length(tmp_stims_str):-1:1
-      if ~list_contains(signal.amplitudes.list, 'tag', tmp_stims_str{k})
-        tmp_stims_str = rm_from_list(tmp_stims_str, k);
-      end
-    end
-    
-    
-    [neuron_distribution, stat_distribution_avg_response, ...
-      stat_distribution_lsqfit, shuffled_distribution] ...
-      = compute_binomial_distribution(neuron, tmp_stims_str, pattern_str, ...
-      response_min, response_max, true);
+    [neuron_distribution, stat_distribution_avg_response, shuffled_distribution] ...
+      = compute_binomial_distribution(neuron, tmp_stims, response_min, ...
+      response_max, true);
     
     dist_neuron_to_avg_response(i,j)   = sqrt(sum( (neuron_distribution-stat_distribution_avg_response).^2 ));
-    dist_neuron_to_lsqfit(i,j)         = sqrt(sum( (neuron_distribution-stat_distribution_lsqfit).^2 ));
     dist_neuron_to_shuffled(i,j)       = sqrt(sum( (neuron_distribution-shuffled_distribution).^2 ));
     dist_shuffled_to_avg_response(i,j) = sqrt(sum( (shuffled_distribution-stat_distribution_avg_response).^2 ));
-    dist_shuffled_to_lsqfit(i,j)       = sqrt(sum( (shuffled_distribution-stat_distribution_lsqfit).^2 ));
-    dist_avg_response_to_lsqfit(i,j)  = sqrt(sum( (stat_distribution_avg_response-stat_distribution_lsqfit).^2 ));
   end
   
 end
 
 %%
-global fig_indx
+stim_pulses_labels = ...
+  arrayfun(@(x) sprintf('%s - %s - %d', x.pattern, x.electrode, x.electrode_count), ...
+  stim_pulses, 'UniformOutput', false);
 
-fig_indx = 0;
+reset_fig_indx();
 
 for i=1:length(neurons)
   incr_fig_indx();
   
-  bar([dist_neuron_to_avg_response(:,i) dist_neuron_to_lsqfit(:,i) ...
-    dist_shuffled_to_avg_response(:,i) dist_shuffled_to_lsqfit(:,i)])
+  bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i)])
   
-  legend('Measurement to avg response', 'Measurement to lsq fit', ...
-    'Shuffled to avg response', 'Shuffled to lsq fit');
-  set(gca, 'XTick', 1:length(unique_patterns_str), 'XTickLabel', unique_patterns_str, ...
+  legend('Measurement to avg response', 'Shuffled to avg response');
+  set(gca, 'XTick', 1:length(stim_pulses), ...
+    'XTickLabel', stim_pulses_labels, ...
     'XTickLabelRotation', 270);
-  title(neurons(i).file_tag)
+  title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
+    response_max));
 end
 
 for i=1:length(neurons)
   incr_fig_indx();
   
-  hist([dist_neuron_to_avg_response(:,i) dist_neuron_to_lsqfit(:,i) ...
-    dist_shuffled_to_avg_response(:,i) dist_shuffled_to_lsqfit(:,i)]);
+  hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ]);
   
   
-  legend('Measurement to avg response', 'Measurement to lsq fit', ...
-    'Shuffled to avg response', 'Shuffled to lsq fit');
-  title(neurons(i).file_tag);
+  legend('Measurement to avg response', 'Shuffled to avg response');
+  title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
+    response_max));
 end
 
-avg_response = nan(length(unique_patterns_str), length(neurons));
-lsq_fit = nan(length(unique_patterns_str), length(neurons));
+avg_response = nan(length(stim_pulses), length(neurons));
 
 for i=1:length(neurons)
   avg_response(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response(:,i));
-  
-  lsq_fit(:,i) = log(dist_neuron_to_lsqfit(:,i)./dist_shuffled_to_lsqfit(:,i));
 end
-
-
-incr_fig_indx();
-fig1 = incr_fig_indx();
-hold(gca, 'on');
-grid on
-set(gca, 'Color', 'k');
-
-incr_fig_indx();
-fig2 = incr_fig_indx();
-hold(gca, 'on');
-grid on
-set(gca, 'Color', 'k');
-
-linestyle = 'None';
-markersize = 12;
-
-for i=1:length(unique_patterns_str)
-  dummy_y = i*ones(length(neurons), 1);
-
-  figure(fig1)
-  plot(avg_response(i,:), dummy_y, 'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
-    'Tag', 'Avg response');
-  figure(fig2)
-  plot(lsq_fit(i,:), dummy_y, 'LineStyle', linestyle, 'Marker', '+', 'MarkerSize', markersize, ...
-    'Tag', 'Lsq fit');
-end
-
-add_legend([fig1 fig2], false, 'TextColor', 'r')
-figure(fig1)
-plot(mean(avg_response,2), 1:dim(1))
-axis_wide(gca);
-set(gca, 'GridColor', 'r');
-set(gca, 'YTick', 1:length(unique_patterns_str), 'YTickLabel', unique_patterns_str);
-figure(fig2)
-plot(mean(lsq_fit,2), 1:dim(1))
-axis_wide(gca);
-set(gca, 'GridColor', 'r');
-set(gca, 'YTick', 1:length(unique_patterns_str), 'YTickLabel', unique_patterns_str);
 
 
 %%
-p = .001;
+incr_fig_indx();
+hold(gca, 'on');
+set(gca, 'Color', 'k', 'GridColor', 'w');
+
+linestyle = ':';
+markersize = 12;
+
+for i=1:length(neurons)
+  dummy_y = 1:length(stim_pulses);
+  plot(avg_response(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
+  plot(avg_response(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
+    'LineStyle', 'none', 'Tag', neurons(i).file_tag);
+end
+plot(mean(avg_response,2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
+
+axis_wide(gca, 'y')
+add_legend(gca, true, true, 'TextColor', 'r')
+grid on
+title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
+  response_min, response_max));
+
+set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
+ylabel('Pattern - Electrode - Nbr of electrodes');
+xlabel('Value of eq 4');
+
+%%
+p = [.05 .01 .001 .0001];
 alpha = tinv(1-p, length(neurons)-1);
+success = false(length(stim_pulses_labels), length(alpha));
 
-% mean_avg_response = mean(avg_response,2);
-% std_avg_response = std(avg_response,1,2);
-% mean_avg_response - alpha*std_avg_response/sqrt(length(neurons))
+mean_avg_response = mean(avg_response,2);
+std_avg_response = std(avg_response,1,2);
 
-mean_lsq_fit = mean(lsq_fit,2);
-std_lsq_fit = std(lsq_fit,1,2);
-mean_lsq_fit - alpha*std_lsq_fit/sqrt(length(neurons))
-
+for i=1:size(success,2)
+  success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;
+end
 
 
-% for i=1:length(neurons)
-%   incr_fig_indx();
-%
-%   dummy_y = zeros([dim(1) 1]);
-%
-%   is_control = startsWith(unique_patterns_str, single_pulse_prefix);
-%
-%   hold on
-%
-%   plot(dist_neuron_to_avg_response(is_control,i), dummy_y(is_control), 'Marker', '+', 'LineStyle', 'None', 'Tag', 'Measurement to avg response (control)');
-%   plot(dist_neuron_to_avg_response(~is_control,i), dummy_y(~is_control), 'Marker', 'x', 'LineStyle', 'None',  'Tag', 'Measurement to avg response');
-%
-%
-%   plot(dist_neuron_to_lsqfit(is_control,i), dummy_y(is_control),  'Marker', '+', 'LineStyle', 'None', 'Tag', 'Measurement to lsq fit  (control)');
-%   plot(dist_neuron_to_lsqfit(~is_control,i), dummy_y(~is_control), 'Marker', 'x', 'LineStyle', 'None',  'Tag', 'Measurement to lsq fit');
-%
-%   plot(dist_shuffled_to_avg_response(is_control,i), dummy_y(is_control), 'Marker', '>', 'LineStyle', 'None', 'Tag', 'Shuffled to avg response  (control)');
-%   plot(dist_shuffled_to_avg_response(~is_control,i), dummy_y(~is_control), 'Marker', 'o', 'LineStyle', 'None', 'Tag', 'Shuffled to avg response');
-%
-%   plot(dist_shuffled_to_lsqfit(is_control,i), dummy_y(is_control), 'Marker', '>', 'LineStyle', 'None','Tag', 'Shuffled to lsq fit  (control)');
-%     plot(dist_shuffled_to_lsqfit(~is_control,i), dummy_y(~is_control), 'Marker', 'o', 'LineStyle', 'None','Tag', 'Shuffled to lsq fit');
-%
-%
-%   title(neurons(i).file_tag);
-%   add_legend();
-%
-%   hold off
-% end
+fprintf('Pattern - electrode - nbr of pulses');
 
-% Compute P value for each neuron and pattern, with null hypothesis given
-% by statistical model with constant response probability
+for i=1:length(p)
+  fprintf('\tP = %g', p(i));
+end
+fprintf('\n');
+
+for i=1:size(success,1)
+  fprintf('%s', stim_pulses_labels{i});
+  
+  for j=1:size(success,2)
+    
+    if success(i,j)
+      fprintf('\t''+');
+    else
+      fprintf('\t''-');
+    end
+    
+  end
+  
+  fprintf('\n');
+end
+
+
+%%
+all_selected_stims = {};
+
+for i=1:length(stim_pulses)
+  
+  pattern_str = stim_pulses(i).pattern;
+  electrode_str = stim_pulses(i).electrode;
+  tmp_stims = get_items(stims_str, @get_pattern, pattern_str);
+  tmp_stims = get_items(tmp_stims, @get_electrode, electrode_str);
+  
+  all_selected_stims = concat_list(all_selected_stims, tmp_stims);
+end
+
+incr_fig_indx
+plot_amplitude_latencies(get_intra_neurons(), all_selected_stims);
+

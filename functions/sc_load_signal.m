@@ -1,7 +1,7 @@
 function [signal, file, expr] = sc_load_signal(experiment_file, file_tag, ...
 	signal_tag, varargin)
 
-if isa(experiment_file, 'struct')
+if isa(experiment_file, 'struct') || isa(experiment_file, 'ScNeuron')
 	sc_dir = get_default_experiment_dir;
 	neuron = experiment_file;
 	

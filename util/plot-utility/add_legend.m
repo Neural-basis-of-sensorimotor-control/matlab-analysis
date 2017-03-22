@@ -1,4 +1,4 @@
-function legend_handle = add_legend(plot_handles, add_only_one_legend, varargin)
+function legend_handle = add_legend(plot_handles, add_only_one_legend, invert_colors, varargin)
 
 %ADD_LEGEND Add legend to plot axes, using the value of the Tag property
 %for each plot handle in the axes. Also adjust the LineColor property so
@@ -8,9 +8,13 @@ if nargin<2
   add_only_one_legend = false;
 end
 
+if nargin<3
+  invert_colors = false;
+end
+
 if ~nargin
   
-  h = add_legend(gca, add_only_one_legend, varargin{:});
+  h = add_legend(gca, add_only_one_legend, invert_colors, varargin{:});
   
 elseif isempty(plot_handles)
   
@@ -18,11 +22,11 @@ elseif isempty(plot_handles)
   
 elseif isa(plot_handles(1), 'matlab.ui.Figure')
   
-  h = add_legend(get_plots(plot_handles), add_only_one_legend, varargin{:});
+  h = add_legend(get_plots(plot_handles), add_only_one_legend, invert_colors, varargin{:});
   
 elseif isa(plot_handles(1), 'matlab.graphics.axis.Axes')
   
-  h = add_legend(get_plots(plot_handles), add_only_one_legend, varargin{:});
+  h = add_legend(get_plots(plot_handles), add_only_one_legend, invert_colors, varargin{:});
   
   % elseif ~isa(plot_handles(1), 'matlab.graphics.chart.primitive.Line')
   %
@@ -35,6 +39,10 @@ else
   unique_tags = unique(tags);
   
   colors = varycolor(length(unique_tags));
+  
+  if invert_colors
+    colors = ones(size(colors)) - colors;
+  end
   
   ax_handles = {plot_handles.Parent};
   unique_ax_handles = ax_handles{1};

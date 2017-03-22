@@ -18,6 +18,7 @@ classdef ScNeuron < handle
   methods
     
     function obj = ScNeuron(varargin)
+      
       obj.tmin = 0;
       obj.tmax = inf;
       

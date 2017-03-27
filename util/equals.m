@@ -4,7 +4,7 @@ function val = equals(x1, x2)
 % x2 is a singular value
 % x1 and x2 may contain values that are numeric, characters or objects
 
-if isnumeric(x2)
+if isnumeric(x2) || islogical(x2)
   if iscell(x1)
     val = cellfun(@(x) x == x2, x1);
   else

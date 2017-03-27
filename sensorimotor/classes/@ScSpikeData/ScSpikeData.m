@@ -4,10 +4,14 @@ classdef ScSpikeData < ScNeuron
   % Must only contain primitive data types.
   
   properties
-    folder_path
+    top_directory
+    folder_name
     file_name
-    file_ext
     read_column
+  end
+  
+  properties (Dependent)
+    file_path
   end
   
   methods
@@ -22,8 +26,8 @@ classdef ScSpikeData < ScNeuron
       
     end
     
-    function val = get_file_path(obj)
-      val = [obj.folder_path filesep obj.file_name '.' obj.file_ext];
+    function val = get.file_path(obj)
+      val = [obj.top_directory filesep obj.folder_name filesep obj.file_name];
     end
     
   end

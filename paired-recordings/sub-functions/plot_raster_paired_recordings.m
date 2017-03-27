@@ -20,7 +20,8 @@ for i=1:length(paired_neurons)
   plot(t1, ones(size(t1)), '+', t2, 2*ones(size(t2)), '+');
   ylim([y_lower y_upper]);
 
-  set(gca, 'YTick', [1 2], 'YTickLabel', paired_neuron.template_tag);
+  set(gca, 'YTick', [1 2], 'YTickLabel', paired_neuron.template_tag, ...
+    'TickLabelInterpreter', 'none');
   ylabel('Neuron');
   xlabel('Time (ms)');
   title(['File: ' paired_neuron.file_tag])

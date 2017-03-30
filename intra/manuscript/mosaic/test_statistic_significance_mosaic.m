@@ -1,6 +1,4 @@
-clc
 clear
-reset_fig_indx();
 
 displayopt = 'off';
 
@@ -180,7 +178,8 @@ for i=1:length(properties)
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
-  title(['Shuffled p value distribution for ' property]);end
+  title(['Shuffled p value distribution for ' property]);
+end
 
 
 

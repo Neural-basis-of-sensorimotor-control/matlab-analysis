@@ -1,10 +1,7 @@
-function single_stim_response_in_pattern
-%@todo: Compensate for different stimulation electrodes!
-clc
-clear
-sc_clf_all('reset')
-
 %% Parameters
+
+nbr_of_simulations = 1e4;
+normalize_distributions = true;
 
 exclude_neurons = {};%{'CANR0001'};
 response_min = 4e-3;
@@ -63,6 +60,7 @@ dim = [length(stim_pulses), length(neurons)];
 dist_neuron_to_avg_response   = nan(dim);
 dist_neuron_to_shuffled       = nan(dim);
 dist_shuffled_to_avg_response = nan(dim);
+dist_shuffled_to_avg_response_several_simulations = nan(dim);
 
 for i=1:length(stim_pulses)
   fprintf('%d out of %d\n', i, length(stim_pulses));
@@ -77,13 +75,28 @@ for i=1:length(stim_pulses)
     
     neuron = neurons(j);
     
-    [neuron_distribution, stat_distribution_avg_response, shuffled_distribution] ...
+    [neuron_distribution, stat_distribution_avg_response, shuffled_distribution, ...
+      ~, ~, response_profiles] ...
       = compute_binomial_distribution(neuron, tmp_stims, response_min, ...
-      response_max, true);
+      response_max, normalize_distributions);
     
     dist_neuron_to_avg_response(i,j)   = sqrt(sum( (neuron_distribution-stat_distribution_avg_response).^2 ));
     dist_neuron_to_shuffled(i,j)       = sqrt(sum( (neuron_distribution-shuffled_distribution).^2 ));
     dist_shuffled_to_avg_response(i,j) = sqrt(sum( (shuffled_distribution-stat_distribution_avg_response).^2 ));
+    
+    binomial_permutations = get_binomial_permutations(length(tmp_stims));
+    binomial_permutations = logical(binomial_permutations);
+
+    tmp_dist_shuffled_to_avg = 0;
+    for k=1:nbr_of_simulations
+      tmp_shuffled_distribution = get_shuffled_binomial_distribution(...
+        binomial_permutations, response_profiles, normalize_distributions);
+      
+      tmp_dist_shuffled_to_avg = tmp_dist_shuffled_to_avg + ...
+        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_avg_response).^2 ));
+    end
+    
+    dist_shuffled_to_avg_response_several_simulations(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
   end
   
 end
@@ -93,14 +106,14 @@ stim_pulses_labels = ...
   arrayfun(@(x) sprintf('%s - %s - %d', x.pattern, x.electrode, x.electrode_count), ...
   stim_pulses, 'UniformOutput', false);
 
-reset_fig_indx();
-
 for i=1:length(neurons)
   incr_fig_indx();
   
-  bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i)])
+  bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
+    dist_shuffled_to_avg_response_several_simulations(:,i)])
   
-  legend('Measurement to avg response', 'Shuffled to avg response');
+  legend('Measurement to avg response', 'Shuffled to avg response',...
+    sprintf('Shuffled %d times', nbr_of_simulations));
   set(gca, 'XTick', 1:length(stim_pulses), ...
     'XTickLabel', stim_pulses_labels, ...
     'XTickLabelRotation', 270);
@@ -111,18 +124,22 @@ end
 for i=1:length(neurons)
   incr_fig_indx();
   
-  hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ]);
+  hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
+    dist_shuffled_to_avg_response_several_simulations(:,i)]);
   
+  legend('Measurement to avg response', 'Shuffled to avg response', ...
+    sprintf('Shuffled %d times', nbr_of_simulations));
   
-  legend('Measurement to avg response', 'Shuffled to avg response');
   title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
     response_max));
 end
 
 avg_response = nan(length(stim_pulses), length(neurons));
+avg_response_repeated_simulations = nan(length(stim_pulses), length(neurons));
 
 for i=1:length(neurons)
   avg_response(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response(:,i));
+  avg_response_repeated_simulations(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response_several_simulations(:,i));
 end
 
 
@@ -136,11 +153,11 @@ markersize = 12;
 
 for i=1:length(neurons)
   dummy_y = 1:length(stim_pulses);
-  plot(avg_response(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
-  plot(avg_response(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
+  plot(avg_response_repeated_simulations(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
+  plot(avg_response_repeated_simulations(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
     'LineStyle', 'none', 'Tag', neurons(i).file_tag);
 end
-plot(mean(avg_response,2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
+plot(mean(avg_response_repeated_simulations,2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
 
 axis_wide(gca, 'y')
 add_legend(gca, true, true, 'TextColor', 'r')
@@ -157,8 +174,8 @@ p = [.05 .01 .001 .0001];
 alpha = tinv(1-p, length(neurons)-1);
 success = false(length(stim_pulses_labels), length(alpha));
 
-mean_avg_response = mean(avg_response,2);
-std_avg_response = std(avg_response,1,2);
+mean_avg_response = mean(avg_response_repeated_simulations,2);
+std_avg_response = std(avg_response_repeated_simulations,1,2);
 
 for i=1:size(success,2)
   success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;

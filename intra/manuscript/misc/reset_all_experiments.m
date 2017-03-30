@@ -1,4 +1,3 @@
-clc
 clear
 
 sc_dir = get_default_experiment_dir();

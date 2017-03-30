@@ -1,8 +1,7 @@
 %Figure 4
 %Create mosaic
 
-function make_mosaic
-close all
+function make_mosaic(indx)
 
 evaluation_fcns = {@get_epsp_amplitude_single_pulse
   @get_epsp_width_single_pulse
@@ -40,18 +39,25 @@ normalization_fcns = {[]
 
 apply_thresholds = [true(9,1); false(1)];
 
-for i=1:length(evaluation_fcns)
-  fprintf('%d (%d)\n', i, length(evaluation_fcns));
-  make_mosaic_subfct(evaluation_fcns{i}, normalization_fcns{i}, ...
-    apply_thresholds(i), figure(i));
-  title(titlestr{i});
+for i=1:length(indx)
+  
+  tmp_evaluation_fcn = evaluation_fcns{indx(i)};
+  tmp_normalization_fcn = normalization_fcns{indx(i)};
+  tmp_apply_thresholds = apply_thresholds(indx(i));
+  tmp_figure = incr_fig_indx();
+  tmp_titlestr = titlestr{indx(i)};
+  
+  fprintf('%d (%d)\n', i, length(indx));
+  make_mosaic_subfct(tmp_evaluation_fcn,tmp_normalization_fcn, ...
+    tmp_apply_thresholds, tmp_figure);
+  title(tmp_titlestr);
   add_figure_filename(gca);
 end
 
 neurons = get_intra_neurons();
 stims_str = get_intra_motifs();
 
-figure(length(neurons)+1)
+incr_fig_indx();
 clf('reset')
 hold on
 
@@ -73,7 +79,7 @@ end
 
 set(gca,'XTick',1:length(neurons),'XTickLabel',{neurons.file_tag}, ...
   'XTickLabelRotation', 270, 'Color', [0 0 0]);
-ylabel('Reponse fraction');
+ylabel('Response fraction');
 ylim([0 1]);
 add_legend(gca);
 add_figure_filename(gca);

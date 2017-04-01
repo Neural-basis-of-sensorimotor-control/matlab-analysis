@@ -22,7 +22,6 @@ unique_indx = unique(cell2mat(get_values([all_templates(:); all_filters(:)], 'pr
 
 for i=1:length(unique_indx)
   indx = unique_indx(i);
-  
   filters = get_items(all_filters, 'process_order', indx);
   templates = get_items(all_templates, 'process_order', indx);
   

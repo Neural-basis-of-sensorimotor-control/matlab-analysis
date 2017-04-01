@@ -1,11 +1,12 @@
+function single_stim_response_in_pattern(response_min, response_max)
+
 %% Parameters
 
 nbr_of_simulations = 1e4;
 normalize_distributions = true;
 
 exclude_neurons = {};%{'CANR0001'};
-response_min = 4e-3;
-response_max = 18e-3;
+
 neurons = get_intra_neurons();
 neurons = rm_from_list(neurons, 'file_tag', exclude_neurons);
 
@@ -86,7 +87,7 @@ for i=1:length(stim_pulses)
     
     binomial_permutations = get_binomial_permutations(length(tmp_stims));
     binomial_permutations = logical(binomial_permutations);
-
+    
     tmp_dist_shuffled_to_avg = 0;
     for k=1:nbr_of_simulations
       tmp_shuffled_distribution = get_shuffled_binomial_distribution(...
@@ -222,3 +223,4 @@ end
 incr_fig_indx
 plot_amplitude_latencies(get_intra_neurons(), all_selected_stims);
 
+end

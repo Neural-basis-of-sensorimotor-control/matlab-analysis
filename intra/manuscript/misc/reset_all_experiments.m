@@ -1,9 +1,6 @@
-clear
+function reset_all_experiments(response_min, response_max)
 
 sc_dir = get_default_experiment_dir();
-
-response_min = 4e-3;
-response_max = 22e-3;
 
 neurons = get_intra_neurons();
 

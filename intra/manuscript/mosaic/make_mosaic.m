@@ -123,6 +123,14 @@ clf(fig, 'reset');
 fill_matrix(v);
 hold on
 
+[x, y] = find(v == 0);
+
+for i=1:length(x)
+	x_ = x(i) + [-.5 -.5 .5 .5 -.5];
+	y_ = y(i) + [-.5 .5 .5 -.5 -.5];
+	fill(x_, y_, 'w');
+end
+
 concat_colormaps(v, gca, [0 1], @gray, invert_colormap(@autumn), @winter);
 
 [x_neg, y_neg] = find(norm_constant_is_negative);

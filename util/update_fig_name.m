@@ -10,12 +10,11 @@ for i=1:length(figs)
   f = figs(i);
   [~, filename] = fileparts(tempname);
   
-  if ~isempty(f.FileName) && ~isfile(f.FileName)
-    continue;
-  
+  if ~isempty(f.FileName)
+    filename = f.FileName;
   elseif ~isempty(f.Name)
     filename = f.Name;
-  
+    
   else
     ch = get_axes(f);
     
@@ -24,21 +23,25 @@ for i=1:length(figs)
       
       if ~isempty(a.Title.String)
         filename = a.Title.String;
-        filename = strrep(filename, ':', '_');
         break
       end
     end
   end
+end
+
+filename = strrep(filename, ':', '_');
+filename = strrep(filename, '''', '_');
+filename = strrep(filename, '*', '_');
+
+if isfile([filename ending])
+  indx = 1;
   
-  if isfile([filename ending])
-    indx = 1;
-    
-    while isfile([filename '_' num2str(indx) ending])
-      indx = indx + 1;
-    end
-    
-    filename = [filename '_' num2str(indx)]; %#ok<AGROW>
+  while isfile([filename '_' num2str(indx) ending])
+    indx = indx + 1;
   end
   
-  f.FileName = [filename ending];
+  filename = [filename '_' num2str(indx)]; %#ok<AGROW>
+end
+
+f.FileName = [filename ending];
 end

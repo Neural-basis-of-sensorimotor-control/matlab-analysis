@@ -1,4 +1,4 @@
-clear
+function test_statistic_significance_mosaic(only_epsps)
 
 displayopt = 'off';
 
@@ -33,6 +33,11 @@ for i=1:length(properties)
       end
       
       value = amplitude.(property);
+      
+      if only_epsps
+        value = value(amplitude.height>=0);
+      end
+      
       str = strsplit(amplitude.tag, '#');
       str = str{2};
       ind = str2num(str(2));
@@ -56,13 +61,12 @@ for i=1:length(properties)
       end
     end
     
-    [p_inter_stimulation(j), anovatab, stats] = anova1(data, tags, displayopt);
+    [p_inter_stimulation(j)] = anova1(data, tags, displayopt);
     
     ind_shuffled = randperm(length(data));
     data_shuffled = data(ind_shuffled);
     
-    [p_shuffled_inter_stimulation(j), anovatab_shuffled, stats_shuffled] = ...
-      anova1(data_shuffled, tags, displayopt);
+    [p_shuffled_inter_stimulation(j)] = anova1(data_shuffled, tags, displayopt);
   end
   
   incr_fig_indx()
@@ -75,7 +79,14 @@ for i=1:length(properties)
     {neurons.file_tag}, 'XTickLabelRotation', 270);
   xlabel('Neurons');
   ylabel('P value');
-  title(['One-way ANOVA for ' property ' values']);
+  
+  str = ['One-way ANOVA for ' property ' values'];
+  
+  if only_epsps
+    str = [str ', only EPSPs']; %#ok<AGROW>
+  end
+  
+  title(str);
   add_legend();
   
   incr_fig_indx()
@@ -85,14 +96,14 @@ for i=1:length(properties)
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
-  title(['p value distribution for ' property]);
+  title(['p value distribution for ' property ', (grouped as neurons)']);
   
   subplot(212)
   [counts, edges] = histcounts(p_shuffled_inter_stimulation, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
-  title(['Shuffled p value distribution for ' property]);
+  title(['Shuffled p value distribution for ' property ', (grouped as neurons)']);
 end
 
 
@@ -142,13 +153,12 @@ for i=1:length(properties)
       end
     end
     
-    [p_inter_stimulation(j), anovatab, stats] = anova1(data, tags, displayopt);
+    [p_inter_stimulation(j)] = anova1(data, tags, displayopt);
     
     ind_shuffled = randperm(length(data));
     data_shuffled = data(ind_shuffled);
     
-    [p_shuffled_inter_stimulation(j), anovatab_shuffled, stats_shuffled] = ...
-      anova1(data_shuffled, tags, displayopt);
+    [p_shuffled_inter_stimulation(j)] = anova1(data_shuffled, tags, displayopt);
   end
   
   incr_fig_indx()
@@ -161,7 +171,14 @@ for i=1:length(properties)
     stims, 'XTickLabelRotation', 270);
   xlabel('Stimulations');
   ylabel('P value');
-  title(['One-way ANOVA for ' property ' values']);
+  
+  str = ['One-way ANOVA for ' property ' values'];
+  
+  if only_epsps
+    str = [str ', only EPSPs']; %#ok<AGROW>
+  end
+  
+  title(str);
   add_legend();
   
   incr_fig_indx();
@@ -171,15 +188,15 @@ for i=1:length(properties)
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
-  title(['p value distribution for ' property]);
+  title(['p value distribution for ' property ', (grouped as stims)']);
   
   subplot(212)
   [counts, edges] = histcounts(p_shuffled_inter_stimulation, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
-  title(['Shuffled p value distribution for ' property]);
+  title(['Shuffled p value distribution for ' property ', (grouped as stims)']);
 end
 
-
+end
 

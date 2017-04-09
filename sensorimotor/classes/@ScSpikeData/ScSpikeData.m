@@ -1,35 +1,34 @@
 classdef ScSpikeData < ScNeuron
   
-  % For storing meta data to enable repeatable automated analysis.
-  % Must only contain primitive data types.
-  
   properties
-    top_directory
-    folder_name
-    file_name
-    read_column
-  end
-  
-  properties (Dependent)
-    file_path
+    raw_data_file
+    column_indx
+    spiketimes
+    spiketimes_is_updated
   end
   
   methods
-    
     function obj = ScSpikeData(varargin)
-            
-      obj.read_column = 1;
+      obj@ScNeuron();
       
-      for i=1:2:length(varargin)
-        obj.(varargin{i}) = varargin{i+1};
-      end  
-      
+      obj.spiketimes_is_updated = false;
+      obj.update_properties(varargin{:});
     end
     
-    function val = get.file_path(obj)
-      val = [obj.top_directory filesep obj.folder_name filesep obj.file_name];
+    function load_spiketimes(obj)
+      data = dlmread(obj.raw_data_file, ',', 1, 0);
+      times = data(:, obj.column_indx);
+      obj.spiketimes = times(isfinite(times) & times ~= 0);
+      obj.spiketimes_is_updated = true;
     end
     
+    function times = get_spiketimes(obj)
+      if ~obj.spiketimes_is_updated
+        obj.load_spiketimes;
+      end
+      
+      times = obj.spiketimes; 
+    end
   end
   
 end

@@ -1,4 +1,4 @@
-function reset_all_experiments(response_min, response_max)
+function reset_all_experiments(response_min, response_max, only_epsps)
 
 sc_dir = get_default_experiment_dir();
 
@@ -23,16 +23,16 @@ end
 
 %Update filtering, template matching and amplitude epsps
 for i2=1:length(neurons)
-   fprintf('%d out of %d\n', i2, length(neurons));
-   neuron = neurons(i2);
-
+  fprintf('%d out of %d\n', i2, length(neurons));
+  neuron = neurons(i2);
+  
   signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
   signal.simple_artifact_filter.is_on = true;
   signal.simple_spike_filter.is_on = false;
-
+  
   templates = signal.get_templates();
   psp_templates = get_items(templates, 'tag', neuron.template_tag);
-
+  
   for j2=1:length(psp_templates)
     psp = get_item(psp_templates, j2);
     %TODO: add check for isempty - remove if is empty
@@ -63,18 +63,30 @@ for i3=1:length(electrodes)
       stim = stims{indx(k3)};
       amplitude = get_items(signal.amplitudes.cell_list, 'tag', stim);
       
-      vals(k3, 1) = mean(amplitude.height);
-      vals(k3, 2) = mean(amplitude.latency);
-      vals(k3, 3) = mean(amplitude.width);
+      if only_epsps
+        heights = amplitude.height;
+        
+        if isempty(heights>0)
+          error('No EPSPs in single pulses');
+        end
+        
+        vals(k3, 1) = mean(amplitude.height(heights>=0));
+        vals(k3, 2) = mean(amplitude.latency(heights>=0));
+        vals(k3, 3) = mean(amplitude.width(heights>=0));
+      else
+        vals(k3, 1) = mean(amplitude.height);
+        vals(k3, 2) = mean(amplitude.latency);
+        vals(k3, 3) = mean(amplitude.width);
+      end
     end
     
     user_data_field = sprintf('epsp_%s', electrode);
     signal.userdata.(user_data_field) = vals;
     
-    signal.sc_save([sc_dir signal.parent.parent.save_name]);  
+    signal.sc_save([sc_dir signal.parent.parent.save_name]);
   end
 end
 
 update_signal_userdata
 
-
+end

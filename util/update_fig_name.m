@@ -33,6 +33,10 @@ filename = strrep(filename, ':', '_');
 filename = strrep(filename, '''', '_');
 filename = strrep(filename, '*', '_');
 
+while endsWith(filename, ending)
+  filename = filename(1:end-length(ending));
+end
+
 if isfile([filename ending])
   indx = 1;
   
@@ -40,7 +44,7 @@ if isfile([filename ending])
     indx = indx + 1;
   end
   
-  filename = [filename '_' num2str(indx)]; %#ok<AGROW>
+  filename = [filename '_' num2str(indx)]
 end
 
 f.FileName = [filename ending];

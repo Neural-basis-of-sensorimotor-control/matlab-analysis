@@ -18,8 +18,10 @@ if isa(paired_neurons, 'ScNeuron')
   spiketimes1 = waveform1.gettimes(tmin, tmax);
   spiketimes2 = waveform2.gettimes(tmin, tmax);
 else
-  spiketimes1 = paired_neurons.neuron1.get_spiketime;
-  spiketimes2 = paired_neurons.neuron2.get_spiketime;
+  spiketimes1 = paired_neurons.neuron1.get_spiketimes();
+  spiketimes2 = paired_neurons.neuron2.get_spiketimes();
+  waveform1 = paired_neurons.neuron1;
+  waveform2 = paired_neurons.neuron2;
 end
 
 end

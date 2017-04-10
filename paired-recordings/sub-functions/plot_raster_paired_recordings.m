@@ -21,9 +21,9 @@ for i=1:len(overlapping_neurons)
   ylim([y_lower y_upper]);
 
   set(gca, 'YTick', [1 2], 'YTickLabel', ...
-    {overlapping_neuron.neuron1.tag, overlapping_neuron.neuron2.tag}, ...
+    {overlapping_neuron.neurons(1).tag, overlapping_neuron.neurons(2).tag}, ...
     'TickLabelInterpreter', 'none');
   ylabel('Neuron');
   xlabel('Time (ms)');
-  title(['File: ' overlapping_neuron.neuron1.file_tag])
+  title(['File: ' overlapping_neuron.neurons(1).file_tag])
 end

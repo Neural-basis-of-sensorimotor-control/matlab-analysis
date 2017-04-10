@@ -6,7 +6,7 @@ if isempty(time_sequence_1)
   return
 end
 
-time_sequence = nan(size(time_sequence_1) + size(time_sequence_2));
+time_sequence = nan(size(time_sequence_1,1) + size(time_sequence_2,1), 2);
 counter_1 = 1;
 counter_2 = 1;
 counter = 0;
@@ -14,7 +14,7 @@ counter = 0;
 tstart = time_sequence_1(1,1);
 
 while counter_1 <= size(time_sequence_1,1)
-  
+
   %Find first end of sequence after tstart
   while time_sequence_1(counter_1,2) <= tstart
     counter_1 = counter_1+1;
@@ -49,6 +49,7 @@ while counter_1 <= size(time_sequence_1,1)
         %first sequence list has next end of sequence, or second sequence
         %list has first start of sequence
         tstop = min(tstop, time_sequence_2(counter_2+1,1));
+        counter_2 = counter_2 + 1;
       end
       
     else
@@ -61,8 +62,10 @@ while counter_1 <= size(time_sequence_1,1)
   
   if tstart < tstop
     counter = counter + 1;
-    time_sequence(counter,:) = [tstart tsop];
+    time_sequence(counter,:) = [tstart tstop];
   end
+  
+  tstart = tstop;
 end
 
 time_sequence = time_sequence(1:counter, :);

@@ -5,14 +5,16 @@ if isempty(time_sequence_1) || isempty(time_sequence_2)
   return
 end
 
-time_sequence = nan(size(time_sequence_1) + size(time_sequence_2));
+time_sequence = nan(size(time_sequence_1,1) + size(time_sequence_2,1), 2);
 counter_1 = 1;
 counter_2 = 1;
 counter = 0;
 
 tstart = max(time_sequence_1(1,1), time_sequence_2(1,1));
 
-while counter_1 <= length(time_sequence_1) && counter_2 <= length(time_sequence_2)
+while counter_1 <= size(time_sequence_1,1) && counter_2 <= size(time_sequence_2,1)
+  fprintf('%d (%d) %d (%d)\n', counter_1, size(time_sequence_1,1), ...
+    counter_2, size(time_sequence_2,1));
   
   %Move to end of first sequence after tstart
   while time_sequence_1(counter_1,2)<=tstart
@@ -41,6 +43,8 @@ while counter_1 <= length(time_sequence_1) && counter_2 <= length(time_sequence_
     counter = counter + 1;
     time_sequence(counter,:) = [tstart tstop];
   end
+  
+  tstart = tstop;
   
 end
 

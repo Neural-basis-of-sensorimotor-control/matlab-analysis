@@ -19,6 +19,8 @@ for i=1:10
   directory = [directory '*' filesep]; %#ok<AGROW>
 end
 
+files = List(files(1:10));
+
 spiketrains = List(1000);
 add_spiketrains(files, spiketrains);
 
@@ -29,10 +31,6 @@ add_coupled_spiketrains(spiketrains, max_inactivity_time, ...
 remove_identical_spiketrains(overlapping_spiketrains);
 remove_identical_spiketrain_pairs(overlapping_spiketrains);
 
-sc_dir = get_default_experiment_dir();
-save([sc_dir 'overlapping_neurons'], 'overlapping_spiketrains');
-
 %plot_overlapping_spiketrains(overlapping_spiketrains);
 plot_raster_paired_recordings(overlapping_spiketrains);
-load overlapping_spiketrains.mat
 

@@ -7,7 +7,7 @@ while counter <= len(overlapping_spiketrains)
 
   tmp_overlapping_spiketrain = overlapping_spiketrains(counter);
   
-  if spiketrains_are_equal(tmp_overlapping_spiketrain.neuron1, tmp_overlapping_spiketrain.neuron2)
+  if spiketrains_are_equal(tmp_overlapping_spiketrain.neurons(1), tmp_overlapping_spiketrain.neurons(2))
     rm(overlapping_spiketrains, counter);
     continue
   end

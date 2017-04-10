@@ -101,12 +101,13 @@ classdef ScSpikeTrainCluster < handle
     
     function update_spont_activity_time_sequences(obj)
       
-      dim = size(obj.get_stim_times());
+      dim = size(obj.get_stimtimes());
       
       obj.spont_activity_time_sequences = ...
-        exclude_time_sequences(obj.time_sequences, ...
-        obj.get_stim_times()*[1 1] + ...
+         extract_time_sequence_disjunction(obj.time_sequences, ...
+        obj.get_stimtimes()*[1 1] + ...
         ScSpikeTrainCluster.time_since_last_stim*[zeros(dim) ones(dim)]);
+      
       obj.spont_activity_time_sequences_is_updated = true;
       
     end
@@ -114,12 +115,13 @@ classdef ScSpikeTrainCluster < handle
     
     function update_touch_pattern_time_sequences(obj)
       
-      dim = size(obj.get_touch_pattern_times());
+      n = size(obj.get_touch_pattern_times());
       
       obj.touch_pattern_time_sequences = ...
-        extract_time_sequences(obj.time_sequences, ...
+        extract_time_sequence_conjunction(obj.time_sequences, ...
         obj.get_touch_pattern_times()*[1 1] + ...
-        [ScSpikeTrainCluster.touch_pattern_delay ScSpikeTrainCluster.time_since_last_touch_pattern]*ones(dim));
+        repmat([ScSpikeTrainCluster.touch_pattern_delay ScSpikeTrainCluster.time_since_last_touch_pattern], [n 1]));
+      
       obj.touch_pattern_time_sequences_is_updated = true;
       
     end
@@ -146,6 +148,8 @@ classdef ScSpikeTrainCluster < handle
       fclose(fid);
       
       headers = strsplit(header, ',');
+      headers = strrep(headers, '"', '');
+      headers = strrep(headers, '''', '');
       
       is_selected = false(size(headers));
       
@@ -153,7 +157,7 @@ classdef ScSpikeTrainCluster < handle
         is_selected = is_selected | strcmp(headers, selected_headers{i});
       end
       
-      times = dlmread(obj.raw_data_file, ',', 1, 0);
+      times = dlmread(raw_data_file, ',', 1, 0);
       times = times(:, is_selected);
       
       times = times(:);

@@ -29,6 +29,7 @@ classdef ScSpikeData < ScNeuron
       
       times = obj.spiketimes; 
     end
+    
   end
   
 end

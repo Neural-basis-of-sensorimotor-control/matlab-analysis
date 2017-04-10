@@ -13,8 +13,9 @@ for i=1:len(coupled_spiketrains)
   
   if ~isempty(sequences)
     
-    tmp_overlapping_spiketrains = struct('neuron1', spiketrain_1, ...
-      'neuron2', tmp_spiketrain_2, 'time_sequences', sequences);
+    tmp_overlapping_spiketrains = ScSpikeTrainCluster('neurons', ...
+      [spiketrain_1; tmp_spiketrain_2], 'time_sequences', sequences, ...
+      'raw_data_file', spiketrain_1.raw_data_file);
     
     add(overlapping_spiketrains, tmp_overlapping_spiketrains);
   end

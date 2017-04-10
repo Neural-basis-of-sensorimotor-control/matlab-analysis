@@ -2,19 +2,20 @@ function browse_figures
 
 figure_nbr = min(get_fig_nbrs());
 fig = figure();
+set(fig, 'Tag', 'browser');
 
 panel = uipanel('Parent', fig);
 
-btn = uicontrol('Parent', panel, 'String', '+', 'Callback', ...
-  @(~,~) incr_fig_nbr());
+btn = uicontrol('Parent', panel, 'String', '-', 'Callback', ...
+  @(~,~) decr_fig_nbr());
 
 setx(btn, 0);
 sety(btn, 100);
 setwidth(btn, 100);
 setheight(btn, 100);
 
-btn = uicontrol('Parent', panel, 'String', '-', 'Callback', ...
-  @(~,~) decr_fig_nbr());
+btn = uicontrol('Parent', panel, 'String', '+', 'Callback', ...
+  @(~,~) incr_fig_nbr());
 
 setx(btn, 100);
 sety(btn, 100);
@@ -52,7 +53,7 @@ setheight(txt_ctrl, 100);
     
     tot = length(fignbrs);
     ind = nnz(fignbrs<=figure_nbr);
-    set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot)); 
+    set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
 
@@ -70,11 +71,16 @@ setheight(txt_ctrl, 100);
     
     tot = length(fignbrs);
     ind = nnz(fignbrs<=figure_nbr);
-    set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));     
+    set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
   function update_fig_nbr()
     figure(figure_nbr);
+
+    fignbrs = get_fig_nbrs();
+    tot = length(fignbrs);
+    ind = nnz(fignbrs<=figure_nbr);
+    set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
 end

@@ -19,7 +19,6 @@ for i=1:len(files)
   tmp_spiketrains_str = headers(is_spiketrain);
   col_indx = find(is_spiketrain);
   
-  
   [~, name] = fileparts(dat_file);
   
   file_tag = name(1:8);

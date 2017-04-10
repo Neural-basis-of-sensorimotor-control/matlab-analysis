@@ -34,3 +34,5 @@ save([sc_dir 'overlapping_neurons'], 'overlapping_spiketrains');
 
 %plot_overlapping_spiketrains(overlapping_spiketrains);
 plot_raster_paired_recordings(overlapping_spiketrains);
+load overlapping_spiketrains.mat
+

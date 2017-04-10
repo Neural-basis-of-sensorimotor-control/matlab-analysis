@@ -68,6 +68,12 @@ classdef List < handle
     end
     
     
+    function val = vals(obj, varargin)
+      
+      val = get_values(obj.values(1:obj.counter), varargin{:});
+      
+    end
+    
     function val = list(obj)
       val = obj.values(1:obj.counter);
     end

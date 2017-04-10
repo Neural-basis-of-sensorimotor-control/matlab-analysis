@@ -1,4 +1,4 @@
-function plot_raster_paired_recordings(overlapping_neurons)
+function plot_raster_paired_recordings(overlapping_neurons, time_sequences, title_addition)
 
 for i=1:len(overlapping_neurons)
   overlapping_neuron = overlapping_neurons(i);
@@ -11,9 +11,11 @@ for i=1:len(overlapping_neurons)
   incr_fig_indx();
   hold on
   
-  for j=1:size(overlapping_neuron.time_sequences, 1)
-    xleft = overlapping_neuron.time_sequences(j, 1);
-    xright = overlapping_neuron.time_sequences(j, 2);
+  tmp_time_sequences = time_sequences{i};
+  
+  for j=1:size(tmp_time_sequences, 1)
+    xleft = tmp_time_sequences(j, 1);
+    xright = tmp_time_sequences(j, 2);
     patch([xleft xleft xright xright], [y_lower y_upper y_upper y_lower], .95*[1 1 1])
   end
   
@@ -25,5 +27,5 @@ for i=1:len(overlapping_neurons)
     'TickLabelInterpreter', 'none');
   ylabel('Neuron');
   xlabel('Time (ms)');
-  title(['File: ' overlapping_neuron.neurons(1).file_tag])
+  title(['File: ' overlapping_neuron.neurons(1).file_tag ', ' title_addition])
 end

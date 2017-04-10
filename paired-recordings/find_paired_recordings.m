@@ -19,18 +19,22 @@ for i=1:10
   directory = [directory '*' filesep]; %#ok<AGROW>
 end
 
-files = List(files(1:10));
-
 spiketrains = List(1000);
 add_spiketrains(files, spiketrains);
 
 overlapping_spiketrains = List(1000);
 add_coupled_spiketrains(spiketrains, max_inactivity_time, ...
-  min_nbr_of_spikes_per_sequence, min_nbr_of_spikes_per_sequence, ...
+  min_nbr_of_spikes_per_sequence, min_time_span_per_sequence, ...
   overlapping_spiketrains);
 remove_identical_spiketrains(overlapping_spiketrains);
 remove_identical_spiketrain_pairs(overlapping_spiketrains);
 
-%plot_overlapping_spiketrains(overlapping_spiketrains);
-plot_raster_paired_recordings(overlapping_spiketrains);
+plot_raster_paired_recordings(overlapping_spiketrains, vals(overlapping_spiketrains, 'time_sequences'), 'overlapping activity');
+
+plot_raster_paired_recordings(overlapping_spiketrains, vals(overlapping_spiketrains, @get_touch_pattern_time_sequences), 'touch patterns');
+
+plot_raster_paired_recordings(overlapping_spiketrains, vals(overlapping_spiketrains, @get_spont_activity_time_sequences), 'spontaneous activity');
+
+
+
 

@@ -4,22 +4,23 @@ classdef ScSpikeTrainCluster < handle
     neurons
     tag
     raw_data_file
-    
-    stimtimes
-    touch_pattern_times
-    
-    stimtimes_is_updated
-    touch_pattern_times_is_updated
-    
     time_sequences
-    spont_activity_time_sequences
-    touch_pattern_time_sequences
-    
-    spont_activity_time_sequences_is_updated
-    touch_pattern_time_sequences_is_updated
-    
   end
   
+  
+  properties (SetAccess = 'private')
+    stimtimes_is_updated
+    touch_pattern_times_is_updated
+    spont_activity_time_sequences_is_updated
+    touch_pattern_time_sequences_is_updated
+  end
+  
+  properties (SetAccess = 'private', GetAccess = 'private')
+    stimtimes
+    touch_pattern_times
+    spont_activity_time_sequences
+    touch_pattern_time_sequences
+  end
   
   properties (Constant)
     time_since_last_stim = .1
@@ -104,7 +105,7 @@ classdef ScSpikeTrainCluster < handle
       dim = size(obj.get_stimtimes());
       
       obj.spont_activity_time_sequences = ...
-         extract_time_sequence_disjunction(obj.time_sequences, ...
+        extract_time_sequence_disjunction(obj.time_sequences, ...
         obj.get_stimtimes()*[1 1] + ...
         ScSpikeTrainCluster.time_since_last_stim*[zeros(dim) ones(dim)]);
       
@@ -147,6 +148,19 @@ classdef ScSpikeTrainCluster < handle
       header = fgetl(fid);
       fclose(fid);
       
+      header = strrep(header, '0.5,"fa"', '0.5 fa');
+      header = strrep(header, '0.5,"sa"', '0.5 sa');
+      header = strrep(header, '1,"fa"', '1.0 fa');
+      header = strrep(header, '1,"sa"', '1.0 sa');
+      header = strrep(header, '2,"fa"', '2.0 fa');
+      header = strrep(header, '2,"sa"', '2.0 sa');
+      header = strrep(header, '"flat","fa"', 'flat fa');
+      header = strrep(header, '"flat","sa"', 'flat sa');
+      header = strrep(header, '"1p","electrode",1', '1p electrode 1');
+      header = strrep(header, '"1p","electrode",2', '1p electrode 2');
+      header = strrep(header, '"1p","electrode",3', '1p electrode 3');
+      header = strrep(header, '"1p","electrode",4', '1p electrode 4');
+      
       headers = strsplit(header, ',');
       headers = strrep(headers, '"', '');
       headers = strrep(headers, '''', '');
@@ -159,7 +173,6 @@ classdef ScSpikeTrainCluster < handle
       
       times = dlmread(raw_data_file, ',', 1, 0);
       times = times(:, is_selected);
-      
       times = times(:);
       times = times(isfinite(times) & times ~= 0);
       

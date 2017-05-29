@@ -5,7 +5,7 @@ data ={
   'BJNR_sc.mat',    'BJNR0005',   'patch',  -inf, inf,  {'EPSP5'}
   'BONR_sc.mat',    'BONR0006',   'patch',  -inf, inf,  {'EPSP5'}
   'BONR_sc.mat',    'BONR0009',   'patch',  -inf, inf,  {'EPSP5'}
-  'BPNRtst_sc.mat', 'BPNR0000',   'patch',  -inf, inf,  {'EPSP5'}
+  'BPNR_sc.mat',    'BPNR0000',   'patch',  -inf, inf,  {'EPSP5'}
   'CANR_sc.mat',    'CANR0001',   'patch',  -inf, inf,  {'EPSP5'}
   'DJNR_sc.mat',    'DJNR0005',   'patch',  900,  1800, {'EPSP5'}
   'HPNR_sc.mat',    'HPNR0003',   'patch2', -inf, inf,  {'EPSP5'}
@@ -13,7 +13,7 @@ data ={
   'ICNR_sc.mat',    'ICNR0002',   'patch',  -inf, inf,  {'EPSP5'}
   'ICNR_sc.mat',    'ICNR0003',   'patch',  -inf, inf,  {'EPSP5'}
   'IFNR_sc.mat',    'IFNR0002',   'patch',  -inf, inf,  {'EPSP5'}
-  'IFNR_sc.mat',    'IFNR0004',   'patch',  -inf, inf,  {'EPSP1', 'EPSP2', 'EPSP3'}
+  'IFNR_sc.mat',    'IFNR0004',   'patch',  -inf, inf,  {'EPSP5'}
   'IHNR_sc.mat',    'IHNR0000',   'patch',  -inf, inf,  {'EPSP5'}
   'IHNR_sc.mat',    'IHNR0001',   'patch',  -inf, inf,  {'EPSP5'}
   'IKNR_sc.mat',    'IKNR0000',   'patch',  -inf, inf,  {'EPSP5'}

@@ -3,14 +3,10 @@ function neurons = get_intra_neurons(indx)
 
 data ={
   'BJNR_sc.mat',    'BJNR0005',   'patch',  -inf, inf,  {'EPSP5'}
-  'BKNR_sc.mat',    'BKNR0002',   'patch',  430,  1200, {'EPSP5'}
   'BONR_sc.mat',    'BONR0006',   'patch',  -inf, inf,  {'EPSP5'}
   'BONR_sc.mat',    'BONR0009',   'patch',  -inf, inf,  {'EPSP5'}
   'BPNRtst_sc.mat', 'BPNR0000',   'patch',  -inf, inf,  {'EPSP5'}
-  'BPNRtst_sc.mat', 'BPNR0001',   'patch',  -inf, inf,  {'EPSP5'}
   'CANR_sc.mat',    'CANR0001',   'patch',  -inf, inf,  {'EPSP5'}
-  'CANR_sc.mat',    'CANR0008',   'patch',  -inf, 710,  {'EPSP5'}
-  'CCNR_sc.mat',    'CCNR0000',   'patch',  235,  580,  {'EPSP5'}
   'DJNR_sc.mat',    'DJNR0005',   'patch',  900,  1800, {'EPSP5'}
   'HPNR_sc.mat',    'HPNR0003',   'patch2', -inf, inf,  {'EPSP5'}
   'HRNR_sc.mat',    'HRNR0000',   'patch2', -inf, inf,  {'EPSP5'}

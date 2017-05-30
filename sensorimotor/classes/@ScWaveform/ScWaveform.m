@@ -1,14 +1,19 @@
 classdef ScWaveform < ScTrigger & ScList & ScTemplate
-  %Response from particular neuron
+  %Template for neuron spike
   %children: ScThreshold
+  
   properties
     parent                  %ScSignal
     spike2filename          %applicable when there are extra files with
-    %spiketimes from Spike2
+                            %spiketimes from Spike2
+    imported_spikedata      %ScSpikeData
     tag
     detected_spiketimes     %spiketimes that are given by ScThreshold children
-    imported_spiketimes     %imported from Spike2
     predefined_spiketimes   %e.g userdefined spiketimes
+  end
+  
+  properties (Transient)
+    imported_spiketimes     %imported from Spike2
   end
   
   properties (Dependent)
@@ -48,6 +53,14 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
           obj.imported_spiketimes = d.spikes.times;
         end
       end
+      
+      if ~isempty(obj.imported_spikedata)
+        tmp_spiketimes = obj.imported_spikedata.gettimes(0, inf, ...
+          [obj.parent.parent.parent.sc_dir filesep]);
+        
+        obj.imported_spiketimes = sort([obj.imported_spiketimes; tmp_spiketimes]);
+      end
+      
     end
     
     %Clear data that is loaded from external file

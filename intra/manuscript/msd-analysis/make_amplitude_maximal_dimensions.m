@@ -1,6 +1,5 @@
 function make_amplitude_maximal_dimensions(varargin)
 
-clc
 
 [neurons, stims_str, scaling_dim, shuffle] = ...
   init_intra_neurons(varargin{:});
@@ -34,7 +33,7 @@ titlestr = {'Height'
 
 
 for i1=1:length(nbr_of_dims)
-  figure(i1)
+  incr_fig_indx();
   clf reset
   
   fprintf('%s\n', titlestr{i1});

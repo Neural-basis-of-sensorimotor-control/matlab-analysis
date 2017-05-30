@@ -68,6 +68,7 @@ classdef WaveformSelection < AbstractWaveformPanelComponent
 		end
 		
 		function waveform_listener(obj)
+      
 			if isempty(obj.gui.waveform)
 				set(obj.ui_remove,'enable','off');
 			else

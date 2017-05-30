@@ -144,6 +144,14 @@ classdef ScRemoveWaveform < ScTrigger & ScFilter & ScDynamicClass
             warning('Matrix dimensions are not compatible, rearranging on the fly');
             obj.v_median = obj.v_median';
           end
+          
+          if isempty(obj.v_median)
+            warning('Setting obj.v_median to zeros')
+            obj.v_median = zeros(size(f));
+          elseif ~nnz(obj.v_median)
+            warning('Setting obj.v_median all zeros')
+          end
+          
           v(pos) = v(pos) - f.*obj.v_median;%f.*obj.v_interpolated_median(2:end-1)';%
         end
       end

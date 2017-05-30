@@ -38,11 +38,14 @@ classdef GuiManager < handle
 			expr = obj.viewer.experiment;
 			file = obj.viewer.file;
 			sequence = obj.viewer.sequence;
+      
 			%Close all windows and destroy previous viewer
-			close all
-			if ~isempty(findall(0,'type','figure'))
+			close_viewer();
+			
+      if viewer_is_running()
 				return
-			end
+      end
+      
 			switch mode
 				case ScGuiState.spike_detection
 					new_viewer = WaveformViewer(obj);

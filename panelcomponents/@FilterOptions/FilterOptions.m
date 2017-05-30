@@ -26,43 +26,51 @@ classdef FilterOptions < PanelComponent
 			mgr.newline(20);
 			mgr.add(sc_ctrl('text','Scale factor'),100);
 			obj.ui_scale_factor = mgr.add(sc_ctrl('edit',[],@(~,~) obj.scale_factor_callback),100);
-			%             mgr.newline(20);
-			%             mgr.add(sc_ctrl('text','DC remove width'),100);
-			%             obj.ui_dc_remove_width = mgr.add(sc_ctrl('edit',[],@(~,~) obj.dc_remove_width_callback),60);
-			%             mgr.add(sc_ctrl('text','bins'),40);
 			
-			sc_addlistener(obj.gui,'main_channel',@(~,~) obj.main_channel.listener,obj.uihandle);
+			sc_addlistener(obj.gui,'main_channel', @(~,~) obj.main_channel.listener, ...
+        obj.uihandle);
+      
 		end
 		
 		function initialize(obj)
 			obj.main_signal_listener();
 		end
-	end
+  end
+  
 	
 	methods (Access = 'protected')
+    
 		function main_channel_listener(obj)
-			sc_addlistener(obj.gui.main_channel,'signal',@(~,~) obj.main_signal_listener,obj.uihandle);
-		end
+			sc_addlistener(obj.gui.main_channel, 'signal', ...
+        @(~,~) obj.main_signal_listener,obj.uihandle);
+    end
+    
 		
 		function main_signal_listener(obj)
-			set(obj.ui_artifact_width,'string',obj.gui.main_signal.filter.artifact_width);
-			set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
-			set(obj.ui_scale_factor,'string',obj.gui.main_signal.filter.scale_factor);
-			%         set(obj.ui_dc_remove_width,'string',obj.gui.main_signal.filter.dc_remove_width);
-		end
+      
+			set(obj.ui_artifact_width,  'string', obj.gui.main_signal.filter.artifact_width);
+			set(obj.ui_smoothing_width, 'string', obj.gui.main_signal.filter.smoothing_width);
+			set(obj.ui_scale_factor,    'string', obj.gui.main_signal.filter.scale_factor);
+      
+    end
 		
+    
 		function smoothing_width_callback(obj)
+      
 			smoothing_width = round(str2double(get(obj.ui_smoothing_width,'string')));
-			if ~isfinite(smoothing_width) || ~smoothing_width
+			
+      if ~isfinite(smoothing_width) || ~smoothing_width
 				msgbox('Smoothing width has to be a positive integer. 1 = off');
 				set(obj.ui_smoothing_width,'string',obj.gui.main_signal.filter.smoothing_width);
 			else
 				obj.gui.main_signal.filter.smoothing_width = str2double(get(obj.ui_smoothing_width,'string'));
 				obj.gui.has_unsaved_changes = true;
 				obj.show_panels(false);
-			end
-		end
+      end
+      
+    end
 		
+    
 		function artifact_width_callback(obj)
 			width = round(str2double(get(obj.ui_artifact_width,'string')));
 			if ~isfinite(width) || width < 0
@@ -73,7 +81,8 @@ classdef FilterOptions < PanelComponent
 				obj.gui.has_unsaved_changes = true;
 				obj.show_panels(false);
 			end
-		end
+    end
+    
 		
 		function scale_factor_callback(obj)
 			scale_factor = str2double(get(obj.ui_scale_factor,'string'));

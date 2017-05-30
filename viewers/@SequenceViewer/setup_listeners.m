@@ -1,10 +1,10 @@
 function setup_listeners(obj)
 
-addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
-addlistener(obj,'digital_channels','PreSet',@(~,~) digital_channels_listener_pre(obj));
-addlistener(obj,'digital_channels','PostSet',@(~,~) digital_channels_listener_post(obj));
-addlistener(obj,'zoom_on','PostSet',@(~,~) zoom_on_listener(obj));
-addlistener(obj,'pan_on','PostSet',@(~,~) pan_on_listener(obj));
+addlistener(obj, 'main_channel',     'PostSet', @(~,~) main_channel_listener(obj));
+addlistener(obj, 'digital_channels', 'PreSet',  @(~,~) digital_channels_listener_pre(obj));
+addlistener(obj, 'digital_channels', 'PostSet', @(~,~) digital_channels_listener_post(obj));
+addlistener(obj, 'zoom_on',          'PostSet', @(~,~) zoom_on_listener(obj));
+addlistener(obj, 'pan_on',           'PostSet', @(~,~) pan_on_listener(obj));
 
 addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
 

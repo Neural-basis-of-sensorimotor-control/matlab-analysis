@@ -68,6 +68,7 @@ classdef ScSequence < ScListElement
     function textchannels = get.textchannels(obj)
       textchannels = obj.parent.textchannels;
     end
+    
     function saved = sc_save(obj)
       saved = obj.parent.sc_save();
     end

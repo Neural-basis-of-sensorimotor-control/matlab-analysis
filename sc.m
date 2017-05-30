@@ -14,6 +14,9 @@ function gui = sc(varargin)
 %
 %   SC FILEPATH load experiment file that is found at FILEPATH
 %
+%   SC FILEPATH FILE_TAG  load experiment file found at FILEPATH, open file
+%                         with tag FILE_TAG
+%
 %   SC -NEWSP2 create new experiment file from exported Spike2 files.
 %   Full instructions:
 %   1. In Spike2, run scipt 'smr to mat.s2s'. Select a folder. All the Spike2
@@ -50,9 +53,9 @@ if ~sc_version_check
 end
 
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
-close all
+close_viewer()
 
-if ~isempty(findall(0,'type','figure'))
+if viewer_is_running()
   return
 end
 
@@ -154,7 +157,7 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
     guimgr.experiment = experiment;
     experiment_name = experiment.get(1).tag;
     experiment_name = [experiment_name(1:end-4) '_sc'];
-    if ~experiment.save_experiment(experiment_name, false);
+    if ~experiment.save_experiment(experiment_name, false)
       msgbox('Experiment not saved. Aborting');
     else
       guimgr.show;
@@ -184,7 +187,11 @@ else
   end
   
   guimgr = GuiManager();
-  if nargout,    gui = guimgr;   end
+  
+  if nargout
+    gui = guimgr;
+  end
+  
   guimgr.viewer.set_sc_file_folder(sc_file_folder);
   guimgr.viewer.set_raw_data_folder(raw_data_folder);
   d = load(filename);
@@ -193,6 +200,11 @@ else
   clear d
   guimgr.experiment = experiment;
   guimgr.show;
+  
+  if length(args)>1
+    guimgr.viewer.set_file(args{2});
+  end
+  
   assignin('base','h',guimgr);
   assignin('base','expr',experiment);
 end

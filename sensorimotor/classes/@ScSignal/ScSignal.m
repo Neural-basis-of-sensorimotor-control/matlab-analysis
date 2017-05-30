@@ -134,12 +134,20 @@ classdef ScSignal < ScChannel & ScDynamicClass
     
     function triggers = get.triggers(obj)
       triggers = ScCellList();
+      
       for k=1:obj.waveforms.n
         triggers.add(obj.waveforms.get(k));
       end
+      
       for k=1:obj.remove_waveforms.n
         triggers.add(obj.remove_waveforms.get(k));
       end
+      
+      spiketrain = get_userdata(obj, 'spiketrain');
+      for i=1:length(spiketrain)
+        triggers.add(spiketrain(i));
+      end
+      
     end
     
     function t = get.t(obj)
@@ -166,12 +174,10 @@ classdef ScSignal < ScChannel & ScDynamicClass
       
       if isempty(a.simple_artifact_filter) || isstruct(a.simple_artifact_filter)
         a.simple_artifact_filter = ScSimpleArtifactFilter([]);
-        %a.simple_artifact_filter.is_on = false;
       end
       
       if isempty(a.simple_spike_filter)  || isstruct(a.simple_spike_filter)
         a.simple_spike_filter = ScSimpleSpikeFilter([]);
-        %a.simple_spike_filter.is_on = false;
       end
       
       obj = a;

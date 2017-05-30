@@ -76,7 +76,7 @@ classdef IntraAmplitudeViewer < handle
         
       end
       
-      figure (17)
+      incr_fig_indx();
       clf
       plot(spont_activity, '+', 'LineStyle', '-')
       set(gca, 'XTick', 1:length(patterns_str), 'XTickLabel', ...

@@ -1,6 +1,7 @@
 classdef ScFile < ScList & ScDynamicClass
   %One for each spike2 / adq file
   %children: ScSequence
+  
   properties
     parent      %ScExperiment
     filename    %name of .mat / .adq file
@@ -44,6 +45,7 @@ classdef ScFile < ScList & ScDynamicClass
       obj.parent.fdir = pname;
       obj.filename = [fname ext];
     end
+    
     
     function val = get.filepath(obj)
       val = fullfile(obj.parent.fdir, obj.filename);
@@ -155,8 +157,10 @@ classdef ScFile < ScList & ScDynamicClass
       
       for i=1:obj.signals.n
         trgs = obj.signals.get(i).triggers;
+        
         for j=1:trgs.n
           trg = trgs.get(j);
+        
           if numel(trg.gettimes(tmin,tmax))
             triggers.add(trg);
           end
@@ -165,8 +169,10 @@ classdef ScFile < ScList & ScDynamicClass
       
       for i=1:obj.textchannels.n
         textchannel = obj.textchannels.get(i);
+        
         for j=1:textchannel.triggers.n
           trigger = textchannel.triggers.get(j);
+          
           if numel(trigger.gettimes(tmin,tmax))
             triggers.add(trigger);
           end
@@ -175,6 +181,7 @@ classdef ScFile < ScList & ScDynamicClass
       
       for i=1:obj.stims.n
         stim = obj.stims.get(i);
+        
         if stim.istrigger && numel(stim.gettimes(tmin,tmax))
           triggers.add(stim);
         else

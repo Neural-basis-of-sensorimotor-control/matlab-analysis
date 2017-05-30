@@ -1,7 +1,5 @@
 function plot_all_cell_responses()
 
-close all
-
 neurons = get_intra_neurons();
 stim_tags = get_intra_motifs();
  
@@ -20,7 +18,7 @@ for i=1:size(rise_amplitudes, 1)
 end
 	
 for i=1:length(neurons)
-	figure(i)
+	incr_fig_indx()
 	clf
 	
 	subplot(121)

@@ -1,10 +1,8 @@
-classdef ScSpikeTrainCluster < handle
+classdef ScSpikeTrainCluster < ScNeuron
   
   properties
     neurons
-    tag
     raw_data_file
-    time_sequences
   end
   
   
@@ -127,6 +125,47 @@ classdef ScSpikeTrainCluster < handle
       
     end
     
+    
+    function load_experiment(obj)
+      
+      sc_dir = get_default_experiment_dir();
+      gui_mgr = sc([sc_dir obj.experiment_filename], ...
+        obj.neurons(1).file_tag);
+      
+      file = gui_mgr.viewer.file;
+      
+      signals = file.signals;
+      
+      signal = signals.get('tag', obj.neurons(1).signal_tag);
+      set_userdata(signal, 'spiketrain', []);
+      set_userdata(signal, 'spiketrain', obj.neurons);
+      
+    end
+    
+    
+    function guess_experiment_filename(obj)
+      
+      if isfile(obj.experiment_filename)
+        return
+      end
+      
+      sc_dir = get_default_experiment_dir();
+      
+      tmp_filename = [obj.tag(1:4) '_SSSA_sc.mat'];
+      
+      if isfile([sc_dir tmp_filename])
+        obj.experiment_filename = tmp_filename;
+        
+      else
+        tmp_filename = [obj.tag(1:4) '_sc.mat'];
+        
+        if isfile([sc_dir tmp_filename])
+          
+          obj.experiment_filename = tmp_filename;
+        end
+      end
+      
+    end
   end
   
   
@@ -142,33 +181,46 @@ classdef ScSpikeTrainCluster < handle
     end
     
     
-    function times = load_times(raw_data_file, selected_headers)
+    function times = load_times(raw_data_file, selected_header)
       
       fid = fopen(raw_data_file);
       header = fgetl(fid);
       fclose(fid);
       
-      header = strrep(header, '0.5,"fa"', '0.5 fa');
-      header = strrep(header, '0.5,"sa"', '0.5 sa');
-      header = strrep(header, '1,"fa"', '1.0 fa');
-      header = strrep(header, '1,"sa"', '1.0 sa');
-      header = strrep(header, '2,"fa"', '2.0 fa');
-      header = strrep(header, '2,"sa"', '2.0 sa');
-      header = strrep(header, '"flat","fa"', 'flat fa');
-      header = strrep(header, '"flat","sa"', 'flat sa');
-      header = strrep(header, '"1p","electrode",1', '1p electrode 1');
-      header = strrep(header, '"1p","electrode",2', '1p electrode 2');
-      header = strrep(header, '"1p","electrode",3', '1p electrode 3');
-      header = strrep(header, '"1p","electrode",4', '1p electrode 4');
+      function val = rm_redundant_chars(val)
+        val = strrep(val, '0.5,"fa"', '0.5 fa');
+        val = strrep(val, '0.5,"sa"', '0.5 sa');
+        val = strrep(val, '1,"fa"', '1.0 fa');
+        val = strrep(val, '1,"sa"', '1.0 sa');
+        val = strrep(val, '2,"fa"', '2.0 fa');
+        val = strrep(val, '2,"sa"', '2.0 sa');
+        val = strrep(val, '"flat","fa"', 'flat fa');
+        val = strrep(val, '"flat","sa"', 'flat sa');
+        val = strrep(val, '"1p","electrode",1', '1p electrode 1');
+        val = strrep(val, '"1p","electrode",2', '1p electrode 2');
+        val = strrep(val, '"1p","electrode",3', '1p electrode 3');
+        val = strrep(val, '"1p","electrode",4', '1p electrode 4');
+        
+        val = strsplit(val, ',');
+        val = strrep(val, '"', '');
+        val = strrep(val, '''', '');
+      end
       
-      headers = strsplit(header, ',');
-      headers = strrep(headers, '"', '');
-      headers = strrep(headers, '''', '');
+      header = rm_redundant_chars(header);
+      selected_header = rm_redundant_chars(selected_header);
       
-      is_selected = false(size(headers));
+      if ischar(selected_header)
+        is_selected = strcmp(header, selected_header);
+      else
+        is_selected = false(size(header));
+        
+        for i=1:length(selected_header)
+          is_selected = is_selected | strcmp(header, selected_header{i});
+        end
+      end
       
-      for i=1:length(selected_headers)
-        is_selected = is_selected | strcmp(headers, selected_headers{i});
+      if ~nnz(is_selected)
+        error('No valid value of header')
       end
       
       times = dlmread(raw_data_file, ',', 1, 0);

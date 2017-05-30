@@ -10,7 +10,7 @@ for i=1:length(neurons)
   
   neuron = neurons(i);
   
-  tmp_paired_neurons = get_paired_neurons(neuron, max_inactivity_time, ...
+  tmp_paired_neurons = get_paired_neurons_2(neuron, max_inactivity_time, ...
     min_nbr_of_spikes_per_sequence, min_time_span_per_sequence);
   
   paired_neurons = concat_list(paired_neurons, tmp_paired_neurons);

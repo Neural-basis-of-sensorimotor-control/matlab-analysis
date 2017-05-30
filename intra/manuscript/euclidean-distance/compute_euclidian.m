@@ -46,24 +46,24 @@ end
 
 d_normal = compute_euclidian_distances(response_values);
 
-make_figures(1, 'Euclidian distances amplitude height [mV]', d_normal);
+make_figures('Euclidian distances amplitude height [mV]', d_normal);
 
 d_all_shuffled = compute_euclidian_distances(all_shuffled);
 
-make_figures(3, 'Euclidian distances amplitude height [mV], all shuffled', d_all_shuffled);
+make_figures('Euclidian distances amplitude height [mV], all shuffled', d_all_shuffled);
 
 d_neurons_shuffled = compute_euclidian_distances(neurons_shuffled);
 
-make_figures(5, 'Euclidian distances amplitude height [mV], neurons shuffled', d_neurons_shuffled);
+make_figures('Euclidian distances amplitude height [mV], neurons shuffled', d_neurons_shuffled);
 
 d_stims_shuffled = compute_euclidian_distances(stims_shuffled);
 
-make_figures(7, 'Euclidian distances amplitude height [mV], stims shuffled', d_stims_shuffled);
+make_figures('Euclidian distances amplitude height [mV], stims shuffled', d_stims_shuffled);
 
 
-  function make_figures(fignbr, titlestr, d)
+  function make_figures(titlestr, d)
     
-    fig1 = figure(fignbr);
+    fig1 = incr_fig_indx();
     clf reset
     fill_matrix(d);
     colormap('gray')
@@ -75,7 +75,7 @@ make_figures(7, 'Euclidian distances amplitude height [mV], stims shuffled', d_s
     title(titlestr);
     fig1.FileName = [titlestr '.png'];
     
-    fig2 = figure(fignbr+1);
+    fig2 = incr_fig_indx();
     clf reset
     fill_matrix(d);
     concat_colormaps(d, gca, 8, @gray, invert_colormap(@autumn));

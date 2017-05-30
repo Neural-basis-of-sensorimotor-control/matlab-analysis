@@ -1,23 +1,51 @@
 function [f,t,h] = sc_kernelhist(varargin)
-%SC_KERNELHIST(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs)
-%SC_KERNELHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs)
+%SC_KERNELHIST(stimtimes, spiketimes, pretrigger, posttrigger, kernelwidth, binwidth)
+%SC_KERNELHIST(axeshandle, ...)
+%SC_KERNELHIST(suppress_plot, axeshandle, ...)
 %SC_KERNELHIST(...,ksdensityargs)
+
+suppress_plot = false;
+
+if islogical(varargin{1})
+  suppress_plot = varargin{1};
+  varargin = varargin(2:end);
+end
+
+if ~suppress_plot
+  axeshandle = gca;
+end
+
 if ishandle(varargin{1})
   axeshandle = varargin{1};
-  offset = 1;
-else
-  axeshandle = gca;
-  offset = 0;
+  varargin = varargin(2:end);
 end
-stimtimes = varargin{offset+1};
-spiketimes = varargin{offset+2};
-pretrigger = varargin{offset+3};
-posttrigger = varargin{offset+4};
-binwidth = varargin{offset+5};
-ksdensityargs  = varargin(offset+6:end);
-[freq, edges] = sc_kernelfreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth,ksdensityargs{:});
-plothandle = plot(axeshandle,edges,freq);
-if nargout>=1,  f = freq;       end
-if nargout>=2,  t=edges;        end
-if nargout>=3,  h=plothandle;   end
+
+stimtimes = varargin{1};
+spiketimes = varargin{2};
+pretrigger = varargin{3};
+posttrigger = varargin{4};
+kernelwidth = varargin{5};
+ksdensityargs  = varargin(6:end);
+
+[freq, edges] = sc_kernelfreq(stimtimes, spiketimes, pretrigger, posttrigger, ...
+  kernelwidth, ksdensityargs{:});
+
+if ~suppress_plot
+  plothandle = plot(axeshandle,edges,freq);
+else
+  plothandle = [];
+end
+
+if nargout>=1
+  f = freq;
+end
+
+if nargout>=2
+  t=edges;
+end
+
+if nargout>=3
+  h=plothandle;
+end
+
 end

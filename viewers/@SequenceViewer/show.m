@@ -4,6 +4,7 @@ function show(obj)
 set(obj.btn_window,'ToolBar','None','MenuBar','none');
 set(obj.btn_window,'CloseRequestFcn',@(~,~) obj.close_request);
 clf(obj.plot_window,'reset');
+set(obj.plot_window, 'Tag', SequenceViewer.figure_tag)
 set(obj.plot_window,'ToolBar','None','MenuBar','none');
 set(obj.plot_window,'Color',[0 0 0]);
 
@@ -27,10 +28,13 @@ end
 for k=1:obj.analog_ch.n
   obj.analog_ch.get(k).ax = axes;
 end
+
 if ~ishandle(obj.plot_window)
-  obj.plot_window = figure;
+  obj.plot_window = figure('Tag', SequenceViewer.figure_tag);
 end
+
 mgr = ScLayoutManager(obj.plot_window);
+
 for k=1:obj.plots.n
   plotaxes = obj.plots.get(k);
   mgr.newline(getheight(plotaxes));
@@ -38,6 +42,7 @@ for k=1:obj.plots.n
 end
 
 nbr_of_constant_panels = obj.panels.n;
+
 for k=1:nbr_of_constant_panels
   panel = obj.panels.get(k);
   panel.initialize_panel();

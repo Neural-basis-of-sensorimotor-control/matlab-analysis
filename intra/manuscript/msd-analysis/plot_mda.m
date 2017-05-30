@@ -13,7 +13,7 @@ elseif ~iscell(neuron_tags)
 end
 
 if nargin<3
-  markers = cellfun(@(x) 'none', dummy_cell, 'UniformOutput', false);
+  markers = cellfun(@(x) '.', dummy_cell, 'UniformOutput', false);
   
 elseif ischar(markers)
   markers = cellfun(@(x) markers, dummy_cell, 'UniformOutput', false);
@@ -28,7 +28,7 @@ grid on
 if size(y,2) == 2
   
   for i=1:size(y,1)
-    plot(y(i,1), y(i,2), '.', 'MarkerSize', 12, 'Tag', neuron_tags{i}, ...
+    plot(y(i,1), y(i,2), 'MarkerSize', 12, 'Tag', neuron_tags{i}, ...
       'Marker', markers{i}, 'ButtonDownFcn', @print_tag)
   end
   xlabel('n_1'), ylabel('n_2')

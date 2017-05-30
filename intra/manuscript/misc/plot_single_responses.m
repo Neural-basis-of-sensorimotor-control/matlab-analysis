@@ -36,8 +36,11 @@ is_response = generate_response_matrix(neurons, stims);
 % 	set(gca, 'YTick', 1:length(stims), 'YTickLabel', stims);
 %   axis_wide(gca, 'xy', 0, 1, true);
 % end
+figs = [];
+
 for i=1:length(stims)
-  fig = figure(i);
+  fig = incr_fig_indx();
+  figs = [figs fig]; %#ok<AGROW>
   clf(fig, 'reset');
   hold(gca, 'on');
   grid(gca, 'on');
@@ -54,7 +57,7 @@ for i=1:length(neurons)
   
   for j=1:length(stims)
     
-    figure(j);
+    figure(figs(j));
     if is_response(j,i)
       stim_str = stims{j};
       stim = signal.amplitudes.get('tag', stim_str);
@@ -74,7 +77,7 @@ for i=1:length(neurons)
 end
 
 for i=1:length(stims)
-  figure(i);
+   figure(figs(i));
   axis_wide(gca,'xy',0,1,false);
 end
 

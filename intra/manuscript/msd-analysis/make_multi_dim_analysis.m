@@ -1,8 +1,6 @@
 function make_multi_dim_analysis(varargin)
 % % %Make multidimensional analysis
 % % % Figure 5
-clc
-close all
 
 scaling_dim = 2;
 neurons = get_intra_neurons();
@@ -73,7 +71,8 @@ normalization_fcns_3 = {{[], [], []}};
 for i1=1:length(evaluation_fcns)
   fprintf('%d (%d)\n', i1, length(evaluation_fcns));
   
-  fig = figure(i1);
+  fig = incr_fig_indx();
+  
   try
     make_mds(fig, evaluation_fcns{i1}, normalization_fcns{i1}, titlestrs{i1})
   catch exception
@@ -85,14 +84,16 @@ end
 for i2=1:length(evaluation_fcns_2)
   fprintf('%d (%d)\n', i2, length(evaluation_fcns_2));
   
-  fig = figure(i1+i2);
+  fig = incr_fig_indx();
+  
   make_mds_2(fig, evaluation_fcns_2{i2}, normalization_fcns_2{i2}, titlestrs_2{i2});
 end
 
 for i3=1:length(evaluation_fcns_3)
   fprintf('%d (%d)\n', i3, length(evaluation_fcns_3));
   
-  fig = figure(i2+i3);
+  fig = incr_fig_indx();
+  
   make_mds_3(fig, evaluation_fcns_3{i3}, normalization_fcns_3{i3}, titlestrs_3{i3});
 end
 

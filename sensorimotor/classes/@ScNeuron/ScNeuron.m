@@ -12,6 +12,7 @@ classdef ScNeuron < handle
     time_sequences
     template_tag
     tag
+    userdata
   end
   
   
@@ -47,6 +48,26 @@ classdef ScNeuron < handle
         end
         
         i = i+1;
+      end
+      
+    end
+    
+    
+    function load_experiment(obj, spiketrain_fcn)
+      
+      sc_dir = get_default_experiment_dir();
+      
+      gui_mgr = sc([sc_dir obj.experiment_filename], obj.file_tag);
+      
+      if nargin > 1
+        file = gui_mgr.viewer.file;
+        
+        signals = file.signals;
+        
+        signal = signals.get('tag', obj.signal_tag);
+        
+        set_userdata(signal, 'spiketrain', []);
+        set_userdata(signal, 'spiketrain', spiketrain_fcn(signal));
       end
       
     end

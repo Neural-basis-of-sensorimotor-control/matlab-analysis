@@ -30,11 +30,11 @@ nargoutchk(0, 1)%correct number of output arguements??
 if NumberOfPlots<1
   ColorSet=[];
 elseif NumberOfPlots==1
-  ColorSet=[0 1 0];
+  ColorSet=[0 0 1];
 elseif NumberOfPlots==2
-  ColorSet=[0 1 0; 0 1 1];
+  ColorSet=[0 0 1; 1 0 0];
 elseif NumberOfPlots==3
-  ColorSet=[0 1 0; 0 1 1; 0 0 1];
+  ColorSet=[0 0 1; 0 1 0; 1 0 0];
 elseif NumberOfPlots==4
   ColorSet=[0 1 0; 0 1 1; 0 0 1; 1 0 1];
 elseif NumberOfPlots==5

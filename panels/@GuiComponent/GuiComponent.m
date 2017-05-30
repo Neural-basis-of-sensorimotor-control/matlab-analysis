@@ -28,9 +28,14 @@ classdef GuiComponent < UiWrapper
     function val = get.histogram_window(obj)
       val = obj.gui.histogram_window;
     end
+    
+    
     function set.histogram_window(obj,val)
       obj.gui.histogram_window = val;
+      set(obj.histogram_window, 'Tag', SequenceViewer.figure_tag);
     end
+    
+    
     function val = get.experiment(obj)
       val = obj.gui.experiment;
     end

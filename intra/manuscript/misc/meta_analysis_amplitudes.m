@@ -36,9 +36,11 @@ load intra_data.mat
 
 clf reset
 
+figs = [];
+
 for i=1:length(unique_patterns)
   %sc_square_subplot(length(unique_patterns), i);
-  figure(i)
+  figs = [figs incr_fig_indx()]; %#ok<AGROW>
   clf reset
   hold on
   title([unique_patterns{i} ' amplitude height (mV)'])
@@ -75,6 +77,6 @@ for i=1:length(unique_patterns)
   end
 end
 
-add_legend(get_all_figures)
+add_legend(figs)
 
 

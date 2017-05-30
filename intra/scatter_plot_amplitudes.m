@@ -20,7 +20,7 @@ for i=1:waveforms.n
 	end
 end
 
-figure(10*neuron_indx + 3)
+incr_fig_indx();
 clf
 hold on
 set(gcf, 'FileName', [neuron.file_tag '_scatter.png']);

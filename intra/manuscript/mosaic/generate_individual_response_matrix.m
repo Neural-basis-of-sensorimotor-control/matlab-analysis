@@ -2,6 +2,8 @@ function [amplitude_values, neuron_tags] = ...
   generate_individual_response_matrix(neurons, stims_str, nbr_of_dims, ...
   get_indx_fcn, get_response_fcn, get_normalization_fcn, varargin)
 
+all_responses = false;
+
 for i=1:2:length(varargin)
   switch varargin{i}
     case 'all_responses'

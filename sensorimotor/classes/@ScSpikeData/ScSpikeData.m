@@ -1,13 +1,17 @@
-classdef ScSpikeData < ScNeuron
+classdef ScSpikeData < ScNeuron & ScTrigger
   
   properties
     raw_data_file
     column_indx
-    spiketimes
+  end
+  
+  properties (Transient)
     spiketimes_is_updated
+    spiketimes
   end
   
   methods
+    
     function obj = ScSpikeData(varargin)
       obj@ScNeuron();
       
@@ -15,21 +19,65 @@ classdef ScSpikeData < ScNeuron
       obj.update_properties(varargin{:});
     end
     
-    function load_spiketimes(obj)
-      data = dlmread(obj.raw_data_file, ',', 1, 0);
-      times = data(:, obj.column_indx);
-      obj.spiketimes = times(isfinite(times) & times ~= 0);
+    
+    function load_spiketimes(obj, base_dir)
+      
+      if nargin<2
+        filepath = obj.raw_data_file;
+      else
+        
+        if isfile(obj.raw_data_file) && ...
+            length(obj.raw_data_file) > length(base_dir) && ...
+            startsWith(obj.raw_data_file, base_dir) && ...
+            isfile(obj.raw_data_file) && ...
+            ~isfile([base_dir obj.raw_data_file])
+          
+          warning('Warning: Appears to be absolute path to raw data file');
+          obj.raw_data_file = obj.raw_data_file(length(base_dir)+1:end);
+          
+        end
+        
+        filepath = [base_dir obj.raw_data_file];
+      end
+      
+      if ischar(obj.column_indx)
+        times = ScSpikeTrainCluster.load_times(filepath, obj.column_indx);
+      else
+        data = dlmread(filepath, ',', 1, 0);
+        times = data(:, obj.column_indx);
+        times = times(isfinite(times) & times ~= 0);
+      end
+      
+      obj.spiketimes = times;
       obj.spiketimes_is_updated = true;
     end
     
-    function times = get_spiketimes(obj)
-      if ~obj.spiketimes_is_updated
-        obj.load_spiketimes;
+    
+    function times = get_spiketimes(obj, varargin)
+      if isempty(obj.spiketimes_is_updated) || ~obj.spiketimes_is_updated
+        obj.load_spiketimes(varargin{:});
       end
       
-      times = obj.spiketimes; 
+      times = obj.spiketimes;
+    end
+    
+    
+    function times = gettimes(obj, tmin, tmax, varargin)
+      
+      times = obj.get_spiketimes(varargin{:});
+      times = times(times > tmin & times <= tmax);
+      
     end
     
   end
   
+  
+  methods (Static)
+    
+    function s = loadobj(s)
+      fprintf('%s - %s\n', s.raw_data_file, s.column_indx)
+      s.spiketimes_is_updated = false;
+    end
+    
+  end
 end

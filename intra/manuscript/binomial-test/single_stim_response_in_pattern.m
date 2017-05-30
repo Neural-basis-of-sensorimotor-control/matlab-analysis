@@ -5,7 +5,7 @@ function single_stim_response_in_pattern(response_min, response_max)
 nbr_of_simulations = 1e4;
 normalize_distributions = true;
 
-exclude_neurons = {};%{'CANR0001'};
+exclude_neurons = {};
 
 neurons = get_intra_neurons();
 neurons = rm_from_list(neurons, 'file_tag', exclude_neurons);

@@ -83,7 +83,7 @@ for i=1:length(unique_patterns)
     yvalues(:, j) = tmp_distribution/sum(tmp_distribution);
   end
   
-  figure(i)
+  incr_fig_indx();
   clf reset
   bar(xtick, yvalues);
   set(gca, 'XTick', xtick, 'XTickLabel',xticklabel,'XTickLabelRotation', 270)

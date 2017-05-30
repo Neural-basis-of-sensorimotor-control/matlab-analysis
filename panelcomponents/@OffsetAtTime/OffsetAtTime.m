@@ -23,28 +23,40 @@ classdef OffsetAtTime < PanelComponent
   end
 
   methods (Access = 'private')
+    
     function main_channel_listener(obj)
+      
       if ~isempty(obj.gui.main_channel)
-        sc_addlistener(obj.gui.main_channel,'v_equals_zero_for_t',@(~,~) obj.offset_listener, obj.uihandle);
+        sc_addlistener(obj.gui.main_channel, 'v_equals_zero_for_t', ...
+          @(~,~) obj.offset_listener, obj.uihandle);
         obj.offset_listener();
       end
+      
     end
 
+    
     function offset_listener(obj)
-      if isempty(obj.gui.main_channel.v_equals_zero_for_t) || ~isfinite(obj.gui.main_channel.v_equals_zero_for_t)
+      
+      if isempty(obj.gui.main_channel.v_equals_zero_for_t) || ...
+          ~isfinite(obj.gui.main_channel.v_equals_zero_for_t)
         set(obj.ui_value,'string',[]);
       else
         set(obj.ui_value,'string',obj.gui.main_channel.v_equals_zero_for_t);
       end
+      
     end
 
+    
     function value_callback(obj)
+    
       val = str2double(get(obj.ui_value,'string'));
+      
       if isnumeric(val) && isfinite(val)
         obj.gui.main_channel.v_equals_zero_for_t = val;
       else
         obj.gui.main_channel.v_equals_zero_for_t = [];
       end
+      
       obj.gui.plot_channels();
     end
   end

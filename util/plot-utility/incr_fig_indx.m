@@ -1,4 +1,4 @@
-function val = incr_fig_indx
+function val = incr_fig_indx()
 
 global fig_indx
 
@@ -9,8 +9,6 @@ else
 end
 
 fig = figure(fig_indx);
-
-clf(fig, 'reset');
 
 if nargout
   val = fig;

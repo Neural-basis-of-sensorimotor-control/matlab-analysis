@@ -1,4 +1,4 @@
-function single_stim_response_in_pattern(response_min, response_max)
+function single_stim_response_in_pattern(response_min, response_max, plot_only_final_figures)
 
 %% Parameters
 
@@ -120,38 +120,40 @@ stim_pulses_labels = ...
   arrayfun(@(x) sprintf('%s - %s - %d', x.pattern, x.electrode, x.electrode_count), ...
   stim_pulses, 'UniformOutput', false);
 
-for i=1:length(neurons)
-  incr_fig_indx();
+if ~plot_only_final_figures
+  for i=1:length(neurons)
+    incr_fig_indx();
+    
+    bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
+      dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
+      dist_shuffled_to_avg_response_several_simulations_2(:,i)])
+    
+    legend('Measurement to avg response', 'Shuffled to avg response',...
+      sprintf('Shuffled %d times', nbr_of_simulations), ...
+      sprintf('Shuffled %d times', nbr_of_simulations));
+    
+    set(gca, 'XTick', 1:length(stim_pulses), ...
+      'XTickLabel', stim_pulses_labels, ...
+      'XTickLabelRotation', 270);
+    
+    title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
+      response_max));
+  end
   
-  bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
-    dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
-		dist_shuffled_to_avg_response_several_simulations_2(:,i)])
-  
-  legend('Measurement to avg response', 'Shuffled to avg response',...
-    sprintf('Shuffled %d times', nbr_of_simulations), ...
-		sprintf('Shuffled %d times', nbr_of_simulations));
-	
-  set(gca, 'XTick', 1:length(stim_pulses), ...
-    'XTickLabel', stim_pulses_labels, ...
-    'XTickLabelRotation', 270);
-	
-  title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
-    response_max));
-end
-
-for i=1:length(neurons)
-  incr_fig_indx();
-  
-  hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
-    dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
-		dist_shuffled_to_avg_response_several_simulations_2(:,i)]);
-  
-  legend('Measurement to avg response', 'Shuffled to avg response', ...
-    sprintf('Shuffled %d times', nbr_of_simulations), ...
-		sprintf('Shuffled %d times', nbr_of_simulations));
-  
-  title(sprintf('%s, time window: %g - %g s', neurons(i).file_tag, response_min, ...
-    response_max));
+  for i=1:length(neurons)
+    incr_fig_indx();
+    
+    hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
+      dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
+      dist_shuffled_to_avg_response_several_simulations_2(:,i)]);
+    
+    legend('Measurement to avg response', 'Shuffled to avg response', ...
+      sprintf('Shuffled %d times', nbr_of_simulations), ...
+      sprintf('Shuffled %d times', nbr_of_simulations));
+    
+    title(sprintf('%s, time window: %g - %g s', neurons(i).file_tag, response_min, ...
+      response_max));
+  end
 end
 
 avg_response = nan(length(stim_pulses), length(neurons));
@@ -191,32 +193,35 @@ set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
 ylabel('Pattern - Electrode - Nbr of electrodes');
 xlabel('Value of eq 4');
 
-incr_fig_indx();
-hold(gca, 'on');
-set(gca, 'Color', 'k', 'GridColor', 'w');
-
-linestyle = ':';
-markersize = 12;
-
-for i=1:length(neurons)
-  dummy_y = 1:length(stim_pulses);
-  plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
-  plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
-    'LineStyle', 'none', 'Tag', neurons(i).file_tag);
+if ~plot_only_final_figures
+  incr_fig_indx();
+  hold(gca, 'on');
+  set(gca, 'Color', 'k', 'GridColor', 'w');
+  
+  linestyle = ':';
+  markersize = 12;
+  
+  for i=1:length(neurons)
+    dummy_y = 1:length(stim_pulses);
+    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
+    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
+      'LineStyle', 'none', 'Tag', neurons(i).file_tag);
+  end
+  plot(mean(avg_response_repeated_simulations_2, 2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
+  
+  axis_wide(gca, 'y')
+  add_legend(gca, true, true, 'TextColor', 'r')
+  grid on
+  title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
+    response_min, response_max));
+  
+  set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
+  ylabel('Pattern - Electrode - Nbr of electrodes');
+  xlabel('Value of eq 4');
 end
-plot(mean(avg_response_repeated_simulations_2, 2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
-
-axis_wide(gca, 'y')
-add_legend(gca, true, true, 'TextColor', 'r')
-grid on
-title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
-  response_min, response_max));
-
-set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
-ylabel('Pattern - Electrode - Nbr of electrodes');
-xlabel('Value of eq 4');
 
 %%
+
 p = [.05 .01 .001 .0001];
 alpha = tinv(1-p, length(neurons)-1);
 success = false(length(stim_pulses_labels), length(alpha));
@@ -259,28 +264,29 @@ for i=1:size(success,2)
   success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;
 end
 
-
-fprintf('Pattern - electrode - nbr of pulses');
-
-for i=1:length(p)
-  fprintf('\tP = %g', p(i));
-end
-fprintf('\n');
-
-for i=1:size(success,1)
-  fprintf('%s', stim_pulses_labels{i});
+if ~plot_only_final_figures
+  fprintf('Pattern - electrode - nbr of pulses');
   
-  for j=1:size(success,2)
+  for i=1:length(p)
+    fprintf('\tP = %g', p(i));
+  end
+  fprintf('\n');
+  
+  for i=1:size(success,1)
+    fprintf('%s', stim_pulses_labels{i});
     
-    if success(i,j)
-      fprintf('\t''+');
-    else
-      fprintf('\t''-');
+    for j=1:size(success,2)
+      
+      if success(i,j)
+        fprintf('\t''+');
+      else
+        fprintf('\t''-');
+      end
+      
     end
     
+    fprintf('\n');
   end
-  
-  fprintf('\n');
 end
 
 %%
@@ -296,7 +302,9 @@ for i=1:length(stim_pulses)
   all_selected_stims = concat_list(all_selected_stims, tmp_stims);
 end
 
-incr_fig_indx
-plot_amplitude_latencies(get_intra_neurons(), all_selected_stims);
+if ~plot_only_final_figures
+  incr_fig_indx
+  plot_amplitude_latencies(get_intra_neurons(), all_selected_stims);
+end
 
 end

@@ -1,7 +1,19 @@
 %Figure 4
 %Create mosaic
 
-function make_mosaic(indx)
+function make_mosaic(val)
+
+if nargin~=1
+  error('wrong number of inputs');
+end
+
+if isnumeric(val)
+  indx = varargin;
+elseif islogical(val)
+  indx = 16:18;
+else
+  error('function not defined for input of type %s', class(val));
+end
 
 evaluation_fcns = {
   @get_epsp_amplitude_single_pulse

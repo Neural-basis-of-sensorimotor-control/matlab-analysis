@@ -21,12 +21,13 @@ elseif isempty(axes_handles)
   return
 
 elseif isa(axes_handles(1), 'matlab.ui.Figure')
-  plots = get_axes(axes_handles(1));
+  plots = [];
 
-  for i=2:length(axes_handles)
+  for i=1:length(axes_handles)
     p = get_axes(axes_handles(i));
-    plots(length(plots) + (1:length(p))) = p;
+    plots = [plots p];
   end
+  plots = get_plots(plots);
   return
 
 elseif isa(axes_handles(1), 'matlab.graphics.axis.Axes')

@@ -8,7 +8,7 @@ if nargin~=1
 end
 
 if isnumeric(val)
-  indx = varargin;
+  indx = val;
 elseif islogical(val)
   indx = [10 16 17 18 19];
 else
@@ -34,7 +34,7 @@ data = {
   @(x) get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
   @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs'	,	                      []	,	              'concat'	,	1	%17
   @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	                          []	,	              'concat'	,	1	%18
-  @get_normalized_response_fraction,	                 'Normalized response fraction'	,	                                              [],             	  'concat'	,	0	%19
+  @get_normalized_response_fraction,	                 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	                                              [],             	  'concat'	,	0	%19
   };
 
 
@@ -46,7 +46,7 @@ normalization_fcns = data(:,3);
 
 colormap_fcn = data(:,4);
 
-apply_thresholds = data(:,5);
+apply_thresholds = cell2mat(data(:,5));
 
 matrices_are_equal(evaluation_fcns, normalization_fcns, titlestr, colormap_fcn, apply_thresholds);
 

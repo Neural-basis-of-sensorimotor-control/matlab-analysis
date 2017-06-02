@@ -10,96 +10,43 @@ end
 if isnumeric(val)
   indx = varargin;
 elseif islogical(val)
-  indx = 16:18;
+  indx = [10 16 17 18 19];
 else
   error('function not defined for input of type %s', class(val));
 end
 
-evaluation_fcns = {
-  @get_epsp_amplitude_single_pulse
-  @get_epsp_width_single_pulse
-  @get_onset_latency_single_pulse
-  @get_epsp_amplitude_abs
-  @get_epsp_width_abs
-  @get_onset_latency_abs
-  @get_epsp_amplitude_abs
-  @get_epsp_width_abs
-  @get_onset_latency_abs
-  @get_response_fraction
-  @get_nbr_of_epsps
-  @get_nbr_of_ipsps
-  @get_nbr_of_xpsps
-  @get_epsp_minus_ipsp
-  @get_epsp_minus_ipsp_only_negative
-  @(x) get_epsp_amplitude_single_pulse(x, 'positive')
-  @(x) get_epsp_width_single_pulse(x, 'positive')
-  @(x) get_onset_latency_single_pulse(x, 'positive')
+data = {
+  @get_epsp_amplitude_single_pulse,	                   'Amplitude height [single pulse response = 1], ''*'' = negative single pulse',	[],	               'concat'	,   1	%1
+  @get_epsp_width_single_pulse,	                       'Time to peak [single pulse response = 1]',	                                  [],	               'concat'	,   1	%2
+  @get_onset_latency_single_pulse,	                   'Latency [single pulse response = 1]',	                                        [],	               'concat'	,   1	%3
+  @get_epsp_amplitude_abs,	                           'Amplitude height [max value = 1]'	,	                                          @normalize_to_max, 'concat'	,   1	%4
+  @get_epsp_width_abs,	                               'Time to peak [max value = 1]'	,	                                              @normalize_to_max	,	'concat'	,	1	%5
+  @get_onset_latency_abs,	                             'Latency [max value = 1]'	,	                                                  @normalize_to_max	,	'concat'	,	1	%6
+  @get_epsp_amplitude_abs,	                           'Amplitude height [absolute value]'	,	                                        []	,	              'concat'	,	1	%7
+  @get_epsp_width_abs,	                               'Time to peak [absolute value]'	,	                                            []	,	              'concat'	,	1	%8
+  @get_onset_latency_abs,	                             'Latency [absolute value]'	,	                                                  []	,	              'concat'	,	1	%9
+  @get_response_fraction,	                             'Response fraction ''*'' = below threshold'	,	                                []	,             	'concat'	,	0	%10
+  @get_nbr_of_epsps,         	                         '# of EPSPs'	,	                                                                []	,	              'concat'	,	1	%11
+  @get_nbr_of_ipsps,	                                 '# of IPSPs'	,	                                                                []	,	              'concat'	,	1	%12
+  @get_nbr_of_xpsps,	                                 '# of xPSPs'	,	                                                                []	,	              'concat'	,	1	%13
+  @get_epsp_minus_ipsp,	                               '# of EPSPs - # of IPSPs'	,	                                                  []	,	              'concat'	,	1	%14
+  @get_epsp_minus_ipsp_only_negative,	                 'EPSPs - IPSPs only negative'	,	                                              []	,	              'concat'	,	1	%15
+  @(x) get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
+  @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs'	,	                      []	,	              'concat'	,	1	%17
+  @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	                          []	,	              'concat'	,	1	%18
+  @get_normalized_response_fraction,	                 'Normalized response fraction'	,	                                              [],             	  'concat'	,	0	%19
   };
 
-titlestr = {
-  'Amplitude height [single pulse response = 1], ''*'' = negative single pulse'
-  'Time to peak [single pulse response = 1]'
-  'Latency [single pulse response = 1]'
-  'Amplitude height [max value = 1]'
-  'Time to peak [max value = 1]'
-  'Latency [max value = 1]'
-  'Amplitude height [absolute value]'
-  'Time to peak [absolute value]'
-  'Latency [absolute value]'
-  'Response fraction ''*'' = below threshold'
-  '# of EPSPs'
-  '# of IPSPs'
-  '# of xPSPs'
-  '# of EPSPs - # of IPSPs'
-  'EPSPs - IPSPs only negative'
-  'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'
-  'Time to peak [single pulse response = 1], only EPSPs'
-  'Latency [single pulse response = 1], only EPSPs'
-  };
 
-normalization_fcns = {
-  []
-  []
-  []
-  @normalize_to_max
-  @normalize_to_max
-  @normalize_to_max
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  []
-  };
+evaluation_fcns = data(:,1);
 
-colormap_fcn = {
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'concat'
-  'default'
-  [0 5]
-  'default'
-  [0 -5]
-  [100 0]
-  'concat'
-  'concat'
-  'concat'
-  };
+titlestr = data(:,2);
 
-apply_thresholds = [true(9,1); false(1); true(8,1)];
+normalization_fcns = data(:,3);
+
+colormap_fcn = data(:,4);
+
+apply_thresholds = data(:,5);
 
 matrices_are_equal(evaluation_fcns, normalization_fcns, titlestr, colormap_fcn, apply_thresholds);
 

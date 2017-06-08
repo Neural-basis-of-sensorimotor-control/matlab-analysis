@@ -83,10 +83,10 @@ for i=1:length(neurons)
   end
   
   avg_spont = signal.userdata.avg_spont_activity;
-  std_spont = signal.userdata.std_spont_activity;
+  threshold = get_activity_threshold(signal);
   
   plot(i, avg_spont, '+', 'Tag', 'Spontaneuous activity');
-  plot(i, avg_spont+3*std_spont, '+', 'Tag', 'Threshold response');
+  plot(i, threshold, '+', 'Tag', 'Threshold response');
 end
 
 set(gca,'XTick',1:length(neurons),'XTickLabel',{neurons.file_tag}, ...

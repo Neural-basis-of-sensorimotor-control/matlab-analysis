@@ -1,4 +1,7 @@
 function val = spike_is_detected(obj, varargin)
+% spike_is_detected(obj, v)
+% spike_is_detected(obj, tmin, tmax)
+% spike_is_detected(obj, tmin, tmax, min_isi_on)
 
 narginchk(2, 4);
 

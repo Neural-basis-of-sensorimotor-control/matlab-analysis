@@ -69,6 +69,7 @@ classdef AnalogAxes < ChannelAxes
     
     
     function plotch(obj, btn_down_fcn)
+      
       if nargin<=1
         btn_down_fcn = [];
       end
@@ -100,7 +101,7 @@ classdef AnalogAxes < ChannelAxes
     end
     
     
-    function [v_out, time_out, handles_out] = plotv(obj,v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
+    function [v_out, time_out, handles_out] = plotv(obj, v_signal, sweep, plotcolor, btn_down_fcn, plothighlighted)
       handles = nan(size(v_signal,2));
       pretrigger = obj.gui.pretrigger;
       posttrigger = obj.gui.posttrigger;
@@ -113,7 +114,7 @@ classdef AnalogAxes < ChannelAxes
         posttrigger = obj.gui.xlimits(2);
       end
       
-      [v_signal,time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
+      [v_signal, time] = sc_get_sweeps(v_signal, 0, obj.gui.triggertimes(sweep), ...
         pretrigger, posttrigger, obj.signal.dt);
       
       if ~isempty(obj.b_highlighted)

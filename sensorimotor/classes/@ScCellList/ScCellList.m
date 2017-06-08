@@ -187,9 +187,13 @@ classdef ScCellList < handle
 end
 
 function same = compare_fcn(listobject, property, value1)
+
 if isnumeric(value1)
   same = value1 == listobject.(property);
 elseif ischar(value1)
   same = strcmp(value1,listobject.(property));
+else
+  i=.1
 end
+
 end

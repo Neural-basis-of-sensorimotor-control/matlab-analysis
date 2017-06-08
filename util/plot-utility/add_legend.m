@@ -1,5 +1,4 @@
 function legend_handle = add_legend(plot_handles, add_only_one_legend, invert_colors, varargin)
-
 %ADD_LEGEND Add legend to plot axes, using the value of the Tag property
 %for each plot handle in the axes. Also adjust the LineColor property so
 %that all plots with the same Tag value have the same color.

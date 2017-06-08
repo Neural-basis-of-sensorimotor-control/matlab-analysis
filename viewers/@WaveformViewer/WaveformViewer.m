@@ -20,6 +20,7 @@ classdef WaveformViewer < SequenceViewer
   end
 
   methods
+    
     function obj = WaveformViewer(guimanager,varargin)
       obj@SequenceViewer(guimanager,varargin{:});
       obj.create_channels();

@@ -53,21 +53,29 @@ classdef ScNeuron < handle
     end
     
     
-    function load_experiment(obj, spiketrain_fcn)
+    function gui_mgr_out = load_experiment(obj, spiketrain_fcn)
       
       sc_dir = get_default_experiment_dir();
       
       gui_mgr = sc([sc_dir obj.experiment_filename], obj.file_tag);
       
+      if nargout
+        gui_mgr_out = gui_mgr;
+      end
+      
       if nargin > 1
-        file = gui_mgr.viewer.file;
-        
-        signals = file.signals;
-        
-        signal = signals.get('tag', obj.signal_tag);
-        
-        set_userdata(signal, 'spiketrain', []);
-        set_userdata(signal, 'spiketrain', spiketrain_fcn(signal));
+        if isfunction(spiketrain_fcn)
+          file = gui_mgr.viewer.file;
+          
+          signals = file.signals;
+          
+          signal = signals.get('tag', obj.signal_tag);
+          
+          set_userdata(signal, 'spiketrain', []);
+          set_userdata(signal, 'spiketrain', spiketrain_fcn(signal));
+        else
+          
+        end
       end
       
     end

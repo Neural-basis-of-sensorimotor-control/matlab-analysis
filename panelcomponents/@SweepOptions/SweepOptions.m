@@ -57,10 +57,18 @@ classdef SweepOptions < PanelComponent
       set(obj.ui_posttrigger,'string',obj.gui.posttrigger);
     end
     function sweep_listener(obj)
+      
       sweep = obj.gui.sweep;
-      if size(sweep,1)>1, sweep = sweep'; end
+      
+      if size(sweep,1)>1
+        sweep = sweep';
+      end
+      
       set(obj.ui_sweep,'string',num2str(sweep));
+      
     end
+    
+    
     function increment_listener(obj)
       set(obj.ui_increment,'string',obj.gui.sweep_increment);
     end

@@ -1,4 +1,4 @@
-function fill_matrix(z)
+function fill_matrix(z, varargin)
 
 hold_mode = ishold;
 
@@ -9,7 +9,7 @@ for row=1:nbr_of_rows
   for col=1:nbr_of_cols
     x = row + [-.5 -.5 .5 .5 -.5];
     y = col + [-.5 .5 .5 -.5 -.5];
-    fill(x, y, z(row,col));
+    fill(x, y, z(row,col), varargin{:});
   end
 end
 

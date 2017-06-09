@@ -22,6 +22,7 @@ classdef ScSignal < ScChannel & ScDynamicClass
   methods
     
     function obj = ScSignal(parent,channelname,varargin)
+      
       obj.parent = parent;
       obj.channelname = channelname;
       obj.waveforms = ScList;
@@ -34,6 +35,7 @@ classdef ScSignal < ScChannel & ScDynamicClass
       for k=1:2:numel(varargin)
         obj.(varargin{k}) = varargin{k+1};
       end
+      
     end
     
     

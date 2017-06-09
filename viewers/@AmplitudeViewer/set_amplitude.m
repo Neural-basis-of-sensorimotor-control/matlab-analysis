@@ -1,15 +1,17 @@
-function set_amplitude(viewer, amplitude)
+function set_amplitude(obj, amplitude)
 
-viewer.amplitude = amplitude;
-viewer.update_download_amplitude_fileindex;
+amplitude = get_item(obj.main_signal.amplitudes.list, amplitude);
 
-if ~isempty(viewer.amplitude) && numel(viewer.triggertimes)
-  viewer.set_mouse_press(1);
-  viewer.download_amplitude_filebase = amplitude.get_amplitude_filebase;
+obj.amplitude = amplitude;
+obj.update_download_amplitude_fileindex;
+
+if ~isempty(obj.amplitude) && numel(obj.triggertimes)
+  obj.set_mouse_press(1);
+  obj.download_amplitude_filebase = amplitude.get_amplitude_filebase;
 else
-  viewer.download_amplitude_filebase = '';
+  obj.download_amplitude_filebase = '';
 end
 
-viewer.amplitude_average_channel.update();
+obj.amplitude_average_channel.update();
 
 end

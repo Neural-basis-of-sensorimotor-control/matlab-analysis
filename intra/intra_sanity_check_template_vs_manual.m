@@ -147,27 +147,10 @@ end
 
 neuron = get(src, 'UserData');
 
-get_spiketrain_fcn = @(x) get_spiketrain(x, stim_nbr, neuron);
-
-gui_mgr = neuron.load_experiment(get_spiketrain_fcn);
-
-gui_mgr.viewer.set_triggerparent(gui_mgr.viewer.main_signal);
-gui_mgr.viewer.set_trigger('dummy');
-gui_mgr.viewer.set_sweep(repetition);
-
-
-end
-
-
-function spiketrain = get_spiketrain(signal, stim_nbr, neuron)
-
 stim = get_intra_motifs(stim_nbr);
 stim = stim{1};
 
-amplitude = signal.amplitudes.get('tag', stim);
-times = amplitude.gettimes(neuron.tmin, neuron.tmax);
-
-spiketrain = ScSpikeTrain('dummy', times);
+neuron.load_experiment_amplitude_mode(stim, repetition);
 
 end
 

@@ -41,7 +41,8 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
     end
 
     function plot_channels(obj, btn_dwn_fcn)
-      if nargin<2,
+      
+      if nargin<2
         btn_dwn_fcn = [];
       end
       
@@ -60,43 +61,55 @@ classdef AmplitudeViewer < SequenceViewer & IntraAmplitudeViewer
     end
 
     function delete_dynamic_panels(obj)
+      
       for k=obj.panels.n:-1:obj.nbr_of_constant_panels+1
         panel = obj.panels.get(k);
         obj.panels.remove(panel);
         delete(panel);
       end
+      
     end
 
     function set_sweep(obj,sweep)
+      
       obj.sweep = mod(sweep-1,numel(obj.triggertimes))+1;
+      
       if ~isempty(obj.amplitude) && numel(sweep)
         triggertime = obj.triggertimes(obj.sweep(1));
         val = obj.amplitude.get_data(triggertime,[1 3]);
         mousepress = find(isnan(val),1);
+        
         if isempty(mousepress)
           obj.set_mouse_press(0);
         else
           obj.set_mouse_press(mousepress);
         end
+        
       end
     end
 
-    function set_mouse_press(obj,val)
+    function set_mouse_press(obj, val)
+      
       obj.mouse_press = val;
+      
       if obj.mouse_press ==1 || obj.mouse_press == 2
         obj.help_text = sprintf('Awaiting mouse press #%i',obj.mouse_press);
       else
         obj.help_text = 'Amplitude is set for this sweep';
       end
+      
       obj.plot_channels(@(~,~) obj.main_channel.define_amplitude_btndown());
+      
     end
 
     function ret = get.triggertimes(obj)
+      
       if isempty(obj.amplitude)
         ret = [];
       else
         ret = obj.amplitude.gettimes(obj.tmin,obj.tmax);
       end
+      
     end
 
     function ret = get.nbr_of_constant_panels(~)

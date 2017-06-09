@@ -79,6 +79,18 @@ classdef ScNeuron < handle
       end
       
     end
+    
+    
+    function load_experiment_amplitude_mode(obj, amplitude, sweep_nbr)
+      
+      sc_dir = get_default_experiment_dir();
+      
+      gui_mgr = sc('-amplitude', [sc_dir obj.experiment_filename], obj.file_tag);
+      
+      gui_mgr.viewer.set_amplitude(amplitude);
+      gui_mgr.viewer.set_sweep(sweep_nbr);
+    end
+    
   end
   
 end

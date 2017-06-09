@@ -105,7 +105,7 @@ end
 
 if strcmpi(args{1}, '-help')
   help(mfilename)
-  return
+
 elseif strcmpi(args{1}, '-what')
   directory = uigetdir(sc_file_folder,'Select file directory');
   
@@ -122,6 +122,7 @@ elseif strcmpi(args{1}, '-what')
       end
     end
   end
+  
 elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
   %Create new *_sc.mat file
   experiment = ScExperiment();
@@ -165,14 +166,18 @@ elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
       assignin('base','expr',experiment);
     end
   end
+  
 elseif strcmpi(args{1},'-version')
-  fprintf('See <a href="%s">GitHub</a> for additional information.\n',github_url);
+  fprintf('See <a href="%s">GitHub</a> for additional information.\n', github_url);
+  
 elseif strcmpi(args{1}, '-amplitude')
-  gui_mgr = sc();
-  gui_mgr.mode = ScGuiState.ampl_analysis;
+  args = args(2:end);
+  gui = sc(args{:});
+  gui.mode = ScGuiState.ampl_analysis;
+  
 elseif numel(args{1}) && args{1}(1) == '-'
   fprintf(['Illegal command : ' args{1}]);
-  return
+  
 else
   
   if isfile(args{1})

@@ -59,11 +59,19 @@ h_plot(4) = plot(x_, y_, 'k.', 'HitTest', 'off');
 
 axis tight
 
-set(gca, 'YTick', 1:length(stims), 'YTickLabel', stims);
+y_tick_label = stims;
+
+threshold = get_activity_threshold(signal);
+response_is_included = arrayfun(@(x) x.userdata.fraction_detected >= threshold, amplitudes);
+
+y_tick_label(response_is_included) = cellfun(@(x) ['\bf ' x], ...
+  y_tick_label(response_is_included), 'UniformOutput', false);
+
+set(gca, 'YTick', 1:length(stims), 'YTickLabel', y_tick_label);
 title(neuron.file_tag)
 
 legend(h_plot, 'no detection', 'only template', 'only manual', 'both');
-set(gca, 'UserData', neuron, 'ButtonDownFcn', @btn_dwn_fcn);
+set(gca, 'UserData', neuron, 'ButtonDownFcn', @btn_dwn_fcn)
 
 
 incr_fig_indx()
@@ -83,13 +91,7 @@ end
 title(neuron.file_tag);
 legend('no detection', 'only template', 'only manual', 'both');
 
-threshold = get_activity_threshold(signal);
-response_is_included = arrayfun(@(x) x.userdata.fraction_detected >= threshold, amplitudes);
-
 x_tick_label = stims;
-x_tick_label(response_is_included) = cellfun(@(x) ['\bf ' x], ...
-  x_tick_label(response_is_included), 'UniformOutput', false);
-
 
 set(gca, 'XTick', 1:length(stims), 'XTickLabel', x_tick_label, ...
   'XTickLabelRotation', 270);

@@ -1,6 +1,8 @@
-function update_fig_name(figs)
+function update_fig_name(figs, ending)
 
-ending = '.png';
+if nargin == 1
+  ending = '.png';
+end
 
 if ~nargin
   figs = gcf;

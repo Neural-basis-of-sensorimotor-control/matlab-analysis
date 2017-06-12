@@ -67,8 +67,8 @@ axis tight
 
 y_tick_label = stims;
 
-threshold = get_activity_threshold(signal);
-response_is_included = arrayfun(@(x) x.userdata.fraction_detected >= threshold, amplitudes);
+response_is_included = arrayfun(@(x) x.intra_is_significant_response(obj, height_limit, ...
+  min_epsp_nbr), amplitudes);
 
 y_tick_label(response_is_included) = cellfun(@(x) ['\bf ' x], ...
   y_tick_label(response_is_included), 'UniformOutput', false);

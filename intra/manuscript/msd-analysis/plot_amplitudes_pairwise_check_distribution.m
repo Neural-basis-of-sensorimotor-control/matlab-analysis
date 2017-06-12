@@ -1,7 +1,4 @@
-function plot_amplitudes_pairwise_check_distribution()
-
-
-neuron = get_intra_neurons();
+function plot_amplitudes_pairwise_check_distribution(neuron)
 
 stim = get_intra_motifs();
 

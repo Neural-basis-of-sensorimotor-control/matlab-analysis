@@ -1,8 +1,8 @@
-function make_amplitude_maximal_dimensions(varargin)
+function make_amplitude_maximal_dimensions(neurons, height_limit, min_epsp_nbr, varargin)
 
 
 [neurons, stims_str, scaling_dim, shuffle] = ...
-  init_intra_neurons(varargin{:});
+  init_intra_neurons(neurons, varargin{:});
 
 nbr_of_dims = length(stims_str) * [1
   1
@@ -14,10 +14,10 @@ get_index_fcn = {@(x) x
   @(x) x
   @(x) 2*x+ [0 -1]'};
 
-get_response_fcn = {@(stim, indx) stim.height(indx)
-  @(stim, indx) stim.width(indx)
-  @(stim, indx) stim.latency(indx)
-  @(stim, indx) [stim.height(indx); stim.latency(indx)]};
+get_response_fcn = {@(stim, indx) stim.get_amplitude_height(0, indx)
+  @(stim, indx) stim.get_amplitude_width(0, indx)
+  @(stim, indx) stim.get_amplitude_latency(0, indx)
+  @(stim, indx) [stim.get_amplitude_height(0, indx); stim.get_amplitude_latency(0, indx)]};
 
 get_normalization_fcn = ...
   {@(signal, electrode_ind) signal.userdata.single_pulse_height(electrode_ind)
@@ -46,7 +46,8 @@ end
     
     [amplitude_values, neuron_tags] = ...
       generate_individual_response_matrix(neurons, stims_str, nbr_of_dims, ...
-      get_indx_fcn, get_response_fcn, get_normalization_fcn);
+      get_indx_fcn, get_response_fcn, get_normalization_fcn, height_limit, ...
+      min_epsp_nbr);
     
     if shuffle
       is_nnz = find(amplitude_values);

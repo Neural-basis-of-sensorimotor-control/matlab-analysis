@@ -1,6 +1,7 @@
 function [amplitude_values, neuron_tags] = ...
   generate_individual_response_matrix(neurons, stims_str, nbr_of_dims, ...
-  get_indx_fcn, get_response_fcn, get_normalization_fcn, varargin)
+  get_indx_fcn, get_response_fcn, get_normalization_fcn, height_limit, ...
+  min_epsp_nbr, varargin)
 
 all_responses = false;
 
@@ -30,13 +31,14 @@ for i2=1:length(neurons)
   if all_responses
     is_response = true(size(stims_str));
   else
-    is_response = generate_response_matrix(signal, stims_str);
+    is_response = generate_response_matrix(signal, stims_str, height_limit, ...
+      min_epsp_nbr);
   end
   %
   %   min_nbr_of_stims = min(cell2mat(get_values(stims(is_response), ...
   %     @(x) nnz(x.valid_data))))
   
-  min_nbr_of_stims = 10
+  min_nbr_of_stims = 10;
   
   for j2=1:min_nbr_of_stims
     count = count + 1;

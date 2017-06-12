@@ -1,11 +1,4 @@
-%Figure 4
-%Create mosaic
-
-function make_mosaic(val)
-
-if nargin~=1
-  error('wrong number of inputs');
-end
+function make_mosaic(neurons, val, height_limit, min_epsp_nbr)
 
 if isnumeric(val)
   indx = val;
@@ -25,7 +18,7 @@ data = {
   @get_epsp_amplitude_abs,	                           'Amplitude height [absolute value]'	,	                                        []	,	              'concat'	,	1	%7
   @get_epsp_width_abs,	                               'Time to peak [absolute value]'	,	                                            []	,	              'concat'	,	1	%8
   @get_onset_latency_abs,	                             'Latency [absolute value]'	,	                                                  []	,	              'concat'	,	1	%9
-  @get_response_fraction,	                             'Response fraction ''*'' = below threshold'	,	                                []	,             	'concat'	,	0	%10
+  @(x) get_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction ''*'' = below threshold'	,	                                []	,             	'concat'	,	0	%10
   @get_nbr_of_epsps,         	                         '# of EPSPs'	,	                                                                []	,	              'concat'	,	1	%11
   @get_nbr_of_ipsps,	                                 '# of IPSPs'	,	                                                                []	,	              'concat'	,	1	%12
   @get_nbr_of_xpsps,	                                 '# of xPSPs'	,	                                                                []	,	              'concat'	,	1	%13
@@ -34,7 +27,7 @@ data = {
   @(x) get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
   @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs'	,	                      []	,	              'concat'	,	1	%17
   @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	                          []	,	              'concat'	,	1	%18
-  @get_normalized_response_fraction,	                 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	                                              [],             	  'concat'	,	0	%19
+  @(x) get_normalized_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	                                              [],             	  'concat'	,	0	%19
   };
 
 
@@ -60,13 +53,15 @@ for i=1:length(indx)
   tmp_titlestr = titlestr{indx(i)};
   tmp_colormap_fcn = colormap_fcn{indx(i)};
   
-  make_mosaic_subfct(tmp_evaluation_fcn,tmp_normalization_fcn, ...
-    tmp_colormap_fcn, tmp_apply_thresholds, tmp_figure);
+  make_mosaic_subfct(neurons, tmp_evaluation_fcn,tmp_normalization_fcn, ...
+    tmp_colormap_fcn, tmp_apply_thresholds, height_limit, min_epsp_nbr, ...
+    tmp_figure);
+  
   title(tmp_titlestr);
   add_figure_filename(gca);
+  
 end
 
-neurons = get_intra_neurons();
 stims_str = get_intra_motifs();
 
 incr_fig_indx();
@@ -79,7 +74,14 @@ for i=1:length(neurons)
   
   for j=1:length(stims_str)
     amplitude = signal.amplitudes.get('tag', stims_str{j});
-    plot(i, amplitude.userdata.fraction_detected, '.', 'Tag', 'Amplitude response');
+    
+    if amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
+      tag =  'Amplitude response (included)';
+    else
+      tag = 'Amplitude response (excluded)';
+    end
+    
+    plot(i, amplitude.userdata.fraction_detected, '.', 'Tag', tag);
   end
   
   avg_spont = signal.userdata.avg_spont_activity;
@@ -99,10 +101,9 @@ add_figure_filename(gca);
 end
 
 
-function make_mosaic_subfct(mosaik_fcn, normalization_fcn, colormap_fcn, ...
-  apply_threshold, fig)
+function make_mosaic_subfct(neurons, mosaik_fcn, normalization_fcn, colormap_fcn, ...
+  apply_threshold, height_limit, min_epsp_nbr, fig)
 
-neurons = get_intra_neurons();
 nbr_of_neurons = length(neurons);
 stims_str = get_intra_motifs();
 nbr_of_stims = length(stims_str);
@@ -112,13 +113,12 @@ norm_constant_is_negative = false(size(mosaic));
 for i=1:nbr_of_neurons
   fprintf('\t%d (%d)\n', i, nbr_of_neurons);
   signal = sc_load_signal(neurons(i));
-  activity_threshold = get_activity_threshold(signal);
   
   for j=1:nbr_of_stims
     stim = get_item(signal.amplitudes.cell_list, stims_str{j});
     
     if ~apply_threshold || ...
-        stim.userdata.fraction_detected >= activity_threshold
+        stim.intra_is_significant_response(height_limit, min_epsp_nbr)
       [mosaic(j,i), norm_constant_is_negative(j,i)] = mosaik_fcn(stim);
     else
       mosaic(j,i) = 0;

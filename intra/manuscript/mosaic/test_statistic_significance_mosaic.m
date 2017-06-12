@@ -1,8 +1,7 @@
-function test_statistic_significance_mosaic(only_epsps)
+function test_statistic_significance_mosaic(neurons, only_epsps, height_limit, min_epsp_nbr)
 
 displayopt = 'off';
 
-neurons = get_intra_neurons();
 stims = get_intra_motifs();
 
 dim = size(neurons);
@@ -19,7 +18,6 @@ for i=1:length(properties)
   for j=1:length(neurons)
     neuron = neurons(j);
     signal = sc_load_signal(neuron);
-    activity_threshold = get_activity_threshold(signal);
     amplitudes = get_items(signal.amplitudes.list, 'tag', stims);
     
     tags = [];
@@ -28,7 +26,7 @@ for i=1:length(properties)
     for k=1:length(amplitudes)
       amplitude = amplitudes(k);
       
-      if amplitude.userdata.fraction_detected < activity_threshold
+      if ~amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
         continue
       end
       
@@ -92,14 +90,14 @@ for i=1:length(properties)
   incr_fig_indx()
   
   subplot(211)
-  [counts, edges] = histcounts(p_inter_stimulation, 'BinLimits', [0 1]);
+  [counts, edges] = histcounts(p_inter_stimulation);%, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
   title(['p value distribution for ' property ', (grouped as neurons)']);
   
   subplot(212)
-  [counts, edges] = histcounts(p_shuffled_inter_stimulation, 'BinLimits', [0 1]);
+  [counts, edges] = histcounts(p_shuffled_inter_stimulation);%, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
@@ -122,10 +120,9 @@ for i=1:length(properties)
     for k=1:length(neurons)
       neuron = neurons(k);
       signal = sc_load_signal(neuron);
-      activity_threshold = get_activity_threshold(signal);
       amplitude = get_items(signal.amplitudes.list, 'tag', stim);
       
-      if amplitude.userdata.fraction_detected < activity_threshold
+      if ~amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
         continue
       end
       
@@ -184,14 +181,14 @@ for i=1:length(properties)
   incr_fig_indx();
   
   subplot(211)
-  [counts, edges] = histcounts(p_inter_stimulation, 'BinLimits', [0 1]);
+  [counts, edges] = histcounts(p_inter_stimulation);%, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');
   title(['p value distribution for ' property ', (grouped as stims)']);
   
   subplot(212)
-  [counts, edges] = histcounts(p_shuffled_inter_stimulation, 'BinLimits', [0 1]);
+  [counts, edges] = histcounts(p_shuffled_inter_stimulation);%, 'BinLimits', [0 1]);
   bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
   xlabel('P value');
   ylabel('Distribution');

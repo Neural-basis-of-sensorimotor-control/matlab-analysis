@@ -153,8 +153,9 @@ end
 
 neuron = get(src, 'UserData');
 
-stim = get_intra_motifs(stim_nbr);
-stim = stim{1};
+stim = get_intra_motifs();
+stim = sort(stim);
+stim = stim{stim_nbr};
 
 neuron.load_experiment_amplitude_mode(stim, repetition);
 

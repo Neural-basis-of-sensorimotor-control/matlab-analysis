@@ -5,6 +5,7 @@ sc_clf_all('reset');
 
 neurons = get_intra_neurons();
 stims = get_intra_motifs();
+stims = sort(stims);
 
 for i=1:length(neurons)
   fprintf('%d / %d\n', i, length(neurons));
@@ -25,6 +26,8 @@ signal = sc_load_signal(neuron);
 template = signal.waveforms.get('tag', 'EPSP5');
 
 amplitudes = get_items(signal.amplitudes.list, 'tag', stims);
+[~, ind] = sort({amplitudes.tag});
+amplitudes = amplitudes(ind);
 
 max_length = min(arrayfun(@(x) length(amplitudes(x).stimtimes), 1:length(amplitudes)));
 
@@ -46,16 +49,19 @@ hold on
 fill_matrix(height, 'HitTest', 'off');
 colorbar;
 
+h_plot = [];
+
 [x_, y_] = find(response_types == 0);
-h_plot(1) = plot(x_, y_, 'k+', 'HitTest', 'off');
+h_plot = add_to_list(h_plot, plot(x_, y_, 'k+', 'HitTest', 'off'));
+
 [x_, y_] = find(response_types == 1);
-h_plot(2) = plot(x_, y_, 'k*', 'HitTest', 'off');
+h_plot = add_to_list(h_plot, plot(x_, y_, 'k*', 'HitTest', 'off'));
 
 [x_, y_] = find(response_types == 2);
-h_plot(3) = plot(x_, y_, 'ko', 'HitTest', 'off');
+h_plot = add_to_list(h_plot, plot(x_, y_, 'ko', 'HitTest', 'off'));
 
 [x_, y_] = find(response_types == 3);
-h_plot(4) = plot(x_, y_, 'k.', 'HitTest', 'off');
+h_plot = add_to_list(h_plot, plot(x_, y_, 'k.', 'HitTest', 'off'));
 
 axis tight
 

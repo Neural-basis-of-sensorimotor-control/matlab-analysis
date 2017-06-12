@@ -8,5 +8,7 @@ elseif ischar(list)
   list = {list};
   list = add_to_list(list, item);
 else
-  list(length(list)+1) = item;
+  if ~isempty(item)
+    list(length(list)+1) = item;
+  end
 end

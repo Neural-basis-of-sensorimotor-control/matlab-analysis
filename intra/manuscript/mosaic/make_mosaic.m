@@ -18,7 +18,7 @@ data = {
   @get_epsp_amplitude_abs,	                           'Amplitude height [absolute value]'	,	                                        []	,	              'concat'	,	1	%7
   @get_epsp_width_abs,	                               'Time to peak [absolute value]'	,	                                            []	,	              'concat'	,	1	%8
   @get_onset_latency_abs,	                             'Latency [absolute value]'	,	                                                  []	,	              'concat'	,	1	%9
-  @(x) get_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction ''*'' = below threshold'	,	                                []	,             	'concat'	,	0	%10
+  @(x) get_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction ''*'' = below threshold'	,	                          []	,             	'concat'	,	0	%10
   @get_nbr_of_epsps,         	                         '# of EPSPs'	,	                                                                []	,	              'concat'	,	1	%11
   @get_nbr_of_ipsps,	                                 '# of IPSPs'	,	                                                                []	,	              'concat'	,	1	%12
   @get_nbr_of_xpsps,	                                 '# of xPSPs'	,	                                                                []	,	              'concat'	,	1	%13

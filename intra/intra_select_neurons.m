@@ -10,4 +10,4 @@ for i=1:length(nbr_of_sweeps)
 
 end
 
-neuron = neuron(nbr_of_sweeps == 100);
+neuron = neuron(nbr_of_sweeps >= 50);

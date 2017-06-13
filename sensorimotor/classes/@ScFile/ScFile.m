@@ -148,24 +148,13 @@ classdef ScFile < ScList & ScDynamicClass
       end
     end
     
+    
     %Triggers = objects that can be triggered on
     %Implement function gettimes, and property istrigger returns true
     %Only returns objects where numel(times)>0
-    function triggers = gettriggers(obj,tmin,tmax)
+    function triggers = gettriggers(obj, tmin, tmax)
       
-      triggers = ScCellList;
-      
-      for i=1:obj.signals.n
-        trgs = obj.signals.get(i).triggers;
-        
-        for j=1:trgs.n
-          trg = trgs.get(j);
-        
-          if numel(trg.gettimes(tmin,tmax))
-            triggers.add(trg);
-          end
-        end
-      end
+      triggers = ScCellList(obj.get_waveforms(tmin, tmax));
       
       for i=1:obj.textchannels.n
         textchannel = obj.textchannels.get(i);

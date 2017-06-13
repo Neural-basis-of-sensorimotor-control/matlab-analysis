@@ -19,13 +19,17 @@ classdef ScSequence < ScListElement
   end
 
   methods
+    
     function obj = ScSequence(parent, tag, tmin, tmax)
+      
       obj.parent = parent;
       obj.tag = tag;
       obj.tmin = tmin;
+    
       if nargin>3
         obj.tmax = tmax;
       end
+      
     end
 
     %clear all transient data
@@ -53,8 +57,10 @@ classdef ScSequence < ScListElement
       triggerparents.add(ScClockTriggerParent(obj));
     end
 
-    function triggers = gettriggers(obj,tmin,tmax)
-      triggers = obj.parent.gettriggers(tmin,tmax);
+    function triggers = gettriggers(obj, tmin, tmax)
+      
+      triggers = obj.parent.gettriggers(tmin, tmax);
+      
     end
 
     function signals = get.signals(obj)

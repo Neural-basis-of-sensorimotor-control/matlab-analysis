@@ -1,14 +1,16 @@
 classdef SequenceViewer < ExperimentWrapper
 
+  methods (Abstract, Static)
+    mode            %see ScGuiState enums
+  end
+  
+  
   properties (Dependent, Abstract)
     triggertimes
     nbr_of_constant_panels
   end
 
-  methods (Abstract, Static)
-    mode            %see ScGuiState enums
-  end
-
+  
   methods (Abstract)
     %Add panels that will never be deleted during usage
     add_constant_panels(obj)
@@ -21,6 +23,7 @@ classdef SequenceViewer < ExperimentWrapper
     set_main_signal(obj, signal)
   end
 
+  
   properties (SetObservable)
     parent              %GuiManager
 
@@ -34,14 +37,17 @@ classdef SequenceViewer < ExperimentWrapper
     rmwf                %ScRemoveWaveform
   end
 
+  
   properties (SetObservable, SetAccess = 'protected')
     sc_file_folder      %char array
     raw_data_folder     %char array
   end
   
+  
   properties (SetAccess = 'private', GetAccess = 'private')
     deletechannel
   end
+  
   
   properties (SetObservable)
     help_text           %char array
@@ -58,12 +64,14 @@ classdef SequenceViewer < ExperimentWrapper
     automatic_update_on = true
   end
 
+  
   properties
     zoom_controls       %uicontrol array
     filepath            %char array
     reset_btn           %uicontrol
   end
 
+  
   properties (Dependent)
     plots
     analog_ch
@@ -76,6 +84,7 @@ classdef SequenceViewer < ExperimentWrapper
     histogram_window
     rasterplot_window
   end
+  
 
   properties
     plot_window_pr          %Figure
@@ -83,12 +92,17 @@ classdef SequenceViewer < ExperimentWrapper
     rasterplot_window_pr    %Figure
   end
 
+  
   properties (Constant)
     panel_width = 205;
     margin = 40
     figure_tag = 'sensorimotor-control'
   end
 
+  properties
+    show_stim_channels = true
+  end
+  
   methods
     %obj.create_channels must be called in inheriting class right
     %after calling SequenceViewer constructor

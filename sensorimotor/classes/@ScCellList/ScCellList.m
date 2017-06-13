@@ -1,5 +1,6 @@
 classdef ScCellList < handle
   %Linked list and hash set that can hold multiple object types
+  
   properties
     cell_list = {}
   end
@@ -10,6 +11,19 @@ classdef ScCellList < handle
   end
   
   methods
+    
+    function obj = ScCellList(list)
+      
+      if nargin
+        obj.cell_list = concat_list(obj.cell_list, list);
+      end
+      
+      if ~iscell(obj.cell_list)
+        obj.cell_list = num2cell(obj.cell_list);%mat2cell(obj.cell_list, ones(size(obj.cell_list, 1), 1), ones(size(obj.cell_list, 2), 1));
+      end
+      
+    end
+    
     
     function add(obj, val)
       obj.cell_list(obj.n+1) = {val};

@@ -2,6 +2,7 @@ classdef DigitalAxes < ChannelAxes
   
   methods
     function obj = DigitalAxes(gui)
+      
       obj@ChannelAxes(gui);
       sequence_listener();
       sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
@@ -12,7 +13,7 @@ classdef DigitalAxes < ChannelAxes
           xlim(obj.ax,obj.gui.xlimits);
         end
       end
-      %
+      
       function sequence_listener(~,~)
         if ~isempty(obj.gui.sequence)
           digch_ = obj.sequence.gettriggers(obj.gui.tmin,...
@@ -31,7 +32,7 @@ classdef DigitalAxes < ChannelAxes
     function clear_data(~)
     end
     
-    function plotch(obj,btn_down_fcn)
+    function plotch(obj, btn_down_fcn)
       
       if nargin==1
         btn_down_fcn = [];
@@ -40,8 +41,13 @@ classdef DigitalAxes < ChannelAxes
       sweep = obj.setup_axes();
       
       if ~isempty(sweep)
-        digch = obj.sequence.gettriggers(obj.gui.tmin,...
-          obj.gui.tmax);
+        
+        if obj.gui.show_stim_channels
+          digch = obj.sequence.gettriggers(obj.gui.tmin,...
+            obj.gui.tmax);
+        else
+          digch = ScCellList(obj.gui.file.get_waveforms(obj.gui.tmin, obj.gui.tmax));
+        end
         
         switch obj.gui.plotmode
           

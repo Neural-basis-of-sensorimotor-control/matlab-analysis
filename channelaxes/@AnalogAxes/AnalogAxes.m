@@ -14,13 +14,22 @@ classdef AnalogAxes < ChannelAxes
     v
   end
   
+  properties (Constant)
+    analog_axes_height = 700
+  end
+  
   methods
     
-    function obj = AnalogAxes(gui,signal)%,varargin)
+    function obj = AnalogAxes(gui, signal)
+      
       obj@ChannelAxes(gui);
+      
+      obj.height = obj.analog_axes_height;
+      
       if nargin>1
         obj.signal = signal;
       end
+      
     end
     
     

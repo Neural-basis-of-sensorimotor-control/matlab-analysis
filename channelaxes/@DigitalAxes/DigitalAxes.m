@@ -1,12 +1,13 @@
 classdef DigitalAxes < ChannelAxes
   
   methods
+    
     function obj = DigitalAxes(gui)
       
       obj@ChannelAxes(gui);
-      sequence_listener();
+            
       sc_addlistener(obj.gui,'xlimits',@xlimits_listener,obj.ax);
-      sc_addlistener(obj.gui,'sequence',@sequence_listener,obj.ax);
+      
       
       function xlimits_listener(~,~)
         if obj.gui.xlimits(1)<obj.gui.xlimits(2)
@@ -14,17 +15,8 @@ classdef DigitalAxes < ChannelAxes
         end
       end
       
-      function sequence_listener(~,~)
-        if ~isempty(obj.gui.sequence)
-          digch_ = obj.sequence.gettriggers(obj.gui.tmin,...
-            obj.gui.tmax);
-          height_ = max(15,digch_.n*15);
-          setheight(obj.ax,height_);
-          obj.height = height_;
-        end
-      end
-      
     end
+    
     
     function load_data(~)
     end

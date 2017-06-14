@@ -1,4 +1,5 @@
 classdef GuiAxes < handle
+  
   properties (SetAccess = 'private', GetAccess = 'private')
     gui_manager
   end
@@ -6,23 +7,35 @@ classdef GuiAxes < handle
   properties (SetObservable)
     ax_pr
     gui
-    height = 300
+    height
   end
+  
   properties (Dependent)
     sequence
     ax
   end
+  
+  properties (Constant)
+    gui_axes_height = 300
+  end
+  
+  
   methods (Abstract)
     load_data(obj)
     clear_data(obj)
     plotch(obj,varargin)
   end
+  
   methods
 
     function obj = GuiAxes(gui)
-      obj.gui = gui;
-      obj.ax = axes;
-      set(obj.ax,'Parent',gui.plot_window);
+      
+      obj.gui    = gui;
+      obj.ax     = axes;
+      obj.height = obj.gui_axes_height;
+
+      set(obj.ax, 'Parent', gui.plot_window);
+    
     end
 
     function sequence = get.sequence(obj)

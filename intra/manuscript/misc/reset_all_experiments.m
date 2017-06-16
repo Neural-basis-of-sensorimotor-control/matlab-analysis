@@ -1,20 +1,22 @@
 function reset_all_experiments(neurons, response_min, response_max, only_epsps)
 
+sc_dir = get_default_experiment_dir();
+
 electrodes = {'V1', 'V2', 'V3', 'V4'};
 
 stims_str = get_intra_motifs();
 
-update_raw_data_path(neurons);
+init_raw_data_path(neurons);
 
 update_filtering_template_amplitude(neurons, response_min, response_max, sc_dir);
 
 update_amplitude_parent_userdata(only_epsps, neurons, stims_str, electrodes, sc_dir);
 
-update_signal_userdata(neurons, only_epsp);
+update_signal_userdata(neurons, only_epsps);
 
 end
 
-function update_raw_data_path(neurons)
+function init_raw_data_path(neurons)
 
 for i=1:length(neurons)
   

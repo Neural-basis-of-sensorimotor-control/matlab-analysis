@@ -83,7 +83,10 @@ for i=1:length(neurons)
   plot(avg_response_repeated_simulations_1(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
     'LineStyle', 'none', 'Tag', neurons(i).file_tag);
 end
-plot(mean(avg_response_repeated_simulations_1, 2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
+
+save temp_backup_1
+
+plot(mean(avg_response_repeated_simulations_1, 2), 1:length(stim_pulses), 'Tag', 'MEAN', 'LineWidth', 2)
 
 axis_wide(gca, 'y')
 add_legend(gca, true, true, 'TextColor', 'r')
@@ -109,7 +112,7 @@ if ~plot_only_final_figures
     plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
       'LineStyle', 'none', 'Tag', neurons(i).file_tag);
   end
-  plot(mean(avg_response_repeated_simulations_2, 2), 1:dim(1), 'Tag', 'MEAN', 'LineWidth', 2)
+  plot(mean(avg_response_repeated_simulations_2, 2), 1:length(stim_pulses), 'Tag', 'MEAN', 'LineWidth', 2)
   
   axis_wide(gca, 'y')
   add_legend(gca, true, true, 'TextColor', 'r')

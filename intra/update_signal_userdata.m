@@ -26,7 +26,7 @@ for i=1:length(neurons)
         
         single_pulse = get_item(signal.amplitudes.cell_list, single_str);
         
-        if ~only_epsp || single_pulse.height > 0
+        if ~only_epsp || any(single_pulse.height > 0)
          
           avg_height = [avg_height; single_pulse.height];
           avg_width = [avg_width; single_pulse.width];

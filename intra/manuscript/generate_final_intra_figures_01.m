@@ -7,7 +7,7 @@ min_nbr_epsp = 5;
 only_epsps = true;
 
 neurons = intra_select_neurons(get_intra_neurons(), get_intra_motifs());
-
+ 
 if reset_experiments
   reset_all_experiments(neurons, response_min, response_max, only_epsps);
 end

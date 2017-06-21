@@ -89,6 +89,7 @@ classdef ScNeuron < handle
       
       gui_mgr.viewer.set_amplitude(amplitude);
       gui_mgr.viewer.set_sweep(sweep_nbr);
+      
     end
     
   end

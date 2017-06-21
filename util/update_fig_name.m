@@ -1,11 +1,15 @@
 function update_fig_name(figs, ending)
 
+if ~nargin
+  figs = gcf;
+end
+
 if nargin == 1
   ending = '.png';
 end
 
-if ~nargin
-  figs = gcf;
+if ~any(ending == '.')
+  ending = ['.' ending];
 end
 
 for i=1:length(figs)

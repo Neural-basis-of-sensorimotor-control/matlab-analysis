@@ -29,7 +29,7 @@ function button_down_fcn(edit_plot_handle, threshold, indx, type, src)
 
 edit_plot_handle.threshold = threshold;
 edit_plot_handle.indx      = indx;
-edit_plot_handle.type      = type;
+edit_plot_handle.type      = type;edit
 edit_plot_handle.src       = src;
 
 plots = get_plots(edit_plot_handle.h_axes);

@@ -5,8 +5,10 @@ if ~nargin
 end
 
 for i=1:length(figs)
+  
   update_fig_name(figs(i), 'fig');
   savefig(figs(i), figs(i).FileName);
+
 end
 
 end

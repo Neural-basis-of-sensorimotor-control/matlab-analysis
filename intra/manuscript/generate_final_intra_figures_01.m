@@ -14,7 +14,7 @@ end
 
 single_stim_response_in_pattern(neurons, response_min, response_max, plot_only_final_figures);
 
-make_mosaic(neurons, true, height_limit, min_nbr_epsp);
+make_mosaic(neurons, true, height_limit, min_nbr_epsp, []);
 
 test_statistic_significance_mosaic(neurons, only_epsps, height_limit, min_nbr_epsp);
 

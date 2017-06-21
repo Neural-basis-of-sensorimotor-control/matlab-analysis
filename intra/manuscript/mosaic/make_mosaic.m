@@ -1,9 +1,9 @@
-function make_mosaic(neurons, val, height_limit, min_epsp_nbr)
+function make_mosaic(neurons, val, height_limit, min_epsp_nbr, override_colormap)
 
 if isnumeric(val)
   indx = val;
 elseif islogical(val)
-  indx = [10 16 17 18 19];
+  indx = [10 16 17 18 19 20];
 else
   error('function not defined for input of type %s', class(val));
 end
@@ -27,7 +27,8 @@ data = {
   @(x) get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
   @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs'	,	                      []	,	              'concat'	,	1	%17
   @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	                          []	,	              'concat'	,	1	%18
-  @(x) get_normalized_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	                                              [],             	  'concat'	,	0	%19
+  @(x) get_normalized_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	[],        	  'concat'	,	0	%19
+  @(x) get_nbr_of_manual_amplitudes(x, height_limit, min_epsp_nbr), 'Number of manual amplitudes ''*'' = below threshold'	,	          [],                 'default'	,	0	%20
   };
 
 
@@ -49,16 +50,31 @@ for i=1:length(indx)
   tmp_evaluation_fcn = evaluation_fcns{indx(i)};
   tmp_normalization_fcn = normalization_fcns{indx(i)};
   tmp_apply_thresholds = apply_thresholds(indx(i));
-  tmp_figure = incr_fig_indx();
+  
+  tmp_mosaic_figure = incr_fig_indx();
+  tmp_lineplot_figure = incr_fig_indx();
+  
   tmp_titlestr = titlestr{indx(i)};
-  tmp_colormap_fcn = colormap_fcn{indx(i)};
+  
+  if isempty(override_colormap)
+    tmp_colormap_fcn = override_colormap;
+  else
+    
+    
+    
+    
+    tmp_colormap_fcn = colormap_fcn{indx(i)};
+  end
   
   make_mosaic_subfct(neurons, tmp_evaluation_fcn,tmp_normalization_fcn, ...
     tmp_colormap_fcn, tmp_apply_thresholds, height_limit, min_epsp_nbr, ...
-    tmp_figure);
+    tmp_mosaic_figure, tmp_lineplot_figure);
   
-  title(tmp_titlestr);
-  add_figure_filename(gca);
+  figure(tmp_mosaic_figure);
+  title([tmp_titlestr ' (mosaic)']);
+  
+  figure(tmp_lineplot_figure);
+  title([tmp_titlestr ' (line plot)']);
   
 end
 
@@ -91,7 +107,7 @@ for i=1:length(neurons)
   plot(i, threshold, '+', 'Tag', 'Threshold response');
 end
 
-set(gca,'XTick',1:length(neurons),'XTickLabel',{neurons.file_tag}, ...
+set(gca,'XTick',1:length(neurons),'XTickLabel', {neurons.file_tag}, ...
   'XTickLabelRotation', 270, 'Color', [0 0 0]);
 ylabel('Response fraction');
 ylim([0 1]);
@@ -102,7 +118,7 @@ end
 
 
 function make_mosaic_subfct(neurons, mosaik_fcn, normalization_fcn, colormap_fcn, ...
-  apply_threshold, height_limit, min_epsp_nbr, fig)
+  apply_threshold, height_limit, min_epsp_nbr, mosaic_fig, lineplot_fig)
 
 nbr_of_neurons = length(neurons);
 stims_str = get_intra_motifs();
@@ -130,7 +146,9 @@ if ~isempty(normalization_fcn)
   mosaic = mosaic/normalization_fcn(mosaic);
 end
 
-clf(fig, 'reset');
+clf(mosaic_fig, 'reset');
+
+figure(mosaic_fig);
 
 fill_matrix(mosaic);
 hold on
@@ -143,14 +161,24 @@ for i=1:length(x)
   fill(x_, y_, 'w');
 end
 
+if isempty(colormap_fcn)
+  colormap_fcn = 'default';
+end
+
 if ischar(colormap_fcn)
+  
   if strcmpi(colormap_fcn, 'default')
-    colorbar(gca);
+     colorbar(gca);
   elseif strcmpi(colormap_fcn, 'concat')
     concat_colormaps(mosaic, gca, [0 1], @gray, invert_colormap(@autumn), @winter);
+  elseif strcmpi(colormap_fcn, 'reversed')
+    concat_colormaps(mosaic, gca, [0 1], ...
+      invert_colormap(@winter), @autumn, invert_colormap(@gray));
   else
-    error('Illegal value: %s', colormap_fcn);
+    colormap(gca, colormap_fcn);
+    colorbar(gca);
   end
+  
 elseif isnumeric(colormap_fcn)
   
   if length(colormap_fcn)==1
@@ -175,13 +203,27 @@ h2 = plot3(x_neg, y_neg, v_neg, 'k+', ...
 uistack(h2, 'top');
 
 set(gca, 'YTick', (1:nbr_of_neurons), ...
-  'YTickLabel', get_values(neurons, 'file_tag'), ...
+  'YTickLabel', {neurons.file_tag}, ...
   'XTick', (1:nbr_of_stims), ...
   'XTickLabel', stims_str, ...
   'XTickLabelRotation', 270);
 axis(gca, 'tight');
 
+clf(lineplot_fig, 'reset');
+
+figure(lineplot_fig);
+
+hold on
+
+mosaic(mosaic == 0) = nan;
+
+for j=1:size(mosaic, 2)
+  
+  plot(1:size(mosaic, 1), mosaic(:, j), 'LineStyle', '-', 'Marker', '+', ...
+    'Tag', neurons(j).file_tag);
+
 end
 
+add_legend(lineplot_fig);
 
-
+end

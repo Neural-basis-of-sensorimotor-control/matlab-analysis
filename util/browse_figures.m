@@ -1,43 +1,38 @@
 function browse_figures
 
+btn_width = 100;
+btn_height = 100;
+
 figure_nbr = min(get_fig_nbrs());
 fig = figure();
 set(fig, 'Tag', 'browser');
 
 panel = uipanel('Parent', fig);
 
+x = 0;
+y = 100;
+
 btn = uicontrol('Parent', panel, 'String', '-', 'Callback', ...
   @(~,~) decr_fig_nbr());
-
-setx(btn, 0);
-sety(btn, 100);
-setwidth(btn, 100);
-setheight(btn, 100);
+[x, y] = add_btn(btn, x, y, btn_height, btn_width);
 
 btn = uicontrol('Parent', panel, 'String', '+', 'Callback', ...
   @(~,~) incr_fig_nbr());
+[x, y] = add_btn(btn, x, y, btn_height, btn_width);
 
-setx(btn, 100);
-sety(btn, 100);
-setwidth(btn, 100);
-setheight(btn, 100);
+btn = uicontrol('Parent', panel, 'String', 'Close', 'Callback', ...
+  @(~,~) close_fig());
+[x, y] = add_btn(btn, x, y, btn_height, btn_width);
 
 btn = uicontrol('Parent', panel, 'String', 'Update', 'Callback', ...
   @(~,~) update_fig_nbr());
-
-setx(btn, 200);
-sety(btn, 100);
-setwidth(btn, 100);
-setheight(btn, 100);
+[x, y] = add_btn(btn, x, y, btn_height, btn_width);
 
 txt_ctrl = uicontrol('Parent', panel, 'Style', 'Text', 'String', ...
   '', 'Callback', ...
   @(~,~) update_fig_nbr());
+add_btn(btn, x, y, btn_height, btn_width);
 
-setx(txt_ctrl, 300);
-sety(txt_ctrl, 100);
-setwidth(txt_ctrl, 100);
-setheight(txt_ctrl, 100);
 
   function incr_fig_nbr()
     
@@ -82,6 +77,27 @@ setheight(txt_ctrl, 100);
     ind = nnz(fignbrs<=figure_nbr);
     set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
+
+  function close_fig()
+    
+    close(figure_nbr);
+    
+    incr_fig_nbr();
+    
+  end
+
+end
+
+
+function [x, y] = add_btn(btn, x, y, height, width)
+
+setx(btn, x);
+sety(btn, height);
+setwidth(btn, width);
+setheight(btn, y);
+
+x = x + width;
+
 
 end
 

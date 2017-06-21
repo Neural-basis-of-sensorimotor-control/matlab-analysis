@@ -4,35 +4,42 @@ function make_amplitude_maximal_dimensions(neurons, height_limit, min_epsp_nbr, 
 [neurons, stims_str, scaling_dim, shuffle] = ...
   init_intra_neurons(neurons, varargin{:});
 
-nbr_of_dims = length(stims_str) * [1
+nbr_of_dims = length(stims_str) * ...
+  [1
   1
   1
-  2];
+  2
+  3];
 
 get_index_fcn = {@(x) x
   @(x) x
   @(x) x
-  @(x) 2*x+ [0 -1]'};
+  @(x) 2*x+ [0 -1]'
+  @(x) 3*x+ [0 -1 -2]'};
 
 get_response_fcn = {@(stim, indx) stim.get_amplitude_height(0, indx)
   @(stim, indx) stim.get_amplitude_width(0, indx)
   @(stim, indx) stim.get_amplitude_latency(0, indx)
-  @(stim, indx) [stim.get_amplitude_height(0, indx); stim.get_amplitude_latency(0, indx)]};
+  @(stim, indx) [stim.get_amplitude_height(0, indx); stim.get_amplitude_latency(0, indx)]
+  @(stim, indx) [stim.get_amplitude_height(0, indx); stim.get_amplitude_latency(0, indx); stim.get_amplitude_width(0, indx)]};
 
 get_normalization_fcn = ...
   {@(signal, electrode_ind) signal.userdata.single_pulse_height(electrode_ind)
   @(signal, electrode_ind) signal.userdata.single_pulse_width(electrode_ind)
   @(signal, electrode_ind) signal.userdata.single_pulse_latency(electrode_ind)
-  @(signal, electrode_ind) [signal.userdata.single_pulse_height(electrode_ind); signal.userdata.single_pulse_latency(electrode_ind)]};
+  @(signal, electrode_ind) [signal.userdata.single_pulse_height(electrode_ind); signal.userdata.single_pulse_latency(electrode_ind)]
+  @(signal, electrode_ind) [signal.userdata.single_pulse_height(electrode_ind); signal.userdata.single_pulse_latency(electrode_ind); signal.userdata.single_pulse_width(electrode_ind)]};
 
-titlestr = {'Height'
+titlestr = ...
+  {'Height'
   'Width'
   'Latency'
   'Height + Latency'
-  };
+  'Height + Latency + Time to peak'};
 
 
 for i1=1:length(nbr_of_dims)
+  
   incr_fig_indx();
   clf reset
   
@@ -74,4 +81,5 @@ end
     add_legend([subplot(121) subplot(122)], true);
     
   end
+
 end

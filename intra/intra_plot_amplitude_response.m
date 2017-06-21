@@ -62,8 +62,8 @@ for i=1:length(neurons)
         
         axis(h, 'tight');
         
-        xlabel(h, str_stims{k})
-        ylabel(h, str_stims{m})
+        xlabel(h, tmp_amplitudes(k).tag)
+        ylabel(h, tmp_amplitudes(m).tag)
         
         title(h, neurons(i).file_tag);
         grid(h, 'on');

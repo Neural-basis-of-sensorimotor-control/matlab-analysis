@@ -35,14 +35,7 @@ classdef SequenceViewer < ExperimentWrapper
     analog_subch        %ScCellList
     histogram           %HistogramChannel
     rmwf                %ScRemoveWaveform
-  end
-
-  
-  properties (SetObservable, SetAccess = 'protected')
-    sc_file_folder      %char array
-    raw_data_folder     %char array
-  end
-  
+  end  
   
   properties (SetAccess = 'private', GetAccess = 'private')
     deletechannel
@@ -220,19 +213,5 @@ classdef SequenceViewer < ExperimentWrapper
       set(obj.rasterplot_window_pr, 'Tag', SequenceViewer.figure_tag)
     end
     
-    
-    function delete(obj)
-      fid = fopen('sc_config.txt','w');
-      if ~isempty(obj.experiment)
-        fprintf(fid,'%s\n',obj.experiment.sc_dir);
-        fprintf(fid,'%s\n',obj.experiment.fdir);
-        fprintf(fid,'%s\n',obj.experiment.save_name);
-      else
-        fprintf(fid,'%s\n',obj.sc_file_folder);
-        fprintf(fid,'%s\n',obj.raw_data_folder);
-        fprintf(fid,'%s\n','');
-      end
-      fclose(fid);
-    end
   end
 end

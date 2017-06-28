@@ -33,8 +33,6 @@ classdef GuiManager < handle
 		
 		function set.mode(obj,mode)
 			%Store data for the new viewer
-			sc_file_folder = obj.viewer.sc_file_folder;
-			raw_data_folder = obj.viewer.raw_data_folder;
 			expr = obj.viewer.experiment;
 			file = obj.viewer.file;
 			sequence = obj.viewer.sequence;
@@ -52,8 +50,6 @@ classdef GuiManager < handle
 				case ScGuiState.ampl_analysis
 					new_viewer = AmplitudeViewer(obj);
 			end
-			new_viewer.set_sc_file_folder(sc_file_folder);
-			new_viewer.set_raw_data_folder(raw_data_folder);
 			new_viewer.set_experiment(expr);
 			new_viewer.set_file(file);
 			new_viewer.set_sequence(sequence);
@@ -69,7 +65,7 @@ classdef GuiManager < handle
 			end
 		end
 		
-		function set.experiment(obj,experiment)
+		function set.experiment(obj, experiment)
 			obj.viewer.set_experiment(experiment);
 		end
 	end

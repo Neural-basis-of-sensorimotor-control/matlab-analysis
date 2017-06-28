@@ -48,6 +48,7 @@ for i=1:length(neurons)
   neuron = neurons(i);
   
   signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
+  save_path = [sc_dir neuron.experiment_filename];
   signal.simple_artifact_filter.is_on = true;
   signal.simple_spike_filter.is_on = false;
   
@@ -64,7 +65,7 @@ for i=1:length(neurons)
   
   signal.update_continuous_signal(false);
   signal.update_amplitudes(neuron, response_min, response_max, true);
-  signal.sc_save([sc_dir signal.parent.parent.save_name]);
+  signal.sc_save(save_path);
   
 end
 
@@ -86,6 +87,8 @@ for i=1:length(electrodes)
     
     neuron = neurons(j);
     signal = sc_load_signal(neuron);
+    save_path = [sc_dir neuron.experiment_filename];
+    
     vals = nan(length(indx), 3);
     
     for k=1:length(indx)
@@ -117,7 +120,7 @@ for i=1:length(electrodes)
     user_data_field = sprintf('epsp_%s', electrode);
     signal.userdata.(user_data_field) = vals;
     
-    signal.sc_save([sc_dir signal.parent.parent.save_name]);
+    signal.sc_save(save_path);
     
   end
 end

@@ -1,19 +1,17 @@
 function val = get_raw_data_dir()
 
-filename = 'sc.xml';
+global RAW_DATA_DIR
 
-try
-	s = xml2struct(filename);
-catch
-	warning('Could not read %s settings file', filename);
-	val = [];
-	return
+if isempty(RAW_DATA_DIR)
+  
+  RAW_DATA_DIR = read_sc_settings('raw_data_dir');
+  
 end
 
-val = s.sc_settings.raw_data_dir.Text;
-
-if ~isempty(val) && val(end) ~= filesep
-  val(end+1) = filesep;
+if ~isempty(RAW_DATA_DIR) && RAW_DATA_DIR(end) ~= filesep
+  RAW_DATA_DIR(end+1) = filesep;
 end
+
+val = RAW_DATA_DIR;
 
 end

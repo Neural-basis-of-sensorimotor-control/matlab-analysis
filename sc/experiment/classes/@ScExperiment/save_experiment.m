@@ -29,12 +29,14 @@ else
   end
 end
 
-[folder, file, extension] = fileparts(save_path);
-experiment.sc_dir = folder;
-experiment.save_name = [file extension];
+obj = experiment;
 
-obj = experiment; %#ok<NASGU>
+[~, obj.save_name] = fileparts(save_path);
+ 
 save(save_path, 'obj')
+
+set_last_experiment(save_path);
+
 saved = true;
 
 end

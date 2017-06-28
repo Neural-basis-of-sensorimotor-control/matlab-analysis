@@ -19,10 +19,10 @@ end
 
 d = load(fpath, 'obj');
 
-[~, name, ext] = fileparts(fpath);
+[~, name] = fileparts(fpath);
 experiment = d.obj;
-experiment.save_name = [name ext];
+experiment.save_name = name;
 
-experiment.sc_dir = fileparts(fpath);
+set_last_experiment(fpath);
 
 end

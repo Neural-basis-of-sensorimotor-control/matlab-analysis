@@ -4,7 +4,6 @@ classdef ScExperiment < ScList
   
 	properties
 		fdir        %directory containing .mat / .adq files
-		sc_dir      %directory for save_name (where this object is saved)
 		save_name   %for saving this class, ends with _sc.mat
 		last_gui_version
 	end
@@ -139,18 +138,18 @@ classdef ScExperiment < ScList
 		end
 		
 		function set.abs_save_path(obj, val)
+      
 			val = which(val);
 			[pname, fname, ext] = fileparts(val);
-			obj.sc_dir = pname;
-			obj.save_name = [fname ext];
-		end
+      obj.save_name = fname;
+			set_last_experiment([pname fname ext]);
 		
-		function val = get.abs_save_path(obj)
-			if isempty(obj.save_name)
-				val = [];
-			else
-				val = fullfile(obj.sc_dir,obj.save_name);
-			end
+    end
+		
+		function val = get.abs_save_path(~)
+			
+      [~, val] = get_last_experiment();
+      
 		end
 	end
 	

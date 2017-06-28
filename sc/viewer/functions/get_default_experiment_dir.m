@@ -1,19 +1,17 @@
 function val = get_default_experiment_dir()
 
-filename = 'sc.xml';
+global INTRA_EXPERIMENT_DIR
 
-try
-	s = xml2struct(filename);
-catch
-	warning('Could not read %s settings file', filename);
-	val = [];
-	return
+if isempty(INTRA_EXPERIMENT_DIR)
+  
+  INTRA_EXPERIMENT_DIR = read_sc_settings('intra_experiment_dir');
+  
 end
 
-val = s.sc_settings.intra_experiment_dir.Text;
-
-if ~isempty(val) && val(end) ~= filesep
-  val(end+1) = filesep;
+if ~isempty(INTRA_EXPERIMENT_DIR) && INTRA_EXPERIMENT_DIR(end) ~= filesep
+  INTRA_EXPERIMENT_DIR(end+1) = filesep;
 end
+
+val = INTRA_EXPERIMENT_DIR;
 
 end

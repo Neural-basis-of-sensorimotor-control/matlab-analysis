@@ -61,55 +61,46 @@ end
 
 args = varargin;
 
-if  exist('sc_config.txt','file') == 2
-  fid = fopen('sc_config.txt');
-  sc_file_folder = fgetl(fid);
-  raw_data_folder = fgetl(fid);
-  if ~numel(args)
-    str = fgetl(fid);
-    if ischar(str)
-      filename = fullfile(sc_file_folder, str);
-      if isfile(filename)
-        args = {filename};
-      end
-    end
-  end
-  fclose(fid);
-  if ~ischar(sc_file_folder), sc_file_folder = [];    end
-  if ~ischar(raw_data_folder),   raw_data_folder = [];      end
-else
-  sc_file_folder = [];
-  raw_data_folder = [];
+[~, experiment_path] = get_last_experiment();
+
+if ~nargin && isfile(experiment_path)
+  args = {experiment_path};
 end
 
-if isempty(sc_file_folder)
-    sc_file_folder = get_default_experiment_dir;
-end
-
-if isempty(raw_data_folder)
-    raw_data_folder = get_raw_data_dir;
-end
-
-if ~numel(args) || strcmpi(args{1},'-loadnew')
-  %Force program to neglect sc_config.txt
-  [fname, pname] = uigetfile('*_sc.mat','Choose experiment file', sc_file_folder);
-  filename = fullfile(pname,fname);
-  if exist(filename,'file') == 2
+if ~numel(args) || strcmpi(args{1}, '-loadnew')
+  
+  %Ignore previous experiment
+  
+  [fname, pname] = uigetfile('*_sc.mat','Choose experiment file', ...
+    get_default_experiment_dir());
+  
+  filename = fullfile(pname, fname);
+  
+  if isfile(filename)
+    
     args = {filename};
+    set_default_experiment_dir(pname);
+    set_last_experiment(fname);
+    
   else
+    
     fprintf('Could not detect file\n');
     return
+  
   end
+  
 end
 
 
 if strcmpi(args{1}, '-help')
+  
   help(mfilename)
 
 elseif strcmpi(args{1}, '-what')
-  directory = uigetdir(sc_file_folder,'Select file directory');
+  directory = uigetdir(get_default_experiment_dir(), 'Select file directory');
   
   if ~isnumeric(directory)
+    
     w = what(directory);
     clc
     
@@ -117,78 +108,114 @@ elseif strcmpi(args{1}, '-what')
       f = w.mat{k};
   
       if numel(f)>7 && strcmpi(f(end-6:end),'_sc.mat')
+      
         d = load([directory filesep f]);
         d.obj.print_status();
-      end
+      
+      end   
     end
   end
   
-elseif strcmpi(args{1},'-newsp2') || strcmpi(args{1},'-newadq')
+elseif strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
+  
   %Create new *_sc.mat file
   experiment = ScExperiment();
   
-  if strcmpi(args{1},'-newsp2')
-    [rawdatafiles,raw_data_folder] = uigetfile('*.mat','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+  if strcmpi(args{1}, '-newsp2')
+    
+    ending = '*.mat';
+    
   else  %adq
-    [rawdatafiles,raw_data_folder] = uigetfile('*.adq','Select all files with analog channels to be included',raw_data_folder,'MultiSelect','on');
-    if ~iscell(rawdatafiles),  rawdatafiles = {rawdatafiles};    end
+    
+    ending = '*.adq';
+    
   end
   
+  [rawdatafiles, raw_data_folder] = uigetfile(ending, ...
+    'Select all files with analog channels to be included', ...
+    get_raw_data_folder(), 'MultiSelect', 'on');
+  
+  if ~iscell(rawdatafiles)
+    rawdatafiles = {rawdatafiles};
+  end
+  
+  set_raw_data_dir(raw_data_folder);
   experiment.fdir = raw_data_folder;
-  rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x),rawdatafiles));
+  rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x), rawdatafiles));
   
   for i=1:numel(rawdatafiles)
-    fprintf('scanning file %i out of %i\n',i,numel(rawdatafiles));
+    
+    fprintf('scanning file %i out of %i\n', i, numel(rawdatafiles));
     file = ScFile(experiment, rawdatafiles{i});
     file.init();
     experiment.add(file);
+  
   end
   
   if ~experiment.n
+    
     msgbox('No files selected. Use sc -newadq for .ADQ files, and sc -newsp2 for imported spike2 files.');
     return;
+  
   else
+    
     guimgr = GuiManager();
     
     if nargout
       gui = guimgr;   
     end
     
-    guimgr.experiment = experiment;
-    experiment_name = experiment.get(1).tag;
-    experiment_name = [experiment_name(1:end-4) '_sc'];
+    guimgr.experiment    = experiment;
+    experiment_name      = experiment.get(1).tag;
+    experiment_tag       = experiment_name(1:end-4);
+    experiment_name      = [experiment_tag '_sc'];
+    experiment.save_name = experiment_tag;
+    
     if ~experiment.save_experiment(experiment_name, false)
+    
       msgbox('Experiment not saved. Aborting');
+    
     else
+      
       guimgr.show;
-      assignin('base','h',guimgr);
-      assignin('base','expr',experiment);
+      assignin('base', 'h', guimgr);
+      assignin('base', 'expr', experiment);
+    
     end
   end
   
 elseif strcmpi(args{1},'-version')
+  
   fprintf('See <a href="%s">GitHub</a> for additional information.\n', github_url);
   
 elseif strcmpi(args{1}, '-amplitude')
+  
   args = args(2:end);
   gui = sc(args{:});
   gui.mode = ScGuiState.ampl_analysis;
   
 elseif numel(args{1}) && args{1}(1) == '-'
+  
   fprintf(['Illegal command : ' args{1}]);
   
 else
   
   if isfile(args{1})
+    
     filename = args{1};
+  
   else
-    [fname, pname] = uigetfile('*_sc.mat','Choose experiment file');
-    filename = fullfile(pname,fname);
-    if exist(filename,'file') ~= 2
+    
+    [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file');
+    filename = fullfile(pname, fname);
+    
+    if ~isfile(filename)
+    
       fprintf('Could not detect file\n');
       return;
+    
     end
+    
   end
   
   guimgr = GuiManager();
@@ -197,21 +224,19 @@ else
     gui = guimgr;
   end
   
-  guimgr.viewer.set_sc_file_folder(sc_file_folder);
-  guimgr.viewer.set_raw_data_folder(raw_data_folder);
-  d = load(filename);
-  
-  experiment = d.obj;
-  clear d
-  guimgr.experiment = experiment;
+  set_default_experiment_dir(filename);
+  guimgr.experiment = ScExperiment.load_experiment(filename);
   guimgr.show;
   
   if length(args)>1
+    
     guimgr.viewer.set_file(args{2});
+  
   end
   
   assignin('base','h',guimgr);
-  assignin('base','expr',experiment);
+  assignin('base','expr', guimgr.viewer.experiment);
+  
 end
 
 end

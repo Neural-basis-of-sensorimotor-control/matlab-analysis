@@ -1,3 +1,0 @@
-C:\Users\hamo\Dropbox\Intra analysis Team Folder\experiment-files
-D:\raw_data\mat\BJNR140211
-BJNR_sc.mat

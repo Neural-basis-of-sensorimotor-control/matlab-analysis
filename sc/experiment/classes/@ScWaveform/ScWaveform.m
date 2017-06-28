@@ -56,7 +56,7 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
       
       if ~isempty(obj.imported_spikedata)
         tmp_spiketimes = obj.imported_spikedata.gettimes(0, inf, ...
-          [obj.parent.parent.parent.sc_dir filesep]);
+          get_default_experiment_dir());
         
         obj.imported_spiketimes = sort([obj.imported_spiketimes; tmp_spiketimes]);
       end

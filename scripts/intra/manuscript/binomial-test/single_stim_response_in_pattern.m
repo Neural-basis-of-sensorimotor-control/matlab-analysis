@@ -2,7 +2,6 @@ function single_stim_response_in_pattern(neurons, response_min, response_max, ..
   plot_only_final_figures)
 
 %% Parameters
-
 nbr_of_simulations = 1e4;
 normalize_distributions = true;
 
@@ -70,27 +69,37 @@ end
 
 
 %%
+
 incr_fig_indx();
 hold(gca, 'on');
-set(gca, 'Color', 'k', 'GridColor', 'w');
+set(gca);
 
 linestyle = ':';
 markersize = 12;
 
 for i=1:length(neurons)
   dummy_y = 1:length(stim_pulses);
-  plot(avg_response_repeated_simulations_1(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
-  plot(avg_response_repeated_simulations_1(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
+  
+  plot(avg_response_repeated_simulations_1(:,i), dummy_y, ...
+    'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
+  
+  plot(avg_response_repeated_simulations_1(:,i), dummy_y, ...
+    'Marker', '+', 'MarkerSize', markersize, ...
     'LineStyle', 'none', 'Tag', neurons(i).file_tag);
+  
 end
 
 save temp_backup_1
 
-plot(mean(avg_response_repeated_simulations_1, 2), 1:length(stim_pulses), 'Tag', 'MEAN', 'LineWidth', 2)
+plot(mean(avg_response_repeated_simulations_1, 2), 1:length(stim_pulses), ...
+  'Tag', 'Mean', 'LineWidth', 2)
 
 axis_wide(gca, 'y')
-add_legend(gca, true, true, 'TextColor', 'r')
+
+add_legend(gca, true, false)
+
 grid on
+
 title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
   response_min, response_max));
 
@@ -99,6 +108,7 @@ ylabel('Pattern - Electrode - Nbr of electrodes');
 xlabel('Value of eq 4');
 
 if ~plot_only_final_figures
+  
   incr_fig_indx();
   hold(gca, 'on');
   set(gca, 'Color', 'k', 'GridColor', 'w');
@@ -108,11 +118,14 @@ if ~plot_only_final_figures
   
   for i=1:length(neurons)
     dummy_y = 1:length(stim_pulses);
-    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', linestyle, 'Tag', neurons(i).file_tag);
-    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', 'MarkerSize', markersize, ...
-      'LineStyle', 'none', 'Tag', neurons(i).file_tag);
+    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', ...
+      linestyle, 'Tag', neurons(i).file_tag);
+    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', ...
+      'MarkerSize', markersize, 'LineStyle', 'none', 'Tag', ...
+      neurons(i).file_tag);
   end
-  plot(mean(avg_response_repeated_simulations_2, 2), 1:length(stim_pulses), 'Tag', 'MEAN', 'LineWidth', 2)
+  plot(mean(avg_response_repeated_simulations_2, 2), 1:length(stim_pulses), ...
+    'Tag', 'Mean', 'LineWidth', 2)
   
   axis_wide(gca, 'y')
   add_legend(gca, true, true, 'TextColor', 'r')

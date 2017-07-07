@@ -20,21 +20,24 @@ elseif isempty(axes_handles)
   plots = [];
   return
 
-elseif isa(axes_handles(1), 'matlab.ui.Figure')
+elseif any(arrayfun(@isfigure, axes_handles))
+  
+  h_axes = [];
+
+  for i=1:length(axes_handles)
+    ax = get_axes(axes_handles(i));
+    h_axes = add_to_list(h_axes, ax);
+  end
+  
+  plots = get_plots(h_axes);
+  return
+
+elseif any(arrayfun(@isaxes, axes_handles))
+  
   plots = [];
 
   for i=1:length(axes_handles)
-    p = get_axes(axes_handles(i));
-    plots = [plots p];
-  end
-  plots = get_plots(plots);
-  return
-
-elseif isa(axes_handles(1), 'matlab.graphics.axis.Axes')
-  plots = axes_handles(1).Children;
-
-  for i=2:length(axes_handles)
-    p = axes_handles(i).Children;
+    p = getplots(axes_handles(i).Children);
     plots(length(plots) + (1:length(p))) = p;
   end
 

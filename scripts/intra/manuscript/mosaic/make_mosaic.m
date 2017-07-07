@@ -1,32 +1,25 @@
-function make_mosaic(neurons, val, height_limit, min_epsp_nbr, override_colormap)
-
-if isnumeric(val)
-  indx = val;
-elseif islogical(val)
-  indx = [10 16 17 18 19 20];
-else
-  error('function not defined for input of type %s', class(val));
-end
+function make_mosaic(neurons, indx, height_limit, min_epsp_nbr, override_colormap, ...
+  plot_only_final_figures)
 
 data = {
-  @get_epsp_amplitude_single_pulse,	                   'Amplitude height [single pulse response = 1], ''*'' = negative single pulse',	[],	               'concat'	,   1	%1
-  @get_epsp_width_single_pulse,	                       'Time to peak [single pulse response = 1]',	                                  [],	               'concat'	,   1	%2
-  @get_onset_latency_single_pulse,	                   'Latency [single pulse response = 1]',	                                        [],	               'concat'	,   1	%3
-  @get_epsp_amplitude_abs,	                           'Amplitude height [max value = 1]'	,	                                          @normalize_to_max, 'concat'	,   1	%4
-  @get_epsp_width_abs,	                               'Time to peak [max value = 1]'	,	                                              @normalize_to_max	,	'concat'	,	1	%5
-  @get_onset_latency_abs,	                             'Latency [max value = 1]'	,	                                                  @normalize_to_max	,	'concat'	,	1	%6
-  @get_epsp_amplitude_abs,	                           'Amplitude height [absolute value]'	,	                                        []	,	              'concat'	,	1	%7
-  @get_epsp_width_abs,	                               'Time to peak [absolute value]'	,	                                            []	,	              'concat'	,	1	%8
+  @get_epsp_amplitude_single_pulse, 'Amplitude height [single pulse response = 1], ''*'' = negative single pulse',	[], 'concat'	,   1	%1
+  @get_epsp_width_single_pulse,	                       'Time to peak [single pulse response = 1]', [],	               'concat'	,   1	%2
+  @get_onset_latency_single_pulse,	                   'Latency [single pulse response = 1]', [],	               'concat'	,   1	%3
+  @get_epsp_amplitude_abs,	                           'Amplitude height [max value = 1]'	,	   @normalize_to_max, 'concat'	,   1	%4
+  @get_epsp_width_abs,	                               'Time to peak [max value = 1]'	,	       @normalize_to_max	,	'concat'	,	1	%5
+  @get_onset_latency_abs,	                             'Latency [max value = 1]'	,	           @normalize_to_max	,	'concat'	,	1	%6
+  @get_epsp_amplitude_abs,	                           'Amplitude height [absolute value]',    []	,	              'concat'	,	1	%7
+  @get_epsp_width_abs,	                               'Time to peak [absolute value]'	,	     []	,	              'concat'	,	1	%8
   @get_onset_latency_abs,	                             'Latency [absolute value]'	,	                                                  []	,	              'concat'	,	1	%9
-  @(x) get_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction ''*'' = below threshold'	,	                          []	,             	'concat'	,	0	%10
+  @(x) get_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction ''*'' = below threshold'	,  [], 	'concat'	,	0	%10
   @get_nbr_of_epsps,         	                         '# of EPSPs'	,	                                                                []	,	              'concat'	,	1	%11
   @get_nbr_of_ipsps,	                                 '# of IPSPs'	,	                                                                []	,	              'concat'	,	1	%12
   @get_nbr_of_xpsps,	                                 '# of xPSPs'	,	                                                                []	,	              'concat'	,	1	%13
   @get_epsp_minus_ipsp,	                               '# of EPSPs - # of IPSPs'	,	                                                  []	,	              'concat'	,	1	%14
   @get_epsp_minus_ipsp_only_negative,	                 'EPSPs - IPSPs only negative'	,	                                              []	,	              'concat'	,	1	%15
   @(x) get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
-  @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs'	,	                      []	,	              'concat'	,	1	%17
-  @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	                          []	,	              'concat'	,	1	%18
+  @(x) get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs', [], 'concat'	,	1	%17
+  @(x) get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	[]	,	              'concat'	,	1	%18
   @(x) get_normalized_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	[],        	  'concat'	,	0	%19
   @(x) get_nbr_of_manual_amplitudes(x, height_limit, min_epsp_nbr), 'Number of manual amplitudes ''*'' = below threshold'	,	          [],                 'default'	,	0	%20
   };
@@ -44,6 +37,12 @@ apply_thresholds = cell2mat(data(:,5));
 
 matrices_are_equal(evaluation_fcns, normalization_fcns, titlestr, colormap_fcn, apply_thresholds);
 
+if plot_only_final_figures
+  indx = [16 18];
+elseif isempty(indx)
+  indx = 1:length(apply_thresholds);
+end
+
 for i=1:length(indx)
   fprintf('%d (%d)\n', i, length(indx));
   
@@ -52,30 +51,38 @@ for i=1:length(indx)
   tmp_apply_thresholds = apply_thresholds(indx(i));
   
   tmp_mosaic_figure = incr_fig_indx();
-  tmp_lineplot_figure = incr_fig_indx();
+  
+  if plot_only_final_figures
+    tmp_lineplot_figure = [];
+  else
+    tmp_lineplot_figure = incr_fig_indx();
+  end
   
   tmp_titlestr = titlestr{indx(i)};
   
   if isempty(override_colormap)
     tmp_colormap_fcn = override_colormap;
   else
-    
-    
-    
-    
     tmp_colormap_fcn = colormap_fcn{indx(i)};
   end
   
   make_mosaic_subfct(neurons, tmp_evaluation_fcn,tmp_normalization_fcn, ...
     tmp_colormap_fcn, tmp_apply_thresholds, height_limit, min_epsp_nbr, ...
     tmp_mosaic_figure, tmp_lineplot_figure);
-  
+
   figure(tmp_mosaic_figure);
   title([tmp_titlestr ' (mosaic)']);
   
-  figure(tmp_lineplot_figure);
-  title([tmp_titlestr ' (line plot)']);
   
+  if ~plot_only_final_figures
+    figure(tmp_lineplot_figure);
+    title([tmp_titlestr ' (line plot)']);
+  end
+  
+end
+
+if plot_only_final_figures
+  return
 end
 
 stims_str = get_intra_motifs();
@@ -208,6 +215,10 @@ set(gca, 'YTick', (1:nbr_of_neurons), ...
   'XTickLabel', stims_str, ...
   'XTickLabelRotation', 270);
 axis(gca, 'tight');
+
+if isempty(lineplot_fig)
+  return
+end
 
 clf(lineplot_fig, 'reset');
 

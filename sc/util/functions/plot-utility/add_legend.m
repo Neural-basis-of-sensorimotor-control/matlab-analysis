@@ -1,7 +1,14 @@
-function legend_handle = add_legend(plot_handles, add_only_one_legend, invert_colors, varargin)
-%ADD_LEGEND Add legend to plot axes, using the value of the Tag property
-%for each plot handle in the axes. Also adjust the LineColor property so
-%that all plots with the same Tag value have the same color.
+function legend_handle = add_legend(plot_handles, add_only_one_legend, ...
+  invert_colors, varargin)
+
+% ADD_LEGEND 
+% legend_handle = add_legend(plot_handles, add_only_one_legend, ...
+%   invert_colors, varargin)
+%
+%   Add legend to plot axes, using the value of the Tag property for each 
+%   plot handle in the axes. Also adjust the LineColor property so that all
+%   plots with the same Tag value have the same color.
+%
 
 if nargin<2
   add_only_one_legend = false;
@@ -19,18 +26,13 @@ elseif isempty(plot_handles)
   
   h = [];
   
-elseif isa(plot_handles(1), 'matlab.ui.Figure')
+elseif any(arrayfun(@isfigure, plot_handles))
   
   h = add_legend(get_plots(plot_handles), add_only_one_legend, invert_colors, varargin{:});
   
-elseif isa(plot_handles(1), 'matlab.graphics.axis.Axes')
+elseif any(arrayfun(@isaxes, plot_handles))
   
   h = add_legend(get_plots(plot_handles), add_only_one_legend, invert_colors, varargin{:});
-  
-  % elseif ~isa(plot_handles(1), 'matlab.graphics.chart.primitive.Line')
-  %
-  % 	error('Function not defined for input class ''%s''', ...
-  % 		class(plot_handles(1)));
   
 else
   

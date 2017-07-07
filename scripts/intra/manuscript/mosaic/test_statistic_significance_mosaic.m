@@ -19,7 +19,7 @@ end
 
 for i_=1:length(indx)
   
-  i = indx{i_};
+  i = indx(i_);
   
   
   fprintf('%d out of %d\n', i, length(properties));

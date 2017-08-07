@@ -1,17 +1,9 @@
 function val = get_raw_data_dir()
 
-global RAW_DATA_DIR
+val = read_sc_settings('raw_data_dir');
 
-if isempty(RAW_DATA_DIR)
-  
-  RAW_DATA_DIR = read_sc_settings('raw_data_dir');
-  
+if ~isempty(val) && val(end) ~= filesep
+  val(end+1) = filesep;
 end
-
-if ~isempty(RAW_DATA_DIR) && RAW_DATA_DIR(end) ~= filesep
-  RAW_DATA_DIR(end+1) = filesep;
-end
-
-val = RAW_DATA_DIR;
 
 end

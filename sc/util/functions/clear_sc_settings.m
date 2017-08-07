@@ -1,17 +1,15 @@
 function clear_sc_settings()
 
-global RAW_DATA_DIR INTRA_EXPERIMENT_DIR LAST_EXPERIMENT
-
-RAW_DATA_DIR         = '';
-INTRA_EXPERIMENT_DIR = '';
-LAST_EXPERIMENT      = '';
+raw_data_dir         = '';
+intra_experiment_dir = '';
+last_experiment      = '';
 
 data = [];
 
 
-data.sc_settings.raw_data_dir.Text         = RAW_DATA_DIR;
-data.sc_settings.intra_experiment_dir.Text = INTRA_EXPERIMENT_DIR;
-data.sc_settings.last_experiment.Text      = LAST_EXPERIMENT;
+data.sc_settings.raw_data_dir.Text         = raw_data_dir;
+data.sc_settings.intra_experiment_dir.Text = intra_experiment_dir;
+data.sc_settings.last_experiment.Text      = last_experiment;
 
 struct2xml(data, get_sc_settings_filename());
 

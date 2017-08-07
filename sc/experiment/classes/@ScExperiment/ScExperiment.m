@@ -13,14 +13,6 @@ classdef ScExperiment < ScList
 	end
 	
 	methods (Static)
-    
-		function expr = load_file(filepath)		
-			filepath = update_file_path(filepath, get_default_experiment_dir());
-						
-			d = load(filepath);
-			expr = d.obj;
-    end
-    
     experiment = load_experiment(fpath);
 	end
 	

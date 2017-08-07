@@ -11,8 +11,8 @@ if isnumeric(mergeto_file) && mergeto_file == 0
   return
 end
 
-mergefrom_expr = ScExperimentWrapper.load_file(fullfile(mergefrom_dir, mergefrom_file));
-mergeto_expr = ScExperimentWrapper.load_file(fullfile(mergeto_dir, mergeto_file));
+mergefrom_expr = ScExperiment.load_experiment(fullfile(mergefrom_dir, mergefrom_file));
+mergeto_expr = ScExperiment.load_experiment(fullfile(mergeto_dir, mergeto_file));
 
 for i=1:mergefrom_expr.n
   mergefrom_file = mergefrom_expr.get(i);

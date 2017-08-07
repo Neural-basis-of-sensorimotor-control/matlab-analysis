@@ -133,7 +133,7 @@ elseif strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
   
   [rawdatafiles, raw_data_folder] = uigetfile(ending, ...
     'Select all files with analog channels to be included', ...
-    get_raw_data_folder(), 'MultiSelect', 'on');
+    get_raw_data_dir(), 'MultiSelect', 'on');
   
   if ~iscell(rawdatafiles)
     rawdatafiles = {rawdatafiles};

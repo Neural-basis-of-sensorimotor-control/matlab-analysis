@@ -1,9 +1,9 @@
 function check_raw_data_dir(file)
 
-if ~exist(file.filepath, 'file')
+if ~isfile(file.filepath)
   new_filepath = update_raw_data_path(file.filepath);
   
-  if exist(new_filepath, 'file')
+  if isfile(new_filepath)
     file.filepath = new_filepath;
   end
 end

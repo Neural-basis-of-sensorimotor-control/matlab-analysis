@@ -42,7 +42,7 @@ classdef ScFile < ScList & ScDynamicClass
     
     function set.filepath(obj, val)
       [pname, fname, ext] = fileparts(val);
-      obj.parent.fdir = pname;
+      obj.parent.set_fdir(pname);
       obj.filename = [fname ext];
     end
     
@@ -125,8 +125,9 @@ classdef ScFile < ScList & ScDynamicClass
           ['Choose load directory for ' obj.tag]);
         
         if ~isnumeric(dname)
-          obj.parent.fdir = dname;
+          obj.parent.set_fdir(dname);
         end
+        
       end
     end
     

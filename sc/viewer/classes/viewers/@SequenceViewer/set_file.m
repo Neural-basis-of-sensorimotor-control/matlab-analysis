@@ -18,6 +18,7 @@ if ~list_contains(file.list, 'tag', 'full')
   tmin = 0; tmax = max(N.*dt); tag = 'full';
   sequence = ScSequence(file, tag, tmin, tmax);
   file.add(sequence);
+  obj.set_sequence(sequence);
   
 elseif file.contains(obj.sequence)
   obj.set_sequence(obj.sequence);

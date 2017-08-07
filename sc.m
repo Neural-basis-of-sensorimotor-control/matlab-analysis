@@ -61,6 +61,10 @@ end
 
 args = varargin;
 
+if ~isfile(get_sc_settings_filename())
+  clear_sc_settings();
+end
+
 [~, experiment_path] = get_last_experiment();
 
 if ~nargin && isfile(experiment_path)
@@ -140,7 +144,7 @@ elseif strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
   end
   
   set_raw_data_dir(raw_data_folder);
-  experiment.fdir = raw_data_folder;
+  experiment.set_fdir(raw_data_folder);
   rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x), rawdatafiles));
   
   for i=1:numel(rawdatafiles)

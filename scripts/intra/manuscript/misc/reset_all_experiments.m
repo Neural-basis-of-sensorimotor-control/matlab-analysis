@@ -31,7 +31,7 @@ for i=1:length(neurons)
     end
   end
   
-  experiment.fdir = fileparts(update_raw_data_path(file.filepath));
+  experiment.set_fdir(fileparts(update_raw_data_path(file.filepath)));
   save_experiment(experiment, experiment.abs_save_path, false);
   
 end

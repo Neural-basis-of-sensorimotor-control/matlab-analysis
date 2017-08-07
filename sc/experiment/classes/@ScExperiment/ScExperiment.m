@@ -3,10 +3,13 @@ classdef ScExperiment < ScList
 	%Children: ScFile
   
 	properties
-		fdir        %directory containing .mat / .adq files
 		save_name   %for saving this class, ends with _sc.mat
 		last_gui_version
-	end
+  end
+  
+  properties (SetAccess = protected)
+    fdir        %directory containing .mat / .adq files
+  end
 	
 	properties (Dependent)
 		abs_save_path

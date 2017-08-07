@@ -23,5 +23,10 @@ classdef ScTriggerParent < handle
     function istrigger = get.istrigger(~)
       istrigger = false;
     end
+    
+    function get_trigger_tags(obj)
+      error('Function %s not implemented', mfilename);
+    end
+    
   end
 end

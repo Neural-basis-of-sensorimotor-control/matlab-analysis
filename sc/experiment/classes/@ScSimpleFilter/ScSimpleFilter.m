@@ -7,7 +7,7 @@ classdef ScSimpleFilter < ScFilter
   properties
     parent
     indx_width = 100
-    is_on = true
+    is_on = false
   end
   
   methods

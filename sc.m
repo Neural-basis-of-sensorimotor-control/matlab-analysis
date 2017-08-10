@@ -62,7 +62,7 @@ end
 args = varargin;
 
 if ~isfile(get_sc_settings_filename())
-  clear_sc_settings();
+  clear_sc_file();
 end
 
 [~, experiment_path] = get_last_experiment();

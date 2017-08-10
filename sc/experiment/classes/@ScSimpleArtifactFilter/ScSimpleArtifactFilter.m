@@ -24,6 +24,7 @@ classdef ScSimpleArtifactFilter < ScSimpleFilter
       artifact_times = artifact_times(1:count);
       
       artifact_indx = round(artifact_times/obj.parent.dt);
+      artifact_indx(artifact_indx<0) = [];
     end
   end
   

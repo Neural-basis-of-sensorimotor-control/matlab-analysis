@@ -1,7 +1,6 @@
 classdef ScNeuron < handle
   
   % For storing meta data to enable repeatable automated analysis.
-  % Must only contain primitive data types.
   
   properties
     experiment_filename
@@ -13,6 +12,8 @@ classdef ScNeuron < handle
     template_tag
     tag
     userdata
+    comment
+    load_function
   end
   
   
@@ -24,6 +25,7 @@ classdef ScNeuron < handle
       obj.tmax = inf;
       
       obj.update_properties(varargin{:});
+      
     end
     
     

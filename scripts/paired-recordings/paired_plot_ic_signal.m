@@ -59,7 +59,6 @@ end
 incr_fig_indx();
 clf
 
-%subplot(2,1,1)
 hold on
 
 if ~isempty(v2_mean)
@@ -85,19 +84,9 @@ end
 
 legend(legend_str{:});
 
-title(sprintf('%s (%s) N = %d', neuron.file_tag, neuron.signal_tag, size(sweeps, 2)));
+title(sprintf('%s (%s) N = %d', neuron.file_tag, neuron.template_tag{1}, size(sweeps, 2)));
 xlabel('time [s]')
 ylabel('voltage [mV]');
-
-subplot(2,1,2)
-
-hold on
-
-for i=1:size(sweeps, 2)
-  plot(times, sweeps(:,i) -  sweeps(zero_ind,i));  
-end
-
-hold off
 
 end
 

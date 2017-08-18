@@ -47,7 +47,16 @@ for i=1:length(neurons)
   
   neuron = neurons(i);
   
-  signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
+  signal = sc_load_signal(neuron);
+  
+  if ~isfile(signal.parent.filepath)
+    
+    if signal.parent.prompt_for_raw_data_dir()
+      signal.sc_save(false);
+    end
+    
+  end
+  
   save_path = [sc_dir neuron.experiment_filename];
   signal.simple_artifact_filter.is_on = true;
   signal.simple_spike_filter.is_on = false;

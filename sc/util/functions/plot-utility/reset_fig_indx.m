@@ -1,7 +1,7 @@
 function reset_fig_indx()
 
-global fig_indx
+global FIG_INDX
 
-fig_indx = 0;
+FIG_INDX = 0;
 
 end

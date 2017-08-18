@@ -18,7 +18,10 @@ tmin = -inf; tmax = inf;
 
 dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 
-signal = sc_load_signal(experiment_file, file_tag, channel_str);
+neuron = ScNeuron('experiment_filename', experiment_file, 'file_tag', ...
+  file_tag, 'signal_tag', channel_str);
+
+signal = sc_load_signal(neuron);
 file = signal.parent;
 file.sc_loadtimes();
 textmark = file.textchannels.get('tag','TextMark');

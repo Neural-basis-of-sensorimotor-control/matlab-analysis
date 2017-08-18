@@ -1,14 +1,17 @@
-function save_as_fig(figs)
+function save_as_fig(fig)
 
 if ~nargin
-  figs = gcf;
+  fig = gcf;
 end
 
-for i=1:length(figs)
+if length(fig) ~= 1
   
-  update_fig_name(figs(i), 'fig');
-  savefig(figs(i), figs(i).FileName);
-
+  vectorize_fcn(@save_as_fig, fig);
+  return
+  
 end
+
+update_fig_name(fig, 'fig');
+savefig(fig, fig.FileName);
 
 end

@@ -4,7 +4,15 @@ val = nan(length(stim_tags), length(neurons));
 
 for i=1:length(neurons)
 	neuron = neurons(i);
-	signal = sc_load_signal(neuron, 'check_raw_data_dir', true);
+	signal = sc_load_signal(neuron);
+  
+  if ~isfile(signal.parent.filepath)
+    
+    if signal.parent.prompt_for_raw_data_dir()
+      signal.sc_save(false);
+    end
+    
+  end
 	
 	for j=1:length(stim_tags)
 		amplitude = signal.amplitudes.get('tag', stim_tags{j});

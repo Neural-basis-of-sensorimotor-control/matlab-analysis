@@ -49,7 +49,9 @@ stim_strs = {'V1', 'V2', 'V3', 'V4', 'V5', 'V6'};
 
 dummy_sequence.tmin = tmin; dummy_sequence.tmax = tmax;
 
-signal = sc_load_signal(experiment_file, file_tag, channel_str);
+neuron = ScNeuron('experiment_filename', experiment_filename, ...
+  'file_tag', file_tag, 'signal_tag', channel_str);
+signal = sc_load_signal(neuron);
 file = signal.parent;
 
 file.sc_loadtimes();

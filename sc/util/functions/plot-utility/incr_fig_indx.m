@@ -1,14 +1,14 @@
 function val = incr_fig_indx()
 
-global fig_indx
+global FIG_INDX
 
-if isempty(fig_indx) || fig_indx < 1
-  fig_indx = 1;
+if isempty(FIG_INDX) || FIG_INDX < 1
+  FIG_INDX = 1;
 else
-  fig_indx = fig_indx + 1;
+  FIG_INDX = FIG_INDX + 1;
 end
 
-fig = figure(fig_indx);
+fig = figure(FIG_INDX);
 
 if nargout
   val = fig;

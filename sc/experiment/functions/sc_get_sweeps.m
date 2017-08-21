@@ -3,15 +3,23 @@ function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, ...
 
 input_is_logical = islogical(v);
 
-if tmin>0,  warning('tmin > 0 in sc_get_sweeps'),   end
-if isempty(triggertimes)
-  sweeps = [];    time = [];    return;
+sweeppos = (round(pretrigger/dt):round(posttrigger/dt))';
+time = sweeppos*dt;
+
+if tmin>0
+  warning('tmin > 0 in sc_get_sweeps')
 end
+
+if isempty(triggertimes)
+  sweeps = [];
+  return
+end
+
 if size(triggertimes,2)==1
   triggertimes = triggertimes';
 end
+
 triggerpos = round((triggertimes-tmin)/dt)+1;
-sweeppos = (round(pretrigger/dt):round(posttrigger/dt))';
 pos = bsxfun(@plus,triggerpos,sweeppos);
 
 min_pos = min(pos(:));
@@ -28,8 +36,6 @@ sweeps = v(pos);
 if input_is_logical
 	sweeps = logical(sweeps);
 end
-
-time = sweeppos*dt;
 
 % 
 % time = (pretrigger:dt:posttrigger)';

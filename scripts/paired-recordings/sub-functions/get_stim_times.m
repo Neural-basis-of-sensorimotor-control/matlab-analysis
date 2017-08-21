@@ -1,6 +1,8 @@
-function stim_times = get_stim_times(neuron)
+function stim_times = get_stim_times(neuron, str_stim)
 
-str_stim = {'V1', 'V2', 'V3', 'V4', '1000'};
+if nargin<2
+  str_stim = {'V1', 'V2', 'V3', 'V4', '1000'};
+end
 
 expr_fname = [get_default_experiment_dir() neuron.experiment_filename];
 expr = ScExperiment.load_experiment(expr_fname);

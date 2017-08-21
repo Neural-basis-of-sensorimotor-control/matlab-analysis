@@ -7,19 +7,40 @@ if length(neuron)~=1
   
 end
 
-signal = sc_load_signal(neuron);
+if ~isempty(neuron.ic_fcn)
+  
+  neuron0 = neuron.clone();
+  neuron0.ic_fcn = {};
+  
+  raw_sweeps = paired_get_sweeps(neuron0, pretrigger, posttrigger);
+  v0_mean    = mean(raw_sweeps, 2);
+  
+else
+  v0_mean = [];
+end
 
-v = signal.get_v(true, true, true, true);
+[sweeps, sweep_times, signal] = paired_get_sweeps(neuron, pretrigger, posttrigger);
 
-trigger = signal.parent.gettriggers(0, inf).get('tag', neuron.template_tag{1});
-trigger_times = trigger.gettimes(0, inf);
+if isempty(sweeps)
+  fprintf('Skipping %s because no sweeps\n', neuron.file_tag);
+  return
+end
 
-[sweeps, times] = sc_get_sweeps(v, 0, trigger_times, pretrigger, ...
-  posttrigger, signal.dt);
+[~, zero_ind] = min(abs(sweep_times));
+
+for i=1:size(sweeps, 2)
+  sweeps(:,i) = sweeps(:,i) - sweeps(zero_ind, i);
+end
 
 sweeps_filtered = exclude_outliers(sweeps, outlier_fraction);
 
-[~, zero_ind] = min(abs(times));
+incr_fig_indx()
+clf
+hold on
+
+for i=1:size(sweeps, 2)
+  plot(sweep_times, sweeps(:,i)')
+end
 
 v_mean = double(mean(sweeps, 2));
 v_mean = v_mean - v_mean(zero_ind);
@@ -39,13 +60,9 @@ if is_double_patch(signal)
   else
     neuron2.signal_tag = 'patch';
   end    
-    
-  signal2 = sc_load_signal(neuron2);
   
-  v2 = signal2.get_v(true, true, true, true);
-  
-  sweeps2 = sc_get_sweeps(v2, 0, trigger_times, pretrigger, ...
-    posttrigger, signal.dt);
+  neuron2.ic_fcn = {};
+  sweeps2 = paired_get_sweeps(neuron2, pretrigger, posttrigger);
   
   v2_mean = double(mean(sweeps2, 2));  
   v2_mean = v2_mean - v2_mean(zero_ind);
@@ -61,39 +78,42 @@ clf
 
 hold on
 
-if ~isempty(v2_mean)
-
-  plot(times, v2_mean, 'Color', 'r', 'Tag', neuron2.signal_tag);
-
-end
-
-plot(times, v_filtered_mean, 'LineWidth', 2, 'Color', 'b', 'Tag', neuron.signal_tag)
-plot(times, v_median, 'Color', 'y', 'Tag', neuron.signal_tag);
-plot(times, v_mean, 'LineWidth', 1, 'Color', 'g', 'Tag', neuron.signal_tag)
-
-hold off
+plot(sweep_times, v_filtered_mean, 'LineWidth', 2, 'Color', 'b')
+plot(sweep_times, v_median, 'Color', 'y');
+plot(sweep_times, v_mean, 'LineWidth', 1, 'Color', 'g')
 
 legend_str = {[neuron.signal_tag , ' IC mean selected'], [neuron.signal_tag , ' IC median all'], [neuron.signal_tag , ' IC mean all']};
 
 if ~isempty(v2_mean)
 
-  legend_str(2:end+1) = legend_str;
-  legend_str(1) = {[neuron2.signal_tag ' mean all (scaled)']};
-  
+  plot(sweep_times, v2_mean, 'Color', 'r');
+  legend_str(end+1) = {[neuron2.signal_tag ' mean all (scaled)']};
 end
+
+if ~isempty(v0_mean)
+  
+  plot(sweep_times, v0_mean, 'Color', 'k');
+  legend_str(end+1) = {[neuron.signal_tag ' mean all (raw data)']};
+end
+
+hold off
 
 legend(legend_str{:});
 
-title(sprintf('%s (%s) N = %d', neuron.file_tag, neuron.template_tag{1}, size(sweeps, 2)));
+title_str = sprintf('%s (%s) N = %d', neuron.file_tag, neuron.template_tag{1}, size(sweeps, 2));
+
+for i=1:length(neuron.ic_fcn)
+  
+  str = char(neuron.ic_fcn{i});
+  
+  title_str = [title_str ' ' str]; %#ok<AGROW>
+  
+end
+
+title(title_str, 'Interpreter', 'none');
+
 xlabel('time [s]')
 ylabel('voltage [mV]');
 
 end
 
-
-function val = is_double_patch(signal)
-
-val = list_contains(signal.parent.signals.list, 'tag', 'patch') && ...
-  list_contains(signal.parent.signals.list, 'tag', 'patch2');
-
-end

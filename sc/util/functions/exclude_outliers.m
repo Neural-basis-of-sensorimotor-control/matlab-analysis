@@ -1,5 +1,10 @@
 function y = exclude_outliers(x, outlier_fraction)
 
+if isempty(x)
+  y = x;
+  return
+end
+
 [~, order_ind] = sort(x, 2);
 outlier_width  = floor(outlier_fraction * size(x, 2));
 

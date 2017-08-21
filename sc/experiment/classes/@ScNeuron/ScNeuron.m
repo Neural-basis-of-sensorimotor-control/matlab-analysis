@@ -13,7 +13,7 @@ classdef ScNeuron < handle
     tag
     userdata
     comment
-    load_function
+    ic_fcn
   end
   
   

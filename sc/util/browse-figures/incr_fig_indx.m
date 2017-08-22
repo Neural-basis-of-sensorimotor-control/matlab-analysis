@@ -10,6 +10,10 @@ end
 
 fig = figure(FIG_INDX);
 
+while strcmp(get(fig, 'Tag'), SequenceViewer.figure_tag)
+  fig = incr_fig_indx();
+end
+
 if nargout
   val = fig;
 end

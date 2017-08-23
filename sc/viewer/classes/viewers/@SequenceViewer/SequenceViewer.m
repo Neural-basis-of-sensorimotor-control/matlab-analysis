@@ -87,9 +87,16 @@ classdef SequenceViewer < ExperimentWrapper
 
   
   properties (Constant)
-    panel_width = 205;
-    margin = 40
+    
+    panel_width = 205
+    
+    row_margin   = 40
+    upper_margin = 10
+    left_margin  = 120
+    right_margin = 40
+    
     figure_tag = 'sensorimotor-control'
+  
   end
 
   properties

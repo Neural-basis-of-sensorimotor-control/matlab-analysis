@@ -206,6 +206,8 @@ if isnumeric(value1)
   same = value1 == listobject.(property);
 elseif ischar(value1)
   same = strcmp(value1,listobject.(property));
+else
+  error('not defined for input %s', class(value1));
 end
 
 end

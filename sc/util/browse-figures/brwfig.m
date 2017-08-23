@@ -1,4 +1,4 @@
-function browse_figures
+function brwfig
 
 btn_width = 100;
 btn_height = 100;

@@ -126,6 +126,6 @@ h = add_legend(gca, true, true);
 set(h, 'Color', 'w');
 set(gca, 'Color', 'k');
 
-sc_maximize_all
+mxfigs()
 
 

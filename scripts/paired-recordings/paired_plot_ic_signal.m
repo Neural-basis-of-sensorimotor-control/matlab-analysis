@@ -1,22 +1,10 @@
-function paired_plot_ic_signal(neuron, pretrigger, posttrigger, outlier_fraction)
+function paired_plot_ic_signal(neuron, pretrigger, posttrigger, t_range)
 
 if length(neuron)~=1
   
-  vectorize_fcn(@paired_plot_ic_signal, neuron, pretrigger, posttrigger, outlier_fraction)
+  vectorize_fcn(@paired_plot_ic_signal, neuron, pretrigger, posttrigger, t_range)
   return
   
-end
-
-if ~isempty(neuron.ic_fcn)
-  
-  neuron0 = neuron.clone();
-  neuron0.ic_fcn = {};
-  
-  raw_sweeps = paired_get_sweeps(neuron0, pretrigger, posttrigger);
-  v0_mean    = mean(raw_sweeps, 2);
-  
-else
-  v0_mean = [];
 end
 
 [sweeps, sweep_times, signal] = paired_get_sweeps(neuron, pretrigger, posttrigger);
@@ -32,88 +20,69 @@ for i=1:size(sweeps, 2)
   sweeps(:,i) = sweeps(:,i) - sweeps(zero_ind, i);
 end
 
-sweeps_filtered = exclude_outliers(sweeps, outlier_fraction);
+
+sweeps_contain_xpsp  = match_template(signal, sweeps, sweep_times, t_range, neuron.xpsp_tag);
+
+if isempty(neuron.xpsp_tag)
+  sweeps_contain_xpsp = true(size(sweeps_contain_xpsp));
+end
+
+sweeps_contain_spike = match_template(signal, sweeps, sweep_times, [min(t_range(1), 0) t_range(2)], neuron.artifact_tag);
+
+xpsp_sweeps         = sweeps(:, sweeps_contain_xpsp & ~sweeps_contain_spike);
+spike_sweeps        = sweeps(:, sweeps_contain_spike);
+antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
 
 incr_fig_indx()
 clf
-hold on
-
-for i=1:size(sweeps, 2)
-  plot(sweep_times, sweeps(:,i)')
-end
-
-v_mean = double(mean(sweeps, 2));
-v_mean = v_mean - v_mean(zero_ind);
-
-v_median = double(median(sweeps, 2));
-v_median = v_median - v_median(zero_ind);
-
-v_filtered_mean = double(mean(sweeps_filtered, 2));
-v_filtered_mean = v_filtered_mean - v_filtered_mean(zero_ind);
-
-if is_double_patch(signal)
-  
-  neuron2 = neuron.clone();
-  
-  if strcmp(neuron.signal_tag, 'patch')
-    neuron2.signal_tag = 'patch2';
-  else
-    neuron2.signal_tag = 'patch';
-  end    
-  
-  neuron2.ic_fcn = {};
-  sweeps2 = paired_get_sweeps(neuron2, pretrigger, posttrigger);
-  
-  v2_mean = double(mean(sweeps2, 2));  
-  v2_mean = v2_mean - v2_mean(zero_ind);
-  v2_mean = v2_mean * max(v_mean) / max(v2_mean);
-else
-  
-  v2_mean = [];
-  
-end
-
-incr_fig_indx();
-clf
 
 hold on
 
-plot(sweep_times, v_filtered_mean, 'LineWidth', 2, 'Color', 'b')
-plot(sweep_times, v_median, 'Color', 'y');
-plot(sweep_times, v_mean, 'LineWidth', 1, 'Color', 'g')
+plot(sweep_times, mean(xpsp_sweeps, 2),   'LineStyle', '-',  'LineWidth', 2)
+plot(sweep_times, median(xpsp_sweeps, 2), 'LineStyle', '--', 'LineWidth', 2)
 
-legend_str = {[neuron.signal_tag , ' IC mean selected'], [neuron.signal_tag , ' IC median all'], [neuron.signal_tag , ' IC mean all']};
+plot(sweep_times, mean(spike_sweeps, 2))
+plot(sweep_times, median(spike_sweeps, 2), '--')
 
-if ~isempty(v2_mean)
+plot(sweep_times, mean(antiselected_sweeps, 2))
+plot(sweep_times, median(antiselected_sweeps, 2), '--')
 
-  plot(sweep_times, v2_mean, 'Color', 'r');
-  legend_str(end+1) = {[neuron2.signal_tag ' mean all (scaled)']};
-end
+legend(...
+  ['Mean   (EPSP), N = '            num2str(size(xpsp_sweeps, 2))],         'Median (EPSP)', ...
+  ['Mean   (dendritic spike), N = ' num2str(size(spike_sweeps, 2))],        'Median (dendritic spike)', ...
+  ['Mean   (antiselected), N = '    num2str(size(antiselected_sweeps, 2))], 'Median (antiselected)' ...
+  )
 
-if ~isempty(v0_mean)
-  
-  plot(sweep_times, v0_mean, 'Color', 'k');
-  legend_str(end+1) = {[neuron.signal_tag ' mean all (raw data)']};
-end
-
-hold off
-
-legend(legend_str{:});
-
-title_str = sprintf('%s (%s) N = %d', neuron.file_tag, neuron.template_tag{1}, size(sweeps, 2));
-
-for i=1:length(neuron.ic_fcn)
-  
-  str = char(neuron.ic_fcn{i});
-  
-  title_str = [title_str ' ' str]; %#ok<AGROW>
-  
-end
+title_str = sprintf('%s - %s (%s) comment: %s', neuron.file_tag, neuron.signal_tag, neuron.template_tag{1}, neuron.comment);
 
 title(title_str, 'Interpreter', 'none');
 
 xlabel('time [s]')
 ylabel('voltage [mV]');
 
+grid on
+
 end
 
+
+function is_match = match_template(signal, sweeps, sweep_times, t_range, templates)
+
+is_match = false(1, size(sweeps,2));
+
+for i=1:length(templates)
+  
+  template = signal.parent.gettriggers(0, inf).get('tag', templates{i});
+  
+  for j=1:size(sweeps, 2)
+    
+    template_times = sweep_times(template.match_v(sweeps(:,j)));
+    
+    if ~is_match(j)
+      
+      is_match(j) = any(template_times > t_range(1) & template_times < t_range(2));
+      
+    end
+  end
+end
+
+end

@@ -1,3 +1,4 @@
+
 % SPIKE ANALYSIS
 
 sc_clf_all();
@@ -34,12 +35,12 @@ reset_fig_indx();
 % Constants
 pretrigger = -.02;
 posttrigger = .05;
-outlier_fraction = .1;
+t_range = [.0005 .0025];
 % Initialize
 neurons = paired_get_intra_neurons();
 
 % IC signal triggered on spike from paired neuron. Scaling from paired
 % neuron channel removed
 
-paired_plot_ic_signal(neurons, pretrigger, posttrigger, outlier_fraction)
+paired_plot_ic_signal(neurons, pretrigger, posttrigger, t_range)
 

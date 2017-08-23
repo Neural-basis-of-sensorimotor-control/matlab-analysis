@@ -13,7 +13,8 @@ classdef ScNeuron < handle
     tag
     userdata
     comment
-    ic_fcn
+    xpsp_tag
+    artifact_tag
   end
   
   

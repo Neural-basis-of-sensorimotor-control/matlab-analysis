@@ -1,4 +1,4 @@
-function sc_maximize_all()
+function mxfigs()
 % SC_MAXIMIZE_ALL Maximize all open figures
 screensize = get(0,'screensize');
 screenwidth = screensize(3);

@@ -6,6 +6,6 @@ set_default_experiment_dir(pathstr);
 
 last_experiment = [file ext];
 
-write_sc_settings('last_experiment', last_experiment);
+write_sc_settings('last_experiment', last_experiment, get_current_settings_tag());
 
 end

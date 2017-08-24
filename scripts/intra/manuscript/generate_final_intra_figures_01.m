@@ -1,5 +1,7 @@
 function generate_final_intra_figures_01(reset_experiments, plot_only_final_figures)
 
+set_current_settings_tag(get_intra_analysis_tag());
+
 response_min = 4e-3;
 response_max = 18e-3;
 height_limit = 2;
@@ -28,5 +30,7 @@ figs = get_all_figures();
 if plot_only_final_figures
   intra_from_debug_to_release_tick_label(figs);
 end
+
+set_current_settings_tag(get_default_settings_tag());
 
 end

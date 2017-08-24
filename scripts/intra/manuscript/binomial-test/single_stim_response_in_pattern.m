@@ -144,8 +144,8 @@ p = [.05 .01 .001 .0001];
 alpha = tinv(1-p, length(neurons)-1);
 success = false(length(stim_pulses_labels), length(alpha));
 
-mean_avg_response = mean(avg_response_repeated_simulations_1,2);
-std_avg_response = std(avg_response_repeated_simulations_1,1,2);
+mean_avg_response = mean(avg_response_repeated_simulations_1, 2);
+std_avg_response = std(avg_response_repeated_simulations_1, 0, 2);
 
 for i=1:size(success,2)
   success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;

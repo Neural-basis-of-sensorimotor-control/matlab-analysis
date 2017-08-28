@@ -44,9 +44,9 @@ plot(1:n, score(1) * coeff', 'LineStyle', '-', 'Marker', 'o')
 plot(1:n, score(2) * coeff, 'LineStyle', '--', 'Marker', '+')
 grid on
 xlim([0 n+1])
-xlabel('Dimension')
-ylabel('Value')
-title('Value of first principal component for example sweeps');
-legend('Sweep 1', 'Sweep 2')
+xlabel('Time [ms]')
+ylabel('Membrane potential [mV]')
+title('Value of example sweeps as approximated by PCA');
+legend(sprintf('Sweep 1 (value = %g)', score(1)), sprintf('Sweep 1 (value = %g)', score(2)))
 
 

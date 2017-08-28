@@ -1,5 +1,8 @@
+clear
 
 % SPIKE ANALYSIS
+
+set_current_settings_tag(get_default_settings_tag())
 
 sc_clf_all();
 reset_fig_indx();
@@ -37,10 +40,10 @@ pretrigger = -.02;
 posttrigger = .05;
 t_range = [.0005 .0025];
 % Initialize
-neurons = paired_get_intra_neurons();
+ic_neurons = paired_get_intra_neurons();
 
 % IC signal triggered on spike from paired neuron. Scaling from paired
 % neuron channel removed
 
-paired_plot_ic_signal(neurons, pretrigger, posttrigger, t_range)
+paired_plot_ic_signal(ic_neurons, pretrigger, posttrigger, t_range)
 

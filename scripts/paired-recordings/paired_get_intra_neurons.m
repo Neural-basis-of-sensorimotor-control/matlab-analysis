@@ -8,6 +8,7 @@ data = {
   'IKNR_sc.mat'   'IKNR0000'  'patch'   -inf  inf   {'ec-spike-p1-1'}   {'e-psp-p1-1'}  {'ic-spike-p1-1'}                   'stark EPSP'
   'ILNR_sc.mat'   'ILNR0001'  'patch'   -inf  inf   {'ec-spike-p1-1'}   {'e-psp-p1-1'}  {'ic-spike-p1-1'}                   'svag + otydlig EPSP'
   'IFNR_sc.mat'   'IFNR0000'  'patch'   -inf  inf   {'ec-spike-p1-1'}   {}              {'ec-spike-p1-1'}                   'stark EPSP'
+  'HPNR_sc.mat'   'HPNR0000'  'patch2'  -inf  inf   {'ec-spike-p1-1'}   {}              {}                                  ''
   };
 
 neurons(size(data, 1)) = ScNeuron();

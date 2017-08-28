@@ -75,7 +75,6 @@ classdef ScSpikeData < ScNeuron & ScTrigger
   methods (Static)
     
     function s = loadobj(s)
-      fprintf('%s - %s\n', s.raw_data_file, s.column_indx)
       s.spiketimes_is_updated = false;
     end
     

@@ -1,13 +1,21 @@
 clear
 
-% SPIKE ANALYSIS
-
 set_current_settings_tag(get_default_settings_tag())
 
 sc_clf_all();
 reset_fig_indx();
 
+% SPIKE ANALYSIS
+
+% Constants
+
+% Initialize
+ec_neurons = paired_get_extra_neurons();
+
 % Raster plots for each pattern & for paired neuron
+
+
+
 
 % Perievent spiking histogram / perievent pattern histogram
 

@@ -5,8 +5,6 @@ browse_figures_tag = 'browse-figures';
 figs = get_all_figures();
 figure_exists = false;
 
-figure_nbr = min(get_fig_nbrs());
-
 for i=1:length(figs)
   
   if strcmp(get(figs(i), 'Tag'), browse_figures_tag)
@@ -23,6 +21,7 @@ end
 if ~figure_exists
   
   fig = figure();
+  set_browse_figure_nbr(min(get_fig_nbrs()));
   
 end
 
@@ -64,16 +63,16 @@ add_btn(btn, x, y, btn_height, btn_width);
     
     fignbrs = get_fig_nbrs();
     
-    next_fig = fignbrs(find(fignbrs > figure_nbr, 1));
+    next_fig = fignbrs(find(fignbrs > get_browse_figure_nbr(), 1));
     
     if ~isempty(next_fig)
-      figure_nbr = next_fig;
+      set_browse_figure_nbr(next_fig);
     end
     
-    figure(figure_nbr);
+    figure(get_browse_figure_nbr());
     
     tot = length(fignbrs);
-    ind = nnz(fignbrs<=figure_nbr);
+    ind = nnz(fignbrs<=get_browse_figure_nbr());
     set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
@@ -82,31 +81,31 @@ add_btn(btn, x, y, btn_height, btn_width);
     
     fignbrs = get_fig_nbrs();
     
-    prev_fig = fignbrs(find(fignbrs < figure_nbr, 1, 'last'));
+    prev_fig = fignbrs(find(fignbrs < get_browse_figure_nbr(), 1, 'last'));
     
     if ~isempty(prev_fig)
-      figure_nbr = prev_fig;
+      set_browse_figure_nbr(prev_fig);
     end
     
-    figure(figure_nbr);
+    figure(get_browse_figure_nbr());
     
     tot = length(fignbrs);
-    ind = nnz(fignbrs<=figure_nbr);
+    ind = nnz(fignbrs<=get_browse_figure_nbr());
     set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
   function update_fig_nbr()
-    figure(figure_nbr);
+    figure(get_browse_figure_nbr());
     
     fignbrs = get_fig_nbrs();
     tot = length(fignbrs);
-    ind = nnz(fignbrs<=figure_nbr);
+    ind = nnz(fignbrs<=get_browse_figure_nbr());
     set(txt_ctrl, 'String', sprintf('%d out of %d', ind, tot));
   end
 
   function close_fig()
     
-    close(figure_nbr);
+    close(get_browse_figure_nbr());
     
     incr_fig_nbr();
     

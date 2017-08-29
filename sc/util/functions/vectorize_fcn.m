@@ -12,9 +12,7 @@ end
 
 for i=1:length(input)
   
-  if get_debug_mode()
-    fprintf('DEBUG: %s %d out of %d\n', char(fcn), i, length(input));
-  end
+  debug_printout(char(fcn), i, length(input));
   
   if nargout
     output(i) = {fcn(input(i), varargin{2:end})};

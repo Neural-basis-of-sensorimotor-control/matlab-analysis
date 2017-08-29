@@ -1,20 +1,38 @@
-function [f,t] = sc_perihist(varargin)
-%SC_PERIHIST(stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
-%SC_PERIHIST(axeshandle,stimtimes,spiketimes,pretrigger,posttrigger,binwidth)
+function [freq_out, edges_out, plot_out] = sc_perihist(varargin)
+% SC_PERIHIST(stimtimes, spiketimes, pretrigger, posttrigger, binwidth)
+% SC_PERIHIST(axeshandle, ...)
+% [freq_out, edges_out, plot_out] = SC_PERIHIST(...)
+
 if ishandle(varargin{1})
-  axeshandle = varargin{1};
-  offset = 1;
+
+  ax         = varargin{1};
+  arg_offset = 1;
+  
 else
-  axeshandle = gca;
-  offset = 0;
+  
+  ax         = gca;
+  arg_offset = 0;
+
 end
-stimtimes = varargin{offset+1};
-spiketimes = varargin{offset+2};
-pretrigger = varargin{offset+3};
-posttrigger = varargin{offset+4};
-binwidth  = varargin{offset+5};
+
+stimtimes   = varargin{arg_offset+1};
+spiketimes  = varargin{arg_offset+2};
+pretrigger  = varargin{arg_offset+3};
+posttrigger = varargin{arg_offset+4};
+binwidth    = varargin{arg_offset+5};
+
 [freq, edges] = sc_perifreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth);
 
-plot(axeshandle,edges,freq);
-if nargout>=1,  f = freq;   end
-if nargout>=2,  t=edges;    end
+plot_h = plot(ax, edges, freq);
+
+if nargout >= 1
+  freq_out = freq;   
+end
+
+if nargout >= 2
+  edges_out = edges;
+end
+
+if nargout >= 3
+  plot_out = plot_h;
+end

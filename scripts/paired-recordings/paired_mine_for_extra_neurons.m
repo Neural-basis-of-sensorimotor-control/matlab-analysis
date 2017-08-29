@@ -1,13 +1,13 @@
-% % Constants
-% min_nbr_of_common_spikes = 100;
-% 
-% % Initialize
-% reset_fig_indx();
-% 
-% % Main
-% neurons = find_overlapping_neurons(min_nbr_of_common_spikes);
-% 
-% paired_plot_raster(neurons);
+% Constants
+min_nbr_of_common_spikes = 100;
+
+% Initialize
+reset_fig_indx();
+
+% Main
+neurons = find_overlapping_neurons(min_nbr_of_common_spikes);
+
+paired_plot_raster(neurons);
 
 print_neurons(neurons);
 
@@ -65,14 +65,14 @@ for i_neuron=1:length(neurons)
   
   neuron = neurons(i_neuron);
   
-  fprintf('\t''%s''', strtrim(neuron.experiment_filename))
-  fprintf('\t''%s''', neuron.file_tag)
-  fprintf('\t''%s''', neuron.signal_tag)
-  fprintf('\t''%s''', neuron.tmin)
-  fprintf('\t''%s''', neuron.tmax)
-  fprintf('\t{''%s'' ''%s''}', neuron.template_tag{:})
+  fprintf('\t''%s''',           strtrim(neuron.experiment_filename))
+  fprintf('\t''%s''',           neuron.file_tag)
+  fprintf('\t''%s''',           neuron.signal_tag)
+  fprintf('\t%s',               neuron.tmin)
+  fprintf('\t%s',               neuron.tmax)
+  fprintf('\t{''%s'' ''%s''}',  neuron.template_tag{:})
   
-  fprintf('\t...\n');
+  fprintf('\n');
   
 end
 

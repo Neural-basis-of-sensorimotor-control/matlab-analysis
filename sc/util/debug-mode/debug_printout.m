@@ -1,5 +1,7 @@
 function debug_printout(varargin)
 
+fprintf('DEBUG: ');
+
 if get_debug_mode()
   
   for i=1:length(varargin)

@@ -2,17 +2,26 @@ clear
 
 set_current_settings_tag(get_default_settings_tag())
 
-sc_clf_all();
 reset_fig_indx();
 
-% SPIKE ANALYSIS
-
 % Constants
-ec_pretrigger         = -.1;
-ec_posttrigger        = .1;
+
+ec_pretrigger         = -.5;
+ec_posttrigger        = .5;
 ec_binwidth           = 1e-3;
 ec_min_stim_latency   = 5e-4;
 ec_max_stim_latency   = .5;
+
+isi_min_spike_latency = 0;
+isi_max_spike_latency = .02;
+isi_binwidth          = .001;
+isi_tmax              = .1;
+
+ic_pretrigger = -.02;
+ic_posttrigger = .05;
+ic_t_range = [.0005 .0025];
+
+% SPIKE ANALYSIS
 
 % Initialize
 ec_neurons = paired_get_extra_neurons();
@@ -20,17 +29,12 @@ ec_neurons = paired_get_extra_neurons();
 % Cross correlation / perispike event histogram
 paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_binwidth, ...
   ec_min_stim_latency, ec_max_stim_latency);
-return
 
-
-
-
+paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, ...
+  isi_min_spike_latency, isi_max_spike_latency, isi_binwidth, isi_tmax)
 
 
 % Raster plots for each pattern & for paired neuron
-
-
-
 
 % Perievent spiking histogram / perievent pattern histogram
 
@@ -58,10 +62,6 @@ return
 
 % IC ANALYSIS
 
-% Constants
-ic_pretrigger = -.02;
-ic_posttrigger = .05;
-ic_t_range = [.0005 .0025];
 % Initialize
 ic_neurons = paired_get_intra_neurons();
 

@@ -21,7 +21,7 @@ pretrigger  = varargin{arg_offset+3};
 posttrigger = varargin{arg_offset+4};
 binwidth    = varargin{arg_offset+5};
 
-[freq, edges] = sc_perifreq(stimtimes,spiketimes,pretrigger,posttrigger,binwidth);
+[freq, edges] = sc_perifreq(stimtimes, spiketimes, pretrigger, posttrigger, binwidth);
 
 plot_h = plot(ax, edges, freq);
 

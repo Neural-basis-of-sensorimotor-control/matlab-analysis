@@ -1,8 +1,8 @@
 function debug_printout(varargin)
 
-fprintf('DEBUG: ');
-
 if get_debug_mode()
+  
+  fprintf('DEBUG: ');
   
   for i=1:length(varargin)
     

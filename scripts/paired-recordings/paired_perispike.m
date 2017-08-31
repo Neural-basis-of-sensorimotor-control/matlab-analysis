@@ -28,6 +28,8 @@ plot_perispike(t2, t1, stim_times, pretrigger, posttrigger, binwidth, ...
 
 linkaxes([h1 h2])
 
+paired_add_neuron_textbox(neuron);
+
 end
 
 

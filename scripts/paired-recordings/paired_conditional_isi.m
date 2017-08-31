@@ -49,10 +49,7 @@ plot_conditional_isi(t2_spont, t1_all, min_spike_latency, max_spike_latency, ...
 
 linkaxes([h1 h2 h3 h4 h5 h6])
 
-txt = annotation('textbox', 'String', neuron.comment);
-
-setx(txt, .02)
-sety(txt, .9)
+paired_add_neuron_textbox(neuron);
 
 end
 

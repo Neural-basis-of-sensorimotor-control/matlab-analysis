@@ -25,36 +25,41 @@ clf
 
 h1 = subplot(2, 3, 1);
 plot_conditional_isi(t1_all, t2_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'all sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'all sweeps', neuron, neuron.template_tag{1});
 
 h2 = subplot(2, 3, 2);
 plot_conditional_isi(t1_stim, t2_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'post stim sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'post stim sweeps', neuron, neuron.template_tag{1});
 
 h3 = subplot(2, 3, 3);
 plot_conditional_isi(t1_spont, t2_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'spontaneous sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'spontaneous sweeps', neuron, neuron.template_tag{1});
 
 h4 = subplot(2, 3, 4);
 plot_conditional_isi(t2_all, t1_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'all sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'all sweeps', neuron, neuron.template_tag{2});
 
 h5 = subplot(2, 3, 5);
 plot_conditional_isi(t2_stim, t1_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'post stim sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'post stim sweeps', neuron, neuron.template_tag{2});
 
 h6 = subplot(2, 3, 6);
 plot_conditional_isi(t2_spont, t1_all, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, 'spontaneous sweeps', neuron.template_tag{1});
+  binwidth, tmax, 'spontaneous sweeps', neuron, neuron.template_tag{2});
 
 linkaxes([h1 h2 h3 h4 h5 h6])
+
+txt = annotation('textbox', 'String', neuron.comment);
+
+setx(txt, .02)
+sety(txt, .9)
 
 end
 
 
 function plot_conditional_isi(presynaptic_spiketimes, ...
   postsynaptic_spiketimes, min_spike_latency, max_spike_latency, ...
-  binwidth, tmax, selection_str, trigger_str)
+  binwidth, tmax, selection_str, neuron, trigger_str)
 
 postsynaptic_spiketimes = sort(postsynaptic_spiketimes);
 
@@ -91,7 +96,8 @@ grid on
 xlabel('ISI time [s]')
 ylabel('Relative frequency')
 
-title(sprintf('%s: %s', selection_str, trigger_str));
+title(sprintf('%s %s %s: %s', neuron.file_tag, neuron.signal_tag, ...
+  selection_str, trigger_str));
 
 end
 

@@ -1,41 +1,62 @@
 classdef ScThreshold < handle
+  
   properties
+    
     position_offset
     v_offset
     lower_tolerance
     upper_tolerance
     
-    max_matrix_size = 1e7   %can be changed to optimize speed and memory
-    %usage, optimal value depends on available
-    %RAM
-    min_isi                 %min inter-spike interval (ISI) in bins
+    max_matrix_size = 1e7   % can be changed to optimize speed and memory
+                            % usage, optimal value depends on available
+                            % RAM
+    min_isi                 % min inter-spike interval (ISI) in bins
   end
   
   properties (Dependent)
+    
     n
     width
+  
   end
   
   methods
+    
     function obj = ScThreshold(position_offset, v_offset, lower_tolerance, upper_tolerance)
-      obj.min_isi = 1e2;
+    
+      obj.min_isi         = 1e2;
       obj.position_offset = position_offset;
-      obj.v_offset = v_offset;%(ind);
-      obj.lower_tolerance = lower_tolerance;%(ind);
-      obj.upper_tolerance = upper_tolerance;%(ind);
+      obj.v_offset        = v_offset;
+      obj.lower_tolerance = lower_tolerance;
+      obj.upper_tolerance = upper_tolerance;
+      
+      obj.optimize_param_order();
+    
+    end
+    
+    
+    function optimize_param_order(obj)
+      
+      if ~obj.n
+        return
+      end
+      
       %Set highest abs v offset first, then highest deviation from
       %previous value as second
-      [~,dim] = max(size(obj.v_offset));
-      [~,ind] = sort(abs(obj.v_offset),dim,'descend');
-      obj.v_offset = obj.v_offset(ind);
+      [~,dim]             = max(size(obj.v_offset));
+      [~,ind]             = sort(abs(obj.v_offset),dim,'descend');
+      obj.v_offset        = obj.v_offset(ind);
       obj.position_offset = obj.position_offset(ind);
       obj.lower_tolerance = obj.lower_tolerance(ind);
       obj.upper_tolerance = obj.upper_tolerance(ind);
-      [~,ind] = sort(abs(obj.v_offset(1)-obj.v_offset(2:end)),dim,'descend');
-      obj.v_offset(2:end) = obj.v_offset(ind+1);
+      
+      [~, ind] = sort(abs(obj.v_offset(1) - obj.v_offset(2:end)), dim, 'descend');
+      
+      obj.v_offset(2:end)        = obj.v_offset(ind+1);
       obj.position_offset(2:end) = obj.position_offset(ind+1);
       obj.lower_tolerance(2:end) = obj.lower_tolerance(ind+1);
       obj.upper_tolerance(2:end) = obj.upper_tolerance(ind+1);
+      
     end
     
     function newobj = create_copy(obj)

@@ -3,6 +3,7 @@ classdef ScNeuron < handle
   % For storing meta data to enable repeatable automated analysis.
   
   properties
+    
     experiment_filename
     file_tag
     signal_tag
@@ -15,6 +16,7 @@ classdef ScNeuron < handle
     comment
     xpsp_tag
     artifact_tag
+    
   end
   
   
@@ -22,8 +24,9 @@ classdef ScNeuron < handle
     
     function obj = ScNeuron(varargin)
       
-      obj.tmin = 0;
-      obj.tmax = inf;
+      obj.tmin    = -inf;
+      obj.tmax    = inf;
+      obj.comment = '';
       
       obj.update_properties(varargin{:});
       
@@ -112,7 +115,7 @@ classdef ScNeuron < handle
         end
         
       end
-
+      
     end
     
   end

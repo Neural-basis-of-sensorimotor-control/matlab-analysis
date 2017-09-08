@@ -1,7 +1,7 @@
 function neurons = paired_get_extra_neurons()
 
 data = {
-	'BENR_sc.mat'       'BENR0002'	'patch'   6.979807e+01	1.652043e+03	{'spike2-double'  'spike1-double'}  '?'   % 1
+	'BENR_sc.mat'       'BENR0002'	'patch'   6.979807e+01	1.652043e+03	{'spike2-double'  'spike1-double'}  'Asymmetriskt PSTH'   % 1
 	'BKNR_SSSA_sc.mat'	'BKNR0000'	'patch'   3.220902e+01	6.536293e+02	{'spike1-double'  'spike2-double'}  'Sannolikt dubbeldetektion, annars mkt starkt fynd'   %	2
 	%'BKNR_SSSA_sc.mat'	'BKNR0000'	'patch'   2.022110e+02	6.536293e+02	{'spike1-double'  'spike3-double'}  'Lågaktiva celler - ta bort'   %	3
 	'BKNR_SSSA_sc.mat'	'BKNR0000'	'patch'   2.022110e+02	1.136595e+03	{'spike2-double'  'spike3-double'}  'Rimlig latenstid, men aktiveras före trigger'   %	4

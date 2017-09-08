@@ -7,8 +7,10 @@ if ischar(prompt_before_saving)
   if ~strcmpi(prompt_before_saving, '-f')
     error('Unknown command: %s', prompt_before_saving);
   end
+  
 else
-  file_missing = isempty(save_path) || ~exist(save_path, 'file');
+  
+  file_missing = isempty(save_path) || ~isfile(save_path);
   
   if file_missing || prompt_before_saving
     
@@ -26,12 +28,15 @@ else
     end
     
     save_path = fullfile(pname, fname);
+    
   end
+  
 end
 
 obj = experiment;
 
-[~, obj.save_name] = fileparts(save_path);
+[~, name, ext] = fileparts(save_path);
+obj.save_name = [name ext];
  
 save(save_path, 'obj')
 

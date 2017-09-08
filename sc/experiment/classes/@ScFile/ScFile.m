@@ -3,6 +3,7 @@ classdef ScFile < ScList & ScDynamicClass
   %children: ScSequence
   
   properties
+    
     parent      %ScExperiment
     filename    %name of .mat / .adq file
     comment
@@ -13,25 +14,31 @@ classdef ScFile < ScList & ScDynamicClass
     textchannels    %TextMark / Keyboard channel in Spike2 (ScTextMark)
     discrete_signals %ScList of any type of triggers
     user_comment
+  
   end
   
   properties (Dependent)
+  
     is_adq_file
     tag
     filepath
     fdir
     channels
+  
   end
   
   methods
+    
     %ScFile
     %   filename    ends either with .mat or .adq
     function obj = ScFile(parent, filename)
+      
       obj.parent = parent;
       obj.filename = filename;
       obj.signals = ScList();
       obj.stims = ScList();
       obj.textchannels = ScList();
+      
     end
     
     
@@ -41,9 +48,11 @@ classdef ScFile < ScList & ScDynamicClass
     
     
     function set.filepath(obj, val)
+      
       [pname, fname, ext] = fileparts(val);
       obj.parent.set_fdir(pname);
       obj.filename = [fname ext];
+      
     end
     
     
@@ -91,17 +100,21 @@ classdef ScFile < ScList & ScDynamicClass
     
     %Clear transient data
     function sc_clearsignals(obj)
+      
       for i=1:obj.signals.n
         obj.signals.get(i).sc_clear();
       end
+      
     end
     
     
     %Clear all data
     function sc_clear(obj)
+      
       for i=1:obj.channels.n
         obj.channels.get(i).sc_clear();
       end
+      
     end
     
     
@@ -135,20 +148,24 @@ classdef ScFile < ScList & ScDynamicClass
     % To be done right after object creation, normally only once during
     % objects lifetime
     function success = init(obj,force_init)
+      
       %check if sequence has been initialized before
       if nargin<2 || ~force_init
+        
         if obj.signals.n || obj.stims.n || obj.textchannels.n
           success = false;
           return;
         end
+        
       end
+      
       if obj.is_adq_file
         success = obj.init_adq_file();
       else
         success = obj.init_spike2_file();
       end
+      
     end
-    
     
     %Triggers = objects that can be triggered on
     %Implement function gettimes, and property istrigger returns true
@@ -189,6 +206,7 @@ classdef ScFile < ScList & ScDynamicClass
           triggers.add(obj.discrete_signals.get(i));
         end
       end
+      
     end
     
     %channels = all channels from raw data file
@@ -245,15 +263,22 @@ classdef ScFile < ScList & ScDynamicClass
       fdir = obj.parent.fdir;
     end
     
+    
     function saved = sc_save(obj, prompt_before_saving)
+      
       if ischar(prompt_before_saving)
-        save_path = prompt_before_saving;
+    
+        save_path            = prompt_before_saving;
         prompt_before_saving = false;
-        saved = save_experiment(obj.parent, save_path, prompt_before_saving);
+        saved                = save_experiment(obj.parent, save_path, prompt_before_saving);
+      
       else
+        
         saved = save_experiment(obj.parent, obj.parent.abs_save_path, ...
           prompt_before_saving);
+      
       end
+      
     end
     
     %File is either adq file or spike2 file

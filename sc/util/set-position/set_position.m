@@ -1,9 +1,7 @@
-function set_position(h, x, y, width, height, unit)
+function set_position(h, x, y, width, height)
 
-if nargin < 6
-  unit = 'pixel';
-end
+position = [x y width height];
 
-set(h, 'unit', unit, 'position', [x y width height]);
+set(h, 'Units', 'pixels', 'Position', position);
 
 end

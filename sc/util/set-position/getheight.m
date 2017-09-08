@@ -1,5 +1,5 @@
-function height = getheight(h, varargin)
+function height = getheight(h)
 
-[~, ~, ~, height] = get_position(h, varargin{:});
+[~, ~, ~, height] = get_position(h);
 
 end

@@ -1,12 +1,7 @@
-function [x, y, width, height] = get_position(h, unit)
+function [x, y, width, height] = get_position(h)
 
-if nargin < 2
-  unit = 'pixel';
-end
-
-set(h, 'unit', unit);
-
-position  = get(h,'position');
+set(h, 'Units', 'pixels');
+position  = get(h, 'Position');
 
 x         = position(1);
 y         = position(2);

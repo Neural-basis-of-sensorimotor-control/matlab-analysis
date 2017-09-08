@@ -1,8 +1,10 @@
 classdef ScWaveform < ScTrigger & ScList & ScTemplate
+  
   %Template for neuron spike
   %children: ScThreshold
   
   properties
+  
     parent                  %ScSignal
     spike2filename          %applicable when there are extra files with
                             %spiketimes from Spike2
@@ -10,6 +12,7 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
     tag
     detected_spiketimes     %spiketimes that are given by ScThreshold children
     predefined_spiketimes   %e.g userdefined spiketimes
+  
   end
   
   properties (Transient)
@@ -17,16 +20,20 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
   end
   
   properties (Dependent)
+  
     width
     min_isi
+  
   end
   
   methods
     
     function obj = ScWaveform(parent, tag, spike2filename)
+  
       obj.parent = parent;
       obj.tag = tag;
       obj.spike2filename = spike2filename;
+    
     end
     
     

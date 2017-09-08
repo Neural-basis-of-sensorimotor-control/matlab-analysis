@@ -1,26 +1,20 @@
 function define_slope_stop_update(obj)
 
-haxis = axis;
+hold(obj.h_axes, 'on')
 
-cla
-plot(obj.x, obj.y, 'ButtonDownFcn', @obj.define_slope_stop_btndwn);
-hold on
-
-if obj.spike.n
-	indx = obj.spike.n:-1:1;
-	
-	xx = obj.x0 - [0 cumsum(obj.spike.width(indx))*obj.dt];
-	yy = obj.y0 - [0 cumsum(obj.spike.height(indx))];
-	lower_tol = obj.spike.lower_tol([indx(1) indx]);
-	upper_tol = obj.spike.upper_tol([indx(1) indx]);
-	
-	plot(xx, yy + lower_tol, xx, yy + upper_tol, ...
-		'ButtonDownFcn', @obj.define_slope_stop_btndwn);
+for i=1:obj.threshold.n
+  
+  x_ = obj.x0 + obj.threshold.position_offset(i)*obj.dt;
+  y_ = obj.y0 + obj.threshold.position_offset(i);
+  
+  lower_ = y_ + obj.threshold.lower_tolerance(i);
+  upper_ = y_ + obj.threshold.upper_tolerance(i);
+  
+  plot(x_ * [1 1], [lower_ upper_], ...
+    'ButtonDownFcn', @obj.define_slope_stop_btndwn);
 	
 end
 
-hold off
-
-axis(haxis);
+hold(obj.h_axes, 'off')
 
 end

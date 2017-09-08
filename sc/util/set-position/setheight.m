@@ -1,7 +1,7 @@
-function setheight(h, height, varargin)
+function setheight(h, height)
 
-[x, y, width] = get_position(h, varargin{:});
+[x, y, width] = get_position(h);
 
-set_position(h, x, y, width, height, varargin{:});
+set_position(h, x, y, width, height);
 
 end

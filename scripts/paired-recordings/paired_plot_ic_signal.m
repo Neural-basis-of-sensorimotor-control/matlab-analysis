@@ -21,13 +21,13 @@ for i=1:size(sweeps, 2)
 end
 
 
-sweeps_contain_xpsp  = match_template(signal, sweeps, sweep_times, t_range, neuron.xpsp_tag);
+sweeps_contain_xpsp  = paired_match_template(signal, sweeps, sweep_times, t_range, neuron.xpsp_tag);
 
 if isempty(neuron.xpsp_tag)
   sweeps_contain_xpsp = true(size(sweeps_contain_xpsp));
 end
 
-sweeps_contain_spike = match_template(signal, sweeps, sweep_times, [min(t_range(1), 0) t_range(2)], neuron.artifact_tag);
+sweeps_contain_spike = paired_match_template(signal, sweeps, sweep_times, [min(t_range(1), 0) t_range(2)], neuron.artifact_tag);
 
 xpsp_sweeps         = sweeps(:, sweeps_contain_xpsp & ~sweeps_contain_spike);
 spike_sweeps        = sweeps(:, sweeps_contain_spike);
@@ -102,6 +102,7 @@ plot(sweep_times, mean_antiselected + confidence_width_antiselected,   'LineStyl
 plot(sweep_times, mean_antiselected - confidence_width_antiselected,   'LineStyle', '--',   'LineWidth', 1, 'Color', colors(5, :))
 
 title(title_str, 'Interpreter', 'none');
+paired_add_neuron_textbox(neuron)
 
 xlabel('time [s]')
 ylabel('voltage [mV]');
@@ -109,29 +110,6 @@ ylabel('voltage [mV]');
 grid on
 
 linkaxes([ax1 ax2], 'x')
-
-end
-
-
-function is_match = match_template(signal, sweeps, sweep_times, t_range, templates)
-
-is_match = false(1, size(sweeps,2));
-
-for i=1:length(templates)
-  
-  template = signal.parent.gettriggers(0, inf).get('tag', templates{i});
-  
-  for j=1:size(sweeps, 2)
-    
-    template_times = sweep_times(template.match_v(sweeps(:,j)));
-    
-    if ~is_match(j)
-      
-      is_match(j) = any(template_times > t_range(1) & template_times < t_range(2));
-      
-    end
-  end
-end
 
 end
 

@@ -27,7 +27,7 @@ classdef ScChannel < handle
     %called before object is created from saved file
     function obj = loadobj(a)
       %to ensure backwards compatibility
-      if ~a.is_adq_file() && isempty(a.tag)
+      if ~a.is_adq_file && isempty(a.tag)
         a.tag = a.channelname;
       end
       obj = a;

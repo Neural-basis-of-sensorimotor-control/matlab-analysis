@@ -1,5 +1,5 @@
-function width = getwidth(h, varargin)
+function width = getwidth(h)
 
-[~, ~, width] = get_position(h, varargin{:});
+[~, ~, width] = get_position(h);
 
 end

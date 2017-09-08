@@ -14,7 +14,7 @@ for i=1:obj.plots.n
     y = y - (getheight(ax_) + obj.row_margin);
   end
   
-  sety(ax_,y);
+  sety(ax_, y);
   
   if axeswidth>0
     setwidth(ax_,axeswidth);

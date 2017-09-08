@@ -4,9 +4,17 @@ signal = sc_load_signal(neuron);
 
 v = signal.get_v(true, true, true, true);
 
-trigger = signal.parent.gettriggers(0, inf).get('tag', neuron.template_tag{1});
+trigger = signal.parent.gettriggers(-inf, inf).get('tag', neuron.template_tag{1});
 
-trigger_times = trigger.gettimes(0, inf);
+try
+  
+  trigger_times = trigger.gettimes(0, inf);
+  
+catch
+  
+  error(neuron.file_tag)
+  
+end
 
 trigger_times = trigger_times(trigger_times > neuron.tmin & trigger_times < neuron.tmax);
 

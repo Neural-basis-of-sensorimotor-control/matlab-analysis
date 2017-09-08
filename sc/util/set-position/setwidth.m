@@ -1,7 +1,7 @@
-function setwidth(h, width, varargin)
+function setwidth(h, width)
 
-[x, y, ~, height] = get_position(h, varargin{:});
+[x, y, ~, height] = get_position(h);
 
-set_position(h, x, y, width, height, varargin{:});
+set_position(h, x, y, width, height);
 
 end

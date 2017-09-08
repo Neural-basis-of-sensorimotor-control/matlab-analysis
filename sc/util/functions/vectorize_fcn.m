@@ -14,10 +14,16 @@ for i=1:length(input)
   
   debug_printout(char(fcn), i, length(input));
   
+  tmp_input = input(i);
+  
+  if iscell(tmp_input)
+    tmp_input = tmp_input{:};
+  end
+  
   if nargout
-    output(i) = {fcn(input(i), varargin{2:end})};
+    output(i) = {fcn(tmp_input, varargin{2:end})};
   else
-    fcn(input(i), varargin{2:end});
+    fcn(tmp_input, varargin{2:end});
   end
   
 end

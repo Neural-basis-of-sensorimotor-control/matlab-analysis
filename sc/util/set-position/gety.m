@@ -1,5 +1,5 @@
-function y = gety(h, varargin)
+function y = gety(h)
 
-[~,y] = get_position(h, varargin{:});
+[~, y] = get_position(h);
 
 end

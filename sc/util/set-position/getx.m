@@ -1,5 +1,5 @@
-function x = getx(h, varargin)
+function x = getx(h)
 
-x = get_position(h, varargin{:});
+x = get_position(h);
 
 end

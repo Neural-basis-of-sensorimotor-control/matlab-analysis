@@ -54,7 +54,8 @@ for i_file=1:experiment.n
       %
       %       end
       
-      if startsWith(waveform.tag, 'remove-spike-')
+      if startsWith(waveform.tag, 'remove-spike-') || ...
+          startsWith(waveform.tag, 'e-psp-')
         
         fprintf('''%s'' ''%s'' ''%s'' -inf inf {''%s''}\n', ...
           experiment.save_name, ...

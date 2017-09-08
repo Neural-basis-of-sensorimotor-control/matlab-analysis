@@ -82,11 +82,9 @@ ax2 = subplot(212);
 hold on
 
 plot(sweep_times, mean_xpsp,           'LineStyle', '-', 'LineWidth', 2, 'Color', colors(1, :))
-plot(sweep_times, mean_spike,          'LineStyle', '-', 'LineWidth', 2, 'Color', colors(3, :))
 plot(sweep_times, mean_antiselected,   'LineStyle', '-', 'LineWidth', 2, 'Color', colors(5, :))
 
 legend_str = {'Mean +/- confidence bounds (EPSP)'
-  'Mean +/- confidence bounds (dendritic spike)'
   'Mean +/- confidence bounds (antiselected)'
   };
 
@@ -94,9 +92,6 @@ legend(legend_str)
 
 plot(sweep_times, mean_xpsp + confidence_width_xpsp,   'LineStyle', '--',  'LineWidth', 1, 'Color', colors(1, :))
 plot(sweep_times, mean_xpsp - confidence_width_xpsp,   'LineStyle', '--',  'LineWidth', 1, 'Color', colors(1, :))
-
-plot(sweep_times, mean_spike + confidence_width_spike,   'LineStyle', '--',  'LineWidth', 1, 'Color', colors(3, :))
-plot(sweep_times, mean_spike - confidence_width_spike,   'LineStyle', '--',  'LineWidth', 1, 'Color', colors(3, :))
 
 plot(sweep_times, mean_antiselected + confidence_width_antiselected,   'LineStyle', '--',  'LineWidth', 1, 'Color', colors(5, :))
 plot(sweep_times, mean_antiselected - confidence_width_antiselected,   'LineStyle', '--',   'LineWidth', 1, 'Color', colors(5, :))

@@ -38,7 +38,7 @@ if ~isempty(obj.active_object)
       
     end
     
-    if obj.active_index == ThresholdObjects.LOWER_BOUND && ...
+    if obj.active_object_type == ThresholdObjects.LOWER_BOUND && ...
         y_ >= y_reset + obj.threshold.upper_tolerance(obj.active_index)
       
       y_reset = y_reset + obj.threshold.lower_tolerance(obj.active_index);
@@ -50,7 +50,7 @@ if ~isempty(obj.active_object)
       
       return
       
-    elseif obj.active_index == ThresholdObjects.UPPER_BOUND && ...
+    elseif obj.active_object_type == ThresholdObjects.UPPER_BOUND && ...
         y_ <= y_reset + obj.threshold.lower_tolerance(obj.active_index)
       
       y_reset = y_reset + obj.threshold.upper_tolerance(obj.active_index);

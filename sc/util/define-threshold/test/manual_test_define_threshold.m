@@ -2,7 +2,7 @@ clc
 close all
 clear
 
-v = sin(0:.1:100);
+v = sin(0:.1:pi/2);
 dt = 1e-5;
 
-define_threshold = DefineThreshold.define(v, dt)
+thr = DefineThreshold.define(v, dt)

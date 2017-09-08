@@ -11,16 +11,18 @@ obj.y0 = y_;
 xdata = get(src, 'XData');
 ydata = get(src, 'YData');
 
-[~, ind] = min(abs(xdata - x_));
+[~, ind_zero] = min(abs(xdata - x_));
 
 incr = max_width/nbr_of_steps;
 
-pos = round((incr:incr:max_width)/obj.dt);
+position = round((incr:incr:max_width)/obj.dt);
+indx     = ind_zero + position;
+indx     = indx(indx>=1 & indx <=length(ydata));
 
-obj.threshold.position_offset = pos;
-obj.threshold.v_offset        = ydata(ind + pos) - y_;
-obj.threshold.lower_tolerance = lower_tol*ones(size(pos));
-obj.threshold.upper_tolerance = upper_tol*ones(size(pos));
+obj.threshold.position_offset = position;
+obj.threshold.v_offset        = ydata(indx) - y_;
+obj.threshold.lower_tolerance = lower_tol*ones(size(indx));
+obj.threshold.upper_tolerance = upper_tol*ones(size(indx));
 
 obj.define_threshold();
 

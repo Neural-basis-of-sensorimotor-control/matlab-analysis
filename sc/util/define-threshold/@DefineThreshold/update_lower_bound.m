@@ -2,10 +2,10 @@ function update_lower_bound(active_object, active_object_group, x_, y_)
 
 for i=1:length(active_object_group)
   
-  dim = length(get(active_object_group(i), 'XData'));
+  if get_nbr_of_samples(active_object_group(i))
   
-  if dim == 1
     set(active_object_group(i), 'XData', x_);
+  
   else
     
     set(active_object_group(i), 'XData', x_*[1 1]);

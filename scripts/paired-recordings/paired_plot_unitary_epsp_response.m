@@ -37,7 +37,8 @@ title_str = sprintf('%s - %s (%s) comment: %s', neuron.file_tag, neuron.signal_t
 
 fig = incr_fig_indx();
 
-define_object = DefineThreshold.define(xpsp_sweeps, 1e-5);
+plot(xpsp_sweeps);
+
 set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 
@@ -46,7 +47,8 @@ paired_add_neuron_textbox(neuron);
 
 fig = incr_fig_indx();
 
-define_object = DefineThreshold.define(spike_sweeps, 1e-5);
+plot(spike_sweeps);
+
 set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 
@@ -55,7 +57,8 @@ paired_add_neuron_textbox(neuron);
 
 fig = incr_fig_indx();
 
-define_object = DefineThreshold.define(antiselected_sweeps, 1e-5);
+plot(antiselected_sweeps);
+
 set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 

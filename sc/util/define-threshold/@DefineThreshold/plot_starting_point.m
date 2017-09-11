@@ -1,5 +1,11 @@
 function plot_starting_point(obj, x_, y_)
 
+for i=1:length(obj.all_objects)
+  
+  delete(obj.all_objects(i));
+  
+end
+
 obj.all_objects = [];
 
 h_plot = plot(obj.h_axes, x_, y_, 'Marker', 's', ...

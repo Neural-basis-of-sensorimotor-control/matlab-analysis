@@ -25,10 +25,6 @@ if ~isempty(obj.active_object)
       
       DefineThreshold.update_upper_bound(active_object, active_object_group, x_, y_);
       
-%     case DefineThresholdGraphicObjects.BAR
-%       
-%       DefineThreshold.update_bar(active_object, active_object_group, x_, y_);
-      
     otherwise
       
       error('Illegal object type: %d', active_object_type);

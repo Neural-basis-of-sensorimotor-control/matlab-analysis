@@ -81,23 +81,7 @@ if ~isempty(obj.active_object)
       end
       
       DefineThreshold.update_upper_bound(active_object, active_object_group, x_, y_);
-      
-    %case DefineThresholdGraphicObjects.BAR
-      
-      %       if x_ < obj.x0
-%         
-%         x_ = obj.x(active_index);
-%         
-%         fprintf('x < x0, discarding\n');
-%         
-%       else
-%         
-%         obj.x(active_index)       = x_;
-%         
-%       end
-%       
-%       DefineThreshold.update_bar(active_object, active_object_group, x_, y_);
-      
+
     otherwise
       
       error('Illegal option: %d', active_object_type);

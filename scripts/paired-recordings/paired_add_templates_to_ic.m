@@ -38,6 +38,4 @@ incr_fig_indx();
 
 fprintf('%s\n', title_str)
 
-DefineThreshold.define(xpsp_sweeps, signal.dt);
-
 end

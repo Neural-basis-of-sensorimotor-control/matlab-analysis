@@ -6,7 +6,7 @@ h_plots = get_plots(obj.h_axes);
 
 for i=1:length(h_plots)
   
-  if ~any(obj.all_objects == h_plots(i))
+  if get_nbr_of_samples(h_plots(i)) > 2
     
     set(h_plots(i), 'ButtonDownFcn', @(~, ~) btn_dwn_define_starting_point(obj));
   

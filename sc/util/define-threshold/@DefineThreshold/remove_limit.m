@@ -1,11 +1,15 @@
 function remove_limit(obj, indx)
 
+obj.x(indx)       = [];
+obj.y_lower(indx) = [];
+obj.y_upper(indx) = [];
 
-obj.threshold.position_offset(indx) = [];
-obj.threshold.v_offset(indx)        = [];
-obj.threshold.upper_tolerance(indx) = [];
-obj.threshold.lower_tolerance(indx) = [];
+for i=1:length(obj.all_objects)
+  
+  delete(obj.all_objects(i));
+  
+end
 
-obj.define_threshold();
+plot_starting_point(obj, obj.x0, obj.y0);
 
 end

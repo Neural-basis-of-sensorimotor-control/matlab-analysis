@@ -1,8 +1,9 @@
-function drag_object(obj, index, src_type, src, all_items)
+function drag_object(obj, ...
+  active_object_type, active_object, active_object_group, active_index)
 
-obj.active_index        = index;
-obj.active_object       = src;
-obj.active_object_type  = src_type;
-obj.active_object_group = all_items;
+obj.active_object_type  = active_object_type;
+obj.active_object       = active_object;
+obj.active_object_group = active_object_group;
+obj.active_index        = active_index;
 
 end

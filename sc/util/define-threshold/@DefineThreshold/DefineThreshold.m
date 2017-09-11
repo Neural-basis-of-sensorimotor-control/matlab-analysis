@@ -1,42 +1,38 @@
 classdef DefineThreshold < handle
   
-  methods (Access = 'private')
-    varargout = update_active_objects(varargin)
-    varargout = reset_active_objects(varargin)
-    varargout = clear_settings(varargin)
-  end
+  methods (Static, Access = 'private')
+    
+    varargout = update_starting_point(varargin)
+    varargout = update_lower_bound(varargin)
+    varargout = update_upper_bound(varargin)
   
-  methods (Static)
-    varargout = define(varargin)
-  end
-  
-  properties
-    
-    waveform
-    threshold
-    v
-    dt
-    x0
-    y0
-    h_axes
-    title_str
-    
-    active_object
-    active_object_group
-    active_object_type
-    active_index
-    
   end
   
   properties (SetAccess = 'private')
-    btn_dwn_fcn_plots
-    btn_dwn_fcn_axes
-    add_threshold_automatically_btn_dwn
+  
+    h_axes
+        
+    x0
+    y0
+    x
+    y_lower
+    y_upper
+    
+    active_object_type
+    active_object
+    active_object_group
+    active_index
+    
+    all_objects
+    
   end
   
   methods
     
     function obj = DefineThreshold()
+      
+      obj.h_axes = gca;
+      hold(obj.h_axes, 'on');
       
     end
     

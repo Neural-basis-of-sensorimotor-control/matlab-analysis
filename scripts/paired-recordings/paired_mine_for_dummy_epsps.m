@@ -41,22 +41,23 @@ for i_file=1:experiment.n
       
       waveform = signal.waveforms.get(i_waveform);
       
-      %       if startsWith(waveform.tag, 'dummy')
-      %
-      %         fprintf('''%s'' ''%s'' ''%s'' -inf inf {''%s''}\n', ...
-      %           experiment.save_name, ...
-      %           file.tag, ...
-      %           signal.tag, ...
-      %           waveform.tag);
-      %
-      %         signal.recalculate_waveform(waveform);
-      %         signal.parent.sc_save(false);
-      %
-      %       end
-      
-      if startsWith(waveform.tag, 'remove-spike-') || ...
-          startsWith(waveform.tag, 'e-psp-')
+%       %       if startsWith(waveform.tag, 'dummy')
+%       %
+%       %         fprintf('''%s'' ''%s'' ''%s'' -inf inf {''%s''}\n', ...
+%       %           experiment.save_name, ...
+%       %           file.tag, ...
+%       %           signal.tag, ...
+%       %           waveform.tag);
+%       %
+%       %         signal.recalculate_waveform(waveform);
+%       %         signal.parent.sc_save(false);
+%       %
+%       %       end
+%       
+%       if startsWith(waveform.tag, 'remove-spike-') || ...
+%           startsWith(waveform.tag, 'e-psp-')
         
+if startsWith(waveform.tag, 'e-psp-p')
         fprintf('''%s'' ''%s'' ''%s'' -inf inf {''%s''}\n', ...
           experiment.save_name, ...
           file.tag, ...
@@ -64,11 +65,6 @@ for i_file=1:experiment.n
           waveform.tag);
         
         signal.recalculate_waveform(waveform);
-        
-        if isempty(waveform.gettimes(0,inf))
-          error('%s %s', file.tag, waveform.tag)
-        end
-        
         
         signal.parent.sc_save(false);
         

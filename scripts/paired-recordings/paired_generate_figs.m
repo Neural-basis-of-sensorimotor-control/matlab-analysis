@@ -45,7 +45,7 @@ paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, ...
 % IC signal triggered on spike from paired neuron. Scaling from paired
 % neuron channel removed
 
-paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range)
+paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range)
 paired_plot_unitary_epsp_response(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range);
 
 apply_to_figs(@zoom, 'on')

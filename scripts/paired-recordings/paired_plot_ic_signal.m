@@ -1,8 +1,8 @@
-function paired_plot_ic_signal(neuron, pretrigger, posttrigger, t_range)
+function paired_plot_ic_signal(neuron, pretrigger, posttrigger, t_epsp_range, t_spike_range)
 
 if length(neuron)~=1
   
-  vectorize_fcn(@paired_plot_ic_signal, neuron, pretrigger, posttrigger, t_range)
+  vectorize_fcn(@paired_plot_ic_signal, neuron, pretrigger, posttrigger, t_epsp_range, t_spike_range);
   return
   
 end
@@ -20,14 +20,13 @@ for i=1:size(sweeps, 2)
   sweeps(:,i) = sweeps(:,i) - sweeps(zero_ind, i);
 end
 
-
-sweeps_contain_xpsp  = paired_match_template(signal, sweeps, sweep_times, t_range, neuron.xpsp_tag);
+sweeps_contain_xpsp  = paired_match_template(signal, sweeps, sweep_times, t_epsp_range, neuron.xpsp_tag);
 
 if isempty(neuron.xpsp_tag)
   sweeps_contain_xpsp = true(size(sweeps_contain_xpsp));
 end
 
-sweeps_contain_spike = paired_match_template(signal, sweeps, sweep_times, [min(t_range(1), 0) t_range(2)], neuron.artifact_tag);
+sweeps_contain_spike = paired_match_template(signal, sweeps, sweep_times, t_spike_range, neuron.artifact_tag);
 
 xpsp_sweeps         = sweeps(:, sweeps_contain_xpsp & ~sweeps_contain_spike);
 spike_sweeps        = sweeps(:, sweeps_contain_spike);
@@ -35,7 +34,7 @@ antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
 
 [mean_xpsp, median_xpsp, confidence_width_xpsp] = ...
   get_mean(xpsp_sweeps);
-[mean_spike, median_spike, confidence_width_spike] = ...
+[mean_spike, median_spike, ~] = ...
   get_mean(spike_sweeps);
 [mean_antiselected, median_antiselected, confidence_width_antiselected] = ...
   get_mean(antiselected_sweeps);

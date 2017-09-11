@@ -6,15 +6,13 @@ v = signal.get_v(true, true, true, true);
 
 trigger = signal.parent.gettriggers(-inf, inf).get('tag', neuron.template_tag{1});
 
-try
+if isempty(trigger)
   
-  trigger_times = trigger.gettimes(0, inf);
-  
-catch
-  
-  error(neuron.file_tag)
+  fprintf('Warning: no trigger!\n')
   
 end
+
+trigger_times = trigger.gettimes(0, inf);
 
 trigger_times = trigger_times(trigger_times > neuron.tmin & trigger_times < neuron.tmax);
 

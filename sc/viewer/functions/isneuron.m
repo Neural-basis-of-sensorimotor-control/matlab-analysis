@@ -1,5 +1,5 @@
 function val = isneuron(neuron)
 
-val = isa(neuron, 'isa');
+val = isa(neuron, 'ScNeuron');
 
 end

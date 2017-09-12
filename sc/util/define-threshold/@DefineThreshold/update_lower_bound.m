@@ -2,7 +2,7 @@ function update_lower_bound(active_object, active_object_group, x_, y_)
 
 for i=1:length(active_object_group)
   
-  if get_nbr_of_samples(active_object_group(i))
+  if get_nbr_of_samples(active_object_group(i)) == 1
   
     set(active_object_group(i), 'XData', x_);
   

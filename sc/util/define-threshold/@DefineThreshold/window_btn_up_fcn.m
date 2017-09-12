@@ -25,8 +25,9 @@ if ~isempty(obj.active_object)
         
       else
         
-        obj.x0 = x_;
-        obj.y0 = y_;
+        obj.x0                  = x_;
+        obj.y0                  = y_;
+        obj.has_unsaved_changes = true;
         
       end
       
@@ -52,6 +53,7 @@ if ~isempty(obj.active_object)
         
         obj.x(active_index)       = x_;
         obj.y_lower(active_index) = y_;
+        obj.has_unsaved_changes   = true;
         
       end
       
@@ -77,6 +79,7 @@ if ~isempty(obj.active_object)
         
         obj.x(active_index)       = x_;
         obj.y_upper(active_index) = y_;
+        obj.has_unsaved_changes   = true;
         
       end
       

@@ -39,7 +39,6 @@ fig = incr_fig_indx();
 
 plot(xpsp_sweeps);
 
-set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' XPSP'])
@@ -49,7 +48,6 @@ fig = incr_fig_indx();
 
 plot(spike_sweeps);
 
-set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' spike'])
@@ -59,7 +57,6 @@ fig = incr_fig_indx();
 
 plot(antiselected_sweeps);
 
-set_userdata(fig, 'define_threshold', define_object);
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' antiselected'])

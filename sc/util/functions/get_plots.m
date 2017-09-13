@@ -9,7 +9,7 @@ elseif any(arrayfun(@isfigure, h))
   h_plots = [];
   
   for i=1:length(h)
-    h_plots = concat_list(h_plots, get_plots(h(i).Children));
+    h_plots = concat_list(h_plots, get_plots(get_axes(h(i))));
   end
   
 elseif any(arrayfun(@isaxes, h))
@@ -20,14 +20,10 @@ elseif any(arrayfun(@isaxes, h))
     h_plots = concat_list(h_plots, get_plots(h(i).Children));
   end
   
-elseif any(arrayfun(@isplot, h))
+else
   
   h_plots = h(arrayfun(@isplot, h));
 
-else
-  
-  error('Uknown input of class %s', class(h(1)));
-  
 end
 
 end

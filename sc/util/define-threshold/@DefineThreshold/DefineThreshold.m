@@ -8,6 +8,7 @@ classdef DefineThreshold < handle
     varargout = plot_starting_point(varargin)
     varargout = delete_all_objects(varargin)
     varargout = export_to_threshold(varargin)
+    varargout = reset_axes(varargin)
     
   end
   

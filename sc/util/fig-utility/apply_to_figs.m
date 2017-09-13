@@ -1,19 +1,19 @@
-function apply_to_figs(figs, fcn, varargin)
+function apply_to_figs(h_figs, fcn, varargin)
 
-if ~any(isfigure(figs))
+if ~any(isfigure(h_figs))
   
   if nargin > 1
     varargin  = [{fcn} varargin];
   end
   
-  fcn       = figs;
-  figs      = get_all_figures();
+  fcn    = h_figs;
+  h_figs = get_all_figures();
 
 end
 
-for i=1:length(figs)
+for i=1:length(h_figs)
   
-  fcn(figs(i), varargin{:});
+  fcn(h_figs(i), varargin{:});
   
 end
 

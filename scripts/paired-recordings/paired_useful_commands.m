@@ -9,9 +9,9 @@ mxfigs
 brwfigs
 
 %% 
-f = figure(2)
+f = figure(4)
 neuron = paired_get_figure_neuron(f)
 
 %% 
-mf = ModifyWaveform(gca, neuron, 'remove-spike-1')
+mf = ModifyWaveform(gca, neuron, 'e-psp-p1-1')
 mf.init_plot

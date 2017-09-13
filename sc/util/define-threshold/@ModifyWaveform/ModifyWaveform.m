@@ -1,10 +1,11 @@
 classdef ModifyWaveform < handle
   
-  methods (Access = 'public')
+  methods
     
     varargout = sc_save(varargin)
     varargout = init_plot(varargin)
     varargout = add_threshold(varargin)
+    varargout = reset_axes(varargin)
     
   end
   
@@ -40,7 +41,17 @@ classdef ModifyWaveform < handle
       end
       
       if ischar(waveform)
-        waveform = signal.waveforms.get('tag', waveform);
+        
+        waveform_tag = waveform; 
+        waveform     = signal.waveforms.get('tag', waveform_tag);
+        
+        if isempty(waveform)
+          
+          waveform = ScWaveform(signal, waveform_tag, []);
+          signal.waveforms.add(waveform);
+          
+        end
+        
       end
       
       obj.waveform = waveform;

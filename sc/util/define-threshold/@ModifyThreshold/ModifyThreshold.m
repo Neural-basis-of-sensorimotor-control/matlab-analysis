@@ -3,8 +3,8 @@ classdef ModifyThreshold < DefineThreshold
   methods (Access = 'public')
     
     varargout = sc_save(varargin)
-    varargout = export_to_threshold(varargin)
     varargout = plot_starting_point(varargin)
+    varargout = update_threshold(varargin)
     
   end
   
@@ -12,6 +12,7 @@ classdef ModifyThreshold < DefineThreshold
     
     threshold
     signal
+    threshold_has_been_plotted
     
   end
   
@@ -25,8 +26,9 @@ classdef ModifyThreshold < DefineThreshold
         signal = sc_load_signal(signal);
       end
       
-      obj.signal    = signal;
-      obj.threshold = threshold;
+      obj.signal                     = signal;
+      obj.threshold                  = threshold;
+      obj.threshold_has_been_plotted = false;
       
     end
     

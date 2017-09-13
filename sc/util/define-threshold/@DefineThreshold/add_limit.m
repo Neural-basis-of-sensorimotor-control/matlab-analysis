@@ -8,28 +8,24 @@ y_ = p(1, 2);
 if x_ <= obj.x0
   
   fprintf('x < x0. Discarding\n');
+  return
+  
+elseif ~isempty(obj.x)
+  
+  dy = mean(obj.y_upper - obj.y_lower)/2;
   
 else
   
-  n = length(obj.x) + 1;
-  
-  obj.x(n) = x_;
-  
-  if isempty(obj.x)
-    
-    dy = (obj.y_upper(n-1) - obj.y_lower(n-1))/2;
-    
-  else
-    
-    dy = sc_range(ylim(obj.h_axes))/2;
-    
-  end
-  
-  obj.y_upper(n) = y_ + dy;
-  obj.y_lower(n) = y_ - dy;
-  
-  plot_single_limit(obj, n);
+  dy = sc_range(ylim(obj.h_axes))/10;
   
 end
+
+n = length(obj.x) + 1;
+
+obj.x(n) = x_;
+obj.y_upper(n) = y_ + dy;
+obj.y_lower(n) = y_ - dy;
+
+plot_single_limit(obj, n);
 
 end

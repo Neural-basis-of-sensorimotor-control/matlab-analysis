@@ -10,10 +10,10 @@ if isempty(obj.x)
   
 else
   
-  dx       = round(obj.x - obj.x0)/dt;
-  v_offset = zeros(size(dx));
-  dy_lower = obj.y_lower - obj.y0;
-  dy_upper = obj.y_upper - obj.y0;
+  dx                        = round((obj.x - obj.x0)/dt);
+  v_offset                  = zeros(size(dx));
+  dy_lower                  = obj.y_lower - obj.y0;
+  dy_upper                  = obj.y_upper - obj.y0;
   
   threshold.position_offset = dx;
   threshold.v_offset        = v_offset;

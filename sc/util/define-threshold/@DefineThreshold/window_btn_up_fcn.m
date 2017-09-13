@@ -6,6 +6,7 @@ if ~isempty(obj.active_object)
   active_object_group = obj.active_object_group;
   active_object_type  = obj.active_object_type;
   active_index        = obj.active_index;
+  all_objects         = obj.all_objects;
   
   p = get(obj.h_axes, 'CurrentPoint');
   
@@ -15,23 +16,19 @@ if ~isempty(obj.active_object)
   switch active_object_type
     
     case DefineThresholdGraphicObjects.STARTING_POINT
+ 
+      dx    = x_ - obj.x0;
+      dy    = y_ - obj.y0;
       
-      if any(obj.x < x_)
-        
-        x_ = obj.x0;
-        y_ = obj.y0;
-        
-        fprintf('x0 > x, discarding\n');
-        
-      else
-        
-        obj.x0                  = x_;
-        obj.y0                  = y_;
-        obj.has_unsaved_changes = true;
-        
-      end
+      obj.x       = obj.x + dx;
+      obj.y_upper = obj.y_upper + dy;
+      obj.y_lower = obj.y_lower + dy;
+      
+      obj.x0 = x_;
+      obj.y0 = y_;
       
       DefineThreshold.update_starting_point(active_object, x_, y_);
+      DefineThreshold.move_limits(all_objects(all_objects ~= active_object), dx, dy);
       
     case DefineThresholdGraphicObjects.LOWER_BOUND
       

@@ -1,11 +1,13 @@
 classdef DefineThreshold < handle
   
-  methods (Access = 'public')
+  methods
     
     varargout = init_plot(varargin)
     varargout = import_threshold(varargin)
     varargout = remove_limit(varargin)
     varargout = plot_starting_point(varargin)
+    varargout = delete_all_objects(varargin)
+    varargout = export_to_threshold(varargin)
     
   end
   
@@ -33,25 +35,25 @@ classdef DefineThreshold < handle
     varargout = update_starting_point(varargin)
     varargout = update_lower_bound(varargin)
     varargout = update_upper_bound(varargin)
+    varargout = move_limits(varargin)
     
   end
   
-  properties (SetAccess = 'public')
+  properties
     
     color
+    has_unsaved_changes
+    h_axes
+    
     x0
     y0
+    x
+    y_lower
+    y_upper
     
   end
   
   properties (SetAccess = 'private')
-    
-    h_axes
-    has_unsaved_changes
-    
-    x
-    y_lower
-    y_upper
     
     active_object_type
     active_object

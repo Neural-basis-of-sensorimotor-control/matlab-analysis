@@ -4,6 +4,7 @@ classdef ModifyWaveform < handle
     
     varargout = sc_save(varargin)
     varargout = init_plot(varargin)
+    varargout = add_threshold(varargin)
     
   end
   
@@ -15,6 +16,7 @@ classdef ModifyWaveform < handle
   
   properties
     
+    waveform
     thresholds
     h_axes
     
@@ -32,6 +34,16 @@ classdef ModifyWaveform < handle
       
       obj.thresholds = [];
       obj.h_axes     = h_axes;
+      
+      if isneuron(signal)
+        signal = sc_load_signal(signal);
+      end
+      
+      if ischar(waveform)
+        waveform = signal.waveforms.get('tag', waveform);
+      end
+      
+      obj.waveform = waveform;
       
       colors = varycolor(length(waveform.list));
       

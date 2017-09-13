@@ -1,6 +1,8 @@
-function sc_save(obj)
+function sc_save(obj, varargin)
 
-obj.signal.sc_save(false);
+update_threshold(obj);
+
+obj.signal.sc_save(varargin{:});
 
 obj.has_unsaved_changes = false;
 

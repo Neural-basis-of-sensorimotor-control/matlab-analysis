@@ -7,6 +7,8 @@ if length(neuron) ~= 1
   
 end
 
+h_axes = [];
+
 [sweeps, sweep_times, signal] = paired_get_sweeps(neuron, pretrigger, posttrigger);
 
 if isempty(sweeps)
@@ -35,30 +37,70 @@ antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
 
 title_str = sprintf('%s - %s (%s) comment: %s', neuron.file_tag, neuron.signal_tag, neuron.template_tag{1}, neuron.comment);
 
-fig = incr_fig_indx();
+fig    = incr_fig_indx();
+clf
 
-plot(xpsp_sweeps);
+if ~isempty(xpsp_sweeps)
+  
+  plot(sweep_times, xpsp_sweeps, 'ButtonDownFcn', @(src, ~) make_thick(src));
+  h_axes = add_to_list(h_axes, gca);
+
+else
+  
+  cla
+
+end
 
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' XPSP'])
 paired_add_neuron_textbox(neuron);
 
-fig = incr_fig_indx();
+fig    = incr_fig_indx();
+clf
 
-plot(spike_sweeps);
+if ~isempty(spike_sweeps)
+  
+  plot(sweep_times, spike_sweeps, 'ButtonDownFcn', @(src, ~) make_thick(src));
+  h_axes = add_to_list(h_axes, gca);
+
+else
+  
+  cla
+
+end
 
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' spike'])
 paired_add_neuron_textbox(neuron);
 
-fig = incr_fig_indx();
+fig    = incr_fig_indx();
+clf
 
-plot(antiselected_sweeps);
+if ~isempty(antiselected_sweeps)
+  
+  plot(sweep_times, antiselected_sweeps, 'ButtonDownFcn', @(src, ~) make_thick(src));
+  h_axes = add_to_list(h_axes, gca);
+
+else
+  
+  cla
+
+end
 
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' antiselected'])
 paired_add_neuron_textbox(neuron);
+
+linkaxes(h_axes);
+
+end
+
+function make_thick(src)
+
+set(src, 'LineWidth', 2, 'Color', 'k');
+
+end
 

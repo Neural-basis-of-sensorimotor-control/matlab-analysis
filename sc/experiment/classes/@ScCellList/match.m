@@ -11,3 +11,5 @@ for i=1:length(str)
 end
 
 val = obj.cell_list(ind);
+
+end

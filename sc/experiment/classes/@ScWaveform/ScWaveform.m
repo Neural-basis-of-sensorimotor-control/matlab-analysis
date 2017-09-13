@@ -26,6 +26,10 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
   
   end
   
+  properties (Constant)
+    default_min_isi = 100
+  end
+  
   methods
     
     function obj = ScWaveform(parent, tag, spike2filename)
@@ -167,11 +171,21 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
     end
     
     function val = get.min_isi(obj)
+      
       if ~obj.n
-        val = 100;
+        
+        val = obj.default_min_isi;
+      
       else
+        
         val = max(cell2mat({obj.list.min_isi}));
+        
+        if isempty(val)
+          val = obj.default_min_isi;
+        end
+        
       end
+      
     end
   end
 end

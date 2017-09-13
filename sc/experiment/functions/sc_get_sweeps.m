@@ -3,8 +3,13 @@ function [sweeps, time] = sc_get_sweeps(v, tmin, triggertimes, pretrigger, ...
 
 input_is_logical = islogical(v);
 
-sweeppos = (round(pretrigger/dt):round(posttrigger/dt))';
-time = sweeppos*dt;
+sweeppos      = (round(pretrigger/dt):round(posttrigger/dt))';
+time          = sweeppos*dt;
+[~, ind_zero] = min(abs(time));
+
+if ind_zero > 1
+  time          = time - time(ind_zero);
+end
 
 if tmin>0
   warning('tmin > 0 in sc_get_sweeps')

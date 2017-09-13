@@ -1,14 +1,16 @@
 function download_automated_amplitude_analysis(amplitude, filename)
 
 if ~amplitude.is_updated
+  
   fprintf('Updating amplitude ...\n');
   amplitude.update;
+
 end
 
-indx = amplitude.is_median_and_automatic;
-rise = amplitude.height(indx);
-width = 1e3*amplitude.width(indx);
-latency = 1e3*amplitude.latency(indx);
+indx                       = amplitude.is_median_and_automatic;
+rise                       = amplitude.height(indx);
+width                      = 1e3*amplitude.width(indx);
+latency                    = 1e3*amplitude.latency(indx);
 is_automatically_generated = amplitude.is_pseudo(indx);
 
 fid = fopen(filename, 'w');

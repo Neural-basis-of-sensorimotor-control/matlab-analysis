@@ -2,11 +2,13 @@ function v = get_v(obj, smooth, remove_artifacts, remove_waveforms, ...
   remove_artifacts_simple)
 
 if isstruct(smooth)
-  s = smooth;
-  smooth = s.smooth;
-  remove_artifacts = s.remove_artifacts;
-  remove_waveforms = s.remove_waveforms;
+  
+  s                       = smooth;
+  smooth                  = s.smooth;
+  remove_artifacts        = s.remove_artifacts;
+  remove_waveforms        = s.remove_waveforms;
   remove_artifacts_simple = s.remove_artifacts_simple;
+  
 end
 
 v = obj.sc_loadsignal;
@@ -18,6 +20,7 @@ elseif remove_artifacts
 end
 
 if remove_waveforms
+  
   rmwfs = obj.get_rmwfs(-inf, inf);
   
   for k=1:rmwfs.n

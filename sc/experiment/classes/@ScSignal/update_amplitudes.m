@@ -3,9 +3,9 @@ function update_amplitudes(signal, neuron, response_min, response_max, ...
 
 stims = get_intra_motifs();
 
-s.smooth = true;
-s.remove_artifacts = true;
-s.remove_waveforms = true;
+s.smooth                  = true;
+s.remove_artifacts        = true;
+s.remove_waveforms        = true;
 s.remove_artifacts_simple = true;
 
 v = signal.get_v(s);

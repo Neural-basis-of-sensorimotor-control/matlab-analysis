@@ -1,13 +1,17 @@
 classdef ScSpikeData < ScNeuron & ScTrigger
   
   properties
+    
     raw_data_file
     column_indx
+    
   end
   
   properties (Transient)
+    
     spiketimes_is_updated
     spiketimes
+  
   end
   
   methods
@@ -23,7 +27,9 @@ classdef ScSpikeData < ScNeuron & ScTrigger
     function load_spiketimes(obj, base_dir)
       
       if nargin<2
+  
         filepath = obj.raw_data_file;
+      
       else
         
         if isfile(obj.raw_data_file) && ...
@@ -38,27 +44,35 @@ classdef ScSpikeData < ScNeuron & ScTrigger
         end
         
         filepath = [base_dir obj.raw_data_file];
+        
       end
       
       if ischar(obj.column_indx)
+        
         times = ScSpikeTrainCluster.load_times(filepath, obj.column_indx);
+      
       else
+        
         data = dlmread(filepath, ',', 1, 0);
         times = data(:, obj.column_indx);
         times = times(isfinite(times) & times ~= 0);
+      
       end
       
       obj.spiketimes = times;
       obj.spiketimes_is_updated = true;
+      
     end
     
     
     function times = get_spiketimes(obj, varargin)
+      
       if isempty(obj.spiketimes_is_updated) || ~obj.spiketimes_is_updated
         obj.load_spiketimes(varargin{:});
       end
       
       times = obj.spiketimes;
+    
     end
     
     

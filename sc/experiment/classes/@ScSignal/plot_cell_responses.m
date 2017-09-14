@@ -5,6 +5,7 @@ cla(ax);
 str = get_intra_motifs();
 
 for i=1:length(str)
+  
 	amplitude = obj.amplitudes.get('tag', str{i});
 	
 	x = amplitude.rise_automatic_detection;

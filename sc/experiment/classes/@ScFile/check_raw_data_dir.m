@@ -6,6 +6,7 @@ if ~isfile(file.filepath)
   if isfile(new_filepath)
     file.filepath = new_filepath;
   end
+  
 end
 
 success = file.prompt_for_raw_data_dir();

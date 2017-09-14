@@ -7,23 +7,29 @@ classdef ScSpikeTrainCluster < ScNeuron
   
   
   properties (SetAccess = 'private')
+    
     stimtimes_is_updated
     touch_pattern_times_is_updated
     spont_activity_time_sequences_is_updated
     touch_pattern_time_sequences_is_updated
+  
   end
   
   properties (SetAccess = 'private', GetAccess = 'private')
+  
     stimtimes
     touch_pattern_times
     spont_activity_time_sequences
     touch_pattern_time_sequences
+  
   end
   
   properties (Constant)
+  
     time_since_last_stim = .1
     touch_pattern_delay = .1
     time_since_last_touch_pattern = .5
+  
   end
   
   
@@ -188,6 +194,7 @@ classdef ScSpikeTrainCluster < ScNeuron
       fclose(fid);
       
       function val = rm_redundant_chars(val)
+        
         val = strrep(val, '0.5,"fa"', '0.5 fa');
         val = strrep(val, '0.5,"sa"', '0.5 sa');
         val = strrep(val, '1,"fa"', '1.0 fa');
@@ -204,19 +211,24 @@ classdef ScSpikeTrainCluster < ScNeuron
         val = strsplit(val, ',');
         val = strrep(val, '"', '');
         val = strrep(val, '''', '');
+      
       end
+      
       
       header = rm_redundant_chars(header);
       selected_header = rm_redundant_chars(selected_header);
       
       if ischar(selected_header)
+        
         is_selected = strcmp(header, selected_header);
+      
       else
+        
         is_selected = false(size(header));
         
         for i=1:length(selected_header)
           is_selected = is_selected | strcmp(header, selected_header{i});
-        end
+        end  
       end
       
       if ~nnz(is_selected)
@@ -229,6 +241,7 @@ classdef ScSpikeTrainCluster < ScNeuron
       times = times(isfinite(times) & times ~= 0);
       
       times = sort(times);
+      
     end
     
   end

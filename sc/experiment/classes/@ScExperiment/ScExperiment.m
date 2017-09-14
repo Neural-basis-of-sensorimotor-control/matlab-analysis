@@ -4,14 +4,14 @@ classdef ScExperiment < ScList
   
   properties
     
-    save_name   %for saving this class, ends with _sc.mat
+    save_name         %for saving this class, ends with _sc.mat
     last_gui_version
     
   end
   
   properties (SetAccess = protected)
     
-    fdir        %directory containing .mat / .adq files
+    fdir          %directory containing .mat / .adq files
     
   end
   
@@ -209,6 +209,7 @@ classdef ScExperiment < ScList
       set_last_experiment([pname fname ext]);
       
     end
+    
     
     function val = get.abs_save_path(obj)
       

@@ -4,15 +4,15 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
   %children: ScThreshold
   
   properties
-  
+    
     parent                  %ScSignal
     spike2filename          %applicable when there are extra files with
-                            %spiketimes from Spike2
+    %spiketimes from Spike2
     imported_spikedata      %ScSpikeData
     tag
     detected_spiketimes     %spiketimes that are given by ScThreshold children
     predefined_spiketimes   %e.g userdefined spiketimes
-  
+    
   end
   
   properties (Transient)
@@ -20,10 +20,10 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
   end
   
   properties (Dependent)
-  
+    
     width
     min_isi
-  
+    
   end
   
   properties (Constant)
@@ -33,11 +33,11 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
   methods
     
     function obj = ScWaveform(parent, tag, spike2filename)
-  
+      
       obj.parent = parent;
       obj.tag = tag;
       obj.spike2filename = spike2filename;
-    
+      
     end
     
     
@@ -56,7 +56,7 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
       
       if ~isempty(obj.spike2filename)
         fname = fullfile(obj.parent.fdir, obj.spike2filename);
-      
+        
         if isempty(who('-file', fname, 'spikes'))
           fprintf('Warning: could not find channel ''spikes'' in file %s.\n',fname);
         else
@@ -118,42 +118,58 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
         end
         
         if strcmp(outputType,'logical')
+          
           spikepos = nan(ceil(numel(v)/100),1);
           pos = 0;
           spikearea = false(size(v));
           
           for k=1:obj.n
+            
             [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v, min_isi_on);
             spikearea = spikearea | wfarea_temp;
             spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
             pos = pos+numel(spikepos_temp);
+            
           end
           
           spikepos = spikepos(1:pos);
+          
         elseif strcmpi(outputType,'index')
+          
           spikepos = nan(ceil(numel(v)/100),1);
           pos = 0;
           spikearea = zeros(size(v));
+          
           for k=1:obj.n
+            
             [spikepos_temp, wfarea_temp] = obj.get(k).match_v_parallel(v, min_isi_on);
             spikearea(wfarea_temp) = k*ones(nnz(wfarea_temp),1);
             spikepos(pos+1:pos+numel(spikepos_temp)) = spikepos_temp;
             pos = pos+numel(spikepos_temp);
+            
           end
+          
           spikepos = spikepos(1:pos);
+          
         else
+          
           error('Illegal value of input parameter outputType: ''%s''',...
             outputType)
+          
         end
       end
     end
     
+    
     %Return all spike times between tmin and tmax
     function times = gettimes(obj, tmin, tmax)
+      
       times = sc_separate(sort([obj.detected_spiketimes; obj.imported_spiketimes; ...
         obj.predefined_spiketimes]), obj.min_isi*obj.parent.dt);
       times = times(times>=tmin & times<tmax);
+      
     end
+    
     
     %Run through v and redo all thresholding
     function recalculate_spiketimes(obj, v, dt, min_isi_on)
@@ -163,6 +179,7 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
       end
       
       obj.detected_spiketimes = obj.match_v(v, [], min_isi_on)*dt;
+      
     end
     
     %Get max width (in pixels) from ScThreshold object list
@@ -175,7 +192,7 @@ classdef ScWaveform < ScTrigger & ScList & ScTemplate
       if ~obj.n
         
         val = obj.default_min_isi;
-      
+        
       else
         
         val = max(cell2mat({obj.list.min_isi}));

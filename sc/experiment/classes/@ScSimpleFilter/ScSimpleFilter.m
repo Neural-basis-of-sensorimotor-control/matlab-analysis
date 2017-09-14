@@ -22,6 +22,7 @@ classdef ScSimpleFilter < ScFilter
     
     
     function v = apply(obj, v)
+      
       if ~obj.is_on
         return
       end
@@ -29,6 +30,7 @@ classdef ScSimpleFilter < ScFilter
       filter_indx = obj.get_filter_indx();
       
       v = simple_artifact_filter(v, obj.indx_width, filter_indx);
+      
     end
     
   end

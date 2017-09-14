@@ -4,14 +4,18 @@ classdef ScSpikeData2 < ScNeuron
   % Must only contain primitive data types.
   
   properties
+    
     top_directory
     folder_name
     file_name
     read_column
+  
   end
   
   properties (Dependent)
+    
     file_path
+  
   end
   
   methods

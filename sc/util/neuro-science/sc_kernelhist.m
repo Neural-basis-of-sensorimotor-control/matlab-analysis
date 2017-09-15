@@ -17,7 +17,7 @@ if ~suppress_plot
   axeshandle = gca;
 end
 
-if ishandle(varargin{1})
+if isaxes(varargin{1})
   
   axeshandle = varargin{1};
   varargin   = varargin(2:end);

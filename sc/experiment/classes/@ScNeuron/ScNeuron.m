@@ -16,6 +16,8 @@ classdef ScNeuron < handle
     comment
     xpsp_tag
     artifact_tag
+    x
+    y
     
   end
   

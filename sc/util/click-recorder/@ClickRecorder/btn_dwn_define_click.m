@@ -2,7 +2,7 @@ function btn_dwn_define_click(obj)
 
 indx = find(arrayfun(@(point) isempty(point.x), obj.clicked_points), 1);
   
-if ~isempty(indx) && indx <= length(obj.clicked_points)
+if ~isempty(indx)
   
   p  = get(obj.h_axes, 'CurrentPoint');
   x_ = p(1, 1);
@@ -14,7 +14,6 @@ if ~isempty(indx) && indx <= length(obj.clicked_points)
 end
 
 reset_axes(obj);
-
 draw_objects(obj);
 
 end

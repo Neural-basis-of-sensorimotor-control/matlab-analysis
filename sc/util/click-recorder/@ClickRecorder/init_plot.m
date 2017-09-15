@@ -19,4 +19,6 @@ for i=1:length(h_plots)
   
 end
 
+draw_objects(obj);
+
 end

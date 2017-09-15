@@ -3,7 +3,6 @@ classdef ClickRecorder < handle
   properties
   
     h_axes
-    neuron
     clicked_points
     all_objects
     active_object

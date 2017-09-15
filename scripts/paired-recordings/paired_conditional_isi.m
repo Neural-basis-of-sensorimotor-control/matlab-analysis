@@ -20,8 +20,10 @@ stim_times = cell2mat(stim_times');
 [t2_stim, t2_spont] = paired_single_out_spont_spikes(t2_all, stim_times, ...
   min_stim_latency, max_stim_latency);
 
-incr_fig_indx();
+f = incr_fig_indx();
 clf
+
+f.Name = neuron.file_tag;
 
 h1 = subplot(2, 3, 1);
 plot_conditional_isi(t1_all, t2_all, min_spike_latency, max_spike_latency, ...

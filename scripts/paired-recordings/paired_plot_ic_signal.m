@@ -40,8 +40,9 @@ antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
   get_mean(antiselected_sweeps);
 
 
-incr_fig_indx()
+fig = incr_fig_indx();
 clf
+
 
 colors = varycolor(6);
 
@@ -104,6 +105,8 @@ ylabel('voltage [mV]');
 grid on
 
 linkaxes([ax1 ax2], 'x')
+
+fig.Name = title_str;
 
 end
 

@@ -4,7 +4,7 @@ ec_pretrigger         = -1;
 ec_posttrigger        = 1;
 ec_kernelwidth        = 1e-3;
 ec_min_stim_latency   = 5e-4;
-ec_max_stim_latency   = .5;
+ec_max_stim_latency   = .2;
 
 isi_min_spike_latency = 0;
 isi_max_spike_latency = .02;

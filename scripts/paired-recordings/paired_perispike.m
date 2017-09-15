@@ -15,8 +15,10 @@ end
 stim_times = paired_get_stim_times(neuron);
 stim_times = cell2mat(stim_times');
 
-incr_fig_indx();
+f = incr_fig_indx();
 clf
+
+f.Name = neuron.file_tag;
 
 h1 = subplot(1, 2, 1);
 plot_perispike(t1, t2, stim_times, pretrigger, posttrigger, kernelwidth, ...

@@ -22,7 +22,6 @@ for i=1:size(sweeps, 2)
   sweeps(:,i) = sweeps(:,i) - sweeps(zero_ind, i);
 end
 
-
 sweeps_contain_xpsp  = paired_match_template(signal, sweeps, sweep_times, t_epsp_range, neuron.xpsp_tag);
 
 if isempty(neuron.xpsp_tag)
@@ -39,6 +38,8 @@ title_str = sprintf('%s - %s (%s) comment: %s', neuron.file_tag, neuron.signal_t
 
 fig    = incr_fig_indx();
 clf
+
+fig.Name = title_str;
 
 if ~isempty(xpsp_sweeps)
   
@@ -59,6 +60,8 @@ paired_add_neuron_textbox(neuron);
 fig    = incr_fig_indx();
 clf
 
+fig.Name = title_str;
+
 if ~isempty(spike_sweeps)
   
   plot(sweep_times, spike_sweeps, 'ButtonDownFcn', @(src, ~) make_thick(src));
@@ -77,6 +80,8 @@ paired_add_neuron_textbox(neuron);
 
 fig    = incr_fig_indx();
 clf
+
+fig.Name = title_str;
 
 if ~isempty(antiselected_sweeps)
   

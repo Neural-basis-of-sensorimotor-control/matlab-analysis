@@ -7,12 +7,18 @@ paired_load_constants();
 % SPIKE ANALYSIS
 
 % Cross correlation / perispike event histogram
-paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ...
-  ec_min_stim_latency, ec_max_stim_latency);
 
-paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, ...
-  isi_min_spike_latency, isi_max_spike_latency, isi_kernelwidth, isi_tmax)
+% Figure 1 + 4 Spike-triggered histogram (SpTH) for paired neurons
 
+paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
+
+paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
+
+paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, isi_min_spike_latency, isi_max_spike_latency, isi_kernelwidth, isi_tmax)
+
+paired_perispike_summary(ec_neurons);
+
+paired_vpd(ec_neurons, vpd_missing_spike_weight, vpd_cost);
 
 % Raster plots for each pattern & for paired neuron
 

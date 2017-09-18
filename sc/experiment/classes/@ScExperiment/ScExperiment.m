@@ -75,7 +75,7 @@ classdef ScExperiment < ScList
     
     %Parse experimental protocol (*.txt)
     function update_from_protocol(obj, protocolfile)
-      
+            
       for i=1:obj.n
         
         fprintf('parsing file %i out of %i\n',i,obj.n);
@@ -109,7 +109,7 @@ classdef ScExperiment < ScList
           
           trigger = triggers.get('tag',tag);
           trigger.sc_loadtimes();
-          spiketimes = [spiketimes; (t0 + trigger.gettimes(0,inf))];
+          spiketimes = [spiketimes; (t0 + trigger.gettimes(0,inf))]; %#ok<AGROW>
           
         end
         

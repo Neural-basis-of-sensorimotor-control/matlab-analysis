@@ -6,6 +6,9 @@ ec_kernelwidth        = 1e-3;
 ec_min_stim_latency   = 5e-4;
 ec_max_stim_latency   = .2;
 
+vpd_cost              = 1;
+vpd_time_range        = [0 1] + .0002;
+
 isi_min_spike_latency = 0;
 isi_max_spike_latency = .02;
 isi_kernelwidth       = .001;

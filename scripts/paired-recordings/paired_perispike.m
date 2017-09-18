@@ -1,78 +1,76 @@
-function paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
+function paired_perispike_comparison(neuron, pretrigger, posttrigger, kernelwidth, ...
   min_stim_latency, max_stim_latency)
 
 if length(neuron) ~= 1
   
-  vectorize_fcn(@paired_perispike, neuron, pretrigger, posttrigger, kernelwidth, ...
-    min_stim_latency, max_stim_latency);
+  vectorize_fcn(@paired_perispike_comparison, neuron, pretrigger, posttrigger, kernelwidth, ...
+  min_stim_latency, max_stim_latency);
   
   return
   
 end
 
-[t1, t2] = paired_get_neuron_spiketime(neuron);
+binwidth = 1e-4;
+
+[spiketimes1, spiketimes2] = paired_get_neuron_spiketime(neuron);
 
 stim_times = paired_get_stim_times(neuron);
 stim_times = cell2mat(stim_times');
 
+[spiketimes1_stim, spiketimes1_spont] = ...
+  paired_single_out_spont_spikes(spiketimes1,  stim_times, ...
+  min_stim_latency, max_stim_latency);
+
+[spiketimes2_stim, spiketimes2_spont] = ...
+  paired_single_out_spont_spikes(spiketimes2,  stim_times, ...
+  min_stim_latency, max_stim_latency);
+
 f = incr_fig_indx();
 clf
 
-f.Name = neuron.file_tag;
+title_str = [neuron.file_tag ' ' neuron.template_tag{1} ' ' neuron.template_tag{2}];
 
-h1 = subplot(1, 2, 1);
-plot_perispike(t1, t2, stim_times, pretrigger, posttrigger, kernelwidth, ...
-  min_stim_latency, max_stim_latency, neuron.template_tag{1}, neuron);
+f.Name = title_str;
 
-h2 = subplot(1, 2, 2);
-plot_perispike(t2, t1, stim_times, pretrigger, posttrigger, kernelwidth, ...
-  min_stim_latency, max_stim_latency, neuron.template_tag{2}, neuron);
+h1 = subplot(3, 2, 1);
+plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{1}]);
 
-linkaxes([h1 h2])
+h2 = subplot(3, 2, 2);
+plot_perispike(spiketimes2, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{2}]);
 
-paired_add_neuron_textbox(neuron);
+h3 = subplot(3, 2, 3);
+plot_perispike(spiketimes1_stim, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, ['(STIM) ' neuron.file_tag ', trigger: ' neuron.template_tag{1}]);
+
+h4 = subplot(3, 2, 4);
+plot_perispike(spiketimes2_stim, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, ['(STIM) ' neuron.file_tag ', trigger: ' neuron.template_tag{2}]);
+
+h5 = subplot(3, 2, 5);
+plot_perispike(spiketimes1_spont, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, ['(SPONT) ' neuron.file_tag ', trigger: ' neuron.template_tag{1}]);
+
+h6 = subplot(3, 2, 6);
+plot_perispike(spiketimes2_spont, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, ['(SPONT) ' neuron.file_tag ', trigger: ' neuron.template_tag{2}]);
+
+linkaxes([h1 h2 h3 h4 h5 h6])
 
 end
 
 
-function plot_perispike(presynaptic_spikes, postsynaptic_spikes, stim_times, ...
-  pretrigger, posttrigger, kernelwidth, min_stim_latency, max_stim_latency, ...
-  presynaptic_tag, neuron)
-
-binwidth = 1e-4;
-
-[presynaptic_spikes_stim, presynaptic_spikes_spont] = ...
-  paired_single_out_spont_spikes(presynaptic_spikes,  stim_times, ...
-  min_stim_latency, max_stim_latency);
+function plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth, str_title)
 
 hold on
-
-[f_all, ~, h] = sc_kernelhist(presynaptic_spikes, postsynaptic_spikes, pretrigger, posttrigger, kernelwidth, binwidth);
-set(h, 'Tag', sprintf('all sweeps         (N = %d)', length(presynaptic_spikes)), ...
-  'LineStyle', '-', 'LineWidth', 2);
-
-plot(xlim, mean(f_all)*[1 1], 'LineWidth', 4)
-
-[f_poststim, ~, h] = sc_kernelhist(presynaptic_spikes_stim, postsynaptic_spikes, pretrigger, posttrigger, kernelwidth, binwidth);
-set(h, 'Tag', sprintf('post stim sweeps   (N = %d)', length(presynaptic_spikes_stim)), ...
-  'LineStyle', '-', 'LineWidth', 1);
-
-plot(xlim, mean(f_poststim)*[1 1], 'LineWidth', 4)
-
-[f_spont, ~, h] = sc_kernelhist(presynaptic_spikes_spont, postsynaptic_spikes, pretrigger, posttrigger, kernelwidth, binwidth);
-set(h, 'Tag', sprintf('spontaneous sweeps (N = %d)', length(presynaptic_spikes_spont)), ...
-  'LineStyle', '--', 'LineWidth', 1);
-
-plot(xlim, mean(f_spont)*[1 1], 'LineWidth', 4)
-
-hold off
+sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth);
+[~, ~, h_plot] = sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
+set(h_plot, 'LineWidth', 2, 'Color', 'b');
+title(str_title);
+ylabel('Freq [Hz]')
+xlabel('Time [s]')
 grid on
 
-xlabel('Time [ms]')
-ylabel('Activity [Hz]')
-
-title(sprintf('%s %s trigger: %s', neuron.file_tag, neuron.signal_tag, presynaptic_tag))
-
-add_legend();
-
 end
+

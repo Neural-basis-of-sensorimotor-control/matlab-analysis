@@ -3,14 +3,14 @@ classdef ScSignal < ScChannel & ScDynamicClass
   %Analog imported channel
   properties
     
-    dt                              %time resolution (1x1 double)
-    waveforms                       %ScWaveform
-    filter                          %ScSignalFilter
-    simple_artifact_filter          %ScSimpleArtifactFilter
-    simple_spike_filter             %ScSimpleSpikeFilter
-    remove_waveforms                %ScList
-    amplitudes                      %ScCellList
-    N                               %nbr of data points (1x1 double)
+    dt                              % time resolution (1x1 double)
+    waveforms                       % ScWaveform
+    filter                          % ScSignalFilter
+    simple_artifact_filter          % ScSimpleArtifactFilter
+    simple_spike_filter             % ScSimpleSpikeFilter
+    remove_waveforms                % ScList
+    amplitudes                      % ScCellList
+    N                               % nbr of data points (1x1 double)
     userdata
   
   end

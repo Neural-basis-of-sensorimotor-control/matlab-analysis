@@ -1,0 +1,43 @@
+function output_depth = paired_parse_for_subcortical_depth(neuron)
+
+if length(neuron) ~= 1
+  
+  output_depth = vectorize_fcn(@paired_parse_for_subcortical_depth, neuron);
+  return
+  
+end
+
+output_depth   = struct('depth1', [], 'depth2', []);
+
+file           = sc_load_file(neuron);
+experiment_tag = file.tag(1:4);
+file_index     = str2num(file.tag(5:8));
+str_files      = ls(file.parent.fdir);
+
+for tmp_file_index=file_index:100
+  
+  if tmp_file_index<10
+    tmp_file_tag = [experiment_tag  '000' num2str(tmp_file_index)];
+  else
+    tmp_file_tag = [experiment_tag  '00'  num2str(tmp_file_index)];
+  end
+  
+  for row=1:size(str_files, 1)
+    
+    tmp_file = strtrim(str_files(row, :));
+    
+    if ~isempty(regexp(tmp_file, ['\d\d \d\d \d\d ' tmp_file_tag '.txt'], 'once'))
+      
+      [output_depth.depth1, output_depth.depth2] = ...
+        paired_extract_subcortical_depth([file.parent.fdir filesep tmp_file], neuron.file_tag, neuron.signal_tag);
+      return
+      
+    end
+    
+  end
+  
+end
+
+error('Could not parse neuron %s', neuron.file_tag)
+
+end

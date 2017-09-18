@@ -15,6 +15,7 @@ classdef ScFile < ScList & ScDynamicClass
     
     parent            % ScExperiment
     filename          % name of .mat / .adq file
+    depth_mm          % subcortical depth
     comment
     spikefiles        % extra files with spike data imported from Spike2
     
@@ -22,6 +23,7 @@ classdef ScFile < ScList & ScDynamicClass
     stims             % List of digital channels (ScStim / ScAdqTriggerParent)
     textchannels      % TextMark / Keyboard channel in Spike2 (ScTextMark)
     discrete_signals  % ScList of any type of triggers
+
     user_comment
   
   end

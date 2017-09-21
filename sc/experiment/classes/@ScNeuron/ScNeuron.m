@@ -1,6 +1,7 @@
 classdef ScNeuron < handle
   
   % For storing meta data to enable repeatable automated analysis.
+  % Use only primitive types as proeprty values
   
   properties
     
@@ -18,6 +19,7 @@ classdef ScNeuron < handle
     artifact_tag
     x
     y
+    subcortical_depth_mm
     
   end
   

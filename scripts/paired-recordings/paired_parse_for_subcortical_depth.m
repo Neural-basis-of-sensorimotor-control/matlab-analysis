@@ -9,6 +9,28 @@ end
 
 output_depth   = struct('depth1', [], 'depth2', []);
 
+if ~isempty(neuron.subcortical_depth_mm)
+  
+  if strcmp(neuron.signal_tag, 'patch')
+    
+    output_depth.depth1 = neuron.subcortical_depth_mm;
+    output_depth.depth2 = nan;
+  
+  elseif strcmp(neuron.signal_tag, 'patch2')
+    
+    output_depth.depth1 = nan;
+    output_depth.depth2 = neuron.subcortical_depth_mm;
+    
+  else
+    
+    error('Unknown signal tag: %s\n', neuron.signal_tag);
+  
+  end
+  
+  return
+  
+end
+
 file           = sc_load_file(neuron);
 experiment_tag = file.tag(1:4);
 file_index     = str2num(file.tag(5:8));
@@ -29,7 +51,9 @@ for tmp_file_index=file_index:100
     if ~isempty(regexp(tmp_file, ['\d\d \d\d \d\d ' tmp_file_tag '.txt'], 'once'))
       
       [output_depth.depth1, output_depth.depth2] = ...
-        paired_extract_subcortical_depth([file.parent.fdir filesep tmp_file], neuron.file_tag, neuron.signal_tag);
+        paired_extract_subcortical_depth([file.parent.fdir filesep tmp_file], ...
+        neuron.file_tag, neuron.protocol_signal_tag);
+      
       return
       
     end

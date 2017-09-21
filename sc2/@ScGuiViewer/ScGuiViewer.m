@@ -1,9 +1,7 @@
 classdef ScGuiViewer < ScViewer
   
   properties
-    
     button_window
-    
   end
   
   methods

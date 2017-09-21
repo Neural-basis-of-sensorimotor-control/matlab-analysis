@@ -1,14 +1,15 @@
-function [depth1, depth2] = paired_extract_subcortical_depth(protocol_file, file_tag, signal_tag)
+function [depth1, depth2] = paired_extract_subcortical_depth(protocol_file, ...
+  file_tag, protocol_signal_tag)
 
 depth1 = nan;
 depth2 = nan;
 
-if strcmp(signal_tag, 'patch')
-  depth1 = -1;
-elseif strcmp(signal_tag, 'patch2')
-  depth2 = -1;
+if strcmp(protocol_signal_tag, 'patch')
+  depth1 = 0;
+elseif strcmp(protocol_signal_tag, 'patch2')
+  depth2 = 0;
 else
-  error('Unknown signal tag: %s', signal_tag);
+  error('Unknown signal tag: %s', protocol_signal_tag);
 end
 
 
@@ -23,7 +24,7 @@ while true
     
     fclose(fid);
     return
-  
+    
   end
   
   if startsWith(line, '¤¤')
@@ -34,13 +35,13 @@ while true
       return
       
     end
-      
+    
     tmp_file_tag = strtrim(line(3:end));
     at_last_file = strcmp(file_tag, tmp_file_tag);
-      
+    
   end
   
-  if ~isempty(regexp(line, '%%celluns \d+\.?\d* com', 'once'))
+  if ~isempty(regexp(line, '%%\w+ \d+\.?\d* com', 'once'))
     
     enc_str     = strsplit(line);
     str_depth   = enc_str{2};

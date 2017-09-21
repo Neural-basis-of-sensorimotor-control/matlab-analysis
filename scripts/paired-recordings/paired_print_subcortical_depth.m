@@ -13,12 +13,13 @@ function print_neurons(neurons)
 
 depth = paired_parse_for_subcortical_depth(neurons);
 
-fprintf('File\tChannel\tpatch\tpatch2\n');
+fprintf('File\tReal channel\tProtocol channel\tpatch\tpatch2\n');
 
 for i=1:length(depth)
   
   fprintf('%s\t', neurons(i).file_tag)
   fprintf('%s\t', neurons(i).signal_tag)
+  fprintf('%s\t', neurons(i).protocol_signal_tag)
   print_depth(depth(i).depth1);
   print_depth(depth(i).depth2);
   fprintf('\n');

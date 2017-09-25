@@ -11,7 +11,7 @@ if obj.has_unsaved_changes
   
   switch option
     case 'Yes'
-      saved = obj.experiment.save_experiment(obj.experiment.abs_save_path, false);
+      saved = obj.experiment.save_experiment(obj.experiment.save_name, false);
       
       if saved
         obj.has_unsaved_changes = false;

@@ -27,7 +27,7 @@ classdef SaveLoadButton < PanelComponent
   methods (Access='protected')
     function save_callback(obj)
       saved = save_experiment(obj.gui.experiment, ...
-        obj.gui.experiment.abs_save_path, false);
+        obj.gui.experiment.save_name, false);
       
       if saved
         obj.gui.has_unsaved_changes = false;
@@ -36,7 +36,7 @@ classdef SaveLoadButton < PanelComponent
 
     function save_as_callback(obj)
       saved = save_experiment(obj.gui.experiment, ...
-        obj.gui.experiment.abs_save_path, true);
+        obj.gui.experiment.save_name, true);
       
       if saved
         obj.gui.has_unsaved_changes = false;

@@ -25,4 +25,6 @@ for i=1:mergefrom_expr.n
 
 end
 
-save_experiment(mergeto_expr, mergeto_expr.abs_save_path, true);
+save_experiment(mergeto_expr, mergeto_expr.save_name, true);
+
+end

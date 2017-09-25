@@ -23,19 +23,19 @@ classdef ScFile < ScList & ScDynamicClass
     stims             % List of digital channels (ScStim / ScAdqTriggerParent)
     textchannels      % TextMark / Keyboard channel in Spike2 (ScTextMark)
     discrete_signals  % ScList of any type of triggers
-
+    
     user_comment
-  
+    
   end
   
   properties (Dependent)
-  
+    
     is_adq_file
     tag
     filepath
     fdir
     channels
-  
+    
   end
   
   methods
@@ -132,9 +132,9 @@ classdef ScFile < ScList & ScDynamicClass
     
     %Check that raw data file exists on hard drive
     function success = prompt_for_raw_data_dir(obj)
-
+      
       success = true;
-
+      
       while ~exist(obj.filepath, 'file')
         answer = questdlg(['File ' obj.filename ' could not be ' ...
           'found in current directory. Abort program?'],'',...
@@ -145,7 +145,7 @@ classdef ScFile < ScList & ScDynamicClass
           
           success = false;
           return
-        
+          
         end
         
         dname = uigetdir(obj.parent.fdir, ...
@@ -172,7 +172,7 @@ classdef ScFile < ScList & ScDynamicClass
           
           success = false;
           return;
-        
+          
         end
         
       end
@@ -215,7 +215,7 @@ classdef ScFile < ScList & ScDynamicClass
         if stim.istrigger && numel(stim.gettimes(tmin,tmax))
           
           triggers.add(stim);
-        
+          
         else
           
           stimtriggers = stim.triggers;
@@ -271,17 +271,17 @@ classdef ScFile < ScList & ScDynamicClass
       triggerparents = ScCellList();
       
       for i=1:obj.signals.n
-      
+        
         channel = obj.signals.get(i);
         trgs = channel.triggers;
         
         for j=1:trgs.n
-        
-          if numel(trgs.get(j).gettimes(tmin,tmax))
           
+          if numel(trgs.get(j).gettimes(tmin,tmax))
+            
             triggerparents.add(channel);
             break;
-          
+            
           end
           
         end
@@ -289,16 +289,16 @@ classdef ScFile < ScList & ScDynamicClass
       end
       
       for i=1:obj.stims.n
-      
+        
         stimtriggers = obj.stims.get(i).triggers;
         
         for j=1:stimtriggers.n
-        
-          if numel(stimtriggers.get(j).gettimes(tmin,tmax))
           
+          if numel(stimtriggers.get(j).gettimes(tmin,tmax))
+            
             triggerparents.add(obj.stims.get(i));
             break;
-          
+            
           end
           
         end
@@ -306,13 +306,13 @@ classdef ScFile < ScList & ScDynamicClass
       end
       
       for i=1:obj.textchannels.n
-      
+        
         textchannel = obj.textchannels.get(i);
         
         for j=1:textchannel.triggers.n
-        
-          if numel(textchannel.triggers.get(j).gettimes(tmin,tmax))
           
+          if numel(textchannel.triggers.get(j).gettimes(tmin,tmax))
+            
             triggerparents.add(textchannel);
             break;
             
@@ -333,17 +333,17 @@ classdef ScFile < ScList & ScDynamicClass
     function saved = sc_save(obj, prompt_before_saving)
       
       if ischar(prompt_before_saving)
-    
+        
         save_path            = prompt_before_saving;
         prompt_before_saving = false;
-        saved                = save_experiment(obj.parent, save_path, prompt_before_saving);
-      
+        
       else
         
-        saved = save_experiment(obj.parent, obj.parent.abs_save_path, ...
-          prompt_before_saving);
-      
+        save_path            = obj.parent.save_name;
+        
       end
+      
+      saved                = save_experiment(obj.parent, save_path, prompt_before_saving);
       
     end
     
@@ -353,27 +353,27 @@ classdef ScFile < ScList & ScDynamicClass
       
       [~,~,ext] = fileparts(obj.filename);
       is_adq_file = strcmpi(ext,'.adq');
-    
+      
     end
     
     
     function add_spike2_channels(obj)
-
+      
       channelnames = who('-file',obj.filepath);
       
       for i=1:numel(channelnames)
         channelname = channelnames{i};
         d = load(obj.filepath,channelname);
         channelstruct = d.(channelname);
-      
-        if isfield(channelstruct,'values')
         
+        if isfield(channelstruct,'values')
+          
           if ~obj.signals.has('tag',channelname)
             signal = ScSignal(obj,channelname,'tag',channelname);
             signal.dt = channelstruct.interval;
             signal.N = channelstruct.length; %<- sometimes incorrect value from Spike2
             obj.signals.add(signal);
-          
+            
             if isempty(strfind(channelname,'patch'))
               signal.filter.smoothing_width = 1;
               signal.filter.artifact_width = 0;
@@ -383,16 +383,16 @@ classdef ScFile < ScList & ScDynamicClass
           
         elseif strcmpi(channelname,'TextMark') || ...
             strcmpi(channelname,'Keyboard')
-        
-          if ~obj.textchannels.has('tag',channelname)
           
+          if ~obj.textchannels.has('tag',channelname)
+            
             textchannel = ScTextMark(obj,channelname,'tag',channelname);
             obj.textchannels.add(textchannel);
-          
+            
           end
           
         elseif isfield(channelstruct,'times')
-        
+          
           if ~obj.stims.has('tag',channelname)
             obj.stims.add(ScStim(obj,channelname,'tag',channelname));
           end
@@ -402,7 +402,7 @@ classdef ScFile < ScList & ScDynamicClass
           msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes if you think this channel should be viewable.', channelname, obj.tag, mfilename);
           msgbox(msg);
           fprintf('%s\n', msg);
-        
+          
         end
         
       end

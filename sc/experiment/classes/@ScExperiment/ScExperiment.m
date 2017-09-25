@@ -15,12 +15,6 @@ classdef ScExperiment < ScList
     
   end
   
-  properties (Dependent)
-    
-    abs_save_path
-    
-  end
-  
   methods (Static)
     
     experiment = load_experiment(fpath);
@@ -197,23 +191,6 @@ classdef ScExperiment < ScList
         end
         
       end
-      
-    end
-    
-    
-    function set.abs_save_path(obj, val)
-      
-      val = which(val);
-      [pname, fname, ext] = fileparts(val);
-      obj.save_name = fname;
-      set_last_experiment([pname fname ext]);
-      
-    end
-    
-    
-    function val = get.abs_save_path(obj)
-      
-      val = obj.save_name;
       
     end
     

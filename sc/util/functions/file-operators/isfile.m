@@ -1,5 +1,5 @@
 function val = isfile(filepath)
 
-val = exist(filepath, 'file') && ~exist(filepath, 'dir');
+val = ~isempty(filepath) && exist(filepath, 'file') && ~exist(filepath, 'dir');
 
 end

@@ -67,7 +67,7 @@ experiment.add(file1);
 experiment.add(file2);
 experiment.add(file3);
 
-save_experiment(experiment, [temp_dir filesep experiment_filename], '-f');
+save_experiment(experiment, [temp_dir filesep experiment_filename], false);
 
 spikeviewer = GuiManager();
 spikeviewer.set_experiment(experiment);

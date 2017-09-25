@@ -2,42 +2,56 @@ function saved = save_experiment(experiment, save_path, prompt_before_saving)
 
 saved = false;
 
-if ischar(prompt_before_saving)
+if prompt_before_saving
   
-  if ~strcmpi(prompt_before_saving, '-f')
-    error('Unknown command: %s', prompt_before_saving);
+  if isfile(save_path)
+    default_dir = save_path;
+  elseif isfile([get_default_experiment_dir() save_path])
+    default_dir = [get_default_experiment_dir() save_path];
+  else
+    default_dir = get_default_experiment_dir();
   end
+    
+  [fname, pname] = uiputfile('*_sc.mat', ['Choose file to save ' save_path], ...
+    default_dir);
+  
+  if ~ischar(fname)
+    return
+  end
+  
+  save_path = fullfile(pname, fname);
   
 else
   
-  file_missing = isempty(save_path) || ~isfile(save_path);
-  
-  if file_missing || prompt_before_saving
+  if ~isfile(save_path)
     
-    if file_missing
-      default_dir = get_default_experiment_dir;
+    tmp_filename = [get_default_experiment_dir() save_path];
+    
+    if isfile(tmp_filename)
+      
+      save_path = tmp_filename;
+      
     else
-      default_dir = save_path;
+      
+      [fname, pname] = uiputfile('*_sc.mat', ['Choose file to save ' save_path], ...
+        get_default_experiment_dir());
+      
+      if ~ischar(fname)
+        return
+      end
+      
+      save_path = fullfile(fname, pname);
+      
     end
-    
-    [fname, pname] = uiputfile('*_sc.mat', ['Choose file to save ' save_path], ...
-      default_dir);
-    
-    if isnumeric(fname)
-      return
-    end
-    
-    save_path = fullfile(pname, fname);
     
   end
-  
 end
 
 obj = experiment;
 
 [~, name, ext] = fileparts(save_path);
 obj.save_name = [name ext];
- 
+
 save(save_path, 'obj')
 
 set_last_experiment(save_path);

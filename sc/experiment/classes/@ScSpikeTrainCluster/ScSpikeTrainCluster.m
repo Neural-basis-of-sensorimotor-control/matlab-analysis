@@ -183,7 +183,7 @@ classdef ScSpikeTrainCluster < ScNeuron
     
     
     function val = get_touch_pattern_headers()
-      val = get_intra_patterns();
+      val = get_patterns();
     end
     
     

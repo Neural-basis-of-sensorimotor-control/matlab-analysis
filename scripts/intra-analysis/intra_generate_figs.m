@@ -1,9 +1,9 @@
 clear
-close all
-reset_fig_indx()
+%close all
+%reset_fig_indx()
 set_current_settings_tag(get_intra_analysis_tag());
 
-reset_experiments       = false;
+reset_experiments       = true;
 plot_only_final_figures = true;
 only_epsps              = true;
 

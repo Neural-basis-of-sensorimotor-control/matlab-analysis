@@ -28,7 +28,7 @@ classdef IntraAmplitudeViewer < handle
       
       signal = obj.main_signal;
       stims_str = get_intra_motifs();
-      patterns_str = get_intra_patterns();
+      patterns_str = get_patterns();
       
       neuron = get_intra_neurons(signal.parent.tag);
       

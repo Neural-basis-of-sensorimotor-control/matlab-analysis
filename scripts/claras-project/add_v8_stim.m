@@ -15,7 +15,7 @@ if file.stims.has('tag', 'V8')
   error('File already has emulated V8 stim electrode');
 end
 
-patterns_str = get_intra_patterns();
+patterns_str = get_patterns();
 d = load('intra_data');
 intra_patterns = d.intra_patterns;
 

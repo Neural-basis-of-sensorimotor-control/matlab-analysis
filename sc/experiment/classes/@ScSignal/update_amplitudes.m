@@ -25,7 +25,7 @@ for i=1:length(stims)
   
 end
 
-signal.update_spont_activity(neuron.template_tag, get_intra_patterns(), ...
+signal.update_spont_activity(neuron.template_tag, get_patterns(), ...
   response_min, response_max, neuron.tmin, neuron.tmax);
 
 end

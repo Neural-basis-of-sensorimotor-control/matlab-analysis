@@ -1,6 +1,6 @@
 set_current_settings_tag(get_default_settings_tag())
 
-reset_fig_indx();
+%reset_fig_indx();
 
 paired_load_constants();
 

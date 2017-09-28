@@ -3,7 +3,9 @@ function paired_interactive_perispike(neuron, pretrigger, posttrigger, ...
 
 if length(neuron) ~= 1
   
-  vectorize_fcn(@paired_interactive_perispike, neuron);
+  vectorize_fcn(@paired_interactive_perispike, neuron, pretrigger, posttrigger, ...
+  kernelwidth);
+
   return
   
 end

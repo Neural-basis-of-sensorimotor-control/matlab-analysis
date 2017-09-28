@@ -2,6 +2,7 @@ classdef ScPairedNeuron < ScNeuron
   
   properties
     p_protocol_signal_tag
+    measurement_points
   end
   
   properties (Dependent)

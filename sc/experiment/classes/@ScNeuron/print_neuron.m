@@ -37,8 +37,8 @@ for i=1:length(obj.template_tag)
 end
 fprintf('} ');
 fprintf('''%s''', obj.comment);
+fprintf(' ...\n')
 
-fprintf('\n')
-fprintf('\n')
+fprintf(' ''%s''', obj.p_protocol_signal_tag);
 
 end

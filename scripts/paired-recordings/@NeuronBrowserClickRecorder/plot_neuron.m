@@ -10,6 +10,14 @@ binwidth    = 1e-3;
 
 [t1, t2] = paired_get_neuron_spiketime(obj.neuron);
 
+if obj.neuron_pair_indx == 1
+
+  tmp_t2 = t2;
+  t2 = t1;
+  t1 = tmp_t2;
+
+end
+
 h_figure = get(obj.h_axes, 'Parent');
 cla(obj.h_axes);
 hold on
@@ -22,8 +30,8 @@ set(h_plot, 'LineWidth', 2);
 
 grid on
 
-x = obj.neuron.x{2};
-y = obj.neuron.y{2};
+x = obj.neuron.x{obj.neuron_pair_indx};
+y = obj.neuron.y{obj.neuron_pair_indx};
 
 for i=1:length(x)
   
@@ -33,5 +41,27 @@ for i=1:length(x)
 end
 
 init_plot(obj);
+
+str_properties = obj.neuron.str_properties;
+
+for i=1:length(str_properties)
+  
+  val = obj.neuron.(str_properties{i});
+  
+  indx = val{obj.neuron_pair_indx};
+  
+  x_ = obj.neuron.x{obj.neuron_pair_indx}(indx);
+  y_ = obj.neuron.y{obj.neuron_pair_indx}(indx);
+  
+  plot(obj.h_axes, x_, y_, 'Tag', str_properties{i}, 'LineWidth', 2, ...
+    'ButtonDownFcn', @(~, ~) btn_dwn_define_click(obj));
+  
+end
+
+h_legend = add_legend(obj.h_axes);
+set(h_legend, 'InterPreter', 'None');
+
+title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2)'], ...
+  'Interpreter', 'none');
 
 end

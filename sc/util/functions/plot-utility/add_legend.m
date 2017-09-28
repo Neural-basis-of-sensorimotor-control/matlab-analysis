@@ -1,11 +1,11 @@
 function legend_handle = add_legend(plot_handles, add_only_one_legend, ...
   invert_colors, varargin)
 
-% ADD_LEGEND 
+% ADD_LEGEND
 % legend_handle = add_legend(plot_handles, add_only_one_legend, ...
 %   invert_colors, varargin)
 %
-%   Add legend to plot axes, using the value of the Tag property for each 
+%   Add legend to plot axes, using the value of the Tag property for each
 %   plot handle in the axes. Also adjust the LineColor property so that all
 %   plots with the same Tag value have the same color.
 %
@@ -63,32 +63,47 @@ else
   unique_tags(empty_tag_indx) = [];
   
   if ~isempty(unique_tags)
+    
     sample_plots(length(unique_tags)) = plot_handles(end);
     
     for i=1:length(unique_tags)
+      
       indx = find(cellfun(@(x) strcmp(x, unique_tags{i}), tags), 1);
       sample_plots(i) = plot_handles(indx);
+      
     end
     
     if add_only_one_legend
+      
       h = legend(unique_ax_handles(end), sample_plots, unique_tags{:});
       
       if ~isempty(varargin)
         set(h, varargin{:});
       end
+      
     else
       
       for i=1:length(unique_ax_handles)
+        
         h(i) = legend(unique_ax_handles(i), sample_plots, unique_tags{:}); %#ok<AGROW>
         
         if ~isempty(varargin)
           set(h(i), varargin{:});
         end
+        
       end
+      
     end
-  end
+    
+  else
+    
+    h = [];
+  
+  end  
 end
 
 if nargout
   legend_handle = h;
+end
+
 end

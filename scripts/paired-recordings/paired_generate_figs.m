@@ -1,7 +1,5 @@
 set_current_settings_tag(get_default_settings_tag())
 
-%reset_fig_indx();
-
 paired_load_constants();
 
 % SPIKE ANALYSIS
@@ -22,7 +20,7 @@ paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, isi
 
 paired_perispike_summary(ec_neurons);
 
-paired_vpd(ec_neurons, vpd_missing_spike_weight, vpd_cost);
+%paired_vpd(ec_neurons, vpd_cost, vpd_time_range);
 
 % Raster plots for each pattern & for paired neuron
 

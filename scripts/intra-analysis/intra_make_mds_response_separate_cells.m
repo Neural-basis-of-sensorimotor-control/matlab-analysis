@@ -6,21 +6,22 @@ patterns        = get_values(stims, @get_pattern);
 unique_patterns = unique(patterns);
 
 for i=1:length(neurons)
-  fprintf('%d out of %d\n', i, length(neurons))
+  
+  debug_printout(mfilename, i, length(neurons));
   
   mds_fig = incr_fig_indx();
   clf(mds_fig, 'reset')
+  set_counter(0);
   
-  pca_fig = incr_fig_indx();
-  clf(pca_fig, 'reset')
+  %   pca_fig = incr_fig_indx();
+  %   clf(pca_fig, 'reset')
   
   neuron = neurons(i);
   signal = sc_load_signal(neuron);
   
   for j=1:length(unique_patterns)
     
-    pattern = unique_patterns{j};
-    
+    pattern    = unique_patterns{j};
     stim       = stims(equals(patterns, pattern));
     amplitudes = get_items(signal.amplitudes.list, 'tag', stim);
     
@@ -37,21 +38,60 @@ for i=1:length(neurons)
     
     responses(all(~responses, 2), :) = [];
     
-    d = pdist(responses);
+    figure(mds_fig)
     
-    
-    try
-      y = cmdscale(d, scaling_dim);
-    
-      figure(mds_fig)
+    if ~strcmpi(get_debug_mode(), 'exceptional')
       
       sc_square_subplot(length(unique_patterns), j);
-      plot_mda(y)
+      title(sprintf('%s: %s N = %d', neuron.file_tag, pattern, ...
+        length(amplitudes)));
+    
+    else
       
-      title(sprintf('%s: %s', neuron.file_tag, pattern));
-    catch
-      warning('Skipping cell %d', i);
+      nbr_of_responses = sum(~(~responses));
+      
+      [~, ind] = sort(nbr_of_responses);
+      responses = responses(:, ind(2:end));
+      responses(any(~responses, 2), :) = [];
+      
+      if size(responses, 1) >= 10
+      %if ~isempty(responses)
+        
+        sc_square_subplot(max([get_counter() 20]), increment_counter());
+        title(sprintf('%s: %s N = %d - 1', neuron.file_tag, pattern, ...
+          length(amplitudes)));
+      
+      else
+        
+        continue
+      
+      end
+      
     end
+    
+    
+    if length(amplitudes) <= 1
+      
+      continue
+      
+    elseif length(amplitudes) <= 2
+      
+      y = responses;
+      
+    else
+      
+      d = pdist(responses);
+      
+      try
+        y = cmdscale(d, scaling_dim);
+      catch
+        warning('Skipping cell %d', i);
+      end
+      
+    end
+    
+    plot_mda(y)
+    
   end
   
 end

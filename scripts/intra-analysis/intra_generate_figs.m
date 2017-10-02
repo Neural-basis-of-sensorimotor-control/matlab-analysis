@@ -3,13 +3,8 @@ clear
 %reset_fig_indx()
 set_current_settings_tag(get_intra_analysis_tag());
 
-reset_experiments       = false;
-plot_only_final_figures = true;
-only_epsps              = true;
-
+intra_load_settings
 intra_load_constants
-
-neurons = intra_get_neurons();
  
 if reset_experiments
   intra_reset_all_experiments(neurons, response_min, response_max, only_epsps);

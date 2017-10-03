@@ -21,12 +21,12 @@ for i_=1:length(indx)
   
   i = indx(i_);
   
-  
-  fprintf('%d out of %d\n', i, length(properties));
+  debug_printout(mfilename, ' a ', i_, length(indx));
   
   property = properties{i};
   
   for j=1:length(neurons)
+    
     neuron = neurons(j);
     signal = sc_load_signal(neuron);
     amplitudes = get_items(signal.amplitudes.list, 'tag', stims);
@@ -35,6 +35,7 @@ for i_=1:length(indx)
     data = [];
     
     for k=1:length(amplitudes)
+      
       amplitude = amplitudes(k);
       
       if ~amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
@@ -52,6 +53,7 @@ for i_=1:length(indx)
       ind = str2num(str(2));
       
       switch property
+        
         case 'height'
           norm_constant = amplitude.parent.userdata.single_pulse_height(ind);
         case 'latency'
@@ -60,13 +62,16 @@ for i_=1:length(indx)
           norm_constant = amplitude.parent.userdata.single_pulse_width(ind);
         otherwise
           error('Illegal property: %s', property);
+          
       end
       
       value = value / norm_constant;
       
       for m=1:length(value)
+        
         tags = add_to_list(tags, amplitude.tag);
         data = add_to_list(data, value(m));
+        
       end
     end
     
@@ -85,6 +90,7 @@ for i_=1:length(indx)
   end
   
   incr_fig_indx()
+  
   clf reset
   semilogy(1:length(p_inter_stimulation), p_inter_stimulation,  'LineStyle', ...
     '-', 'Marker', '+', 'Tag', 'Results');
@@ -127,13 +133,13 @@ end
 
 
 for i=1:length(properties)
-  fprintf('%d out of %d\n', i, length(properties));
+  
+  debug_printout(mfilename, ' b ', i, length(properties));
   
   property = properties{i};
   
   for j=1:length(stims)
     
-    fprintf('\t%d out of %d\n', j, length(stims));
     stim = stims{j};
     tags = [];
     data = [];

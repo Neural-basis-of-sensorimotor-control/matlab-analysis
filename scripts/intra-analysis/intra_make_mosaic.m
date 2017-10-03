@@ -44,7 +44,8 @@ elseif isempty(indx)
 end
 
 for i=1:length(indx)
-  fprintf('%d (%d)\n', i, length(indx));
+  
+  debug_printout(mfilename, i, length(indx));
   
   tmp_evaluation_fcn = evaluation_fcns{indx(i)};
   tmp_normalization_fcn = normalization_fcns{indx(i)};
@@ -92,10 +93,12 @@ clf('reset')
 hold on
 
 for i=1:length(neurons)
+  
   neuron = neurons(i);
   signal = sc_load_signal(neuron);
   
   for j=1:length(stims_str)
+    
     amplitude = signal.amplitudes.get('tag', stims_str{j});
     
     if amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
@@ -134,7 +137,9 @@ mosaic = nan(nbr_of_stims, nbr_of_neurons);
 norm_constant_is_negative = false(size(mosaic));
 
 for i=1:nbr_of_neurons
-  fprintf('\t%d (%d)\n', i, nbr_of_neurons);
+  
+  debug_printout(' ... ', mfilename, 'neuron = ', i, nbr_of_neurons);
+  
   signal = sc_load_signal(neurons(i));
   
   for j=1:nbr_of_stims

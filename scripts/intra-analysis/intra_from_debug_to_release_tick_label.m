@@ -4,7 +4,8 @@ if isfigure(ax)
   
   for i=1:length(ax)
     
-    fprintf('%d (%d)\n', i, length(ax));
+    debug_printout(mfilename, i, length(ax));
+    
     intra_from_debug_to_release_tick_label(get_axes(ax(i)));
     
     h_legend = get_legend(ax(i));
@@ -21,7 +22,8 @@ if isfigure(ax)
 else
   
   for i=1:length(ax)
-    fprintf('\t ... %d ', i);
+    
+    debug_printout(' ... ', mfilename, i, length(ax));
     
     xticklabel = get(ax(i), 'XTickLabel');
     yticklabel = get(ax(i), 'YTickLabel');
@@ -30,8 +32,7 @@ else
       'YTickLabel', intra_formalize_tick_labels(yticklabel));
     
   end
-  
-  fprintf('\n')
+    
 end
 
 end

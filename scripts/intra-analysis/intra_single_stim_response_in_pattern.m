@@ -22,7 +22,9 @@ stim_pulses_labels = ...
   stim_pulses, 'UniformOutput', false);
 
 if ~plot_only_final_figures
+  
   for i=1:length(neurons)
+  
     incr_fig_indx();
     
     bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
@@ -39,9 +41,11 @@ if ~plot_only_final_figures
     
     title(sprintf('%s, time window: %g - %g', neurons(i).file_tag, response_min, ...
       response_max));
+  
   end
   
   for i=1:length(neurons)
+    
     incr_fig_indx();
     
     hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
@@ -54,7 +58,8 @@ if ~plot_only_final_figures
     
     title(sprintf('%s, time window: %g - %g s', neurons(i).file_tag, response_min, ...
       response_max));
-  end
+  
+  end  
 end
 
 avg_response = nan(length(stim_pulses), length(neurons));
@@ -62,9 +67,11 @@ avg_response_repeated_simulations_1 = nan(length(stim_pulses), length(neurons));
 avg_response_repeated_simulations_2 = nan(length(stim_pulses), length(neurons));
 
 for i=1:length(neurons)
+  
   avg_response(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response(:,i));
   avg_response_repeated_simulations_1(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response_several_simulations_1(:,i));
   avg_response_repeated_simulations_2(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response_several_simulations_2(:,i));
+
 end
 
 
@@ -78,6 +85,7 @@ linestyle = ':';
 markersize = 12;
 
 for i=1:length(neurons)
+  
   dummy_y = 1:length(stim_pulses);
   
   plot(avg_response_repeated_simulations_1(:,i), dummy_y, ...
@@ -117,13 +125,16 @@ if ~plot_only_final_figures
   markersize = 12;
   
   for i=1:length(neurons)
+  
     dummy_y = 1:length(stim_pulses);
     plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', ...
       linestyle, 'Tag', neurons(i).file_tag);
     plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', ...
       'MarkerSize', markersize, 'LineStyle', 'none', 'Tag', ...
       neurons(i).file_tag);
+  
   end
+  
   plot(mean(avg_response_repeated_simulations_2, 2), 1:length(stim_pulses), ...
     'Tag', 'Mean', 'LineWidth', 2)
   
@@ -136,12 +147,13 @@ if ~plot_only_final_figures
   set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
   ylabel('Pattern - Electrode - Nbr of electrodes');
   xlabel('Value of eq 4');
+
 end
 
 %%
 
-p = [.05 .01 .001 .0001];
-alpha = tinv(1-p, length(neurons)-1);
+p       = [.05 .01 .001 .0001];
+alpha   = tinv(1-p, length(neurons)-1);
 success = false(length(stim_pulses_labels), length(alpha));
 
 mean_avg_response = mean(avg_response_repeated_simulations_1, 2);
@@ -151,7 +163,6 @@ for i=1:size(success,2)
   success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;
 end
 
-
 fprintf('Pattern - electrode - nbr of pulses');
 
 for i=1:length(p)
@@ -160,6 +171,7 @@ end
 fprintf('\n');
 
 for i=1:size(success,1)
+  
   fprintf('%s', stim_pulses_labels{i});
   
   for j=1:size(success,2)
@@ -173,6 +185,7 @@ for i=1:size(success,1)
   end
   
   fprintf('\n');
+  
 end
 
 mean_avg_response = mean(avg_response_repeated_simulations_2,2);
@@ -183,6 +196,7 @@ for i=1:size(success,2)
 end
 
 if ~plot_only_final_figures
+  
   fprintf('Pattern - electrode - nbr of pulses');
   
   for i=1:length(p)
@@ -290,7 +304,7 @@ dist_shuffled_to_avg_response_several_simulations_2 = nan(dim);
 
 for i=1:length(stim_pulses)
   
-  fprintf('%d out of %d\n', i, length(stim_pulses));
+  debug_printout(mfilename, i, length(stim_pulses));
   
   pattern_str = stim_pulses(i).pattern;
   electrode_str = stim_pulses(i).electrode;
@@ -299,7 +313,7 @@ for i=1:length(stim_pulses)
   
   for j=1:length(neurons)
     
-    fprintf('\t%d out of %d\n', j, length(neurons));
+    debug_printout('... ', mfilename, j, length(neurons));
     
     neuron = neurons(j);
     

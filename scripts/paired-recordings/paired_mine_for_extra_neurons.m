@@ -15,7 +15,7 @@ print_neurons(neurons);
 
 function neurons = find_overlapping_neurons(min_nbr_of_common_spikes)
 
-sc_dir = get_default_experiment_dir();
+sc_dir = sc_settings.get_default_experiment_dir();
 
 experiments_str = ls(sprintf('%s*_sc.mat', sc_dir));
 

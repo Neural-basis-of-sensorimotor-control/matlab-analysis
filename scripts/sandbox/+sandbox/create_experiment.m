@@ -15,7 +15,7 @@ end
 
 for i=1:length(raw_data_files)
   
-  filepath = [experiment.get_raw_data_dir() filesep raw_data_files{i}];
+  filepath = [experiment.sc_settings.get_raw_data_dir() filesep raw_data_files{i}];
   
   channel = who('-file', filepath);
   

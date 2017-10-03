@@ -10,7 +10,7 @@ if ~isfile(full_file_path)
     
   else
     
-    temp_full_file_path = [get_default_experiment_dir() full_file_path];
+    temp_full_file_path = [sc_settings.get_default_experiment_dir() full_file_path];
     
     if isfile(temp_full_file_path)
       
@@ -18,7 +18,7 @@ if ~isfile(full_file_path)
       
     else
       
-      temp_full_file_path = [get_default_experiment_dir() full_file_path '.mat'];
+      temp_full_file_path = [sc_settings.get_default_experiment_dir() full_file_path '.mat'];
       
       if isfile(temp_full_file_path)
         
@@ -34,7 +34,7 @@ if ~isfile(full_file_path)
         if isfile(temp_full_file_path)
           
           full_file_path = temp_full_file_path;
-          set_default_experiment_dir(pathname);
+          sc_settings.set_default_experiment_dir(pathname);
           
         else
           
@@ -56,6 +56,6 @@ d = load(full_file_path, 'obj');
 experiment = d.obj;
 experiment.save_name = [name ext];
 
-set_last_experiment(full_file_path);
+sc_settings.set_last_experiment(full_file_path);
 
 end

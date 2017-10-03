@@ -65,7 +65,7 @@ classdef ScNeuron < handle
     
     function gui_mgr_out = load_experiment(obj, spiketrain_fcn)
       
-      sc_dir = get_default_experiment_dir();
+      sc_dir = sc_settings.get_default_experiment_dir();
       
       gui_mgr = sc([sc_dir obj.experiment_filename], obj.file_tag);
       
@@ -113,7 +113,7 @@ classdef ScNeuron < handle
     
     function load_experiment_amplitude_mode(obj, amplitude, sweep_nbr)
       
-      sc_dir = get_default_experiment_dir();
+      sc_dir = sc_settings.get_default_experiment_dir();
       
       gui_mgr = sc('-amplitude', [sc_dir obj.experiment_filename], obj.file_tag);
       

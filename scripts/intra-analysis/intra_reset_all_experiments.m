@@ -1,6 +1,6 @@
 function intra_reset_all_experiments(neurons, response_min, response_max, only_epsps)
 
-sc_dir = get_default_experiment_dir();
+sc_dir = sc_settings.get_default_experiment_dir();
 
 electrodes = {'V1', 'V2', 'V3', 'V4'};
 

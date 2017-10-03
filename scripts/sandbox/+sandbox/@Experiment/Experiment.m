@@ -9,7 +9,7 @@ classdef Experiment < handle
   
   methods
     
-    function val = get_raw_data_dir(obj)
+    function val = sc_settings.get_raw_data_dir(obj)
       
       val = [obj.raw_data_dir_base filesep obj.raw_data_dir_folder];
       val = strrep(val, '/', filesep);

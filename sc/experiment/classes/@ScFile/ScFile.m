@@ -237,7 +237,7 @@ classdef ScFile < ScList & ScDynamicClass
         
       end
       
-      if isempty(obj.discrete_signals)
+      if ~isempty(obj.discrete_signals)
         
         for i=1:obj.discrete_signals.n
           triggers.add(obj.discrete_signals.get(i));

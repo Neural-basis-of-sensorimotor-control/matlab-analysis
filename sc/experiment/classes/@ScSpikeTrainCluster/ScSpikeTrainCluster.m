@@ -134,7 +134,7 @@ classdef ScSpikeTrainCluster < ScNeuron
     
     function load_experiment(obj)
       
-      sc_dir = get_default_experiment_dir();
+      sc_dir = sc_settings.get_default_experiment_dir();
       gui_mgr = sc([sc_dir obj.experiment_filename], ...
         obj.neurons(1).file_tag);
       
@@ -155,7 +155,7 @@ classdef ScSpikeTrainCluster < ScNeuron
         return
       end
       
-      sc_dir = get_default_experiment_dir();
+      sc_dir = sc_settings.get_default_experiment_dir();
       
       tmp_filename = [obj.tag(1:4) '_SSSA_sc.mat'];
       

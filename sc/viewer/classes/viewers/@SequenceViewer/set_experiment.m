@@ -1,7 +1,7 @@
 function set_experiment(obj, experiment)
 
 if ischar(experiment)
-  set_last_experiment(experiment);
+  sc_settings.set_last_experiment(experiment);
   
   experiment = ScExperiment.load_experiment(experiment);
 end

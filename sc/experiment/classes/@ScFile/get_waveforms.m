@@ -16,7 +16,7 @@ for i=1:obj.signals.n
       
       waveform = signal.waveforms.get(j);
       
-      if ~isempty(waveform.gettimes())
+      if nargin == 1 || ~isempty(waveform.gettimes(tmin, tmax))
         val = add_to_list(val, waveform);
       end
       

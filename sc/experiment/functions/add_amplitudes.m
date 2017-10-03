@@ -1,6 +1,6 @@
 function add_amplitudes()
 
-sc_dir = get_default_experiment_dir();
+sc_dir = sc_settings.get_default_experiment_dir();
 
 experiment_file = [sc_dir 'IDNR_sc.mat'];
 file_tag = 'IDNR0001';

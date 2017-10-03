@@ -2,7 +2,7 @@ clc
 clear
 close all
 reset_fig_indx()
-set_current_settings_tag(get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
 
 intra_load_settings
 intra_load_constants
@@ -13,7 +13,7 @@ intra_make_mds_response_separate_cells(neurons([4 8]), height_limit, min_nbr_eps
 mxfigs
 %brwfigs
 
-set_current_settings_tag(get_default_settings_tag());
+sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag());
 
 figs = get_all_figures();
 

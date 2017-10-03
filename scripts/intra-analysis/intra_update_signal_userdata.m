@@ -1,6 +1,6 @@
 function intra_update_signal_userdata(neurons, only_epsp)
 
-sc_dir = get_default_experiment_dir();
+sc_dir = sc_settings.get_default_experiment_dir();
 
 for i=1:length(neurons)
   fprintf('%d out of %d\n', i, length(neurons));

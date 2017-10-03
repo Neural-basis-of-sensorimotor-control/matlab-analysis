@@ -61,11 +61,11 @@ end
 
 args = varargin;
 
-if ~isfile(get_sc_settings_filename())
-  clear_sc_file();
+if ~isfile(sc_settings.get_settings_filename())
+  sc_settings.clear_file();
 end
 
-[~, experiment_path] = get_last_experiment();
+[~, experiment_path] = sc_settings.get_last_experiment();
 
 if ~nargin && isfile(experiment_path)
   args = {experiment_path};
@@ -76,15 +76,15 @@ if ~numel(args) || strcmpi(args{1}, '-loadnew')
   %Ignore previous experiment
   
   [fname, pname] = uigetfile('*_sc.mat','Choose experiment file', ...
-    get_default_experiment_dir());
+    sc_settings.get_default_experiment_dir());
   
   filename = fullfile(pname, fname);
   
   if isfile(filename)
     
     args = {filename};
-    set_default_experiment_dir(pname);
-    set_last_experiment(fname);
+    sc_settings.set_default_experiment_dir(pname);
+    sc_settings.set_last_experiment(fname);
     
   else
     
@@ -101,7 +101,7 @@ if strcmpi(args{1}, '-help')
   help(mfilename)
 
 elseif strcmpi(args{1}, '-what')
-  directory = uigetdir(get_default_experiment_dir(), 'Select file directory');
+  directory = uigetdir(sc_settings.get_default_experiment_dir(), 'Select file directory');
   
   if ~isnumeric(directory)
     
@@ -137,13 +137,13 @@ elseif strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
   
   [rawdatafiles, raw_data_folder] = uigetfile(ending, ...
     'Select all files with analog channels to be included', ...
-    get_raw_data_dir(), 'MultiSelect', 'on');
+    sc_settings.get_raw_data_dir(), 'MultiSelect', 'on');
   
   if ~iscell(rawdatafiles)
     rawdatafiles = {rawdatafiles};
   end
   
-  set_raw_data_dir(raw_data_folder);
+  sc_settings.set_raw_data_dir(raw_data_folder);
   experiment.set_fdir(raw_data_folder);
   rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x), rawdatafiles));
   
@@ -228,7 +228,7 @@ else
     gui = guimgr;
   end
   
-  set_default_experiment_dir(filename);
+  sc_settings.set_default_experiment_dir(filename);
   guimgr.experiment = ScExperiment.load_experiment(filename);
   guimgr.show;
   

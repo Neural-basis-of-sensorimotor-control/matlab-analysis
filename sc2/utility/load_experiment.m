@@ -1,13 +1,13 @@
 function experiment = load_experiment(fpath)
 
 if ~isfile(fpath)
-  temp_fpath = [get_default_experiment_dir() fpath];
+  temp_fpath = [sc_settings.get_default_experiment_dir() fpath];
   
   if isfile(temp_fpath)
     fpath = temp_fpath;
   else
     [~, temp_fname, ext] = fileparts(fpath);
-    temp_fpath = [get_default_experiment_dir() temp_fname ext];
+    temp_fpath = [sc_settings.get_default_experiment_dir() temp_fname ext];
     
     if isfile(temp_fpath)
       fpath = temp_fpath;
@@ -23,6 +23,6 @@ d = load(fpath, 'obj');
 experiment = d.obj;
 experiment.save_name = name;
 
-set_last_experiment(fpath);
+sc_settings.set_last_experiment(fpath);
 
 end

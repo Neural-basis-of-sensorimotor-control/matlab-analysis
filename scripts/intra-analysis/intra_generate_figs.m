@@ -1,7 +1,7 @@
 clear
 %close all
 %reset_fig_indx()
-set_current_settings_tag(get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
 
 intra_load_settings
 intra_load_constants
@@ -27,5 +27,5 @@ if plot_only_final_figures
   intra_from_debug_to_release_tick_label(figs);
 end
 
-set_current_settings_tag(get_default_settings_tag());
+sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag());
 

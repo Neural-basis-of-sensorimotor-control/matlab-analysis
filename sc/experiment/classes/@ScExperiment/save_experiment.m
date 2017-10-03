@@ -6,10 +6,10 @@ if prompt_before_saving
   
   if isfile(save_path)
     default_dir = save_path;
-  elseif isfile([get_default_experiment_dir() save_path])
-    default_dir = [get_default_experiment_dir() save_path];
+  elseif isfile([sc_settings.get_default_experiment_dir() save_path])
+    default_dir = [sc_settings.get_default_experiment_dir() save_path];
   else
-    default_dir = get_default_experiment_dir();
+    default_dir = sc_settings.get_default_experiment_dir();
   end
     
   [fname, pname] = uiputfile('*_sc.mat', ['Choose file to save ' save_path], ...
@@ -25,7 +25,7 @@ else
   
   if ~isfile(save_path)
     
-    tmp_filename = [get_default_experiment_dir() save_path];
+    tmp_filename = [sc_settings.get_default_experiment_dir() save_path];
     
     if isfile(tmp_filename)
       
@@ -34,7 +34,7 @@ else
     else
       
       [fname, pname] = uiputfile('*_sc.mat', ['Choose file to save ' save_path], ...
-        get_default_experiment_dir());
+        sc_settings.get_default_experiment_dir());
       
       if ~ischar(fname)
         return
@@ -54,7 +54,7 @@ obj.save_name = [name ext];
 
 save(save_path, 'obj')
 
-set_last_experiment(save_path);
+sc_settings.set_last_experiment(save_path);
 
 saved = true;
 

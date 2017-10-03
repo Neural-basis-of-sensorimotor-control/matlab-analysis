@@ -55,9 +55,9 @@ addpath(temp_dir);
 experiment = ScExperiment();
 folder = 'AFNR131216';
 
-file1 = ScFile(experiment, [get_raw_data_dir() folder filesep 'AFNR0000.mat']);
-file2 = ScFile(experiment, [get_raw_data_dir() folder filesep 'AFNR0001.mat']);
-file3 = ScFile(experiment, [get_raw_data_dir() folder filesep 'AFNR0002.mat']);
+file1 = ScFile(experiment, [sc_settings.get_raw_data_dir() folder filesep 'AFNR0000.mat']);
+file2 = ScFile(experiment, [sc_settings.get_raw_data_dir() folder filesep 'AFNR0001.mat']);
+file3 = ScFile(experiment, [sc_settings.get_raw_data_dir() folder filesep 'AFNR0002.mat']);
 
 file1.init();
 file2.init();

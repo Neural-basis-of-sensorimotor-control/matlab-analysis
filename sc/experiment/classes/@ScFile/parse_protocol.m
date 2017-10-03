@@ -211,7 +211,7 @@ end
 % Return true if end of protocol file is reached
 function stop_parsing = is_eof(line)
 
-stop_parsing = ~isempty(line) && ((isnumeric(line) && line == -1) || (length(line) > 2 && strcmp(line(1:2),'ï¿½ï¿½')));
+stop_parsing = ~isempty(line) && ((isnumeric(line) && line == -1) || (length(line) > 2 && strcmp(line(1:2),'¤¤')));
 
 end
 

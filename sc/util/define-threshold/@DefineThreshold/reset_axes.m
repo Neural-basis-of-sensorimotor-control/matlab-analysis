@@ -10,6 +10,8 @@ end
 
 obj.all_objects = [];
 
+obj.threshold_has_been_plotted = false;
+
 clear_objects(obj);
 
 end

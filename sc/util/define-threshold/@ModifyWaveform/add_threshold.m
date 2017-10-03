@@ -4,7 +4,8 @@ threshold = ScThreshold([], [], [], []);
 
 obj.waveform.add(threshold);
 
-thr    = ModifyThreshold(obj.h_axes, obj.waveform.parent, threshold);
+thr        = ModifyWaveformChild(obj.h_axes, obj.waveform.parent, threshold);
+thr.parent = obj;
 
 if isempty(obj.thresholds)
   

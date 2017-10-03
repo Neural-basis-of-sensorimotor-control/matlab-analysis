@@ -23,6 +23,10 @@ classdef ModifyWaveform < handle
     
   end
   
+  properties (SetAccess = 'private')
+    m_has_unsaved_changes
+  end
+  
   properties (Dependent, SetAccess = 'private')
     
     has_unsaved_changes
@@ -33,8 +37,9 @@ classdef ModifyWaveform < handle
     
     function obj = ModifyWaveform(h_axes, signal, waveform)
       
-      obj.thresholds = [];
-      obj.h_axes     = h_axes;
+      obj.thresholds            = [];
+      obj.h_axes                = h_axes;
+      obj.m_has_unsaved_changes = false;
       
       if isneuron(signal)
         signal = sc_load_signal(signal);
@@ -60,7 +65,8 @@ classdef ModifyWaveform < handle
       
       for i=1:length(waveform.list)
         
-        mthr           = ModifyThreshold(h_axes, signal, waveform.list(i));
+        mthr           = ModifyWaveformChild(h_axes, signal, waveform.list(i));
+        mthr.parent    = obj;
         mthr.color     = colors(i, :);
         obj.thresholds = add_to_list(obj.thresholds, mthr);
         
@@ -71,12 +77,19 @@ classdef ModifyWaveform < handle
     
     function val = get.has_unsaved_changes(obj)
       
-      if isempty(obj.thresholds)
+      if obj.m_has_unsaved_changes
+        val = true;
+      elseif isempty(obj.thresholds)
         val = false;
       else
         val = any(cell2mat({obj.thresholds.has_unsaved_changes}));
       end
       
+    end
+    
+    
+    function set.has_unsaved_changes(obj, val)
+      obj.m_has_unsaved_changes = val;
     end
     
   end

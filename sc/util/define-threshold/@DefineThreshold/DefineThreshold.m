@@ -34,6 +34,7 @@ classdef DefineThreshold < handle
   methods (Static, Access = 'private')
     
     varargout = update_starting_point(varargin)
+    varargout = update_bar(varargin)
     varargout = update_lower_bound(varargin)
     varargout = update_upper_bound(varargin)
     varargout = move_limits(varargin)

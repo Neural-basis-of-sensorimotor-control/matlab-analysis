@@ -69,12 +69,18 @@ classdef ScNeuron < handle
       
       gui_mgr = sc([sc_dir obj.experiment_filename], obj.file_tag);
       
+      gui_mgr.viewer.set_main_signal(obj.signal_tag);
+      
+      debug_printout('tmin', obj.tmin, 'tmax', obj.tmax);
+      
       if nargout
         gui_mgr_out = gui_mgr;
       end
       
       if nargin > 1
+        
         if isfunction(spiketrain_fcn)
+        
           file = gui_mgr.viewer.file;
           
           signals = file.signals;
@@ -83,9 +89,23 @@ classdef ScNeuron < handle
           
           set_userdata(signal, 'spiketrain', []);
           set_userdata(signal, 'spiketrain', spiketrain_fcn(signal));
+        
+        elseif ischar(spiketrain_fcn)
+          
+          file = gui_mgr.viewer.file;          
+          
+          trigger        = file.gettriggers(0, inf).get('tag', spiketrain_fcn);
+          triggerparent = trigger.parent;
+          
+          gui_mgr.viewer.set_triggerparent(triggerparent);
+          gui_mgr.viewer.set_trigger(trigger);
+          
         else
           
+          error('Invalid input')
+          
         end
+        
       end
       
     end

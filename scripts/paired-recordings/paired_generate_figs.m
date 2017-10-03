@@ -1,7 +1,5 @@
-set_current_settings_tag(get_default_settings_tag())
-
-paired_load_settings();
-paired_load_constants();
+clear
+paired_setup
 
 % SPIKE ANALYSIS
 
@@ -9,8 +7,8 @@ paired_load_constants();
 
 % Figure 1 + 4 Spike-triggered histogram (SpTH) for paired neurons
 
-paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
-
+paired_perispike(ec_neurons(2), ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
+return
 % Figure 2 Parameters from figure 1 plotted vs neuron depth
 
 paired_plot_depth(ec_neurons);

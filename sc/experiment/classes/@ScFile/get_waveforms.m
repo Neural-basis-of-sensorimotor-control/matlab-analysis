@@ -6,7 +6,7 @@ for i=1:obj.signals.n
   
   signal = obj.signals.get(i);
   
-  if nargin==1
+  if nargin == 1
     
     val = concat_list(val, signal.waveforms.list);
   
@@ -16,7 +16,7 @@ for i=1:obj.signals.n
       
       waveform = signal.waveforms.get(j);
       
-      if ~isempty(waveform.gettimes(tmin, tmax))
+      if ~isempty(waveform.gettimes())
         val = add_to_list(val, waveform);
       end
       

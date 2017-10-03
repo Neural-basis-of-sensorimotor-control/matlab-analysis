@@ -6,6 +6,8 @@ end
 
 h_figure = get(h_axes, 'Parent');
 
+zoom(h_axes, 'off')
+
 set(h_figure, 'WindowButtonDownFcn', [], ...
   'WindowButtonMotionFcn',      [], ...
   'WindowButtonUpFcn',          []);

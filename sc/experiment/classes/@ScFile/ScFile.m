@@ -190,7 +190,11 @@ classdef ScFile < ScList & ScDynamicClass
     %Only returns objects where numel(times)>0
     function triggers = gettriggers(obj, tmin, tmax)
       
-      triggers = ScCellList(obj.get_waveforms(tmin, tmax));
+      if nargin == 1
+        triggers = obj.get_waveforms();
+      else
+        triggers = ScCellList(obj.get_waveforms(tmin, tmax));
+      end
       
       for i=1:obj.textchannels.n
         
@@ -200,7 +204,7 @@ classdef ScFile < ScList & ScDynamicClass
           
           trigger = textchannel.triggers.get(j);
           
-          if numel(trigger.gettimes(tmin,tmax))
+          if nargin == 1 || ~isempty(trigger.gettimes(tmin,tmax))
             triggers.add(trigger);
           end
           
@@ -212,7 +216,8 @@ classdef ScFile < ScList & ScDynamicClass
         
         stim = obj.stims.get(i);
         
-        if stim.istrigger && numel(stim.gettimes(tmin,tmax))
+        if stim.istrigger && ... 
+            (nargin == 1 || ~isempty(stim.gettimes(tmin,tmax)))
           
           triggers.add(stim);
           
@@ -222,7 +227,7 @@ classdef ScFile < ScList & ScDynamicClass
           
           for j=1:stimtriggers.n
             
-            if numel(stimtriggers.get(j).gettimes(tmin,tmax))
+            if nargin == 1 || ~isempty(stimtriggers.get(j).gettimes(tmin,tmax))
               triggers.add(stimtriggers.get(j));
             end
             
@@ -232,7 +237,7 @@ classdef ScFile < ScList & ScDynamicClass
         
       end
       
-      if ~isempty(obj.discrete_signals)
+      if isempty(obj.discrete_signals)
         
         for i=1:obj.discrete_signals.n
           triggers.add(obj.discrete_signals.get(i));

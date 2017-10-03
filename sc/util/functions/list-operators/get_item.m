@@ -1,19 +1,24 @@
 function val = get_item(list, indx)
 
 if isempty(indx)
+
   val = [];
   
 elseif isobject(indx)
+  
   val = indx;
 
 elseif ischar(indx)
+  
   val = get_items(list, 'tag', indx, 1);
 
 elseif ischar(list)
+  
   list = {list};
   val = list(indx);
 
 else
+  
   val = list(indx);
   
   if length(val) > 1

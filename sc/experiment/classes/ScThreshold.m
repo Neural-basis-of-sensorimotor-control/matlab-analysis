@@ -132,7 +132,7 @@ classdef ScThreshold < handle
       end
       
       if min_isi_on
-        spikepos = sc_separate(spikepos, obj.width);
+        spikepos = sc_separate(spikepos, obj.min_isi);
       end
       
     end
@@ -181,7 +181,7 @@ classdef ScThreshold < handle
         end
         
         if min_isi_on
-          spikepos = sc_separate(spikepos,obj.width);
+          spikepos = sc_separate(spikepos,obj.min_isi);
         end
         
       end

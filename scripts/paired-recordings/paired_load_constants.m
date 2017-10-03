@@ -22,4 +22,3 @@ ic_t_spike_range      = [0 .002];
 % Initialize
 ec_neurons     = paired_get_extra_neurons();
 ic_neurons     = paired_get_intra_neurons();
-ic_toy_neurons = paired_get_experimental_ic_neurons();

@@ -8,8 +8,7 @@ if ~isempty(indx)
   x_ = p(1, 1);
   y_ = p(1, 2);
   
-  obj.clicked_points(indx).x = x_;
-  obj.clicked_points(indx).y = y_;
+  add_point(obj, indx, x_, y_)
 
 end
 

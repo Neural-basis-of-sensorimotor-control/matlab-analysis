@@ -9,7 +9,6 @@ classdef ClickRecorder < handle
     active_label
     active_index
     n
-    
   
   end
   

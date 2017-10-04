@@ -12,8 +12,7 @@ if ~isempty(obj.active_object)
   position = get(obj.active_label, 'Position');
   set(obj.active_label, 'Position', [x_ y_ position(3)]);
   
-  obj.clicked_points(obj.active_index).x = x_;
-  obj.clicked_points(obj.active_index).y = y_;
+  update_clicked_points(obj, x_, y_);
     
 end
 

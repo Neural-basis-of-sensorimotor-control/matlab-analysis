@@ -1,5 +1,9 @@
 classdef NeuronBrowserClickRecorder < ClickRecorder
   
+  methods
+    varargout = add_point(varargin)
+  end
+  
   properties
     
     neurons

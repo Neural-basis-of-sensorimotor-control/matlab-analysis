@@ -9,14 +9,14 @@ for i=1:obj.signals.n
   if nargin == 1
     
     val = concat_list(val, signal.waveforms.list);
-  
+
   else
     
     for j=1:signal.waveforms.n
       
       waveform = signal.waveforms.get(j);
       
-      if nargin == 1 || ~isempty(waveform.gettimes(tmin, tmax))
+      if ~isempty(waveform.gettimes(tmin, tmax))
         val = add_to_list(val, waveform);
       end
       

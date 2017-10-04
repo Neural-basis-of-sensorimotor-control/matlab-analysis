@@ -6,6 +6,8 @@ classdef ModifyWaveform < handle
     varargout = init_plot(varargin)
     varargout = add_threshold(varargin)
     varargout = reset_axes(varargin)
+    varargout = hide_threshold(varargin)
+    varargout = hide_all_but(varargin)
     
   end
   

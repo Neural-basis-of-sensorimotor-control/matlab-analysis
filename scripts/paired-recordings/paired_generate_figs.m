@@ -7,7 +7,7 @@ paired_setup
 
 % Figure 1 + 4 Spike-triggered histogram (SpTH) for paired neurons
 
-paired_perispike(ec_neurons(2), ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
+paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
 return
 % Figure 2 Parameters from figure 1 plotted vs neuron depth
 

@@ -9,9 +9,6 @@ expr       = ScExperiment.load_experiment(expr_fname);
 file       = get_item(expr.list, neuron.file_tag);
 waveforms  = file.get_waveforms();
 
-tmin       = neuron.tmin;
-tmax       = neuron.tmax;
-
 varargout = cell(2*length(neuron.template_tag), 1);
 
 if nargin < 2
@@ -32,14 +29,34 @@ else
 
 end
 
+enc_waveforms  = cell(size(template_tag));
+enc_spiketimes = cell(size(template_tag));
+
 for i=1:length(template_tag)
   
   waveform = get_item(waveforms, template_tag{i});
+  try
   waveform.sc_loadtimes();
+  catch
+    iii = -1
+  end
   
-  spiketime = waveform.gettimes(tmin, tmax);
+  enc_waveforms(i)  = {waveform};
+  enc_spiketimes(i) = {waveform.gettimes(neuron.tmin, neuron.tmax)};
+
+end
+
+tmin = max(cell2mat(get_values(enc_spiketimes, @min)));
+tmax = min(cell2mat(get_values(enc_spiketimes, @max)));
+
+for i=1:length(template_tag)
   
-  varargout(i) = {spiketime};
-  varargout(length(template_tag)+i) = {waveform};
+  spiketimes        = enc_spiketimes{i};
+  spiketimes        = spiketimes(spiketimes > tmin & spiketimes < tmax);
+  varargout(i)      = {spiketimes};
+
+end
+
+varargout(length(template_tag)+1:end) = enc_waveforms;
 
 end

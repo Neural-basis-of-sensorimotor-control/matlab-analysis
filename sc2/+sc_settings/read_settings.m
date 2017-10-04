@@ -19,6 +19,14 @@ if isfile(filename)
     
   end
   
+  if ~isfield(s, 'settings')
+    
+    sc_settings.clear_file();
+    warning('Settings file %s appears to be corrupt. Clearing file.', filename);
+    return
+
+  end
+    
   if isfield(s.settings, domain_tag)
     
     if isfield(s.settings.(domain_tag), property)

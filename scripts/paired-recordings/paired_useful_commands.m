@@ -26,15 +26,16 @@
 % % mf.init_plot
 
 %% 
-% clear
-% close all
-% reset_fig_indx()
-% paired_load_constants
-% 
-% nbrws = NeuronBrowserClickRecorder(ec_neurons);
-% nbrws.plot_neuron();
-% mxfigs
+clear
+close all
+reset_fig_indx()
+paired_load_constants
 
+nbrws = NeuronBrowserClickRecorder(ec_neurons);
+nbrws.plot_neuron();
+mxfigs
+
+return
 
 clear
 close all

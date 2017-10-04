@@ -15,7 +15,7 @@ classdef AnalogAxes < ChannelAxes
   end
   
   properties (Constant)
-    analog_axes_height = 700
+    analog_axes_height = 600
   end
   
   methods

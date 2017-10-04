@@ -1,4 +1,5 @@
 function add_threshold(obj)
+% add_threshold(ModifyThreshold)
 
 threshold = ScThreshold([], [], [], []);
 

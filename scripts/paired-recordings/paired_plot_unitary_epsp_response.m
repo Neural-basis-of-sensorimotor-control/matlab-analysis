@@ -55,7 +55,6 @@ end
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' XPSP'])
-paired_add_neuron_textbox(neuron);
 
 fig    = incr_fig_indx();
 clf
@@ -76,7 +75,6 @@ end
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' spike'])
-paired_add_neuron_textbox(neuron);
 
 fig    = incr_fig_indx();
 clf
@@ -97,7 +95,6 @@ end
 set_userdata(fig, 'neuron', neuron);
 
 title([title_str ' antiselected'])
-paired_add_neuron_textbox(neuron);
 
 linkaxes(h_axes);
 

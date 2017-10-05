@@ -16,7 +16,7 @@ classdef GuiAxes < handle
   end
   
   properties (Constant)
-    gui_axes_height = 300
+    gui_axes_height = 200
   end
   
   

@@ -1,16 +1,24 @@
 classdef ClickRecorder < handle
   
-  properties
-  
+  properties (Dependent)
     h_axes
+  end
+  
+  properties
+    
     clicked_points
     all_objects
     active_object
     active_label
     active_index
     n
-  
+    
   end
+  
+  properties (SetAccess = 'private')
+    m_axes
+  end
+  
   
   methods
     
@@ -23,5 +31,25 @@ classdef ClickRecorder < handle
       
     end
     
+    
+    function set.h_axes(obj, val)
+      obj.m_axes = val;
+    end
+    
+    
+    function val = get.h_axes(obj)
+      
+      if ~ishandle(obj.m_axes)
+        
+        figure;
+        obj.m_axes = axes;
+        
+      end
+      
+      val = obj.m_axes;
+      
+    end
+    
   end
+  
 end

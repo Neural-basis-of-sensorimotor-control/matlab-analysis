@@ -28,6 +28,9 @@ sc_kernelhist(obj.h_axes, t2, t1, pretrigger, posttrigger, kernelwidth, binwidth
 [~, ~, h_plot] = sc_kernelhist(t2, t1, pretrigger, posttrigger, 10*kernelwidth, binwidth);
 set(h_plot, 'LineWidth', 2);
 
+obj.neuron.add_load_signal_menu([obj.h_axes], ...
+  obj.neuron.template_tag{obj.neuron_pair_indx});
+
 grid on
 
 x = obj.neuron.x{obj.neuron_pair_indx};
@@ -61,7 +64,7 @@ end
 h_legend = add_legend(obj.h_axes);
 set(h_legend, 'InterPreter', 'None');
 
-title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2)'], ...
+title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2), N = ' num2str(length(t2))], ...
   'Interpreter', 'none');
 
 end

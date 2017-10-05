@@ -11,13 +11,13 @@ y_           = y_(indx);
 
 if isempty(x_)
   
-  onset                 = [];
-  height                = [];
-  leading_flank_width   = [];
-  leading_flank_height  = [];
-  trailing_flank_width  = [];
-  trailing_flank_height = [];
-  peak_position         = [];
+  onset                 = 0;
+  height                = 0;
+  leading_flank_width   = 0;
+  leading_flank_height  = 0;
+  trailing_flank_width  = 0;
+  trailing_flank_height = 0;
+  peak_position         = 0;
   
 else
   

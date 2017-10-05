@@ -126,14 +126,6 @@ classdef ScSignal < ScChannel & ScDynamicClass
       s.remove_artifacts_simple = true;
       
       v = obj.get_v(s);
-
-      for k=1:obj.remove_waveforms.n
-        
-        rmwf = obj.remove_waveforms.get(k);
-        rmwf.calibrate(v);
-        v = rmwf.remove_wf(v);
-        
-      end
       
       wf.recalculate_spiketimes(v,obj.dt);
       

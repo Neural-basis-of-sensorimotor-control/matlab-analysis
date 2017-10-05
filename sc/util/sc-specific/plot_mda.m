@@ -1,4 +1,4 @@
-function plot_mda(y, neuron_tags, markers)
+function plot_mda(y, neuron_tags, markers, right_click_fcns)
 
 dummy_cell = cell(size(y,1), 1);
 
@@ -32,8 +32,12 @@ if size(y,2) == 2
   
   for i=1:size(y,1)
     
-    plot(y(i,1), y(i,2), 'MarkerSize', 12, 'Tag', neuron_tags{i}, ...
-      'Marker', markers{i}, 'ButtonDownFcn', @print_tag)
+    h_plot = plot(y(i,1), y(i,2), 'MarkerSize', 12, 'Tag', neuron_tags{i}, ...
+      'Marker', markers{i}, 'ButtonDownFcn', @print_tag);
+    
+    if nargin >= 4
+      set(h_plot, 'UiContextMenu', get_right_click_menu(right_click_fcns{i}));
+    end
   
   end
   
@@ -65,5 +69,14 @@ disp(get(obj, 'Tag'));
 x = get(obj, 'XData');
 y = get(obj, 'YData');
 text(x,y,get(obj,'Tag'))
+
+end
+
+function c = get_right_click_menu(fcn)
+
+c = uicontextmenu();
+
+uimenu(c, 'Label', 'Edit parameters', 'Callback', ...
+  @(~,~) fcn());
 
 end

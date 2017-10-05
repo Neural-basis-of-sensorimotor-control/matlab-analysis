@@ -191,7 +191,7 @@ classdef ScFile < ScList & ScDynamicClass
     function triggers = gettriggers(obj, tmin, tmax)
       
       if nargin == 1
-        triggers = obj.get_waveforms();
+        triggers = ScCellList(obj.get_waveforms());
       else
         triggers = ScCellList(obj.get_waveforms(tmin, tmax));
       end

@@ -14,10 +14,11 @@ isi_max_spike_latency = .02;
 isi_kernelwidth       = .001;
 isi_tmax              = .1;
 
-ic_pretrigger         = -.02;
+ic_pretrigger         = -.04;
 ic_posttrigger        = .05;
 ic_t_epsp_range       = [.0005 .002];
 ic_t_spike_range      = [0 .002];
+ic_double_trigger_isi = .04;
 
 % Initialize
 ec_neurons     = paired_get_extra_neurons();

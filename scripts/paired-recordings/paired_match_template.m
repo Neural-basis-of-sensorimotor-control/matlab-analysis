@@ -6,6 +6,13 @@ for i=1:length(templates)
   
   template = signal.triggers.get('tag', templates{i});
   
+  if ~isempty(template.imported_spikedata) || ~isempty(template.predefined_spiketimes) ...
+      || ~isempty(template.imported_spiketimes)
+    
+    error('!!!');
+  
+  end
+  
   for j=1:size(sweeps, 2)
     
     template_times = sweep_times(template.match_v(sweeps(:,j)));

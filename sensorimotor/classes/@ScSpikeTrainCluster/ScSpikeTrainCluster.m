@@ -229,6 +229,7 @@ classdef ScSpikeTrainCluster < ScNeuron
       times = times(isfinite(times) & times ~= 0);
       
       times = sort(times);
+      
     end
     
   end

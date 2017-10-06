@@ -38,14 +38,36 @@ classdef ScSpikeData < ScNeuron & ScTrigger
         end
         
         filepath = [base_dir obj.raw_data_file];
+        
       end
       
+       if ~isfile(filepath)
+        
+        tmp_filepath = [get_default_experiment_dir() filepath];
+        
+        if isfile(tmp_filepath)
+          
+          filepath = tmp_filepath;
+        
+        else
+          
+          fprintf('Could not find %s. Skipping file\n', filepath);
+          return
+          
+        end
+        
+       end
+      
       if ischar(obj.column_indx)
+        
         times = ScSpikeTrainCluster.load_times(filepath, obj.column_indx);
+      
       else
+                
         data = dlmread(filepath, ',', 1, 0);
         times = data(:, obj.column_indx);
         times = times(isfinite(times) & times ~= 0);
+        
       end
       
       obj.spiketimes = times;

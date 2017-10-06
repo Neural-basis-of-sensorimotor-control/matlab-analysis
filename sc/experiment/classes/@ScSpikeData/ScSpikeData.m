@@ -11,7 +11,7 @@ classdef ScSpikeData < ScNeuron & ScTrigger
     
     spiketimes_is_updated
     spiketimes
-  
+    
   end
   
   methods
@@ -27,9 +27,9 @@ classdef ScSpikeData < ScNeuron & ScTrigger
     function load_spiketimes(obj, base_dir)
       
       if nargin<2
-  
+        
         filepath = obj.raw_data_file;
-      
+        
       else
         
         if isfile(obj.raw_data_file) && ...
@@ -47,16 +47,33 @@ classdef ScSpikeData < ScNeuron & ScTrigger
         
       end
       
+      if ~isfile(filepath)
+        
+        tmp_filepath = [get_default_experiment_dir() filepath];
+        
+        if isfile(tmp_filepath)
+          
+          filepath = tmp_filepath;
+          
+        else
+          
+          fprintf('Could not find %s. Skipping file\n', filepath);
+          return
+          
+        end
+        
+      end
+      
       if ischar(obj.column_indx)
         
         times = ScSpikeTrainCluster.load_times(filepath, obj.column_indx);
-      
+        
       else
         
         data = dlmread(filepath, ',', 1, 0);
         times = data(:, obj.column_indx);
         times = times(isfinite(times) & times ~= 0);
-      
+        
       end
       
       obj.spiketimes = times;
@@ -72,7 +89,7 @@ classdef ScSpikeData < ScNeuron & ScTrigger
       end
       
       times = obj.spiketimes;
-    
+      
     end
     
     

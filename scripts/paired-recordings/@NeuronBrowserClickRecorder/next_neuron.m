@@ -11,7 +11,7 @@ else
   obj.neuron           = obj.neurons(ind_neuron + 1);
   
   
-  debug_printout(mfilename, ind_neuron, length(obj.neurons));
+  sc_debug.print(mfilename, ind_neuron, length(obj.neurons));
   
 end
 

@@ -10,6 +10,8 @@ end
 file   = sc_load_file(neuron);
 signal = file.signals.get('tag', neuron.signal_tag);
 
+signal.sc_loadtimes();
+
 signal.update_property_values();
 
 end

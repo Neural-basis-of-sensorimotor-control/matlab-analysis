@@ -1,4 +1,6 @@
-function [onset, height, leading_flank_width, leading_flank_height, trailing_flank_width, trailing_flank_height, peak_position] ...
+function [onset, height, leading_flank_width, leading_flank_height, ...
+  trailing_flank_width, trailing_flank_height, peak_position, ...
+  normalized_height] ...
   = compute_all_distances(obj, str_property, indx_neuron)
 
 x_            = obj.x{indx_neuron};
@@ -11,13 +13,14 @@ y_           = y_(indx);
 
 if isempty(x_)
   
-  onset                 = 0;
-  height                = 0;
-  leading_flank_width   = 0;
-  leading_flank_height  = 0;
-  trailing_flank_width  = 0;
-  trailing_flank_height = 0;
-  peak_position         = 0;
+  onset                  = 0;
+  height                 = 0;
+  leading_flank_width    = 0;
+  leading_flank_height   = 0;
+  trailing_flank_width   = 0;
+  trailing_flank_height  = 0;
+  peak_position          = 0;
+  normalized_height = 0;
   
 else
   
@@ -31,6 +34,20 @@ else
     error('Wrong number of inputs');
   end
   
+  if length(indx) == 3
+    baseline_height = mean(y_([1 3]));
+  elseif length(indx) == 4
+    baseline_height = mean(y_([1 4]));
+  else
+    error('Wrong number of inputs');
+  end
+
+  if height < 0
+    normalized_height = (baseline_height + height) / baseline_height;
+  else
+    normalized_height = 1 + height / baseline_height;
+  end
+    
   leading_flank_width  = x_(2) - x_(1);
   leading_flank_height = y_(2) - y_(1);
   

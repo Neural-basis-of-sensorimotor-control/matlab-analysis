@@ -7,7 +7,7 @@ unique_patterns = unique(patterns);
 
 for i=1:length(neurons)
   
-  debug_printout(mfilename, i, length(neurons));
+  sc_debug.print(mfilename, i, length(neurons));
   
   mds_fig = incr_fig_indx();
   clf(mds_fig, 'reset')
@@ -40,7 +40,7 @@ for i=1:length(neurons)
     
     figure(mds_fig)
     
-    if ~strcmpi(get_debug_mode(), 'exceptional')
+    if ~strcmpi(sc_debug.get_mode(), 'exceptional')
       
       sc_square_subplot(length(unique_patterns), j);
       title(sprintf('%s: %s N = %d', neuron.file_tag, pattern, ...

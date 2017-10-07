@@ -1,41 +1,54 @@
-function paired_mds(paired_neurons)
+function paired_mds(neurons)
 
 nbr_of_params  = 12;
-nbr_of_neurons = 2*length(paired_neurons);
+nbr_of_neurons = 2*length(neurons);
 
 values            = nan(nbr_of_params, nbr_of_neurons);
 legend_str        = cell(nbr_of_neurons, 1);
+markers           = cell(nbr_of_neurons, 1);
+[~, layer_enumeration] = paired_get_layer();
 right_click_fcns  = {};
 
-for i_paired_neuron=1:length(paired_neurons)
+for i_paired_neuron=1:length(neurons)
   
-  tmp_paired_neuron = paired_neurons(i_paired_neuron);
+  tmp_paired_neuron = neurons(i_paired_neuron);
   
   for i_neuron=1:2
     
     col_indx             = i_paired_neuron * 2 + i_neuron - 2;
     legend_str(col_indx) = {tmp_paired_neuron.file_tag};
     
+    layer = paired_get_layer(tmp_paired_neuron);
+    
+    switch find(cellfun(@(x) strcmp(layer, x), layer_enumeration))
+      case 1
+        markers(col_indx)    = {'s'};
+      case 2
+        markers(col_indx)    = {'*'};
+      otherwise
+        error('Incorrect layer label');
+    end
+    
     counter = 0;
     
-    [~, height, leading_flank_width, ~, trailing_flank_width, ~, peak_position] ...
+    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_prespike_response', i_neuron);
     
-    tmp_values = [height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [~, height, leading_flank_width, ~, trailing_flank_width, ~, peak_position] ...
+    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_perispike_response', i_neuron);
     
-    tmp_values = [height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [~, height, leading_flank_width, ~, trailing_flank_width, ~, peak_position] ...
+    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_postspike_response', i_neuron);
     
-    tmp_values = [height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
@@ -57,7 +70,7 @@ d = pdist(values');
 y = cmdscale(d, 2);
 
 clf
-plot_mda(y, legend_str, '.', right_click_fcns);
+plot_mda(y, legend_str, markers, right_click_fcns);
 
 add_legend
 
@@ -70,5 +83,7 @@ figure
 nbrws                  = NeuronBrowserClickRecorder(paired_neuron);
 nbrws.neuron_pair_indx = neuron_indx;
 nbrws.plot_neuron();
+
+assignin('base', 'nbrws', nbrws);
 
 end

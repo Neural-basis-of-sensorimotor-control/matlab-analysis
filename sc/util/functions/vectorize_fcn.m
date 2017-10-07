@@ -12,7 +12,7 @@ end
 
 for i=1:length(input)
   
-  debug_printout(char(fcn), i, length(input));
+  sc_debug.print(char(fcn), i, length(input));
   
   tmp_input = input(i);
   

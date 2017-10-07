@@ -1,10 +1,19 @@
-% % clear
-% % close all
-% % reset_fig_indx()
-% % paired_load_constants
-% % %result = paired_vpd(ec_neurons(1:2), vpd_cost, vpd_time_range);
-% % %paired_perispike_summary(ec_neurons);
-% % 
+clear
+close all
+reset_fig_indx()
+paired_load_constants
+paired_mds(ec_neurons);
+return
+
+
+% clear
+% close all
+% reset_fig_indx()
+% paired_load_constants
+% %result = paired_vpd(ec_neurons(1:2), vpd_cost, vpd_time_range);
+% %paired_perispike_summary(ec_neurons);
+% paired_plot_depth(ec_neurons)
+% return
 % % mxfigs
 % % brwfigs
 % % % %% 
@@ -13,9 +22,9 @@
 % reset_fig_indx()
 % paired_load_settings
 % paired_load_constants
-% paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
+% paired_plot_ic_signal(ic_neurons(3), ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
+% paired_plot_unitary_epsp_response(ic_neurons(3), ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range);
 % return
-% % % paired_plot_unitary_epsp_response(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range);
 % % % mxfigs
 % % % brwfigs
 % % % return
@@ -33,7 +42,7 @@ close all
 reset_fig_indx()
 paired_load_constants
 
-nbrws = NeuronBrowserClickRecorder(ec_neurons(11));
+nbrws = NeuronBrowserClickRecorder(ec_neurons([26]));
 nbrws.plot_neuron();
 mxfigs
 

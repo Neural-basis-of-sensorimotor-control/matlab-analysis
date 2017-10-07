@@ -1,3 +1,4 @@
+function paired_mine_for_extra_neurons()
 % Constants
 min_nbr_of_common_spikes = 100;
 
@@ -10,6 +11,8 @@ neurons = find_overlapping_neurons(min_nbr_of_common_spikes);
 paired_plot_raster(neurons);
 
 print_neurons(neurons);
+
+end
 
 % Functions
 
@@ -24,7 +27,7 @@ counter      = 0;
 
 for i=1:size(experiments_str, 1)
   
-  debug_printout(mfilename, i, size(experiments_str, 1));
+  sc_debug.print(mfilename, i, size(experiments_str, 1));
   
   experiment_str = experiments_str(i, :);
   

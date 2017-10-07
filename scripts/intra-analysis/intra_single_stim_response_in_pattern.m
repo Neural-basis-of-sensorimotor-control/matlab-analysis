@@ -304,7 +304,7 @@ dist_shuffled_to_avg_response_several_simulations_2 = nan(dim);
 
 for i=1:length(stim_pulses)
   
-  debug_printout(mfilename, i, length(stim_pulses));
+  sc_debug.print(mfilename, i, length(stim_pulses));
   
   pattern_str = stim_pulses(i).pattern;
   electrode_str = stim_pulses(i).electrode;
@@ -313,7 +313,7 @@ for i=1:length(stim_pulses)
   
   for j=1:length(neurons)
     
-    debug_printout('... ', mfilename, j, length(neurons));
+    sc_debug.print('... ', mfilename, j, length(neurons));
     
     neuron = neurons(j);
     

@@ -4,12 +4,19 @@ function [depth1, depth2] = paired_extract_subcortical_depth(protocol_file, ...
 depth1 = nan;
 depth2 = nan;
 
-if strcmp(protocol_signal_tag, 'patch')
+if strcmp(protocol_signal_tag, 'patch') || ...
+    strcmp(protocol_signal_tag, 'patch1')
+  
   depth1 = 0;
+  
 elseif strcmp(protocol_signal_tag, 'patch2')
+  
   depth2 = 0;
+  
 else
+  
   error('Unknown signal tag: %s', protocol_signal_tag);
+  
 end
 
 
@@ -27,7 +34,7 @@ while true
     
   end
   
-  if startsWith(line, '¤¤')
+  if startswith(line, '¤¤')
     
     if at_last_file
       
@@ -57,6 +64,14 @@ while true
         error('Could not parse: %s', line);
         
     end
+    
+  elseif strcmp(line, 'patch2 664 um, patch1 560um')
+    
+    depth1 = .56;
+    depth2 = .664;
+    
   end
   
+end
+
 end

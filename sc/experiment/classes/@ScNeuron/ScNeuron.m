@@ -71,7 +71,7 @@ classdef ScNeuron < handle
       
       gui_mgr.viewer.set_main_signal(obj.signal_tag);
       
-      debug_printout('tmin', obj.tmin, 'tmax', obj.tmax);
+      sc_debug.print('tmin', obj.tmin, 'tmax', obj.tmax);
       
       if nargout
         gui_mgr_out = gui_mgr;
@@ -113,7 +113,7 @@ classdef ScNeuron < handle
     
     function load_experiment_amplitude_mode(obj, amplitude, sweep_nbr)
       
-      debug_printout(neuron.signal_tag, neuron.template_tag{:})
+      sc_debug.print(neuron.signal_tag, neuron.template_tag{:})
       
       sc_dir = sc_settings.get_default_experiment_dir();
       

@@ -4,7 +4,7 @@ if isfigure(ax)
   
   for i=1:length(ax)
     
-    debug_printout(mfilename, i, length(ax));
+    sc_debug.print(mfilename, i, length(ax));
     
     intra_from_debug_to_release_tick_label(get_axes(ax(i)));
     
@@ -23,7 +23,7 @@ else
   
   for i=1:length(ax)
     
-    debug_printout(' ... ', mfilename, i, length(ax));
+    sc_debug.print(' ... ', mfilename, i, length(ax));
     
     xticklabel = get(ax(i), 'XTickLabel');
     yticklabel = get(ax(i), 'YTickLabel');

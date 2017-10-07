@@ -10,7 +10,7 @@ binwidth    = 1e-3;
 
 [t1, t2] = paired_get_neuron_spiketime(obj.neuron);
 
-if obj.neuron_pair_indx == 1
+if obj.neuron_pair_indx == 2
 
   tmp_t2 = t2;
   t2 = t1;
@@ -24,8 +24,8 @@ hold on
 
 h_figure.Name = obj.neuron.file_tag;
 
-sc_kernelhist(obj.h_axes, t2, t1, pretrigger, posttrigger, kernelwidth, binwidth);
-[~, ~, h_plot] = sc_kernelhist(t2, t1, pretrigger, posttrigger, 10*kernelwidth, binwidth);
+sc_kernelhist(obj.h_axes, t1, t2, pretrigger, posttrigger, kernelwidth, binwidth);
+[~, ~, h_plot] = sc_kernelhist(t1, t2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
 set(h_plot, 'LineWidth', 2);
 
 obj.neuron.add_load_signal_menu([obj.h_axes], ...
@@ -64,7 +64,9 @@ end
 h_legend = add_legend(obj.h_axes);
 set(h_legend, 'InterPreter', 'None');
 
-title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2), N = ' num2str(length(t2))], ...
+title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2), ' ...
+  obj.neuron.template_tag{obj.neuron_pair_indx} ' [' num2str(length(t1)) '], ' ...
+  obj.neuron.template_tag{mod(obj.neuron_pair_indx, 2)+1} ' [' num2str(length(t2)) ']'], ...
   'Interpreter', 'none');
 
 end

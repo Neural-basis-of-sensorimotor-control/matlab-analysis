@@ -6,7 +6,9 @@ displayopt = 'off';
 stims = get_intra_motifs();
 
 dim = size(neurons);
-p_inter_stimulation = nan(dim);
+p_intra_neuron      = nan(dim);
+p_intra_stimulation = nan(size(stims));
+
 %p_shuffled_inter_stimulation = nan(dim);
 
 properties = {'height', 'latency', 'width'};
@@ -21,7 +23,7 @@ for i_=1:length(indx)
   
   i = indx(i_);
   
-  debug_printout(mfilename, ' a ', i_, length(indx));
+  sc_debug.print(mfilename, ' a ', i_, length(indx));
   
   property = properties{i};
   
@@ -75,7 +77,7 @@ for i_=1:length(indx)
       end
     end
     
-    [p_inter_stimulation(j), ~, stats] = anova1(data, tags, displayopt);
+    [p_intra_neuron(j), ~, stats] = anova1(data, tags, displayopt);
     
     if ~plot_only_final_figures
       
@@ -92,12 +94,14 @@ for i_=1:length(indx)
   incr_fig_indx()
   
   clf reset
-  semilogy(1:length(p_inter_stimulation), p_inter_stimulation,  'LineStyle', ...
+ % hold on
+  
+  semilogy(1:length(p_intra_neuron), p_intra_neuron,  'LineStyle', ...
     '-', 'Marker', '+', 'Tag', 'Results');
-  hold on
+  
   %   semilogy(1:length(p_inter_stimulation), p_shuffled_inter_stimulation, 'Tag', 'Shuffled results');
-  axis_wide(gca, 'xy');
-  set(gca, 'XTick', 1:length(p_inter_stimulation), 'XTickLabel', ...
+  axis_wide(gca, 'x');
+  set(gca, 'XTick', 1:length(p_intra_neuron), 'XTickLabel', ...
     {neurons.file_tag}, 'XTickLabelRotation', 270);
   xlabel('Neurons');
   ylabel('P value');
@@ -116,7 +120,7 @@ for i_=1:length(indx)
     incr_fig_indx()
     
     %  subplot(211)
-    [counts, edges] = histcounts(p_inter_stimulation);%, 'BinLimits', [0 1]);
+    [counts, edges] = histcounts(p_intra_neuron);%, 'BinLimits', [0 1]);
     bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
     xlabel('P value');
     ylabel('Distribution');
@@ -134,7 +138,7 @@ end
 
 for i=1:length(properties)
   
-  debug_printout(mfilename, ' b ', i, length(properties));
+  sc_debug.print(mfilename, ' b ', i, length(properties));
   
   property = properties{i};
   
@@ -177,7 +181,7 @@ for i=1:length(properties)
       end
     end
     
-    [p_inter_stimulation(j), ~, stats] = anova1(data, tags, displayopt);
+    [p_intra_stimulation(j), ~, stats] = anova1(data, tags, displayopt);
     
     if ~plot_only_final_figures
       
@@ -192,12 +196,11 @@ for i=1:length(properties)
   
   incr_fig_indx()
   clf reset
-  semilogy(1:length(p_inter_stimulation), p_inter_stimulation, 'LineStyle', ...
+  semilogy(1:length(p_intra_stimulation), p_intra_stimulation, 'LineStyle', ...
     '-', 'Marker', '+', 'Tag', 'Results');
-  hold on
   %semilogy(1:length(p_inter_stimulation), p_shuffled_inter_stimulation, 'Tag', 'Shuffled results');
-  axis_wide(gca, 'xy');
-  set(gca, 'XTick', 1:length(p_inter_stimulation), 'XTickLabel', ...
+  axis_wide(gca, 'x');
+  set(gca, 'XTick', 1:length(p_intra_stimulation), 'XTickLabel', ...
     stims, 'XTickLabelRotation', 270);
   xlabel('Stimulations');
   ylabel('P value');
@@ -209,14 +212,13 @@ for i=1:length(properties)
   end
   
   title(str);
-  add_legend();
   
   if ~plot_only_final_figures
     
     incr_fig_indx();
     
     %subplot(211)
-    [counts, edges] = histcounts(p_inter_stimulation);%, 'BinLimits', [0 1]);
+    [counts, edges] = histcounts(p_intra_stimulation);%, 'BinLimits', [0 1]);
     bar(.5*(edges(1:end-1) + edges(2:end)), counts/sum(counts));
     xlabel('P value');
     ylabel('Distribution');

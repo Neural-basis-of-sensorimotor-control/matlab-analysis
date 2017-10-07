@@ -45,7 +45,7 @@ end
 
 for i=1:length(indx)
   
-  debug_printout(mfilename, i, length(indx));
+  sc_debug.print(mfilename, i, length(indx));
   
   tmp_evaluation_fcn = evaluation_fcns{indx(i)};
   tmp_normalization_fcn = normalization_fcns{indx(i)};
@@ -138,7 +138,7 @@ norm_constant_is_negative = false(size(mosaic));
 
 for i=1:nbr_of_neurons
   
-  debug_printout(' ... ', mfilename, 'neuron = ', i, nbr_of_neurons);
+  sc_debug.print(' ... ', mfilename, 'neuron = ', i, nbr_of_neurons);
   
   signal = sc_load_signal(neurons(i));
   

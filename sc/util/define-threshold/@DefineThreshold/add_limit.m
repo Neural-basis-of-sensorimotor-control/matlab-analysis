@@ -22,9 +22,10 @@ end
 
 n = length(obj.x) + 1;
 
-obj.x(n) = x_;
-obj.y_upper(n) = y_ + dy;
-obj.y_lower(n) = y_ - dy;
+obj.x(n)                = x_;
+obj.y_upper(n)          = y_ + dy;
+obj.y_lower(n)          = y_ - dy;
+obj.has_unsaved_changes = true;
 
 plot_single_limit(obj, n);
 

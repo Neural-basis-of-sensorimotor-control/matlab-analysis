@@ -42,17 +42,22 @@ end
 addpath(genpath(fileparts(mfilename('fullpath'))));
 
 if numel(varargin) && strcmpi(varargin{1},'-addpath')
+  
   return
+
 elseif numel(varargin) && strcmpi(varargin{1},'-eeg')
+
   gui = Eeg;
   return
+
 end
 
-if ~sc_version_check
+if ~sc_version_check()
   return
 end
 
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
+
 close_viewer()
 
 if viewer_is_running()

@@ -8,10 +8,10 @@ if nargin < 3
   h_figures = [];
 end
 
+str_properties = ScPairedSpThPoints.get_properties([2 6 9]);
+
 if create_figures
-   
-  str_properties = ScPairedSpThPoints.get_properties();
-  
+     
   for i_neuron_pair_indx=1:length(str_properties)
     
     h_fig     = incr_fig_indx();
@@ -76,6 +76,14 @@ if create_figures
     ylabel('Subcortical depth (mm)')
     grid on
     
+    h_axes = subplot(3, 3, 8);
+    set(h_axes, 'Parent', h_fig);
+    hold(h_axes, 'on')
+    title(h_axes, [str_title ': normalized height'], 'Interpreter', 'None')
+    xlabel('Normalized frequency')
+    ylabel('Subcortical depth (mm)')
+    grid on
+    
   end
   
 end
@@ -91,24 +99,25 @@ end
 
 depths = paired_parse_for_subcortical_depth(neuron);
 
-if strcmp(neuron.protocol_signal_tag, 'patch')
+if strcmp(neuron.protocol_signal_tag, 'patch') || strcmp(neuron.protocol_signal_tag, 'patch1')
   depth = depths.depth1;
 elseif strcmp(neuron.protocol_signal_tag, 'patch2')
   depth = depths.depth2;
+else
+  error('Unknown tag: %s', neuron.protocol_signal_tag);
 end
 
 for i_neuron_pair_indx=1:2
   
   tag =  [neuron.file_tag ' - ' neuron.template_tag{i_neuron_pair_indx}];
-  
-  str_properties = ScPairedSpThPoints.get_properties();
-  
+    
   for i_property=1:length(str_properties)
     
     figure(h_figures(i_property))
     
     [onset, height, leading_flank_width, leading_flank_height, ...
-      trailing_flank_width, trailing_flank_height, peak_position] = ...
+      trailing_flank_width, trailing_flank_height, peak_position, ...
+      normalized_height] = ...
       neuron.compute_all_distances(str_properties{i_property}, i_neuron_pair_indx);
     
     if isempty(onset)
@@ -141,6 +150,10 @@ for i_neuron_pair_indx=1:2
     
     subplot(3, 3, 7)
     plot(peak_position, -depth, 'Marker', '+', 'MarkerSize', 12, 'LineWidth', 2, ...
+      'Tag', tag)
+    
+    subplot(3, 3, 8)
+    plot(normalized_height, -depth, 'Marker', '+', 'MarkerSize', 12, 'LineWidth', 2, ...
       'Tag', tag)
     
   end

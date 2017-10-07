@@ -12,7 +12,7 @@ table_neurons = {neurons.file_tag};
 
 indx = nan(size(old_tick_labels));
 
-new_tick_labels = cell(size(indx));
+new_tick_labels = old_tick_labels;%cell(size(indx));
 
 if any(arrayfun(@(x) any(cellfun(@(y) strcmp(x, y), table_neurons)), old_tick_labels))
   
@@ -32,6 +32,12 @@ elseif any(arrayfun(@(x) any(cellfun(@(y) strcmp(x, y), table_stims)), old_tick_
   
   for i=1:length(indx)
     new_tick_labels(i) = {sprintf('Stimulation %d', indx(i))};  
+  end
+  
+elseif any(arrayfuyn(@(x) any(cellfun(@(y) startswith(x, y), table_patterns)), old_tick_labels))
+  
+  for i=1:length(new_tick_labels)
+    new_tick_labels(i) = {sprintf('Pattern %d')};
   end
   
 else

@@ -24,6 +24,10 @@ hold on
 
 h_figure.Name = obj.neuron.file_tag;
 
+[freq_hist, bintimes] = sc_perifreq(t1, t2, pretrigger, posttrigger, 10*binwidth);
+
+bar(bintimes, freq_hist);
+
 sc_kernelhist(obj.h_axes, t1, t2, pretrigger, posttrigger, kernelwidth, binwidth);
 [~, ~, h_plot] = sc_kernelhist(t1, t2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
 set(h_plot, 'LineWidth', 2);
@@ -61,8 +65,8 @@ for i=1:length(str_properties)
   
 end
 
-h_legend = add_legend(obj.h_axes);
-set(h_legend, 'InterPreter', 'None');
+%h_legend = add_legend(obj.h_axes);
+%set(h_legend, 'InterPreter', 'None');
 
 title(obj.h_axes, [obj.neuron.file_tag ' ' num2str(obj.neuron_pair_indx) ' (2), ' ...
   obj.neuron.template_tag{obj.neuron_pair_indx} ' [' num2str(length(t1)) '], ' ...

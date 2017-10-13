@@ -29,18 +29,18 @@ end
 sweeps_contain_spike = paired_match_template(signal, sweeps, sweep_times, t_spike_range, neuron.artifact_tag);
 
 xpsp_sweeps         = sweeps(:, sweeps_contain_xpsp & ~sweeps_contain_spike);
-%spike_sweeps        = sweeps(:, sweeps_contain_spike);
+spike_sweeps        = sweeps(:, sweeps_contain_spike);
 antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
 
-[mean_xpsp, median_xpsp, confidence_width_xpsp] = ...
+[mean_xpsp, median_xpsp, ~] = ...
   get_mean(xpsp_sweeps);
-% [mean_spike, median_spike, ~] = ...
-%   get_mean(spike_sweeps);
-[mean_antiselected, median_antiselected, confidence_width_antiselected] = ...
+[mean_spike, median_spike, ~] = ...
+  get_mean(spike_sweeps);
+[mean_antiselected, median_antiselected, ~] = ...
   get_mean(antiselected_sweeps);
 
 
-fig = incr_fig_indx();
+incr_fig_indx();
 clf
 
 colors = varycolor(6);
@@ -48,42 +48,42 @@ colors = varycolor(6);
 legend_str = {
   ['Mean   (EPSP), N = ' num2str(size(xpsp_sweeps, 2))]
   'Median (EPSP)'
-%   ['Mean   (dendritic spike), N = ' num2str(size(spike_sweeps, 2))]
-%   'Median (dendritic spike)'
+  ['Mean   (dendritic spike), N = ' num2str(size(spike_sweeps, 2))]
+  'Median (dendritic spike)'
   ['Mean   (antiselected), N = ' num2str(size(antiselected_sweeps, 2))]
   'Median (antiselected)'
   };
 
-% %ax1 = subplot(211);
-% ax1 = gca;
-% neuron.add_load_signal_menu(ax1, neuron.template_tag{1});
-% 
-% hold on
-% 
-% plot(sweep_times, mean_xpsp,   'LineStyle', '-',  'LineWidth', 2, 'Color', colors(1, :))
-% plot(sweep_times, median_xpsp, 'LineStyle', '--', 'LineWidth', 2, 'Color', colors(2, :))
-% 
-% %plot(sweep_times, mean_spike,   'LineStyle', '-',  'Color', colors(3, :))
-% %plot(sweep_times, median_spike, 'LineStyle', '--', 'Color', colors(4, :))
-% 
-% plot(sweep_times, mean_antiselected,   'LineStyle', '-',   'Color', colors(5, :))
-% plot(sweep_times, median_antiselected, 'LineStyle', '--',  'Color', colors(6, :))
-% 
-% legend(legend_str);
-% 
+ax1 = subplot(211);
+
+neuron.add_load_signal_menu(ax1, neuron.template_tag{1});
+
+hold on
+
+plot(sweep_times, mean_xpsp,   'LineStyle', '-',  'LineWidth', 2, 'Color', colors(1, :))
+plot(sweep_times, median_xpsp, 'LineStyle', '--', 'LineWidth', 2, 'Color', colors(2, :))
+
+plot(sweep_times, mean_spike,   'LineStyle', '-',  'Color', colors(3, :))
+plot(sweep_times, median_spike, 'LineStyle', '--', 'Color', colors(4, :))
+
+plot(sweep_times, mean_antiselected,   'LineStyle', '-',   'Color', colors(5, :))
+plot(sweep_times, median_antiselected, 'LineStyle', '--',  'Color', colors(6, :))
+
+legend(legend_str);
+
 title_str = sprintf('%s - %s (%s) comment: %s', neuron.file_tag, neuron.signal_tag, neuron.template_tag{1}, neuron.comment);
-% 
-% title(title_str, 'Interpreter', 'none');
-% 
-% xlabel('time [s]')
-% ylabel('voltage [mV]');
-% 
-% grid on
+
+title(title_str, 'Interpreter', 'none');
+
+xlabel('time [s]')
+ylabel('voltage [mV]');
+
+grid on
 
 fig = incr_fig_indx();
 clf
-%ax2 = subplot(212);
-ax2 = gca;
+ax2 = subplot(212);
+
 neuron.add_load_signal_menu(ax2, neuron.template_tag{1});
 
 hold on
@@ -111,13 +111,12 @@ title(title_str, 'Interpreter', 'none');
 xlabel('time [s]')
 ylabel('voltage [mV]');
 
-%grid on
+grid on
 
-%linkaxes([ax1 ax2], 'x')
+linkaxes([ax1 ax2], 'x')
 
 fig.Name = title_str;
 
-return
 [v_single, v_first, v_second, v_middle] = paired_detect_double_trigger(...
   signal, xpsp_sweeps, sweep_times, neuron.template_tag{1}, max_isi_double_trigger);
 

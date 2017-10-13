@@ -31,24 +31,24 @@ for i_paired_neuron=1:length(neurons)
     
     counter = 0;
     
-    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_prespike_response', i_neuron);
     
-    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_perispike_response', i_neuron);
     
-    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_postspike_response', i_neuron);
     
-    tmp_values = [normalized_height; leading_flank_width; trailing_flank_width; peak_position];
+    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
@@ -63,16 +63,18 @@ for i_paired_neuron=1:length(neurons)
 
 end
 
-mean_values = mean(values, 2);
+mean_values = mean(abs(values), 2);
 values      = values ./ repmat(mean_values, 1, nbr_of_neurons);
 
 d = pdist(values');
 y = cmdscale(d, 2);
 
+incr_fig_indx()
+
 clf
 plot_mda(y, legend_str, markers, right_click_fcns);
 
-add_legend
+%add_legend
 
 end
 

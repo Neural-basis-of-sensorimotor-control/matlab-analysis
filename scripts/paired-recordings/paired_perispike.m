@@ -1,10 +1,12 @@
 function paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
   min_stim_latency, max_stim_latency)
+%paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
+%  min_stim_latency, max_stim_latency)
 
 if length(neuron) ~= 1
   
   vectorize_fcn(@paired_perispike, neuron, pretrigger, posttrigger, kernelwidth, ...
-  min_stim_latency, max_stim_latency);
+    min_stim_latency, max_stim_latency);
   
   return
   
@@ -63,19 +65,58 @@ linkaxes(h_axes)
 neuron.add_load_signal_menu([h1 h3 h5], neuron.template_tag{1});
 neuron.add_load_signal_menu([h2 h4 h6], neuron.template_tag{2});
 
+incr_fig_indx()
+clf
+
+subplot(211)
+plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{1}], 'all');
+plot_perispike(spiketimes1_stim, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], 'stim');
+plot_perispike(spiketimes1_spont, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], 'spont');
+add_legend();
+
+title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{2} ' triggered: ' neuron.template_tag{1}];
+title(gca, title_str);
+
+subplot(212)
+plot_perispike(spiketimes2, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{2}], 'all');
+plot_perispike(spiketimes2_stim, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], 'stim');
+plot_perispike(spiketimes2_spont, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], 'spont');
+add_legend();
+
+title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{2} ' triggered: ' neuron.template_tag{1}];
+title(gca, title_str);
+
 end
 
 
-function plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth, str_title)
+function plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, str_title, tag)
 
 hold on
-sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth);
-[~, ~, h_plot] = sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
-set(h_plot, 'LineWidth', 2, 'Color', 'b');
-title(sprintf('%s N = %d', str_title, length(spiketimes1)));
-ylabel('Freq [Hz]')
-xlabel('Time [s]')
-grid on
+
+if ~exist('tag', 'var')
+  sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth);
+end
+
+[~, ~, h_plot_2] = sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
+set(h_plot_2, 'LineWidth', 2, 'Color', 'b');
+
+if ~isempty(str_title)
+  title(sprintf('%s N = %d', str_title, length(spiketimes1)));
+  ylabel('Freq [Hz]')
+  xlabel('Time [s]')
+  grid on
+end
+
+if exist('tag', 'var')
+  set(h_plot_2, 'Tag', tag);
+end
 
 end
 

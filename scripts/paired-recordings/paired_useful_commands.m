@@ -1,8 +1,47 @@
 clear
 close all
 reset_fig_indx()
+paired_setup
+indx1 = find(cellfun(@(x) strcmp(x, 'DGNR0005'), {ec_neurons.file_tag}));
+indx2 = find(cellfun(@(x) strcmp(x, 'CNNR0009'), {ec_neurons.file_tag}));
+x = NeuronBrowserClickRecorder(ec_neurons([indx1 indx2]));
+x.plot_neuron
+mxfigs
+return
+
+% clear
+% close all
+% reset_fig_indx()
+% paired_load_settings
+% paired_load_constants
+% paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
+% mxfigs
+% 
+% return
+
+clear
+close all
+reset_fig_indx()
+paired_load_settings
 paired_load_constants
+paired_plot_depth(ec_neurons);
 paired_mds(ec_neurons);
+mxfigs
+
+add_legend(get_all_figures(), true)
+
+plots = get_plots(get_all_figures());
+
+for i=1:length(plots)
+  set(plots(i), 'LineWidth', 2);
+end
+
+ax = get_axes(get_all_figures());
+
+for i=1:length(ax)
+  set(ax(i), 'FontSize', 12);
+end
+
 return
 
 

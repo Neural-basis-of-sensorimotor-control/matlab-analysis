@@ -1,5 +1,6 @@
 function paired_plot_depth(neuron, create_figures, h_figures)
-
+% paired_plot_depth(neuron)
+ 
 if nargin < 2
   create_figures = true;
 end
@@ -91,7 +92,7 @@ end
 if length(neuron) ~= 1
   
   vectorize_fcn(@paired_plot_depth, neuron, false, h_figures);
-  add_legend(h_figures, true);
+  %add_legend(h_figures, true);
   
   return
   
@@ -109,7 +110,7 @@ end
 
 for i_neuron_pair_indx=1:2
   
-  tag =  [neuron.file_tag ' - ' neuron.template_tag{i_neuron_pair_indx}];
+  tag = neuron.file_tag;%[neuron.file_tag ' - ' neuron.template_tag{i_neuron_pair_indx}];
     
   for i_property=1:length(str_properties)
     

@@ -14,31 +14,31 @@ p_intra_stimulation = nan(size(stims));
 properties = {'height', 'latency', 'width'};
 
 if plot_only_final_figures
-  indx = 1;
+  indx_property = 1;
 else
-  indx = 1:length(properties);
+  indx_property = 1:length(properties);
 end
 
-for i_=1:length(indx)
+for i_=1:length(indx_property)
   
-  i = indx(i_);
+  i_property = indx_property(i_);
   
-  sc_debug.print(mfilename, ' a ', i_, length(indx));
+  sc_debug.print(mfilename, ' a ', i_, length(indx_property));
   
-  property = properties{i};
+  property = properties{i_property};
   
-  for j=1:length(neurons)
+  for i_neuron=1:length(neurons)
     
-    neuron = neurons(j);
+    neuron = neurons(i_neuron);
     signal = sc_load_signal(neuron);
     amplitudes = get_items(signal.amplitudes.list, 'tag', stims);
     
     tags = [];
     data = [];
     
-    for k=1:length(amplitudes)
+    for i_amplitude=1:length(amplitudes)
       
-      amplitude = amplitudes(k);
+      amplitude = amplitudes(i_amplitude);
       
       if ~amplitude.intra_is_significant_response(height_limit, min_epsp_nbr)
         continue
@@ -77,7 +77,7 @@ for i_=1:length(indx)
       end
     end
     
-    [p_intra_neuron(j), ~, stats] = anova1(data, tags, displayopt);
+    [p_intra_neuron(i_neuron), ~, stats] = anova1(data, tags, displayopt);
     
     if ~plot_only_final_figures
       
@@ -136,20 +136,20 @@ for i_=1:length(indx)
 end
 
 
-for i=1:length(properties)
+for i_property=1:length(properties)
   
-  sc_debug.print(mfilename, ' b ', i, length(properties));
+  sc_debug.print(mfilename, ' b ', i_property, length(properties));
   
-  property = properties{i};
+  property = properties{i_property};
   
-  for j=1:length(stims)
+  for i_neuron=1:length(stims)
     
-    stim = stims{j};
+    stim = stims{i_neuron};
     tags = [];
     data = [];
     
-    for k=1:length(neurons)
-      neuron = neurons(k);
+    for i_amplitude=1:length(neurons)
+      neuron = neurons(i_amplitude);
       signal = sc_load_signal(neuron);
       amplitude = get_items(signal.amplitudes.list, 'tag', stim);
       
@@ -181,7 +181,7 @@ for i=1:length(properties)
       end
     end
     
-    [p_intra_stimulation(j), ~, stats] = anova1(data, tags, displayopt);
+    [p_intra_stimulation(i_neuron), ~, stats] = anova1(data, tags, displayopt);
     
     if ~plot_only_final_figures
       

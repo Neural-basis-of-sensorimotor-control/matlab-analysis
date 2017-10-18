@@ -1,6 +1,5 @@
 clear
 close all
-reset_fig_indx()
 sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
 
 intra_load_settings

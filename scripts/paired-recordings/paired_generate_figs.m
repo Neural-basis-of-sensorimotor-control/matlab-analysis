@@ -13,6 +13,8 @@ paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_m
 
 paired_plot_depth(ec_neurons);
 
+paired_mds(ec_neurons);
+
 if ~plot_only_final_figures
   paired_conditional_isi(ec_neurons, ec_min_stim_latency, ec_max_stim_latency, isi_min_spike_latency, isi_max_spike_latency, isi_kernelwidth, isi_tmax)
 end

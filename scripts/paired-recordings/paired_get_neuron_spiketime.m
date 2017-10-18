@@ -35,11 +35,7 @@ enc_spiketimes = cell(size(template_tag));
 for i=1:length(template_tag)
   
   waveform = get_item(waveforms, template_tag{i});
-  try
   waveform.sc_loadtimes();
-  catch
-    iii = -1
-  end
   
   enc_waveforms(i)  = {waveform};
   enc_spiketimes(i) = {waveform.gettimes(neuron.tmin, neuron.tmax)};

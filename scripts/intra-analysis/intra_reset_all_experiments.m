@@ -43,7 +43,7 @@ function update_filtering_template_amplitude(neurons, response_min, response_max
 
 for i=1:length(neurons)
   
-  fprintf('%d out of %d\n', i, length(neurons));
+  sc_debug.print(i, length(neurons));
   
   neuron = neurons(i);
   
@@ -85,14 +85,14 @@ function update_amplitude_parent_userdata(only_epsps, neurons, stims_str, electr
 
 for i=1:length(electrodes)
   
-  fprintf('%d (%d)\n', i, length(electrodes));
+  sc_debug.print(i, length(electrodes));
   
   electrode = electrodes{i};
   indx = find(cellfun(@(x) ~isempty(regexp(x, electrode, 'once')), stims_str));
   
   for j=1:length(neurons)
     
-    fprintf('\t%d (%d)\n', j, length(neurons));
+    sc_debug.print(j, length(neurons));
     
     neuron = neurons(j);
     signal = sc_load_signal(neuron);
@@ -106,6 +106,7 @@ for i=1:length(electrodes)
       amplitude = get_items(signal.amplitudes.cell_list, 'tag', stim);
       
       if only_epsps
+        
         heights = amplitude.height;
         
         if isempty(heights>0)

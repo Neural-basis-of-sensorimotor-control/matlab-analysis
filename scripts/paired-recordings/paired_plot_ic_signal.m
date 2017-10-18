@@ -152,6 +152,8 @@ plot(sweep_times, mean_second,                             'LineStyle', '-',   '
 plot(sweep_times, mean_second + confidence_width_second,   'LineStyle', '-',  'LineWidth', 1, 'Tag', tag)
 plot(sweep_times, mean_second - confidence_width_second,   'LineStyle', '-',  'LineWidth', 1, 'Tag', tag)
 
+title(neuron.file_tag)
+
 add_legend
 
 end

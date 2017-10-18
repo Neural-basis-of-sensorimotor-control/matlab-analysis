@@ -6,7 +6,7 @@ response_range = max_latency - min_latency;
 
 for i=1:length(patterns_str)
 
-  fprintf('Processing %d out of %d patterns\n', i, length(patterns_str));
+  sc_debug.print(sprintf('Processing %d out of %d patterns\n', i, length(patterns_str)));
   
   nbr_of_automatic_detections = 0;
   nbr_of_time_intervals = 0;

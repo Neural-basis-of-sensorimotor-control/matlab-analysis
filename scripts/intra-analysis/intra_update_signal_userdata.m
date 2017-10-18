@@ -3,7 +3,9 @@ function intra_update_signal_userdata(neurons, only_epsp)
 sc_dir = sc_settings.get_default_experiment_dir();
 
 for i=1:length(neurons)
-  fprintf('%d out of %d\n', i, length(neurons));
+  
+  sc_debug.print(i, length(neurons));
+  
   tmp_neuron = neurons(i);
   signal = sc_load_signal(tmp_neuron);
   
@@ -20,6 +22,7 @@ for i=1:length(neurons)
     single_stims_str = get_single_amplitudes(num2str(j));
     
     for k=1:length(single_stims_str)
+      
       single_str = single_stims_str{k};
       
       if list_contains(signal.amplitudes.cell_list, 'tag', single_str)
@@ -28,8 +31,8 @@ for i=1:length(neurons)
         
         if ~only_epsp || any(single_pulse.height > 0)
          
-          avg_height = [avg_height; single_pulse.height];
-          avg_width = [avg_width; single_pulse.width];
+          avg_height  = [avg_height; single_pulse.height];
+          avg_width   = [avg_width; single_pulse.width];
           avg_latency = [avg_latency; single_pulse.latency];
         
         end

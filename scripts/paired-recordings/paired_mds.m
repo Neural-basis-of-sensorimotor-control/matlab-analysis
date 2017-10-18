@@ -74,8 +74,6 @@ incr_fig_indx()
 clf
 plot_mda(y, legend_str, markers, right_click_fcns);
 
-%add_legend
-
 end
 
 

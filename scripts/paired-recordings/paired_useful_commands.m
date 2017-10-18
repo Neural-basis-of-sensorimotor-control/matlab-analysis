@@ -1,13 +1,25 @@
-clear
-close all
-reset_fig_indx()
-paired_setup
-indx1 = find(cellfun(@(x) strcmp(x, 'DGNR0005'), {ec_neurons.file_tag}));
-indx2 = find(cellfun(@(x) strcmp(x, 'CNNR0009'), {ec_neurons.file_tag}));
-x = NeuronBrowserClickRecorder(ec_neurons([indx1 indx2]));
-x.plot_neuron
-mxfigs
-return
+% clear
+% close all
+% reset_fig_indx()
+% paired_setup
+% paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
+% 
+% 
+% figs = get_all_figures(); for i=1:length(figs), figure(figs(i)); set(gca, 'FontSize', 12), end
+% figs = get_all_figures(); for i=1:length(figs), figure(figs(i)); grid(gca, 'on'), end
+% figs = get_all_figures(); for i=1:length(figs), figure(figs(i)); xlim(gca, [-2e-3 8e-3]), end
+% 
+% return
+% clear
+% close all
+% reset_fig_indx()
+% paired_setup
+% indx1 = find(cellfun(@(x) strcmp(x, 'DGNR0005'), {ec_neurons.file_tag}));
+% indx2 = find(cellfun(@(x) strcmp(x, 'CNNR0009'), {ec_neurons.file_tag}));
+% x = NeuronBrowserClickRecorder(ec_neurons([indx1 indx2]));
+% x.plot_neuron
+% mxfigs
+% return
 
 % clear
 % close all
@@ -18,24 +30,33 @@ return
 % mxfigs
 % 
 % return
+% 
+% clear
+% close all
+% reset_fig_indx()
+% paired_load_settings
+% paired_load_constants
+% paired_plot_depth(ec_neurons);
+% paired_mds(ec_neurons);
+% mxfigs
+% 
+% add_legend(get_all_figures(), true)
+% 
+% plots = get_plots(get_all_figures());
+% 
+% for i=1:length(plots)
+%   set(plots(i), 'LineWidth', 2);
+% end
+% 
+
+
+
 
 clear
 close all
 reset_fig_indx()
-paired_load_settings
 paired_load_constants
-paired_plot_depth(ec_neurons);
-paired_mds(ec_neurons);
-mxfigs
-
-add_legend(get_all_figures(), true)
-
-plots = get_plots(get_all_figures());
-
-for i=1:length(plots)
-  set(plots(i), 'LineWidth', 2);
-end
-
+paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency, ic_double_trigger_isi);
 ax = get_axes(get_all_figures());
 
 for i=1:length(ax)
@@ -43,12 +64,6 @@ for i=1:length(ax)
 end
 
 return
-
-
-% clear
-% close all
-% reset_fig_indx()
-% paired_load_constants
 % %result = paired_vpd(ec_neurons(1:2), vpd_cost, vpd_time_range);
 % %paired_perispike_summary(ec_neurons);
 % paired_plot_depth(ec_neurons)

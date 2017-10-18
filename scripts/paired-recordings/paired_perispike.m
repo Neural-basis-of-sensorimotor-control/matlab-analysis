@@ -1,12 +1,12 @@
 function paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
-  min_stim_latency, max_stim_latency)
+  min_stim_latency, max_stim_latency, max_double_spike_isi)
 %paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
 %  min_stim_latency, max_stim_latency)
 
 if length(neuron) ~= 1
   
   vectorize_fcn(@paired_perispike, neuron, pretrigger, posttrigger, kernelwidth, ...
-    min_stim_latency, max_stim_latency);
+    min_stim_latency, max_stim_latency, max_double_spike_isi);
   
   return
   
@@ -26,6 +26,12 @@ stim_times = cell2mat(stim_times');
 [spiketimes2_stim, spiketimes2_spont] = ...
   paired_single_out_spont_spikes(spiketimes2,  stim_times, ...
   min_stim_latency, max_stim_latency);
+
+[spiketimes1_single, spiketimes1_first, spiketimes1_second, spiketimes1_middle] = ...
+  paired_ec_double_spikes(spiketimes1, max_double_spike_isi);
+
+[spiketimes2_single, spiketimes2_first, spiketimes2_second, spiketimes2_middle] = ...
+  paired_ec_double_spikes(spiketimes2, max_double_spike_isi);
 
 f = incr_fig_indx();
 clf
@@ -52,11 +58,11 @@ plot_perispike(spiketimes2_stim, spiketimes1, pretrigger, posttrigger, ...
 
 h5 = subplot(3, 2, 5);
 plot_perispike(spiketimes1_spont, spiketimes2, pretrigger, posttrigger, ...
-  kernelwidth, binwidth, ['(SPONT) ' neuron.file_tag ', trigger: ' neuron.template_tag{1}]);
+  kernelwidth, binwidth, ['(FIRST) ' neuron.file_tag ', trigger: ' neuron.template_tag{1}]);
 
 h6 = subplot(3, 2, 6);
 plot_perispike(spiketimes2_spont, spiketimes1, pretrigger, posttrigger, ...
-  kernelwidth, binwidth, ['(SPONT) ' neuron.file_tag ', trigger: ' neuron.template_tag{2}]);
+  kernelwidth, binwidth, ['(SE) ' neuron.file_tag ', trigger: ' neuron.template_tag{2}]);
 
 h_axes = [h1 h2 h3 h4 h5 h6];
 
@@ -64,6 +70,37 @@ linkaxes(h_axes)
 
 neuron.add_load_signal_menu([h1 h3 h5], neuron.template_tag{1});
 neuron.add_load_signal_menu([h2 h4 h6], neuron.template_tag{2});
+
+f = incr_fig_indx();
+clf
+
+title_str = [neuron.file_tag ' ' neuron.template_tag{1} ' ' neuron.template_tag{2}];
+
+f.Name = title_str;
+
+subplot(211)
+plot_perispike(spiketimes1_single, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{1}], ...
+  ['single N = ' num2str(length(spiketimes1))]);
+plot_perispike(spiketimes1_first, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['first N = ' num2str(length(spiketimes1_first))]);
+plot_perispike(spiketimes1_second, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['second N = ' num2str(length(spiketimes1_second))]);
+plot_perispike(spiketimes1_middle, spiketimes2, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['middle N = ' num2str(length(spiketimes1_middle))]);
+add_legend();
+
+subplot(212)
+plot_perispike(spiketimes2_single, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{2}], ...
+  ['single N = ' num2str(length(spiketimes2))]);
+plot_perispike(spiketimes2_first, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['first N = ' num2str(length(spiketimes2_first))]);
+plot_perispike(spiketimes2_second, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['second N = ' num2str(length(spiketimes2_second))]);
+plot_perispike(spiketimes2_middle, spiketimes1, pretrigger, posttrigger, ...
+  kernelwidth, binwidth, [], ['middle N = ' num2str(length(spiketimes2_middle))]);
+add_legend();
 
 incr_fig_indx()
 clf

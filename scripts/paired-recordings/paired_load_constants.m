@@ -18,7 +18,7 @@ ic_pretrigger         = -.04;
 ic_posttrigger        = .05;
 ic_t_epsp_range       = [.0005 .002];
 ic_t_spike_range      = [0 .002];
-ic_double_trigger_isi = .04;
+ic_double_trigger_isi = .01;
 
 % Initialize
 ec_neurons     = paired_get_extra_neurons();

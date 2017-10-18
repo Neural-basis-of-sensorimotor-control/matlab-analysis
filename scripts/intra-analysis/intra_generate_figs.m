@@ -14,7 +14,7 @@ end
 intra_make_mosaic(neurons, [], height_limit, min_nbr_epsp, @jet, plot_only_final_figures);
 intra_make_amplitude_maximal_dimensions(neurons, height_limit, min_nbr_epsp, plot_only_final_figures);
 intra_test_statistic_significance_mosaic(neurons, only_epsps, height_limit, min_nbr_epsp, plot_only_final_figures);
-return
+
 %Generate figure 5
 intra_single_stim_response_in_pattern(neurons, response_min, response_max, plot_only_final_figures);
 

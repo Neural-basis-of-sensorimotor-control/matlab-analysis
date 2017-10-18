@@ -16,11 +16,16 @@ classdef IntraAmplitudeViewer < handle
     
     
     function next_intra(obj)
+     
       current_amplitude = obj.amplitude;
       str = get_intra_motifs();
       indx = sc_cellfind(str, current_amplitude.tag);
-      indx = mod(indx, length(str)) + 1
+      indx = mod(indx, length(str)) + 1;
+      
+      fprintf('amplitude indx = %d\n', indx);
+      
       obj.set_intra(indx);
+    
     end
     
     

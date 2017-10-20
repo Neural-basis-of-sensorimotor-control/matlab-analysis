@@ -11,7 +11,7 @@ for i=1:length(neurons)
   
   mds_fig = incr_fig_indx();
   clf(mds_fig, 'reset')
-  set_counter(0);
+  sc_counter.add_counter([], 0);
   
   %   pca_fig = incr_fig_indx();
   %   clf(pca_fig, 'reset')
@@ -57,7 +57,7 @@ for i=1:length(neurons)
       if size(responses, 1) >= 10
       %if ~isempty(responses)
         
-        sc_square_subplot(max([get_counter() 20]), increment_counter());
+        sc_square_subplot(max([sc_counter.get_count([]) 20]), sc_counter.increment([]));
         title(sprintf('%s: %s N = %d - 1', neuron.file_tag, pattern, ...
           length(amplitudes)));
       

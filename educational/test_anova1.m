@@ -1,4 +1,5 @@
 clear
+close
 n = 1000;
 
 x = rand(n, 1);
@@ -12,7 +13,10 @@ end
 for i=(n/2):2:n
   tag(i) = {char(i)};
   tag(i+1) = {char(i)};
+  x(i) = x(i);
 end
+
+x(n) = x(n) + 10;
 
 tag = tag(1:length(x));
 

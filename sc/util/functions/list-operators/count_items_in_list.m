@@ -5,9 +5,12 @@ if nargin>1
 end
 
 if ischar(list)
+  
   unique_vals = list;
   counts = 1;
+
 else
+  
   unique_vals = unique(list);
 
   counts = nan(size(unique_vals));

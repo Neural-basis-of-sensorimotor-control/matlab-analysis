@@ -4,6 +4,7 @@ function intra_compare_simulated_to_measured_multinomial_distribution(neuron, ..
 
 sc_print.set_mode(true);
  
+nbr_of_simulations    = 1e3;
 stims_str = get_intra_motifs();
 
 if nargin < 4
@@ -23,13 +24,13 @@ if nargin < 5
   set(gca, 'YTick', 1:length(neuron), 'YTickLabel', {neuron.file_tag});
   xlabel('Euclidean distance')
   ylabel('Neuron')
-  title(sprintf('Pattern: %s, electrode: %s, nbr of stimulations: %d', stim_pulse.pattern, ...
-    stim_pulse.electrode, stim_pulse.electrode_count));
+  title(sprintf('Pattern: %s, electrode: %s, nbr of stimulations: %d, nbr of simulations: %d', stim_pulse.pattern, ...
+    stim_pulse.electrode, stim_pulse.electrode_count, nbr_of_simulations));
   grid on
   
   sc_print.print(stim_pulse.pattern, stim_pulse.electrode, ...
     stim_pulse.electrode_count);
-  set_counter(0);
+  sc_counter.add_counter([], 0);
 
 end
 
@@ -41,15 +42,13 @@ if length(neuron) ~= 1
   
 end
 
-increment_counter();
+sc_counter.increment([])
 normalize = true;
 
 pattern_str           = stim_pulse.pattern;
 electrode_str         = stim_pulse.electrode;
 tmp_stims             = get_items(stims_str, @get_pattern, pattern_str);
 tmp_stims             = get_items(tmp_stims, @get_electrode, electrode_str);
-
-nbr_of_simulations    = 1e4;
 
 [measured_distribution, measured_permutations, nbr_of_positives, ...
   avg_response_rate, ~, response_profiles] = ...
@@ -62,7 +61,7 @@ d_measured         = sqrt(sum((ideal_distribution - measured_distribution).^2));
 n_measured_further_away_than_shuffled = 0;
 n_measured_closer_than_shuffled = 0;
 
-plot(d_measured*[1 1], get_counter() + [-.5 .5]);
+plot(d_measured*[1 1], sc_counter.get_count([]) + [-.5 .5], 'LineWidth', 2);
 
 for i=1:nbr_of_simulations
     
@@ -71,7 +70,7 @@ for i=1:nbr_of_simulations
   
   d_shuffled = sqrt(sum((ideal_distribution - shuffled_distribution).^2));
   
-  plot(d_shuffled, get_counter(), 'k.');
+  plot(d_shuffled, sc_counter.get_count([]), 'k.');
   
   if d_measured > d_shuffled
     

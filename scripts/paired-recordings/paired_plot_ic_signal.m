@@ -20,7 +20,8 @@ for i=1:size(sweeps, 2)
   sweeps(:,i) = sweeps(:,i) - sweeps(zero_ind, i);
 end
 
-sweeps_contain_xpsp  = paired_match_template(signal, sweeps, sweep_times, t_epsp_range, neuron.xpsp_tag);
+[sweeps_contain_xpsp, mean_latency, std_latency, mean_amplitude, std_amplitude] ...
+  = paired_match_template(signal, sweeps, sweep_times, t_epsp_range, neuron.xpsp_tag);
 
 if isempty(neuron.xpsp_tag)
   sweeps_contain_xpsp = true(size(sweeps_contain_xpsp));
@@ -32,12 +33,12 @@ xpsp_sweeps         = sweeps(:, sweeps_contain_xpsp & ~sweeps_contain_spike);
 spike_sweeps        = sweeps(:, sweeps_contain_spike);
 antiselected_sweeps = sweeps(:, ~sweeps_contain_xpsp & ~sweeps_contain_spike);
 
-[mean_xpsp, median_xpsp, ~] = ...
-  get_mean(xpsp_sweeps);
-[mean_spike, median_spike, ~] = ...
-  get_mean(spike_sweeps);
-[mean_antiselected, median_antiselected, ~] = ...
-  get_mean(antiselected_sweeps);
+sc_print.print(signal.parent.tag, size(xpsp_sweeps, 2), size(antiselected_sweeps, 2), size(spike_sweeps, 2));
+sc_print.print(mean_latency, std_latency, mean_amplitude, std_amplitude);
+
+[mean_xpsp, median_xpsp, ~]                 = get_mean(xpsp_sweeps);
+[mean_spike, median_spike, ~]               = get_mean(spike_sweeps);
+[mean_antiselected, median_antiselected, ~] = get_mean(antiselected_sweeps);
 
 
 incr_fig_indx();

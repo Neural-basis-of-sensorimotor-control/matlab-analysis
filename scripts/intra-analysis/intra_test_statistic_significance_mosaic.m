@@ -9,8 +9,6 @@ dim = size(neurons);
 p_intra_neuron      = nan(dim);
 p_intra_stimulation = nan(size(stims));
 
-%p_shuffled_inter_stimulation = nan(dim);
-
 properties = {'height', 'latency', 'width'};
 
 if plot_only_final_figures
@@ -19,11 +17,11 @@ else
   indx_property = 1:length(properties);
 end
 
-for i_=1:length(indx_property)
+for i=1:length(indx_property)
   
-  i_property = indx_property(i_);
+  i_property = indx_property(i);
   
-  sc_debug.print(mfilename, ' a ', i_, length(indx_property));
+  sc_debug.print(mfilename, ' a ', i, length(indx_property));
   
   property = properties{i_property};
   

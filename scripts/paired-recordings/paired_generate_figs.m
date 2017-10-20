@@ -7,10 +7,9 @@ paired_setup
 
 % Figure 1 + 4 Spike-triggered histogram (SpTH) for paired neurons
 
-paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency);
+paired_perispike(ec_neurons, ec_pretrigger, ec_posttrigger, ec_kernelwidth, ec_min_stim_latency, ec_max_stim_latency, isi_min_spike_latency);
 
 % Figure 2 Parameters from figure 1 plotted vs neuron depth
-
 paired_plot_depth(ec_neurons);
 
 paired_mds(ec_neurons);
@@ -52,7 +51,7 @@ end
 % IC signal triggered on spike from paired neuron. Scaling from paired
 % neuron channel removed
 
-paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range)
+paired_plot_ic_signal(ic_neurons(7), ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
 
 if ~plot_only_final_figures
   

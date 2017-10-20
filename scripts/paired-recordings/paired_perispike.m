@@ -1,12 +1,17 @@
 function paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
   min_stim_latency, max_stim_latency, max_double_spike_isi)
 %paired_perispike(neuron, pretrigger, posttrigger, kernelwidth, ...
-%  min_stim_latency, max_stim_latency)
+% min_stim_latency, max_stim_latency)
 
 if length(neuron) ~= 1
   
+  sc_counter.reset_counter('spont', 0);
+  sc_counter.reset_counter('stim', 0);
+  
   vectorize_fcn(@paired_perispike, neuron, pretrigger, posttrigger, kernelwidth, ...
     min_stim_latency, max_stim_latency, max_double_spike_isi);
+  
+  fprintf('spont: %d, stim: %d\n', sc_counter.get_count('spont'), sc_counter.get_count('stim'))
   
   return
   
@@ -107,32 +112,48 @@ clf
 
 subplot(211)
 plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
-  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{1}], 'all');
-plot_perispike(spiketimes1_stim, spiketimes2, pretrigger, posttrigger, ...
+ kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{1}], 'all');
+stim_max = plot_perispike(spiketimes1_stim, spiketimes2, pretrigger, posttrigger, ...
   kernelwidth, binwidth, [], 'stim');
-plot_perispike(spiketimes1_spont, spiketimes2, pretrigger, posttrigger, ...
+spont_max = plot_perispike(spiketimes1_spont, spiketimes2, pretrigger, posttrigger, ...
   kernelwidth, binwidth, [], 'spont');
 add_legend();
 
 title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{2} ' triggered: ' neuron.template_tag{1}];
 title(gca, title_str);
+
+if stim_max > spont_max
+  sc_counter.increment('stim');
+  sc_print.print(stim_max/spont_max - 1);
+else
+  sc_counter.increment('spont');
+  sc_print.print(spont_max/stim_max - 1);
+end
 
 subplot(212)
 plot_perispike(spiketimes2, spiketimes1, pretrigger, posttrigger, ...
-  kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{2}], 'all');
-plot_perispike(spiketimes2_stim, spiketimes1, pretrigger, posttrigger, ...
+ kernelwidth, binwidth, [neuron.file_tag ', trigger: ' neuron.template_tag{2}], 'all');
+stim_max = plot_perispike(spiketimes2_stim, spiketimes1, pretrigger, posttrigger, ...
   kernelwidth, binwidth, [], 'stim');
-plot_perispike(spiketimes2_spont, spiketimes1, pretrigger, posttrigger, ...
+spont_max = plot_perispike(spiketimes2_spont, spiketimes1, pretrigger, posttrigger, ...
   kernelwidth, binwidth, [], 'spont');
 add_legend();
 
 title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{2} ' triggered: ' neuron.template_tag{1}];
 title(gca, title_str);
+
+if stim_max > spont_max
+  sc_counter.increment('stim');
+  sc_print.print(stim_max/spont_max - 1);
+else
+  sc_counter.increment('spont');
+  sc_print.print(spont_max/stim_max - 1);
+end
 
 end
 
 
-function plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
+function freq_max = plot_perispike(spiketimes1, spiketimes2, pretrigger, posttrigger, ...
   kernelwidth, binwidth, str_title, tag)
 
 hold on
@@ -141,8 +162,10 @@ if ~exist('tag', 'var')
   sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, kernelwidth, binwidth);
 end
 
-[~, ~, h_plot_2] = sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
+[freq, ~, h_plot_2] = sc_kernelhist(spiketimes1, spiketimes2, pretrigger, posttrigger, 10*kernelwidth, binwidth);
 set(h_plot_2, 'LineWidth', 2, 'Color', 'b');
+
+freq_max = max(freq);
 
 if ~isempty(str_title)
   title(sprintf('%s N = %d', str_title, length(spiketimes1)));

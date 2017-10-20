@@ -2,7 +2,7 @@ function list = add_to_list(list, item)
 
 if isempty(list)
   
-  if iscell(list)
+  if iscell(list) || ischar(item)
     list = {item};
   else
     list = item;

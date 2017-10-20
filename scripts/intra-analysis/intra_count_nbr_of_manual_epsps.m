@@ -102,7 +102,8 @@ for i=1:length(neurons)
     amplitude = signal.amplitudes.get('tag', stims{j});
     
     tmp_manual    = amplitude.userdata.fraction_detected >= intra_get_activity_threshold(signal);
-    tmp_automatic = nnz(amplitude.valid_data) >= 2;
+    tmp_automatic = amplitude.intra_is_significant_response(height_limit, ...
+      min_nbr_epsp);
     
     if tmp_manual && tmp_automatic
       manual_automatic = manual_automatic + 1;

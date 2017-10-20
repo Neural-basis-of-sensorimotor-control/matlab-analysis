@@ -21,12 +21,14 @@ for i_paired_neuron=1:length(neurons)
     layer = paired_get_layer(tmp_paired_neuron);
     
     switch find(cellfun(@(x) strcmp(layer, x), layer_enumeration))
+      
       case 1
         markers(col_indx)    = {'s'};
       case 2
         markers(col_indx)    = {'*'};
       otherwise
         error('Incorrect layer label');
+    
     end
     
     counter = 0;

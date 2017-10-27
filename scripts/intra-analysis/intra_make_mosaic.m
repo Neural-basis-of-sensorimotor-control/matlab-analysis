@@ -17,9 +17,9 @@ data = {
   @intra_get_nbr_of_xpsps,	                                 '# of xPSPs'	,	                                                                []	,	              'concat'	,	1	%13
   @intra_get_epsp_minus_ipsp,	                               '# of EPSPs - # of IPSPs'	,	                                                  []	,	              'concat'	,	1	%14
   @intra_get_epsp_minus_ipsp_only_negative,	                 'EPSPs - IPSPs only negative'	,	                                              []	,	              'concat'	,	1	%15
-  @(x) intra_get_epsp_amplitude_single_pulse(x, 'positive'), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
+  @(x) intra_get_epsp_amplitude_single_pulse(x, height_limit), 'Amplitude height [single pulse response = 1], only EPSPs, ''*'' = negative single pulse'	,	[]	,	'concat'	,	1	%16
   @(x) intra_get_epsp_width_single_pulse(x, 'positive'),	   'Time to peak [single pulse response = 1], only EPSPs', [], 'concat'	,	1	%17
-  @(x) intra_get_onset_latency_single_pulse(x, 'positive'),	 'Latency [single pulse response = 1], only EPSPs'	,	[]	,	              'concat'	,	1	%18
+  @(x) intra_get_onset_latency_single_pulse(x, height_limit),	 'Latency [single pulse response = 1], only EPSPs'	,	[]	,	              'concat'	,	1	%18
   @(x) intra_get_normalized_response_fraction(x, height_limit, min_epsp_nbr), 'Response fraction [spont activity = 1] ''*'' = below threshold'	,	[],        	  'concat'	,	0	%19
   @(x) intra_get_nbr_of_manual_amplitudes(x, height_limit, min_epsp_nbr), 'Number of manual amplitudes ''*'' = below threshold'	,	          [],                 'default'	,	0	%20
   };
@@ -61,7 +61,7 @@ for i=1:length(indx)
   
   tmp_titlestr = titlestr{indx(i)};
   
-  if isempty(override_colormap)
+  if ~isempty(override_colormap)
     tmp_colormap_fcn = override_colormap;
   else
     tmp_colormap_fcn = colormap_fcn{indx(i)};

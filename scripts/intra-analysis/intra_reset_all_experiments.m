@@ -1,4 +1,4 @@
-function intra_reset_all_experiments(neurons, response_min, response_max, only_epsps)
+function intra_reset_all_experiments(neurons, response_min, response_max, only_epsps, min_height)
 
 sc_dir = sc_settings.get_default_experiment_dir();
 
@@ -12,7 +12,7 @@ update_filtering_template_amplitude(neurons, response_min, response_max, sc_dir)
 
 update_amplitude_parent_userdata(only_epsps, neurons, stims_str, electrodes, sc_dir);
 
-intra_update_signal_userdata(neurons, only_epsps);
+intra_update_signal_userdata(neurons, only_epsps, min_height);
 
 end
 

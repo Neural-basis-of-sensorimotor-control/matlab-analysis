@@ -6,9 +6,10 @@ if ~input_is_cell
   old_tick_labels = {old_tick_labels};
 end
 
-table_stims   = get_intra_motifs();
-neurons       = intra_get_neurons();
-table_neurons = {neurons.file_tag};
+table_stims    = get_intra_motifs();
+neurons        = intra_get_neurons();
+table_neurons  = {neurons.file_tag};
+table_patterns = get_patterns();
 
 indx = nan(size(old_tick_labels));
 
@@ -34,7 +35,7 @@ elseif any(arrayfun(@(x) any(cellfun(@(y) strcmp(x, y), table_stims)), old_tick_
     new_tick_labels(i) = {sprintf('Stimulation %d', indx(i))};  
   end
   
-elseif any(arrayfuyn(@(x) any(cellfun(@(y) startswith(x, y), table_patterns)), old_tick_labels))
+elseif any(arrayfun(@(x) any(cellfun(@(y) startswith(x, y), table_patterns)), old_tick_labels))
   
   for i=1:length(new_tick_labels)
     new_tick_labels(i) = {sprintf('Pattern %d')};

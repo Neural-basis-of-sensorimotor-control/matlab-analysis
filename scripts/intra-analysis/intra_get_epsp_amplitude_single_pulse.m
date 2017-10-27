@@ -12,6 +12,8 @@ norm_constant = amplitude.parent.userdata.single_pulse_height(ind);
 
 heights = amplitude.height;
 
+if ischar(selection)
+
 switch selection
   case 'all'
     mean_height = mean(heights);
@@ -21,6 +23,13 @@ switch selection
     mean_height = mean(heights(heights<0));
   otherwise
     error('Illegal option: %s', selection);
+end
+
+else
+  
+  min_height   = selection;
+  mean_height = mean(heights(heights>min_height));
+  
 end
 
 if isempty(mean_height)

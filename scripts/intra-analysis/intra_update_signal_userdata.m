@@ -1,4 +1,4 @@
-function intra_update_signal_userdata(neurons, only_epsp)
+function intra_update_signal_userdata(neurons, only_epsp, min_height)
 
 sc_dir = sc_settings.get_default_experiment_dir();
 
@@ -29,14 +29,17 @@ for i=1:length(neurons)
         
         single_pulse = get_item(signal.amplitudes.cell_list, single_str);
         
-        if ~only_epsp || any(single_pulse.height > 0)
-         
-          avg_height  = [avg_height; single_pulse.height];
-          avg_width   = [avg_width; single_pulse.width];
-          avg_latency = [avg_latency; single_pulse.latency];
+        tmp_heights = single_pulse.height;
+        pos         = tmp_heights > min_height;
         
+        if only_epsp
+          pos = pos & tmp_heights > 0;
         end
-      
+        
+        avg_height  = concat_list(avg_height,  single_pulse.height(pos));
+        avg_width   = concat_list(avg_width,   single_pulse.width(pos));
+        avg_latency = concat_list(avg_latency, single_pulse.latency(pos));
+        
       end
       
     end
@@ -44,7 +47,7 @@ for i=1:length(neurons)
     signal.userdata.single_pulse_height(j) = mean(avg_height);
     signal.userdata.single_pulse_width(j) = mean(avg_width);
     signal.userdata.single_pulse_latency(j) = mean(avg_latency);
-  
+    
   end
   
   signal.sc_save([sc_dir tmp_neuron.experiment_filename]);

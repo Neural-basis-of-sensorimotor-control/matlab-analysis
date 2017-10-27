@@ -20,7 +20,7 @@ if isempty(x_)
   trailing_flank_width   = 0;
   trailing_flank_height  = 0;
   peak_position          = 0;
-  normalized_height = 0;
+  normalized_height      = 0;
   
 else
   

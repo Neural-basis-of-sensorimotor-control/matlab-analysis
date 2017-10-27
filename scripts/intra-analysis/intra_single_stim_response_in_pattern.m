@@ -9,11 +9,11 @@ stims_str = get_intra_motifs();
 
 stim_pulses = intra_get_multiple_stim_pulses(stims_str);
 
-[dist_neuron_to_avg_response,                            ...
+[dist_neuron_to_multinomial_response,                            ...
   ~,                                                     ...
-  dist_shuffled_to_avg_response,                         ...
-  dist_shuffled_to_avg_response_several_simulations_1,   ...
-  dist_shuffled_to_avg_response_several_simulations_2] = ...
+  dist_shuffled_to_multinomial_response_single_repetition,                         ...
+  dist_shuffled_to_multinomial_response_several_simulations_1,   ...
+  dist_shuffled_to_multinomial_response_several_simulations_2] = ...
   compute_eucl_dist(neurons, stim_pulses, stims_str, response_min, response_max, ...
   nbr_of_simulations, normalize_distributions);
 
@@ -27,9 +27,9 @@ if ~plot_only_final_figures
   
     incr_fig_indx();
     
-    bar([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
-      dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
-      dist_shuffled_to_avg_response_several_simulations_2(:,i)])
+    bar([dist_neuron_to_multinomial_response(:,i) dist_shuffled_to_multinomial_response_single_repetition(:,i) ...
+      dist_shuffled_to_multinomial_response_several_simulations_1(:,i) ...
+      dist_shuffled_to_multinomial_response_several_simulations_2(:,i)])
     
     legend('Measurement to avg response', 'Shuffled to avg response', ...
       sprintf('Shuffled %d times', nbr_of_simulations),               ...
@@ -48,9 +48,9 @@ if ~plot_only_final_figures
     
     incr_fig_indx();
     
-    hist([dist_neuron_to_avg_response(:,i) dist_shuffled_to_avg_response(:,i) ...
-      dist_shuffled_to_avg_response_several_simulations_1(:,i) ...
-      dist_shuffled_to_avg_response_several_simulations_2(:,i)]);
+    hist([dist_neuron_to_multinomial_response(:,i) dist_shuffled_to_multinomial_response_single_repetition(:,i) ...
+      dist_shuffled_to_multinomial_response_several_simulations_1(:,i) ...
+      dist_shuffled_to_multinomial_response_several_simulations_2(:,i)]);
     
     legend('Measurement to avg response', 'Shuffled to avg response', ...
       sprintf('Shuffled %d times', nbr_of_simulations), ...
@@ -68,9 +68,9 @@ avg_response_repeated_simulations_2 = nan(length(stim_pulses), length(neurons));
 
 for i=1:length(neurons)
   
-  avg_response(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response(:,i));
-  avg_response_repeated_simulations_1(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response_several_simulations_1(:,i));
-  avg_response_repeated_simulations_2(:,i) = log(dist_neuron_to_avg_response(:,i)./dist_shuffled_to_avg_response_several_simulations_2(:,i));
+  avg_response(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_single_repetition(:,i));
+  avg_response_repeated_simulations_1(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_several_simulations_1(:,i));
+  avg_response_repeated_simulations_2(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_several_simulations_2(:,i));
 
 end
 
@@ -239,26 +239,29 @@ if ~plot_only_final_figures
   plot_amplitude_latencies(neurons, all_selected_stims);
 end
 
+save paired_statistical
+
 end
 
 
 %% Make a summary for each pattern how many neurons for which the distance 
 % from recorded data to null hypothesis is larger than shuffled data to 
 % null hypothesis
-function [dist_neuron_to_avg_response, dist_neuron_to_shuffled, ...
-  dist_shuffled_to_avg_response, ...
-  dist_shuffled_to_avg_response_several_simulations_1, ...
-  dist_shuffled_to_avg_response_several_simulations_2] = ...
+function [dist_neuron_to_multinomial_response, ...
+  dist_neuron_to_shuffled, ...
+  dist_shuffled_to_multinomial_response_single_repetion, ...
+  dist_shuffled_to_multinomial_response_several_simulations_1, ...
+  dist_shuffled_to_multinomial_response_several_simulations_2] = ...
   compute_eucl_dist(neurons, stim_pulses, stims_str, response_min, response_max, ...
   nbr_of_simulations, normalize_distributions)
 
 dim = [length(stim_pulses), length(neurons)];
 
-dist_neuron_to_avg_response   = nan(dim);
+dist_neuron_to_multinomial_response   = nan(dim);
 dist_neuron_to_shuffled       = nan(dim);
-dist_shuffled_to_avg_response = nan(dim);
-dist_shuffled_to_avg_response_several_simulations_1 = nan(dim);
-dist_shuffled_to_avg_response_several_simulations_2 = nan(dim);
+dist_shuffled_to_multinomial_response_single_repetion = nan(dim);
+dist_shuffled_to_multinomial_response_several_simulations_1 = nan(dim);
+dist_shuffled_to_multinomial_response_several_simulations_2 = nan(dim);
 
 
 for i=1:length(stim_pulses)
@@ -276,17 +279,17 @@ for i=1:length(stim_pulses)
     
     neuron = neurons(j);
     
-    [neuron_distribution, stat_distribution_avg_response, shuffled_distribution, ...
+    [neuron_distribution, stat_distribution_multinomial_response, shuffled_distribution, ...
       ~, ~, response_profiles] ...
       = compute_binomial_distribution(neuron, tmp_stims, response_min, ...
       response_max, normalize_distributions);
     
-    dist_neuron_to_avg_response(i,j)   = ...
-      sqrt(sum( (neuron_distribution-stat_distribution_avg_response).^2 ));
+    dist_neuron_to_multinomial_response(i,j)   = ...
+      sqrt(sum( (neuron_distribution-stat_distribution_multinomial_response).^2 ));
     dist_neuron_to_shuffled(i,j)       = ...
       sqrt(sum( (neuron_distribution-shuffled_distribution).^2 ));
-    dist_shuffled_to_avg_response(i,j) = ...
-      sqrt(sum( (shuffled_distribution-stat_distribution_avg_response).^2 ));
+    dist_shuffled_to_multinomial_response_single_repetion(i,j) = ...
+      sqrt(sum( (shuffled_distribution-stat_distribution_multinomial_response).^2 ));
     
     binomial_permutations = get_binomial_permutations(length(tmp_stims));
     binomial_permutations = logical(binomial_permutations);
@@ -299,11 +302,11 @@ for i=1:length(stim_pulses)
         binomial_permutations, response_profiles, normalize_distributions);
       
       tmp_dist_shuffled_to_avg = tmp_dist_shuffled_to_avg + ...
-        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_avg_response).^2 ));
+        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_multinomial_response).^2 ));
     
     end
     
-    dist_shuffled_to_avg_response_several_simulations_1(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
+    dist_shuffled_to_multinomial_response_several_simulations_1(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
     
     tmp_dist_shuffled_to_avg = 0;
     
@@ -313,11 +316,11 @@ for i=1:length(stim_pulses)
         binomial_permutations, response_profiles, normalize_distributions);
       
       tmp_dist_shuffled_to_avg = tmp_dist_shuffled_to_avg + ...
-        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_avg_response).^2 ));
+        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_multinomial_response).^2 ));
     
     end
     
-    dist_shuffled_to_avg_response_several_simulations_2(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
+    dist_shuffled_to_multinomial_response_several_simulations_2(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
   
   end
   

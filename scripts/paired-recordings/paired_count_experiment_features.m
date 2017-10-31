@@ -1,6 +1,7 @@
-
 clear
 close all
+sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag())
+
 reset_fig_indx()
 paired_load_constants
 paired_load_settings
@@ -90,6 +91,7 @@ for i=1:length(fields)
   str_field = fields{i};
   
   x                 = result.(str_field);
+  %%%%%x                 = result.postspike_trailing_flank_width + result.postspike_peak_position - result.postspike_onset;
   b_nonzero         = x ~= 0;
   x_nnz             = x(b_nonzero);
   ec_neurons_double = sc_unpack_cell(arrayfun(@(x) {x; x}, ec_neurons, 'UniformOutput', false));

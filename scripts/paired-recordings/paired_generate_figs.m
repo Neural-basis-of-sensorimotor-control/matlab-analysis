@@ -51,7 +51,7 @@ end
 % IC signal triggered on spike from paired neuron. Scaling from paired
 % neuron channel removed
 
-paired_plot_ic_signal(ic_neurons(7), ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
+paired_plot_ic_signal(ic_neurons, ic_pretrigger, ic_posttrigger, ic_t_epsp_range, ic_t_spike_range, ic_double_trigger_isi)
 
 if ~plot_only_final_figures
   

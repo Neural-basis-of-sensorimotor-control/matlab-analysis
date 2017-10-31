@@ -80,6 +80,18 @@ for i=1:length(indx)
     title([tmp_titlestr ' (line plot)']);
   end
   
+   if plot_only_final_figures
+    
+    set(gca, 'XTickLabel', intra_stim_tag_to_indx(get(gca, 'XTickLabel'), get_intra_motifs()))
+    set(gca, 'YTickLabel', intra_file_tag_to_neuron_indx(get(gca, 'YTickLabel'), neurons))
+    set(gcf, 'Color', 'w')
+    set(gca, 'Box', 'off')
+    sc_plot_util.change_font();
+    sc_plot_util.change_boldness();
+    sc_plot_util.change_fontsize();
+    
+  end
+  
 end
 
 if plot_only_final_figures

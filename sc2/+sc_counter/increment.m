@@ -4,6 +4,10 @@ import sc_counter.*
 
 global SC_COUNTER
 
+if nargin < 1
+  tag = [];
+end
+
 if nargin < 2
   incr = 1;
 end

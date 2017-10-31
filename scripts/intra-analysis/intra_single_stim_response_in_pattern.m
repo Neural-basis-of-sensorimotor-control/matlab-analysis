@@ -1,8 +1,9 @@
-function intra_single_stim_response_in_pattern(neurons, response_min, response_max, ...
+function [simulated_distributions,  measured_distributions, ideal_distributions, stim_pulses] ...
+  = intra_single_stim_response_in_pattern(neurons, response_min, response_max, ...
   plot_only_final_figures)
 
 %% Parameters
-nbr_of_simulations = 1e4;
+nbr_of_simulations      = 1e4;
 normalize_distributions = true;
 
 stims_str = get_intra_motifs();
@@ -13,7 +14,9 @@ stim_pulses = intra_get_multiple_stim_pulses(stims_str);
   ~,                                                     ...
   dist_shuffled_to_multinomial_response_single_repetition,                         ...
   dist_shuffled_to_multinomial_response_several_simulations_1,   ...
-  dist_shuffled_to_multinomial_response_several_simulations_2] = ...
+  simulated_distributions, ...
+  measured_distributions,        ...
+  ideal_distributions] = ...
   compute_eucl_dist(neurons, stim_pulses, stims_str, response_min, response_max, ...
   nbr_of_simulations, normalize_distributions);
 
@@ -28,11 +31,9 @@ if ~plot_only_final_figures
     incr_fig_indx();
     
     bar([dist_neuron_to_multinomial_response(:,i) dist_shuffled_to_multinomial_response_single_repetition(:,i) ...
-      dist_shuffled_to_multinomial_response_several_simulations_1(:,i) ...
-      dist_shuffled_to_multinomial_response_several_simulations_2(:,i)])
+      dist_shuffled_to_multinomial_response_several_simulations_1(:,i)])
     
     legend('Measurement to avg response', 'Shuffled to avg response', ...
-      sprintf('Shuffled %d times', nbr_of_simulations),               ...
       sprintf('Shuffled %d times', nbr_of_simulations));
     
     set(gca, 'XTick', 1:length(stim_pulses), ...
@@ -49,11 +50,9 @@ if ~plot_only_final_figures
     incr_fig_indx();
     
     hist([dist_neuron_to_multinomial_response(:,i) dist_shuffled_to_multinomial_response_single_repetition(:,i) ...
-      dist_shuffled_to_multinomial_response_several_simulations_1(:,i) ...
-      dist_shuffled_to_multinomial_response_several_simulations_2(:,i)]);
+      dist_shuffled_to_multinomial_response_several_simulations_1(:,i)]);
     
     legend('Measurement to avg response', 'Shuffled to avg response', ...
-      sprintf('Shuffled %d times', nbr_of_simulations), ...
       sprintf('Shuffled %d times', nbr_of_simulations));
     
     title(sprintf('%s, time window: %g - %g s', neurons(i).file_tag, response_min, ...
@@ -62,15 +61,18 @@ if ~plot_only_final_figures
   end  
 end
 
-avg_response = nan(length(stim_pulses), length(neurons));
+avg_response                        = nan(length(stim_pulses), length(neurons));
 avg_response_repeated_simulations_1 = nan(length(stim_pulses), length(neurons));
-avg_response_repeated_simulations_2 = nan(length(stim_pulses), length(neurons));
 
 for i=1:length(neurons)
   
-  avg_response(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_single_repetition(:,i));
-  avg_response_repeated_simulations_1(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_several_simulations_1(:,i));
-  avg_response_repeated_simulations_2(:,i) = log(dist_neuron_to_multinomial_response(:,i)./dist_shuffled_to_multinomial_response_several_simulations_2(:,i));
+  avg_response(:,i)                        = ...
+    log(dist_neuron_to_multinomial_response(:,i)./ ...
+    dist_shuffled_to_multinomial_response_single_repetition(:,i));
+  
+  avg_response_repeated_simulations_1(:,i) = ...
+    log(dist_neuron_to_multinomial_response(:,i)./ ...
+    dist_shuffled_to_multinomial_response_several_simulations_1(:,i));
 
 end
 
@@ -81,7 +83,7 @@ incr_fig_indx();
 hold(gca, 'on');
 set(gca);
 
-linestyle = ':';
+linestyle  = ':';
 markersize = 12;
 
 for i=1:length(neurons)
@@ -114,41 +116,6 @@ title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
 set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
 ylabel('Pattern - Electrode - Nbr of electrodes');
 xlabel('Value of eq 4');
-
-if ~plot_only_final_figures
-  
-  incr_fig_indx();
-  hold(gca, 'on');
-  set(gca, 'Color', 'k', 'GridColor', 'w');
-  
-  linestyle = ':';
-  markersize = 12;
-  
-  for i=1:length(neurons)
-  
-    dummy_y = 1:length(stim_pulses);
-    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'LineStyle', ...
-      linestyle, 'Tag', neurons(i).file_tag);
-    plot(avg_response_repeated_simulations_2(:,i), dummy_y, 'Marker', '+', ...
-      'MarkerSize', markersize, 'LineStyle', 'none', 'Tag', ...
-      neurons(i).file_tag);
-  
-  end
-  
-  plot(mean(avg_response_repeated_simulations_2, 2), 1:length(stim_pulses), ...
-    'Tag', 'Mean', 'LineWidth', 2)
-  
-  axis_wide(gca, 'y')
-  add_legend(gca, true, true, 'TextColor', 'r')
-  grid on
-  title(sprintf('Avg response (Eq. 4), time window: %g - %g', ...
-    response_min, response_max));
-  
-  set(gca, 'YTick', 1:length(stim_pulses), 'YTickLabel', stim_pulses_labels);
-  ylabel('Pattern - Electrode - Nbr of electrodes');
-  xlabel('Value of eq 4');
-
-end
 
 %%
 
@@ -188,38 +155,6 @@ for i=1:size(success,1)
   
 end
 
-mean_avg_response = mean(avg_response_repeated_simulations_2,2);
-std_avg_response = std(avg_response_repeated_simulations_2,1,2);
-
-for i=1:size(success,2)
-  success(:,i) = mean_avg_response - alpha(i)*std_avg_response/sqrt(length(neurons)) > 0;
-end
-
-if ~plot_only_final_figures
-  
-  fprintf('Pattern - electrode - nbr of pulses');
-  
-  for i=1:length(p)
-    fprintf('\tP = %g', p(i));
-  end
-  fprintf('\n');
-  
-  for i=1:size(success,1)
-    fprintf('%s', stim_pulses_labels{i});
-    
-    for j=1:size(success,2)
-      
-      if success(i,j)
-        fprintf('\t''+');
-      else
-        fprintf('\t''-');
-      end
-      
-    end
-    
-    fprintf('\n');
-  end
-end
 
 %%
 all_selected_stims = {};
@@ -232,11 +167,7 @@ for i=1:length(stim_pulses)
   tmp_stims = get_items(tmp_stims, @get_electrode, electrode_str);
   
   all_selected_stims = concat_list(all_selected_stims, tmp_stims);
-end
-
-if ~plot_only_final_figures
-  incr_fig_indx
-  plot_amplitude_latencies(neurons, all_selected_stims);
+  
 end
 
 save paired_statistical
@@ -250,78 +181,74 @@ end
 function [dist_neuron_to_multinomial_response, ...
   dist_neuron_to_shuffled, ...
   dist_shuffled_to_multinomial_response_single_repetion, ...
-  dist_shuffled_to_multinomial_response_several_simulations_1, ...
-  dist_shuffled_to_multinomial_response_several_simulations_2] = ...
+  dist_shuffled_to_multinomial_response_several_simulations, ...
+  all_shuffled_distributions, ...
+  all_neuron_distribution,        ...
+  all_stat_distribution_multinomial_response] = ...
   compute_eucl_dist(neurons, stim_pulses, stims_str, response_min, response_max, ...
   nbr_of_simulations, normalize_distributions)
 
 dim = [length(stim_pulses), length(neurons)];
 
-dist_neuron_to_multinomial_response   = nan(dim);
-dist_neuron_to_shuffled       = nan(dim);
-dist_shuffled_to_multinomial_response_single_repetion = nan(dim);
-dist_shuffled_to_multinomial_response_several_simulations_1 = nan(dim);
-dist_shuffled_to_multinomial_response_several_simulations_2 = nan(dim);
+dist_neuron_to_multinomial_response                       = nan(dim);
+dist_neuron_to_shuffled                                   = nan(dim);
+dist_shuffled_to_multinomial_response_single_repetion     = nan(dim);
+dist_shuffled_to_multinomial_response_several_simulations = nan(dim);
 
+all_shuffled_distributions                                = cell(dim);
+all_neuron_distribution                                   = cell(dim);
+all_stat_distribution_multinomial_response                = cell(dim);
 
-for i=1:length(stim_pulses)
+for i_pattern=1:length(stim_pulses)
   
-  sc_debug.print(mfilename, i, length(stim_pulses));
+  sc_debug.print(mfilename, i_pattern, length(stim_pulses));
   
-  pattern_str = stim_pulses(i).pattern;
-  electrode_str = stim_pulses(i).electrode;
+  pattern_str = stim_pulses(i_pattern).pattern;
+  electrode_str = stim_pulses(i_pattern).electrode;
   tmp_stims = get_items(stims_str, @get_pattern, pattern_str);
   tmp_stims = get_items(tmp_stims, @get_electrode, electrode_str);
   
-  for j=1:length(neurons)
-    
-    sc_debug.print('... ', mfilename, j, length(neurons));
-    
-    neuron = neurons(j);
+  for i_neuron=1:length(neurons)
+        
+    neuron = neurons(i_neuron);
     
     [neuron_distribution, stat_distribution_multinomial_response, shuffled_distribution, ...
       ~, ~, response_profiles] ...
       = compute_binomial_distribution(neuron, tmp_stims, response_min, ...
       response_max, normalize_distributions);
     
-    dist_neuron_to_multinomial_response(i,j)   = ...
+    dist_neuron_to_multinomial_response(i_pattern,i_neuron)   = ...
       sqrt(sum( (neuron_distribution-stat_distribution_multinomial_response).^2 ));
-    dist_neuron_to_shuffled(i,j)       = ...
+    dist_neuron_to_shuffled(i_pattern,i_neuron)       = ...
       sqrt(sum( (neuron_distribution-shuffled_distribution).^2 ));
-    dist_shuffled_to_multinomial_response_single_repetion(i,j) = ...
+    dist_shuffled_to_multinomial_response_single_repetion(i_pattern,i_neuron) = ...
       sqrt(sum( (shuffled_distribution-stat_distribution_multinomial_response).^2 ));
     
     binomial_permutations = get_binomial_permutations(length(tmp_stims));
     binomial_permutations = logical(binomial_permutations);
     
-    tmp_dist_shuffled_to_avg = 0;
+    tmp_dist_shuffled_to_avg       = 0;
+    tmp_all_shuffled_distributions = nan(size(binomial_permutations, 1), nbr_of_simulations);
     
     for k=1:nbr_of_simulations
     
-      tmp_shuffled_distribution = get_shuffled_binomial_distribution(...
+      tmp_shuffled_distribution        = get_shuffled_binomial_distribution(...
         binomial_permutations, response_profiles, normalize_distributions);
       
-      tmp_dist_shuffled_to_avg = tmp_dist_shuffled_to_avg + ...
+      tmp_all_shuffled_distributions(:, k) = tmp_shuffled_distribution;
+      
+      tmp_dist_shuffled_to_avg          = tmp_dist_shuffled_to_avg + ...
         sqrt(sum( (tmp_shuffled_distribution-stat_distribution_multinomial_response).^2 ));
     
     end
     
-    dist_shuffled_to_multinomial_response_several_simulations_1(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
+    all_shuffled_distributions                (i_pattern, i_neuron) = {tmp_all_shuffled_distributions};
+    all_neuron_distribution                   (i_pattern, i_neuron) = {neuron_distribution};
+    all_stat_distribution_multinomial_response(i_pattern, i_neuron) = {stat_distribution_multinomial_response};
     
-    tmp_dist_shuffled_to_avg = 0;
+    dist_shuffled_to_multinomial_response_several_simulations(i_pattern,i_neuron) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
     
-    for k=1:nbr_of_simulations
-    
-      tmp_shuffled_distribution = get_shuffled_binomial_distribution(...
-        binomial_permutations, response_profiles, normalize_distributions);
-      
-      tmp_dist_shuffled_to_avg = tmp_dist_shuffled_to_avg + ...
-        sqrt(sum( (tmp_shuffled_distribution-stat_distribution_multinomial_response).^2 ));
-    
-    end
-    
-    dist_shuffled_to_multinomial_response_several_simulations_2(i,j) = tmp_dist_shuffled_to_avg/nbr_of_simulations;
-  
+
   end
   
 end

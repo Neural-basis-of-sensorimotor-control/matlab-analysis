@@ -26,7 +26,7 @@ h_figure.Name = obj.neuron.file_tag;
 
 [freq_hist, bintimes] = sc_perifreq(t1, t2, pretrigger, posttrigger, 10*binwidth);
 
-bar(bintimes, freq_hist);
+%bar(bintimes, freq_hist);
 
 sc_kernelhist(obj.h_axes, t1, t2, pretrigger, posttrigger, kernelwidth, binwidth);
 [~, ~, h_plot] = sc_kernelhist(t1, t2, pretrigger, posttrigger, 10*kernelwidth, binwidth);

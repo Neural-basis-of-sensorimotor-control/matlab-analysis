@@ -6,6 +6,10 @@ else
   str = strsplit(stim.tag, '#');
 end
 
-val =  str{1};
+if ~isempty(str)
+ val =  str{1};
+else
+  val = '{blank}';
+end
 
 end

@@ -1,42 +1,63 @@
-function p_values = intra_plot_intra_stim(neurons, str_stims, height_limit, min_nbr_epsps, use_final_labels)
+function all_p_values = intra_plot_intra_stim(neurons, str_stims, ...
+  height_limit, min_nbr_epsp, use_final_labels)
 
-amplitude_heights = intra_get_values(str_stims, neurons, height_limit, min_nbr_epsps, @(x, varargin) x.get_amplitude_height(varargin{:}));
-p_values          = [];
+amplitude_heights = intra_get_values(str_stims, neurons, height_limit, min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
+all_p_values      = [];
 
 for i_neuron=1:length(neurons)
   
-  p = zeros(length(str_stims));
+  multcmp_indx      = 1:length(str_stims);
+  indx_is_nonempty  = true(size(multcmp_indx));
   
-  for i_stim1=1:length(str_stims)
+  enc_values   = amplitude_heights(:, i_neuron);
+  
+  values = [];
+  tags   = {};
+  
+  for i=1:length(enc_values)
     
-    if ~isempty(amplitude_heights{i_stim1, i_neuron})
+    tmp_values = enc_values{i};
+    
+    if isempty(tmp_values)
       
-      for i_stim2=i_stim1+1:length(str_stims)
-        
-        if ~isempty(amplitude_heights{i_stim2, i_neuron})
-          
-          x1 = amplitude_heights{i_stim1, i_neuron};
-          x2 = amplitude_heights{i_stim2, i_neuron};
-          
-          x1_tags = cellfun(@(~) 'a', cell(size(x1)) );
-          x2_tags = cellfun(@(~) 'b', cell(size(x2)) );
-          tags  = [x1_tags; x2_tags];
-          m     = [x1; x2];
-          
-          tmp_p               = ranksum(x1, x2);
-          p(i_stim1, i_stim2) = tmp_p;%anova1(m, tags, 'off');%
-          p_values            = add_to_list(p_values, tmp_p);
-          
-        end
-      end
+      indx_is_nonempty(i) = false;
+      
+    else
+      
+      values = concat_list(values, tmp_values);
+      tags   = concat_list(tags, ...
+        arrayfun(@(~) str_stims{i}, ones(size(tmp_values)), ...
+        'UniformOutput', false));
+      
     end
+    
   end
   
-  pos = any(p, 1)' | any(p, 2);
+  [~, ~, stats] = kruskalwallis(values, tags);
+  c             = multcompare(stats);
   
-  p = p(pos, pos);
+  multcmp_indx = multcmp_indx(indx_is_nonempty);
+  rows         = c(:, 1);
+  cols         = c(:, 2);
+  tmp_values   = c(:, 6);
   
-  tmp_stims = str_stims(pos);
+  tmp_stims = str_stims(indx_is_nonempty);
+  
+  for i=length(multcmp_indx):-1:1
+    
+    rows(rows == i) = multcmp_indx(i);
+    cols(cols == i) = multcmp_indx(i);
+    
+  end
+  
+  p = zeros(length(str_stims));
+ 
+  indx = sub2ind(size(p), rows, cols);
+  
+  p(indx) = tmp_values;
+  p = p(any(p, 1), any(p, 2));
+  
+  all_p_values = concat_list(all_p_values, p(p ~= 0));
   
   incr_fig_indx
   clf

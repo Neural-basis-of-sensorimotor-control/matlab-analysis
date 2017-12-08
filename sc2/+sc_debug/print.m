@@ -20,13 +20,13 @@ if sc_debug.get_mode()
         
       otherwise
         
-        error('Unknown type: %s', class(arg));
+        warning('Unknown type: %s', class(arg));
         
     end
     
   end
   
-  fprintf('\n');
+  fprintf('%s\n', char(datetime('now')));
   
   i  = 2;
   st = dbstack;

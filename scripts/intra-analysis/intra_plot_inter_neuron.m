@@ -1,33 +1,63 @@
 function all_p_values = intra_plot_inter_neuron ...
-  (neurons, str_stims, height_limit, min_nbr_epsps, use_final_labels)
+  (neurons, str_stims, height_limit, min_nbr_epsp, use_final_labels)
 
-amplitude_heights = intra_get_values(str_stims, neurons, height_limit, min_nbr_epsps, @(x, varargin) x.get_amplitude_height(varargin{:}));
+amplitude_heights = intra_get_values(str_stims, neurons, height_limit, min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
 all_p_values      = [];
 
 for i_stim=1:length(str_stims)
   
+  indx_multcmp      = 1:length(neurons);
+  indx_is_nonempty  = true(size(indx_multcmp));
+  
   tmp_str_stim = str_stims{i_stim};
+  enc_values   = amplitude_heights(i_stim, :);
+  
+  values = [];
+  tags   = {};
+  
+  for i=1:length(enc_values)
+    
+    tmp_values = enc_values{i};
+    
+    if isempty(tmp_values)
+      
+      indx_is_nonempty(i) = false;
+      
+    else
+      
+      values = concat_list(values, tmp_values);
+      tags   = concat_list(tags, ...
+        arrayfun(@(~) neurons(i).file_tag, ones(size(tmp_values)), ...
+        'UniformOutput', false));
+      
+    end
+    
+  end
+  
+  [~, ~, stats] = kruskalwallis(values, tags, 'off');
+  c             = multcompare(stats);
+  
+  indx_multcmp = indx_multcmp(indx_is_nonempty);
+  rows         = c(:, 1);
+  cols         = c(:, 2);
+  tmp_values   = c(:, 6);
+  
+  for i=length(indx_multcmp):-1:1
+    
+    rows(rows == i) = indx_multcmp(i);
+    cols(cols == i) = indx_multcmp(i);
+    
+  end
   
   p = zeros(length(neurons));
   
-  for i_neuron1=1:length(neurons)
-    
-    if ~isempty(amplitude_heights{i_stim, i_neuron1})
-      
-      for i_neuron2=i_neuron1+1:length(neurons)
-        
-        if ~isempty(amplitude_heights{i_stim, i_neuron2})
-          
-          tmp_p = ranksum(amplitude_heights{i_stim, i_neuron1}, ...
-            amplitude_heights{i_stim, i_neuron2});
-          
-          p(i_neuron1, i_neuron2) = tmp_p;
-          all_p_values            = add_to_list(all_p_values, tmp_p);
-          
-        end
-      end
-    end
-  end
+  indx = sub2ind(size(p), rows, cols);
+  
+  p(indx) = tmp_values;
+  p       = p(any(p, 1), any(p, 2));
+
+  
+  all_p_values = concat_list(all_p_values, p(p ~= 0));
   
   incr_fig_indx
   clf

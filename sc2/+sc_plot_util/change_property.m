@@ -9,7 +9,7 @@ for i=1:length(f)
   for j=1:length(graphicsobjects)
     
     tmp_graphicsobject = graphicsobjects(j);
-    
+
     if any(cellfun(@(x) strcmp(x, property), properties(tmp_graphicsobject)))
       set(tmp_graphicsobject, property, value);
     end

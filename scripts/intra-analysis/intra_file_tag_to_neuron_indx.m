@@ -8,7 +8,7 @@ if ischar(arg_in) || (isnumeric(arg_in) && length(arg_in) == 1)
     indx = arg_in;
   end
     
-  if startsWith(neurons(indx).file_tag, 'ICNR')
+  if startsWith(neurons(indx).file_tag, 'ICNR') || startsWith(neurons(indx).file_tag, 'IDNR')
     str_label = sprintf('Neuron %d *', indx);
   elseif startsWith(neurons(indx).file_tag, 'IFNR')
     str_label = sprintf('Neuron %d **', indx);

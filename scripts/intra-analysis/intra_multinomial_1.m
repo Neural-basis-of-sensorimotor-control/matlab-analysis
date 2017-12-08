@@ -1,11 +1,9 @@
 function [simulated_distributions,  measured_distributions, ideal_distributions, stim_pulses] ...
-  = intra_single_stim_response_in_pattern(neurons, response_min, response_max, ...
-  plot_only_final_figures)
+  = intra_multinomial_1(neurons, response_min, response_max, ...
+  plot_only_final_figures, nbr_of_simulations)
 
 %% Parameters
-nbr_of_simulations      = 1e4;
 normalize_distributions = true;
-
 stims_str = get_intra_motifs();
 
 stim_pulses = intra_get_multiple_stim_pulses(stims_str);
@@ -99,8 +97,6 @@ for i=1:length(neurons)
   
 end
 
-save temp_backup_1
-
 plot(mean(avg_response_repeated_simulations_1, 2), 1:length(stim_pulses), ...
   'Tag', 'Mean', 'LineWidth', 2)
 
@@ -170,7 +166,7 @@ for i=1:length(stim_pulses)
   
 end
 
-save paired_statistical
+save intra_statistical
 
 end
 

@@ -1,4 +1,4 @@
-classdef ScGuiViewer < ScViewer
+classdef ScButtonViewer < handle
   
   properties
     button_window

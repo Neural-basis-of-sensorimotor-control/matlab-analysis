@@ -1,4 +1,5 @@
 classdef ScSpikeTrain < ScTrigger
+  
   properties
     tag
   end

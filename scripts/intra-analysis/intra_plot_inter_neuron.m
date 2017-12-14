@@ -6,56 +6,43 @@ all_p_values      = [];
 
 for i_stim=1:length(str_stims)
   
+  p = zeros(length(neurons));
+
   indx_multcmp      = 1:length(neurons);
   indx_is_nonempty  = true(size(indx_multcmp));
   
   tmp_str_stim = str_stims{i_stim};
   enc_values   = amplitude_heights(i_stim, :);
   
-  values = [];
-  tags   = {};
-  
-  for i=1:length(enc_values)
+  for i_neuron=1:length(enc_values)
     
-    tmp_values = enc_values{i};
+    if isempty(enc_values{i_neuron})
+      
+      indx_is_nonempty(i_neuron) = false;
+      continue;
+      
+    end
     
-    if isempty(tmp_values)
+    for j_neuron=i_neuron+1:length(enc_values)
       
-      indx_is_nonempty(i) = false;
-      
-    else
-      
-      values = concat_list(values, tmp_values);
-      tags   = concat_list(tags, ...
-        arrayfun(@(~) neurons(i).file_tag, ones(size(tmp_values)), ...
-        'UniformOutput', false));
+      if ~isempty(enc_values{j_neuron})
+        
+        p(i_neuron, j_neuron) = ranksum(enc_values{i_neuron}, ...
+          enc_values{j_neuron});
+        
+      end
       
     end
     
   end
   
-  [~, ~, stats] = kruskalwallis(values, tags, 'off');
-  c             = multcompare(stats);
-  
-  indx_multcmp = indx_multcmp(indx_is_nonempty);
-  rows         = c(:, 1);
-  cols         = c(:, 2);
-  tmp_values   = c(:, 6);
-  
-  for i=length(indx_multcmp):-1:1
-    
-    rows(rows == i) = indx_multcmp(i);
-    cols(cols == i) = indx_multcmp(i);
+  try
+    p = p(indx_is_nonempty, :);
+    p = p(:, indx_is_nonempty);
+  catch
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     
   end
-  
-  p = zeros(length(neurons));
-  
-  indx = sub2ind(size(p), rows, cols);
-  
-  p(indx) = tmp_values;
-  p       = p(any(p, 1), any(p, 2));
-
   
   all_p_values = concat_list(all_p_values, p(p ~= 0));
   
@@ -66,10 +53,10 @@ for i_stim=1:length(str_stims)
   
   [x, y] = find(p == 0);
   
-  for i=1:length(x)
+  for i_neuron=1:length(x)
     
-    x_ = x(i) + [-.5 -.5 .5 .5 -.5];
-    y_ = y(i) + [-.5 .5 .5 -.5 -.5];
+    x_ = x(i_neuron) + [-.5 -.5 .5 .5 -.5];
+    y_ = y(i_neuron) + [-.5 .5 .5 -.5 -.5];
     fill(x_, y_, 'w');
     
   end

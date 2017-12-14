@@ -14,6 +14,7 @@ if ~isempty(sequence) && sequence.signals.n
     else
       obj.set_signal1(obj.sequence.signals.get(ind));
     end
+    
   end
   
   if ~isempty(obj.signal2)
@@ -37,47 +38,62 @@ else
 end
 
 if isempty(sequence)
+  
   obj.rmwf = [];
+
 else
   
   if ~isempty(obj.signal1)
+    
     signal1 = obj.signal1;
-    rmwfs = signal1.get_rmwfs(obj.sequence.tmin, obj.sequence.tmax);
+    rmwfs   = signal1.get_rmwfs(obj.sequence.tmin, obj.sequence.tmax);
   
     if ~rmwfs.n
-      obj.rmwf = [];
+      
+      obj.set_rmwf([]);
+    
     else
       
       if ~isempty(obj.rmwf) && rmwfs.contains(obj.rmwf)
-        obj.rmwf = obj.rmwf;
+        obj.set_rmwf(obj.rmwf);
       else
-        obj.rmwf = rmwfs.get(1);
+        obj.set_rmwf(rmwfs.get(1));
       end
+      
     end
   end
 end
 
 
 if ~isempty(obj.sequence)
-	triggerparents = obj.triggerparents;
+  
+	triggerparents = obj.sequence.gettriggerparents(obj.sequence.tmin, ...
+    obj.sequence.tmax);
 	
 	if ~triggerparents.n
-		obj.set_triggerparent([]);
+    
+		obj.set_trigger_parent([]);
 		
-	elseif ~isempty(obj.triggerparent) && triggerparents.contains(obj.triggerparent)
-		obj.set_triggerparent(obj.triggerparent);
+	elseif ~isempty(obj.trigger_parent) && triggerparents.contains(obj.trigger_parent)
 		
-	else
-		str = triggerparents.values('tag');
-		if sc_contains(str,'DigMark')
-			obj.set_triggerparent(triggerparents.get('tag','DigMark'));
+    obj.set_trigger_parent(obj.trigger_parent);
+		
+  else
+    
+    str = triggerparents.values('tag');
+		
+    if sc_contains(str, 'DigMark')
+			obj.set_trigger_parent(triggerparents.get('tag','DigMark'));
 		else
-			obj.set_triggerparent(obj.triggerparents.get(1));
-		end
-	end
+			obj.set_trigger_parent(triggerparents.get(1));
+    end
+    
+  end
 	
 else
+  
 	obj.set_triggerparent([]);
+
 end
 
 end

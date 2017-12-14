@@ -6,7 +6,7 @@ classdef LayoutManager < handle
   
   properties
     
-    h_figure
+    parent
     x0
     y0
     x
@@ -21,14 +21,12 @@ classdef LayoutManager < handle
   
   methods
     
-    function obj = LayoutManager(h_figure, varargin)
+    function obj = LayoutManager(parent, varargin)
       
-      obj.h_figure  = h_figure;
-      
-      set(obj.h_figure, 'SizeChangedFcn', @(~, ~) obj.layout());
+      obj.parent  = parent;
       
       obj.x0 = 0;
-      obj.y0 = getheight(obj.h_figure);
+      obj.y0 = getheight(obj.parent);
       
       for i=1:2:length(varargin)
         obj.(varargin{i}) = varargin{i+1};
@@ -41,7 +39,7 @@ classdef LayoutManager < handle
     
     function add(obj, tile)
       
-      set(tile, 'Parent', obj.h_figure);
+      set(tile, 'Parent', obj.parent);
       
       obj.tiles = add_to_list(obj.tiles, tile);
       
@@ -76,11 +74,11 @@ classdef LayoutManager < handle
         tmp_tiles   = tmp_tiles(ind_y);
         
         obj.x       = tmp_x;
-        obj.y       = getheight(obj.h_figure);
+        obj.y       = getheight(obj.parent);
         
         if obj.fill_right && i == length(unique_x)
           
-          tmp_width = getwidth(obj.h_figure) - tmp_x;
+          tmp_width = getwidth(obj.parent) - tmp_x;
           
           if tmp_width > 0
             

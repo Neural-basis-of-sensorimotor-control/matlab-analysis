@@ -1,13 +1,6 @@
-classdef ColumnLayoutManager < LayoutManager
+classdef ColumnLayoutManager < handle
   
   methods
-    
-    function obj = ColumnLayoutManager(varargin)
-      
-      obj@LayoutManager(varargin{:});
-      
-    end
-    
     
     function update_position(obj, tile)
       

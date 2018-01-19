@@ -1,12 +1,19 @@
-function sc_addlistener(src,property,callback,temporaryobject)
+function sc_addlistener(src,property, callback, tempobj)
 
-listener = addlistener(src,property,'PostSet',callback);
-userdata = get(temporaryobject,'userdata');
+listener = addlistener(src, property, 'PostSet', callback);
+userdata = get(tempobj, 'userdata');
 userdata = [userdata, listener];
-set(temporaryobject,'DeleteFcn',@delete_listener,'userdata',userdata);
+set(tempobj, 'DeleteFcn', @(~,~) delete_listener(tempobj), ...
+  'userdata', userdata);
 
-  function delete_listener(~,~)
-    listeners = get(temporaryobject,'userdata');
-    delete(listeners);
+  function delete_listener(tempobj)
+    
+    listeners = get(tempobj, 'userdata');
+    
+    for i=1:length(listeners)
+      delete(listeners(i));
+    end
+    
   end
+
 end

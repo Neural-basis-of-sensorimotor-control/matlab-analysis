@@ -1,19 +1,25 @@
 classdef ScSignalFilter < ScFilter
+  
   properties (SetObservable)
+    
     parent
     scale_factor
     smoothing_width
     artifact_width
     artifactchannels
+    
   end
   
   methods
+    
     function obj = ScSignalFilter(parent)
+      
       obj.scale_factor = 1;
       obj.smoothing_width = 5;
       obj.artifact_width = 0;
       obj.parent = parent;
       obj.artifactchannels = ScList();
+      
     end
     
     

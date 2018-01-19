@@ -28,8 +28,4 @@ for i=1:length(input)
   
 end
 
-if nargout>0
-  output = cell2mat(output);
-end
-
 end

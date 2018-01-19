@@ -17,7 +17,7 @@ elseif ~iscell(neuron_tags)
 end
 
 if nargin<3
-  markers = cellfun(@(x) '.', dummy_cell, 'UniformOutput', false);
+  markers = cellfun(@(x) '+', dummy_cell, 'UniformOutput', false);
 elseif ischar(markers)
   markers = cellfun(@(x) markers, dummy_cell, 'UniformOutput', false);
 end
@@ -28,7 +28,24 @@ hold_is_on = ishold;
 hold on
 grid on
 
-if size(y,2) == 2
+if size(y,2) == 1
+  
+  for i=1:size(y,1)
+    
+    h_plot = plot(y(i,1), 1, 'MarkerSize', 12, 'Tag', neuron_tags{i}, ...
+      'Marker', markers{i}, 'ButtonDownFcn', @print_tag);
+    
+    if nargin >= 4
+      set(h_plot, 'UiContextMenu', get_right_click_menu(right_click_fcns{i}));
+    end
+    
+  end
+  
+  xlabel('n_1');
+  ylim([0 2]);
+  set(gca, 'YTick', []);
+  
+elseif size(y,2) == 2
   
   for i=1:size(y,1)
     
@@ -53,6 +70,10 @@ elseif size(y,2) == 3
   end
   
   xlabel('n_1'), ylabel('n_2'), zlabel('n_3')
+  
+else
+  
+  error('wrong dimensions');
   
 end
 

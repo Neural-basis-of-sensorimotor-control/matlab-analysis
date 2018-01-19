@@ -10,8 +10,17 @@ elseif isobject(indx)
 
 elseif ischar(indx)
   
-  val = get_items(list, 'tag', indx, 1);
+  if iscell(list) && ischar(list{1})
+    
+    indx = find(cellfun(@(x) strcmp(x, indx), list), 1);
+    val = list{indx};
+  
+  else
+    
+    val = get_items(list, 'tag', indx, 1);
 
+  end
+  
 elseif ischar(list)
   
   list = {list};

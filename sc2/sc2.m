@@ -285,7 +285,7 @@ else
   
 end
 
-viewer = ScViewer();
+viewer = sc_viewer.ScViewer();
 
 sc_settings.set_default_experiment_dir(filename);
 viewer.set_experiment(ScExperiment.load_experiment(filename));

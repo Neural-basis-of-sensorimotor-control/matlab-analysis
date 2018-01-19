@@ -1,4 +1,8 @@
-classdef ScSignal < ScChannel & ScDynamicClass
+classdef ScSignal < ScChannel & ScDynamicClass & sc_experiment.EmptyClassPlaceholder
+  
+  methods (Static)
+    empty_class = make_empty_class()
+  end
   
   %Analog imported channel
   properties
@@ -25,16 +29,16 @@ classdef ScSignal < ScChannel & ScDynamicClass
   
   methods
     
-    function obj = ScSignal(parent,channelname,varargin)
+    function obj = ScSignal(parent, channelname, varargin)
       
-      obj.parent = parent;
-      obj.channelname = channelname;
-      obj.waveforms = ScList;
-      obj.filter = ScSignalFilter(obj);
-      obj.remove_waveforms = ScList();
-      obj.amplitudes = ScCellList();
+      obj.parent                 = parent;
+      obj.channelname            = channelname;
+      obj.waveforms              = ScList;
+      obj.filter                 = ScSignalFilter(obj);
+      obj.remove_waveforms       = ScList();
+      obj.amplitudes             = ScCellList();
       obj.simple_artifact_filter = ScSimpleArtifactFilter(obj);
-      obj.simple_spike_filter = ScSimpleSpikeFilter(obj);
+      obj.simple_spike_filter    = ScSimpleSpikeFilter(obj);
       
       for k=1:2:numel(varargin)
         obj.(varargin{k}) = varargin{k+1};

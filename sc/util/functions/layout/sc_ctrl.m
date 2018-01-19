@@ -7,8 +7,8 @@ elseif nargin<3
 else
   ctrl = uicontrol('style',style,'string',string,'callback',callback,...
     varargin{:});
-  end
-  if strcmpi(style,'text') || strcmpi(style,'checkbox')
-    set(ctrl,'HorizontalAlignment','left');
-  end
-  end
+end
+if strcmpi(style,'text') || strcmpi(style,'checkbox')
+  set(ctrl,'HorizontalAlignment','left');
+end
+end

@@ -8,7 +8,7 @@ if isempty(val)
   
 else
   
-  trigger_tag = get_set_val(obj.trigger_parent.triggers.values('tag'), ...
+  trigger_tag = get_set_val(obj.trigger_parent.get_tags, ...
     obj.trigger_tag, 1);
   
 end

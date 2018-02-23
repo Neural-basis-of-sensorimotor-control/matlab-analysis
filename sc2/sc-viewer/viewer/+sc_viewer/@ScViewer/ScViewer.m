@@ -7,6 +7,7 @@ classdef ScViewer < sc_viewer.ScSaveDataViewer & ...
     
     % User info text
     user_info
+    has_unsaved_changes = false
     
   end
   

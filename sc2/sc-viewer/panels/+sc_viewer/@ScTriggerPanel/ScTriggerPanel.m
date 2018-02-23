@@ -17,7 +17,7 @@ classdef ScTriggerPanel < sc_viewer.ScViewerComponent
     
     function ui_panel = get_panel(viewer)
       
-      ui_panel = uipanel(viewer.button_window, 'Title', 'Experiment');
+      ui_panel = uipanel(viewer.button_window, 'Title', 'Trigger');
       panel    = sc_viewer.ScTriggerPanel(ui_panel, viewer);
       mgr      = sc_layout.PanelLayoutManager(ui_panel);
       
@@ -37,11 +37,6 @@ classdef ScTriggerPanel < sc_viewer.ScViewerComponent
       mgr.newline();
       
       panel.ui_tot_trigger_nbr = mgr.add(sc_ctrl('text', ''), 200);
-      mgr.newline();
-      
-      mgr.add(sc_ctrl('text', 'Trigger #'), 100);
-      panel.ui_trigger_indx = mgr.add(sc_ctrl('edit', [], ...
-        @(~,~) panel.trigger_indx_callback(), 'Visible', 'off'), 100);
       mgr.newline();
       
       mgr.add(sc_ctrl('text', 'trigger_increment'), 100);
@@ -74,30 +69,18 @@ classdef ScTriggerPanel < sc_viewer.ScViewerComponent
       
       mgr.trim();
       
-      sc_addlistener(viewer, 'trigger_parent', ...
-        @(~,~) panel.trigger_parent_listener(), ui_panel);
-      
-      sc_addlistener(viewer, 'trigger_tag', ...
-        @(~,~) panel.trigger_tag_listener(), ui_panel);
-      
-      sc_addlistener(viewer, 'trigger_time', ...
-        @(~,~) panel.trigger_time_listener(), ui_panel);
-      
-      sc_addlistener(viewer, 'pretrigger', ...
-        @(~,~) panel.pretrigger_listener(), ui_panel);
-      
-      sc_addlistener(viewer, 'posttrigger', ...
-        @(~,~) panel.posttrigger_listener(), ui_panel);
-      
-      sc_addlistener(viewer, 'trigger_increment', ...
-        @(~,~) panel.incremnent_listener(), ui_panel);
-      
       panel.trigger_parent_listener();
       panel.trigger_tag_listener();
       panel.trigger_time_listener();
       panel.pretrigger_listener();
       panel.posttrigger_listener();
       
+      sc_addlistener(panel.viewer, 'trigger_parent', @(~,~) panel.trigger_parent_listener, ui_panel);
+      sc_addlistener(panel.viewer, 'trigger_tag', @(~,~) panel.trigger_tag_listener, ui_panel);
+      sc_addlistener(panel.viewer, 'trigger_time', @(~,~) panel.trigger_time_listener, ui_panel);
+      sc_addlistener(panel.viewer, 'pretrigger', @(~,~) panel.pretrigger_listener, ui_panel);
+      sc_addlistener(panel.viewer, 'posttrigger', @(~,~) panel.posttrigger_listener, ui_panel);
+    
     end
     
   end
@@ -113,27 +96,82 @@ classdef ScTriggerPanel < sc_viewer.ScViewerComponent
   methods (Access = protected)
     
     function trigger_parent_listener(obj)
-      error('Not implemented');
+      
+      triggables = obj.viewer.file.get_triggables();
+      str = get_values(triggables, 'tag');
+      str = add_to_list(str, '#none');
+      
+      if isempty(obj.viewer.trigger_parent)
+        indx = length(str);
+      else
+        indx = find(cellfun(@(x) x == obj.viewer.trigger_parent, triggables));
+      end
+      
+      set(obj.ui_trigger_parent, 'String',str, 'Value', indx, ...
+        'Visible', 'on');
+      
     end
     
     
     function trigger_tag_listener(obj)
-      error('Not implemented');
+      
+      if isempty(obj.viewer.trigger_tag)
+        
+        set(obj.ui_trigger_tag, 'Visible', 'off');
+        return
+        
+      end
+      
+      str = obj.viewer.trigger_parent.get_tags();
+      indx = find(cellfun(@(x) strcmp(x, obj.viewer.trigger_tag), str));
+      
+      set(obj.ui_trigger_tag, 'String', str, ...
+        'Value', indx, 'Visible', 'on');
+      
     end
     
     
     function trigger_time_listener(obj)
-      error('Not implemented');
+      
+      set(obj.ui_trigger_time, 'String', obj.viewer.trigger_time);
+      
     end
     
     
     function pretrigger_listener(obj)
-      error('Not implemented');
+      
+      set(obj.ui_trigger_time, 'String', obj.viewer.pretrigger);
+      
     end
     
     
     function posttrigger_listener(obj)
-      error('Not implemented');
+      
+      set(obj.ui_trigger_time, 'String', obj.viewer.pretrigger);    
+    
+    end
+    
+    
+    function trigger_parent_callback(obj)
+      
+      indx = get(obj.ui_trigger_parent, 'Value');
+      triggables = obj.viewer.file.get_triggables();
+      
+      if indx > length(triggables)
+        obj.viewer.set_trigger_parent([]);
+      else
+        obj.viewer.set_trigger_parent(triggables{indx});
+      end
+      
+    end
+    
+    
+    function trigger_tag_callback(obj)
+      
+      indx = get(obj.ui_trigger_parent, 'Value');
+      tags = obj.viewer.trigger_parent.get_tags();
+      obj.viewer.set_trigger_tag(tags{indx});
+      
     end
     
   end

@@ -11,7 +11,7 @@ nbr_of_simulations = 1e6;
 load intra_data.mat
 
 str_first_stims = arrayfun(@(x) x.stim_electrodes(1).tag, intra_patterns.patterns, 'UniformOutput', false);
-
+return
 stim_exists = false(size(str_first_stims));
 
 for i=1:length(str_first_stims)

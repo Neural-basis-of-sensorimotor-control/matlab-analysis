@@ -6,6 +6,10 @@ obj.file = file;
 if isempty(file)
   
   obj.set_sequence([]);
+  obj.set_signal1([]);
+  obj.set_signal2([]);
+  obj.set_trigger_parent([]);
+  
   return
 
 end
@@ -21,18 +25,22 @@ if ~list_contains(file.list, 'tag', 'full')
   sequence = ScSequence(file, tag, tmin, tmax);
   file.add(sequence);
   
-elseif file.contains(obj.sequence)
+end
+
+obj.set_sequence(get_set_val(obj.file.list, obj.sequence, 'full'));
+
+signal1 = get_set_val(obj.file.signals.list, obj.signal1, 'patch');
+obj.set_signal1(signal1);
+
+if ~isempty(obj.signal2)
   
-  obj.set_sequence(obj.sequence);
-  
-elseif sc_contains(file.values('tag'), 'full')
-  
-  obj.set_sequence(obj.file.get('tag', 'full'));
-  
-else
-  
-  obj.set_sequence(obj.file.get(1));
+  signal2 = get_set_val(obj.file.signals.list, obj.signal2, 'patch2');
+  obj.set_signal2(signal2);
   
 end
+
+trigger_parents = obj.file.get_triggables();
+trigger_parent = get_set_val(trigger_parents, obj.trigger_parent);
+obj.set_trigger_parent(trigger_parent);
 
 end

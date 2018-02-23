@@ -127,7 +127,13 @@ classdef ScExperimentPanel < sc_viewer.ScViewerComponent
     function signal2_callback(obj)
       
       indx = get(obj.ui_signal2, 'Value');
-      obj.viewer.set_signal2(obj.viewer.file.signals.get(indx));
+      signals = obj.viewer.file.signals;
+      
+      if indx <= length(signals)
+        obj.viewer.set_signal2(signals(indx));
+      else
+        obj.viewer.set_signal2([]);
+      end
       
     end
     
@@ -175,7 +181,9 @@ classdef ScExperimentPanel < sc_viewer.ScViewerComponent
         end
         
       else
+        
         set(obj.ui_file, 'Visible', 'off');
+      
       end
       
     end
@@ -226,20 +234,17 @@ classdef ScExperimentPanel < sc_viewer.ScViewerComponent
     
     function signal2_listener(obj)
       
+      str  = obj.viewer.file.signals.values('tag');
+      str  = add_to_list(str, '#none');
+        
       if ~isempty(obj.viewer.signal2)
         
-        str  = obj.viewer.file.signals.values('tag');
-        indx = find(@(x) strcmp(x, obj.viewer.signal2.tag), str);
-        
-        if ~isempty(indx)
-          set(obj.ui_signal2, 'String', str, 'Value', indx, 'Visible', 'on');
-        else
-          set(obj.ui_signal2, 'Visible', 'off');
-        end
+        indx = find(@(x) strcmp(x, obj.viewer.signal2.tag), str);        
+        set(obj.ui_signal2, 'String', str, 'Value', indx, 'Visible', 'on');
         
       else
         
-        set(obj.ui_signal2, 'Visible', 'off');
+        set(obj.ui_signal2, 'String', str, 'Value', length(str), 'Visible', 'on');
         
       end
       

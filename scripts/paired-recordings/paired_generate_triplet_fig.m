@@ -1,0 +1,1 @@
+%Substitute example triplet with CFNR0003

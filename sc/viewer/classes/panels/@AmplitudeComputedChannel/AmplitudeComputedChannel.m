@@ -21,7 +21,7 @@ classdef AmplitudeComputedChannel < AmplitudeChannel
 
       start = intra_get_amplitude_pseudo_start(amplitude);
       stop = intra_get_amplitude_pseudo_stop(amplitude, obj.gui.main_channel.v);
-      is_pseudo = intra_is_amplitude_data_pseudo(amplitude);
+      is_pseudo = ~amplitude.valid_data;
       rise = intra_get_amplitude_pseudo_rise(start, stop, is_pseudo, ...
         amplitude, obj.gui.main_channel.v);
       middle = intra_get_middle_index(rise, .1);

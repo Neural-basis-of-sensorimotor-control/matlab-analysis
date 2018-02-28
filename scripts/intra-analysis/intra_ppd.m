@@ -9,7 +9,7 @@ intra_load_constants
 
 %Find interstim distances that are equal (for the same channel)
 %plot_interstim_distances();
-%plot_all_pulses();
+%plot_all_pulses(neurons);
 
 ppd_amplitude = nan(length(neurons), 3);
 ppd_time = nan(3, 1);
@@ -165,7 +165,7 @@ ylabel('amplitude second stimulation [mV]')
 
 
 %Compare pulses from same channel at different places in pattern
-function plot_all_pulses() %#ok<*DEFNU>
+function plot_all_pulses(neurons) %#ok<*DEFNU>
 
 load intra_data.mat
 str_stims    = get_intra_motifs();

@@ -1,6 +1,5 @@
-classdef ScSignal < ScChannel & ScDynamicClass & sc_experiment.EmptyClassPlaceholder & ...
-  sc_experiment.Triggable
-  
+classdef ScSignal < ScChannel & ScDynamicClass
+
   methods (Static)
     empty_class = make_empty_class()
   end

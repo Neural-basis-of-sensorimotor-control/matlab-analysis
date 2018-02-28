@@ -14,6 +14,8 @@ str_first_stims = arrayfun(@(x) x.stim_electrodes(1).tag, intra_patterns.pattern
 
 for i=1:length(neurons)
   
+  sc_debug.print(i, length(neurons));
+
   neuron = neurons(i);
   
   signal = sc_load_signal(neuron);
@@ -42,6 +44,7 @@ for i=1:length(neurons)
     end
     
     msweeps = mean(sweeps, 2);
+
     plot(times, msweeps, 'LineWidth', 2)
     
     pattern = get_pattern(first_amplitude);

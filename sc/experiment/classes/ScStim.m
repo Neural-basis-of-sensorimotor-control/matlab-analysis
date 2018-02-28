@@ -65,14 +65,7 @@ classdef ScStim < ScChannel & sc_experiment.Triggable
       obj.triggers = ScList;
       
     end
-    
-    
-    function val = get_tags(obj)
-      
-      val = obj.triggers.values('tag');
-      
-    end
-    
+
   end
   
   methods (Static)

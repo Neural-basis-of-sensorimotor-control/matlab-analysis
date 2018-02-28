@@ -98,10 +98,11 @@ for i=1:length(triplets_list)
   end
   
 end
-        
+  
 incr_fig_indx();
 clf
 fill_matrix(dist);
+
 colorbar
 set(gca, 'XTick', (1:length(labels)), 'XTickLabel', labels, ...
   'YTick', (1:length(labels)), 'YTickLabel', labels, ...
@@ -117,4 +118,3 @@ plot(mean(avg_dist_different), 2, 'o')
 plot(mean(avg_dist_same), 1, 'o')
 plot(median(avg_dist_different), 2, '^')
 plot(median(avg_dist_same), 1, '^')
-

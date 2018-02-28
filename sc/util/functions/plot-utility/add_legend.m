@@ -73,15 +73,15 @@ else
       
     end
     
-    if add_only_one_legend
+    if ~ischar(add_only_one_legend) && add_only_one_legend
       
       h = legend(unique_ax_handles(end), sample_plots, unique_tags{:});
       
       if ~isempty(varargin)
         set(h, varargin{:});
       end
-      
-    else
+   
+    elseif ~ischar(add_only_one_legend)
       
       for i=1:length(unique_ax_handles)
         
@@ -92,6 +92,10 @@ else
         end
         
       end
+      
+    else
+      
+      h = [];
       
     end
     

@@ -1,8 +1,21 @@
 function all_p_values = intra_plot_intra_stim(neurons, str_stims, ...
-  height_limit, min_nbr_epsp, use_final_labels)
+  height_limit, min_nbr_epsp, use_threshold, modality)
 
-amplitude_heights = intra_get_values(str_stims, neurons, height_limit, ...
-  min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
+if ~exist('use_threshold', 'var')
+  use_threshold = true;
+end
+
+if use_threshold
+  
+  amplitude_heights = intra_get_values(str_stims, neurons, height_limit, ...
+    min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
+
+else
+  
+  amplitude_heights = intra_get_values_no_thresholding(str_stims, neurons, ...
+    @(x) x.(modality));
+  
+end
 
 all_p_values = [];
 
@@ -80,21 +93,6 @@ for i_neuron=1:length(neurons)
   
   title(tmp_neuron.file_tag, 'Interpreter', 'None');
   axis tight
-  
-%   if use_final_labels
-%     
-%     set(gca, 'XTickLabel', intra_stim_tag_to_indx(get(gca, 'XTickLabel'), ...
-%       str_stims))
-%     
-%     set(gca, 'YTickLabel', intra_stim_tag_to_indx(get(gca, 'YTickLabel'), ...
-%       str_stims))
-%     
-%     set(gca, 'YDir', 'reverse')
-%     set(gcf, 'Color', 'w')
-%     set(gca, 'Box', 'off')
-%     title(intra_file_tag_to_neuron_indx(i_neuron, neurons));
-%     
-%   end
   
 end
 

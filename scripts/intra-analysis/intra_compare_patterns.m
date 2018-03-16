@@ -1,19 +1,46 @@
-function intra_compare_patterns
-%flat fa - 1.0 sa
-%'flat fa#V3#2', 'flat fa#V3#4', 'flat fa#V3#5'
-%'1.0 sa#V3#2', '1.0 sa#V3#4', '1.0 sa#V3#5'
-
-clear
-reset_fig_indx()
+function intra_compare_patterns(str_stims, electrode_index)
 
 sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
 sc_debug.set_mode(true);
 
-intra_load_settings
-intra_load_constants
+neurons = intra_get_neurons();
 
 load intra_data.mat
-str_stims = {'flat fa#V3#2', 'flat fa#V3#4', 'flat fa#V3#5', '1.0 sa#V3#2', '1.0 sa#V3#4', '1.0 sa#V3#5'};
+
+if ~nargin
+  str_stims  = {'flat fa#V3#1', 'flat fa#V3#2', 'flat fa#V3#4', 'flat fa#V3#5', ...
+    '1.0 sa#V3#1', '1.0 sa#V3#2', '1.0 sa#V3#4', '1.0 sa#V3#5'};
+end
+
+if nargin<2
+  electrode_index = 3;
+end
+
+all_patterns = unique(get_values(str_stims, @get_pattern));
+
+str_single = {'1p electrode 1#V1#1'
+  '1p electrode 1#V1#2'
+  '1p electrode 1#V1#3'
+  '1p electrode 1#V1#4'
+  '1p electrode 1#V1#5'
+  '1p electrode 2#V2#1'
+  '1p electrode 2#V2#2'
+  '1p electrode 2#V2#3'
+  '1p electrode 2#V2#4'
+  '1p electrode 2#V2#5'
+  '1p electrode 3#V3#1'
+  '1p electrode 3#V3#2'
+  '1p electrode 3#V3#3'
+  '1p electrode 3#V3#4'
+  '1p electrode 3#V3#5'
+  '1p electrode 4#V4#1'
+  '1p electrode 4#V4#2'
+  '1p electrode 4#V4#3'
+  '1p electrode 4#V4#4'
+  '1p electrode 4#V4#5'};
+
+pretrigger  = -.1;
+posttrigger = .5;
 
 indx1 = false(size(intra_patterns.types));
 
@@ -33,42 +60,71 @@ for i=1:length(neurons)
   neuron = neurons(i);
   signal = sc_load_signal(neuron);
   v = signal.get_v(true, true, true, true);
-    
+  
   for ij=1:4
     
-    if ij ~= 3
+    if ij ~= electrode_index
       continue
     end
     
     incr_fig_indx();
     clf reset
     
-    h1 = subplot(3, 1, 1);
+    block1 = [1:3 5:7 9:11 13:15];
+    
+    h1 = subplot(16, 4, block1);
     title(neuron.file_tag)
+    ylabel('Stimulation electrode')
     
-    artstim.plot_patterns(h1, {'flat fa' '1.0 sa'});
+    artstim.plot_patterns(h1, all_patterns);
     
-    h2 = subplot(3, 1, 2);
-    title('V3 (manual amplitudes)')
+    h2 = subplot(16, 4, 20 + block1);
+    title(['V' num2str(ij) ' (manual amplitudes)'])
     hold on
     grid on
+    ylabel('EPSP amplitude')
     
-    h3 = subplot(3, 1, 3);
+    h3 = subplot(16, 4, 40 + block1);
     hold on
     grid on
     title('Average IC signal')
+    ylabel('Avg IC signal (mV)')
+    xlabel('Time (s)')
+     
+    block2 = 4:4:12;
+    h4 = subplot(16, 4, block2);
+    hold on
+    grid on
+    title('Single stim response (V1)')
+    ylabel('Amplitude mV')
+    
+    h4(2) = subplot(16, 4, 16+block2);
+    hold on
+    grid on
+    title('Single stim response (V2)')
+    ylabel('Amplitude mV')
+    
+    h4(3) = subplot(16, 4, 32+block2);
+    hold on
+    grid on
+    title('Single stim response (V3)')
+    ylabel('Amplitude mV')
+    
+    h4(4) = subplot(16, 4, 48+block2);
+    hold on
+    grid on
+    title('Single stim response (V4)')
+    ylabel('Amplitude mV')
+    xlabel('Time (s)')
     
     indx2 = cellfun(@(x) strcmp(x, ['V' num2str(ij)]), intra_patterns.types);
-        
+    
     for j=1:length(str_first_stims)
       
       str_pattern = get_pattern(str_first_stims{j});
       
-      switch str_pattern
-        
-        case {'flat fa' '1.0 sa'}
-        otherwise
-          continue
+      if ~any(cellfun(@(x) strcmp(x, str_pattern), all_patterns))
+        continue
       end
       
       first_amplitude = signal.amplitudes.get('tag', str_first_stims{j});
@@ -82,15 +138,17 @@ for i=1:length(neurons)
       indx = indx1 & indx2 & indx3;
       
       tmp_str_stims = {intra_patterns.stim_electrodes(indx).tag};
-      heights   = cell(size(tmp_str_stims));
-      times     = nan(size(tmp_str_stims));
-      n_indx    = find(indx);
+      heights       = cell(size(tmp_str_stims));
+      times         = nan(size(tmp_str_stims));
+      n_indx        = find(indx);
+      valid_data    = cell(size(tmp_str_stims));
       
       for k=1:length(tmp_str_stims)
-               
-        amplitude  = signal.amplitudes.get('tag', tmp_str_stims{k});
-        heights(k) = {amplitude.height};
-        times(k)   = intra_patterns.stim_electrodes(n_indx(k)).time - first_amplitude_offset;
+        
+        amplitude     = signal.amplitudes.get('tag', tmp_str_stims{k});
+        heights(k)    = {amplitude.height};
+        times(k)      = intra_patterns.stim_electrodes(n_indx(k)).time - first_amplitude_offset;
+        valid_data(k) = {amplitude.valid_data};
         
       end
       
@@ -110,7 +168,8 @@ for i=1:length(neurons)
         'Tag', str_pattern, ...
         'LineWidth', 2);
       
-      [sweeps, sweeptimes] = sc_get_sweeps(v, 0, first_amplitude.stimtimes, -.1, .5, signal.dt);
+      [sweeps, sweeptimes] = sc_get_sweeps(v, 0, first_amplitude.stimtimes, ...
+        pretrigger, posttrigger, signal.dt);
       
       [~, ind_zero] = min(abs(sweeptimes));
       
@@ -130,7 +189,47 @@ for i=1:length(neurons)
     end
     
     linkaxes([h1 h2 h3], 'x');
+    xlim([pretrigger posttrigger])
     add_legend(gcf, true, false)
+    
+    for j=1:length(str_single)
+      
+      tmp_single_stim = str_single{j};
+      
+      amplitude = signal.amplitudes.get('tag', tmp_single_stim);
+      
+      if isempty(amplitude)
+        continue
+      end
+      
+      [~, subplot_indx] = get_electrode(amplitude);
+      
+      axes(h4(subplot_indx))
+      
+      [~, stim_indx] = get_stim_indx(amplitude);
+      height = amplitude.height;
+      
+      plot(stim_indx*ones(size(height)), height, '+')
+      axis tight
+      
+    end
+    
+    
+    
+    linkaxes(h4)
+    
+    xl = xlim;
+    xlim([0 (xl(2)+1)]);
+    yl = ylim;
+    ylim([0 (yl(2))]);
+    
+    for j=1:length(h4)
+      
+      set(h4(j), 'XTick', 1:xl(2));
+      
+    end
+    
+    xlabel(h4(end), 'pulse nbr');
     
   end
   

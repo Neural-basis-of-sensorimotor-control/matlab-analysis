@@ -18,4 +18,16 @@ obj.all_objects = add_to_list(obj.all_objects, h_plot);
 
 set(obj.h_axes, 'ButtonDownFcn', @(~,~) add_limit(obj));
 
+h_plots = get_plots(obj.h_axes);
+
+for i=1:length(h_plots)
+  
+  if get_nbr_of_samples(h_plots(i)) > 2
+    
+    set(h_plots(i), 'ButtonDownFcn', @(~,~) add_limit(obj));
+  
+  end
+  
+end
+
 end

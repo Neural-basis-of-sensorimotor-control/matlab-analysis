@@ -35,7 +35,7 @@ classdef ScAmplitude < handle
       
       obj.labels = labels;
       obj.parent_signal = parent_signal;
-      obj.stimtimes = trigger.gettimes(parent_sequence.tmin,parent_sequence.tmax) + offset;
+      obj.stimtimes = trigger.gettimes(parent_sequence.tmin, parent_sequence.tmax) + offset;
       obj.data = nan(numel(obj.stimtimes),numel(labels));
       obj.tag = tag;
       obj.is_updated = false;

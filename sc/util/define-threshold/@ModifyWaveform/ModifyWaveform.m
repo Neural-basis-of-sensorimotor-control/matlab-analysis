@@ -47,9 +47,30 @@ classdef ModifyWaveform < handle
         signal = sc_load_signal(signal);
       end
       
+      while isempty(waveform)
+        
+        tag = input('Name for new waveform:', 's');
+        
+        if isempty(tag)
+          obj = [];
+          return
+        end
+        
+        if any(cellfun(@(x) strcmp(x, tag), signal.waveforms.values('tag')))
+          
+          disp('Name already exist')
+          
+        else
+          
+          waveform = ScWaveform(signal, tag, []);
+          
+        end
+        
+      end
+      
       if ischar(waveform)
         
-        waveform_tag = waveform; 
+        waveform_tag = waveform;
         waveform     = signal.waveforms.get('tag', waveform_tag);
         
         if isempty(waveform)
@@ -62,6 +83,10 @@ classdef ModifyWaveform < handle
       end
       
       obj.waveform = waveform;
+      
+      if isempty(obj.waveform.list)
+        obj.waveform.add(ScThreshold([], [], [], []));
+      end
       
       colors = varycolor(length(waveform.list));
       
@@ -95,5 +120,4 @@ classdef ModifyWaveform < handle
     end
     
   end
-  
 end

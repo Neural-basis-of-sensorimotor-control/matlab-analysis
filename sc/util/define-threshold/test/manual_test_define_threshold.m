@@ -1,5 +1,6 @@
-clear
+clc
 close all
+clear classes
 
 position_offset = 7:9:45;
 v_offset = (1:length(position_offset))*.2;
@@ -16,7 +17,13 @@ y = sin(t);
 
 plot(t, y);
 
-thr = DefineThreshold();
+%mwf = ModifyWaveformChild(gca, intra_get_neurons(1), 'EPSP5');
+
+%mwf = ModifyWaveform(gca, intra_get_neurons(1), 'EPSP5');
+
+%mwf.init_plot();
+
+thr = DefineThreshold(gca);
 
 thr.init_plot();
 

@@ -24,9 +24,5 @@ classdef ScTriggerParent < handle
       istrigger = false;
     end
     
-    function get_trigger_tags(obj)
-      error('Function %s not implemented', mfilename);
-    end
-    
   end
 end

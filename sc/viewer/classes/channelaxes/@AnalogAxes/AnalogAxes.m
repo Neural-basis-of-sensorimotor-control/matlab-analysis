@@ -91,19 +91,27 @@ classdef AnalogAxes < ChannelAxes
       grid(obj.ax,'on');
       
       if ~isempty(sweep)
+        
         if ~isempty(obj.v_raw)
+          
           obj.plotv(obj.v_raw,sweep,[1 1 1],[],false);
           
           if ~isempty(obj.gui.rmwf)
+            
             v_rmwf = zeros(size(obj.v_raw));
             v_rmwf = obj.gui.rmwf.remove_wf(v_rmwf);
             obj.plotv(-v_rmwf,sweep,[0 1 0],[],false);
+            
           end
+          
         end
         
         obj.plotv(obj.v,sweep,[1 0 0],btn_down_fcn,1);
+        
       else
+        
         cla(obj.ax);
+        
       end
       
       xlim(obj.ax,obj.gui.xlimits);

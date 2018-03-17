@@ -16,4 +16,6 @@ h_plot = plot(obj.h_axes, x_, y_, 'Marker', 's', ...
 
 obj.all_objects = add_to_list(obj.all_objects, h_plot);
 
+set(obj.h_axes, 'ButtonDownFcn', @(~,~) add_limit(obj));
+
 end

@@ -44,14 +44,14 @@ if isfile(filename)
         warning('Could not find property %s using settings %s in %s file. Setting empty value.', ...
           property, domain_tag, filename);
         
-        sc_settings.write_settings(property, '', domain_tag);
+        sc_settings.write_settings(property, '');
         
       end
       
     else
       
       warning('Could not find property %s. Setting empty value.', property);
-      sc_settings.write_settings(property, '', domain_tag);
+      sc_settings.write_settings(property, '');
     
     end
     

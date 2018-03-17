@@ -2,7 +2,7 @@ function clear_file()
 
 data = [];
 
-data.sc_settings.(sc_settings.get_default_settings_tag()).raw_data_dir = '';
+data.settings.(sc_settings.get_default_settings_tag()).raw_data_dir = '';
 
 struct2xml(data, sc_settings.get_settings_filename());
 

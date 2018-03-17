@@ -1,5 +1,6 @@
-function write_settings(property, val, domain_tag)
+function write_settings(property, val)
 
+domain_tag = sc_settings.get_current_settings_tag();
 data = xml2struct(sc_settings.get_settings_filename());
 
 data.settings.(domain_tag).(property).Text = val;

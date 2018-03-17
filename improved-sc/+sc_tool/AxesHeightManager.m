@@ -1,4 +1,4 @@
-classdef AxesHeightManager < AxesManager
+classdef AxesHeightManager < sc_tool.AxesManager
   
   properties (Dependent)
     axes_height

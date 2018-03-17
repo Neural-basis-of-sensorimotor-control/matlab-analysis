@@ -1,5 +1,8 @@
-classdef PlotManager < ExperimentManager & AxesHeightManager & TimeRangeManager & ...
-    ZoomManager & UnsavedChangesManager & HelpTextManager
+classdef PlotManager < sc_tool.ExperimentManager & ...
+    sc_tool.AxesHeightManager & sc_tool.TimeRangeManager & ...
+    sc_tool.ZoomManager & sc_tool.UnsavedChangesManager & ...
+    sc_tool.HelpTextManager & sc_tool.WaveformManager & ...
+    sc_tool.AmplitudeManager
   
   properties
     plot_window
@@ -10,7 +13,7 @@ classdef PlotManager < ExperimentManager & AxesHeightManager & TimeRangeManager 
   end
   
   properties (SetAccess = 'private', SetObservable)
-    m_plot_mode = PlotModeEnum.plot_sweep
+    m_plot_mode = sc_tool.PlotModeEnum.plot_sweep
   end
   
   methods
@@ -18,7 +21,7 @@ classdef PlotManager < ExperimentManager & AxesHeightManager & TimeRangeManager 
     function obj = PlotManager()
       
       [~, filename] = sc_settings.get_last_experiment();
-
+      
       if ~isfile(filename)
         
         [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file');
@@ -40,34 +43,6 @@ classdef PlotManager < ExperimentManager & AxesHeightManager & TimeRangeManager 
       
     end
     
-    
-    function update_plots(obj)
-      
-      cla(obj.signal1_axes);
-      hold(obj.signal1_axes, 'on');
-      
-      if isempty(obj.signal1)
-        return
-      end
-      
-      xlim(obj.signal1_axes, [obj.pretrigger obj.posttrigger]);
-      xlabel(obj.signal1_axes, 'Time [s]');
-      ylabel(obj.signal1_axes, obj.signal1.tag);
-      set(obj.signal1_axes, 'XColor', [1 1 1], 'YColor', [1 1 1], 'Color', ...
-        [0 0 0], 'Box', 'off');
-      grid(obj.signal1_axes,'on');
-      
-      switch obj.plot_mode
-        case PlotModeEnum.plot_sweep
-          obj.plot_sweep();
-        case PlotModeEnum.plot_amplitude
-          obj.plot_amplitude();
-        case PlotModeEnum.edit_threshold
-          obj.plot_edit_waveform();
-      end
-            
-    end
-    
   end
   
   methods
@@ -79,11 +54,37 @@ classdef PlotManager < ExperimentManager & AxesHeightManager & TimeRangeManager 
     
     function set.plot_mode(obj, val)
       
-      if val == PlotModeEnum.plot_amplitude && isempty(obj.amplitude)
+      if val == sc_tool.PlotModeEnum.plot_amplitude && ...
+          isempty(obj.amplitude)
         
         warning('No amplitudes available. Cannot use amplitude plot mode.')
-        val = PlotModeEnum.plot_sweep;
+        val = sc_tool.PlotModeEnum.plot_sweep;
         
+      end
+      
+      if obj.m_plot_mode == sc_tool.PlotModeEnum.edit_threshold && ...
+          val ~= sc_tool.PlotModeEnum.edit_threshold
+        
+        if obj.modify_waveform.has_unsaved_changes
+          
+          answ = questdlg('Do you want to save waveform edits?');
+          
+          if strcmpi(answ, 'Yes')
+            
+            obj.sc_save();
+            obj.modify_waveform = [];
+            
+          elseif strcmpi(answ, 'No')
+            
+            obj.modify_waveform = [];
+            
+          else
+            
+            obj.m_plot_mode = sc_tool.PlotModeEnum.edit_threshold;
+            
+          end
+          
+        end
       end
       
       obj.m_plot_mode = val;

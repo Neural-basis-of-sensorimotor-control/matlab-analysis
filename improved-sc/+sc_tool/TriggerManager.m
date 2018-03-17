@@ -1,4 +1,4 @@
-classdef TriggerManager < WaveformManager & AmplitudeManager
+classdef TriggerManager < handle
   
   properties (Dependent)
     trigger_parent
@@ -31,7 +31,7 @@ classdef TriggerManager < WaveformManager & AmplitudeManager
     
     function set.trigger_parent(obj, val)
       
-      if isa(val, 'EmptyClass')
+      if isa(val, 'sc_tool.EmptyClass')
         
         obj.m_trigger_parent = val.source;
         
@@ -39,7 +39,7 @@ classdef TriggerManager < WaveformManager & AmplitudeManager
 
           obj.trigger = get_set_val(obj.signal1.amplitudes.list, ...
             obj.amplitude, 1);
-          obj.plot_mode = PlotModeEnum.plot_amplitude;
+          obj.plot_mode = sc_tool.PlotModeEnum.plot_amplitude;
 
         end
         

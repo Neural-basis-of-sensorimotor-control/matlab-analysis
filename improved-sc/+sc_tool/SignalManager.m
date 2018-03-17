@@ -17,6 +17,7 @@ classdef SignalManager < handle
   
   properties (Abstract)
     amplitude
+    waveform
   end
   
   methods
@@ -33,11 +34,13 @@ classdef SignalManager < handle
         
         obj.v1        = [];
         obj.amplitude = [];
+        obj.waveform  = [];
       
       else
         
         obj.v1        = obj.m_signal1.get_v(true, true, true, true);
         obj.amplitude = get_set_val(obj.m_signal1.amplitudes.list, obj.amplitude, 1);
+        obj.waveform  = get_set_val(obj.m_signal1.waveforms.list, obj.waveform, 1);
       
       end
       

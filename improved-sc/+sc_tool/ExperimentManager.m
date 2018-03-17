@@ -1,4 +1,5 @@
-classdef ExperimentManager < SignalManager & TriggerManager
+classdef ExperimentManager < sc_tool.SignalManager & ...
+    sc_tool.TriggerManager
   
   properties (Dependent)
     experiment
@@ -48,18 +49,18 @@ classdef ExperimentManager < SignalManager & TriggerManager
       
       triggerparents = obj.sequence.gettriggerparents(tmin, tmax);
       triggerparents = triggerparents.cell_list;
-      triggerparents = concat_list({EmptyClass()}, triggerparents);
+      triggerparents = concat_list({sc_tool.EmptyClass()}, triggerparents);
       
       if ~isempty(obj.signal1.amplitudes.list)
         
-        amplitude_token = EmptyClass();
+        amplitude_token = sc_tool.EmptyClass();
         amplitude_token.source = obj.signal1;
         triggerparents = add_to_list(triggerparents, amplitude_token);
         
       end
       
       obj.trigger_parent = get_set_val(triggerparents, obj.trigger_parent, ...
-        EmptyClass());
+        sc_tool.EmptyClass());
       
     end
     

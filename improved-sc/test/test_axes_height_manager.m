@@ -1,8 +1,8 @@
 clc
 close all
-clipboard('copy', 'D:\raw_data\mat\BGNR140131')
+clipboard('copy', 'D:\raw_data\mat\BJNR140211')
 clear classes
-h = PlotManager;
+h = sc_tool.PlotManager;
 h.axes_height = [10 10];
 h.axes_height
 h.axes_height = 'auto';

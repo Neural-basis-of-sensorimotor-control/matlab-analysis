@@ -46,28 +46,7 @@ classdef ModifyWaveform < handle
       if isneuron(signal)
         signal = sc_load_signal(signal);
       end
-      
-      while isempty(waveform)
-        
-        tag = input('Name for new waveform:', 's');
-        
-        if isempty(tag)
-          obj = [];
-          return
-        end
-        
-        if any(cellfun(@(x) strcmp(x, tag), signal.waveforms.values('tag')))
-          
-          disp('Name already exist')
-          
-        else
-          
-          waveform = ScWaveform(signal, tag, []);
-          
-        end
-        
-      end
-      
+
       if ischar(waveform)
         
         waveform_tag = waveform;

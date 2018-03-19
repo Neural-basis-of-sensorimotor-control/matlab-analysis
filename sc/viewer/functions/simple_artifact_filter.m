@@ -4,6 +4,8 @@ if isempty(v) || isempty(artifact_indx)
   return
 end
 
+artifact_indx(artifact_indx + width_indx > length(artifact_indx)) = [];
+
 blank_area_indx = bsxfun(@plus, artifact_indx', (1:width_indx)');
 
 dv = (v(artifact_indx+width_indx) - v(artifact_indx))'/width_indx;

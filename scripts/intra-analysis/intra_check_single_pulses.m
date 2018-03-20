@@ -17,8 +17,6 @@ if nargin>=2
   neurons = neurons(neuron_indx);
 end
 
-
-
 load intra_data.mat
 
 str_single = {'1p electrode 1#V1#1'

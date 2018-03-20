@@ -55,7 +55,7 @@ nbr_of_subplots   = nbr_of_electrodes * length(neurons);
 
 figure(fig6)
 subplot(2, 2, 1)
-title('Height')
+title('Height coefficient of variation single pulses')
 xlabel('Neuron')
 set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
   'XTickLabelRotation', 270)
@@ -66,7 +66,7 @@ hold on
 set(gca, 'Color', 'k')
 
 subplot(2, 2, 2)
-title('Latency - 4 ms')
+title('Latency - 4 ms coefficient of variation single pulses')
 xlabel('Neuron')
 set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
   'XTickLabelRotation', 270)
@@ -77,7 +77,7 @@ hold on
 set(gca, 'Color', 'k')
 
 subplot(2, 2, 3)
-title('Time to peak')
+title('Time to peak coefficient of variation single pulses')
 xlabel('Neuron')
 set(gca, 'XTick', 1:length(neurons), 'XTickLabel', {neurons.file_tag}, ...
   'XTickLabelRotation', 270)
@@ -86,6 +86,10 @@ ylabel('Coefficient of variation');
 grid on
 hold on
 set(gca, 'Color', 'k')
+
+all_heights   = [];
+all_widths    = [];
+all_latencies = [];
 
 for i_neuron=1:length(neurons)
   
@@ -97,7 +101,7 @@ for i_neuron=1:length(neurons)
   figure(fig5)
   h_axes = sc_square_subplot(length(neurons), i_neuron);
   hold on
-  title(neuron.file_tag);
+  title([neuron.file_tag ': height vs latency']);
   xlabel('height')
   ylabel('latency - 4 ms')
   zlabel('time to peak')
@@ -118,26 +122,34 @@ for i_neuron=1:length(neurons)
     latency = amplitude.latency - 4e-3;
     width   = amplitude.width;
     
+    all_heights   = concat_list(all_heights, height);
+    all_widths    = concat_list(all_widths, width);
+    all_latencies = concat_list(all_latencies, latency);
+    
     [str_electrode, electrode_indx] = get_electrode(amplitude);
     
     figure(fig1)
     sc_square_subplot(nbr_of_subplots, (i_neuron-1)*nbr_of_electrodes + electrode_indx);
-    hold on
+    hold on    
+    title(sprintf('%s, V%d', neuron.file_tag, electrode_indx));
     plot3(height, latency, width, 'k.')
     
     figure(fig2)
     sc_square_subplot(nbr_of_subplots, (i_neuron-1)*nbr_of_electrodes + electrode_indx);
-    hold on
+    hold on    
+    title(sprintf('%s, V%d', neuron.file_tag, electrode_indx));
     plot(height, latency, 'k.')
     
     figure(fig3)
     sc_square_subplot(nbr_of_subplots, (i_neuron-1)*nbr_of_electrodes + electrode_indx);
     hold on
+    title(sprintf('%s, V%d', neuron.file_tag, electrode_indx));
     plot(height, width, 'k.')
     
     figure(fig4)
     sc_square_subplot(nbr_of_subplots, (i_neuron-1)*nbr_of_electrodes + electrode_indx);
     hold on
+    title(sprintf('%s, V%d', neuron.file_tag, electrode_indx));
     plot(latency, width, 'k.')
     
     axes(h_axes)
@@ -155,7 +167,6 @@ for i_neuron=1:length(neurons)
   end
   
   view(h_axes, 3)
-  sc_plot_util.only_end_ticks(h_axes, 'XYZ');
   
 end
 
@@ -170,7 +181,6 @@ for i_subplot=1:nbr_of_subplots
     
   view(3)
   grid on
-  sc_plot_util.only_end_ticks(gca, 'XYZ');
   
   xl = xlim;
   yl = ylim;
@@ -198,10 +208,8 @@ for i_subplot=1:nbr_of_subplots
   
   figure(fig2)
   sc_square_subplot(nbr_of_subplots, i_subplot);
-  sc_plot_util.only_end_ticks();
   
   grid on
-  sc_plot_util.only_end_ticks();
   
   if i_subplot == 1
     
@@ -225,7 +233,6 @@ for i_subplot=1:nbr_of_subplots
   sc_square_subplot(nbr_of_subplots, i_subplot);
   
   grid on
-  sc_plot_util.only_end_ticks();
   
   xl = xlim;
   yl = ylim;
@@ -249,7 +256,6 @@ for i_subplot=1:nbr_of_subplots
   sc_square_subplot(nbr_of_subplots, i_subplot);
   
   grid on
-  sc_plot_util.only_end_ticks();
   
   xl = xlim;
   yl = ylim;
@@ -289,5 +295,12 @@ yl = ylim;
 if yl(1) > 0
   ylim([0 yl(2)])
 end
+
+fprintf('Height\t%f\t%f\t%f\n', mean(all_heights), std(all_heights), ...
+  std(all_heights)/mean(all_heights));
+fprintf('Latency\t%f\t%f\t%f\n', mean(all_latencies), std(all_latencies), ...
+  std(all_latencies)/mean(all_latencies));
+fprintf('Time to peak\t%f\t%f\t%f\n', mean(all_widths), std(all_widths), ...
+  std(all_widths)/mean(all_widths));
 
 end

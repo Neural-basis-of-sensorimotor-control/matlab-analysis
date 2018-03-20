@@ -9,11 +9,11 @@ if ischar(arg_in) || (isnumeric(arg_in) && length(arg_in) == 1)
   end
     
   if startsWith(neurons(indx).file_tag, 'ICNR') || startsWith(neurons(indx).file_tag, 'IDNR')
-    str_label = sprintf('Neuron %d *', indx);
+    str_label = sprintf('Neuron %.2d *', indx);
   elseif startsWith(neurons(indx).file_tag, 'IFNR')
-    str_label = sprintf('Neuron %d **', indx);
+    str_label = sprintf('Neuron %.2d **', indx);
   else
-    str_label = sprintf('Neuron %d', indx);
+    str_label = sprintf('Neuron %.2d', indx);
   end
   
 elseif iscell(arg_in)

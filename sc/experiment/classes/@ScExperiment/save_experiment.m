@@ -4,11 +4,10 @@ saved = false;
 
 if prompt_before_saving
   
-  if isfile(save_path)
-    default_dir = save_path;
-  elseif isfile([sc_settings.get_default_experiment_dir() save_path])
-    default_dir = [sc_settings.get_default_experiment_dir() save_path];
-  else
+  default_dir = sc_file_loader.get_filepath(save_path, ...
+    sc_settings.get_default_experiment_dir(), 1);
+  
+  if isempty(default_dir)
     default_dir = sc_settings.get_default_experiment_dir();
   end
     
@@ -25,7 +24,8 @@ else
   
   if ~isfile(save_path)
     
-    tmp_filename = [sc_settings.get_default_experiment_dir() save_path];
+    tmp_filename = sc_file_loader.get_filepath(save_path, ...
+      sc_settings.get_default_experiment_dir(), 1);
     
     if isfile(tmp_filename)
       
@@ -47,14 +47,14 @@ else
   end
 end
 
-obj = experiment;
-
-[~, name, ext] = fileparts(save_path);
-obj.save_name = [name ext];
-
+obj = experiment; %#ok<NASGU>
 save(save_path, 'obj')
 
-sc_settings.set_last_experiment(save_path);
+[~, str_file, str_dir] = sc_file_loader.get_filepath(save_path, '', 1);
+experiment.save_name = str_file;
+
+sc_settings.set_last_experiment(str_file);
+sc_settings.set_default_experiment_dir(str_dir);
 
 saved = true;
 

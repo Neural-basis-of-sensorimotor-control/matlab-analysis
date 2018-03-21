@@ -3,7 +3,6 @@ function [pattern_times, str_pattern]  = paired_get_pattern_times(neuron)
 str_pattern = get_patterns();
 str_pattern = str_pattern(~startsWith(str_pattern, '1p electrode'));
 
-expr_fname = [sc_settings.get_default_experiment_dir() neuron.experiment_filename];
 expr = ScExperiment.load_experiment(expr_fname);
 
 file = get_item(expr.list, neuron.file_tag);

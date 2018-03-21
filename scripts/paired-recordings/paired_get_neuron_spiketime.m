@@ -3,7 +3,6 @@ function varargout = paired_get_neuron_spiketime(neuron, template_tag)
 % [t1, t2, waveform1, waveform2]           = paired_get_neuron_spiketime(neuron)
 % [t1, ..., tN, waveform1, ..., waveformN] = paired_get_neuron_spiketime(neuron)
 
-expr_fname = [sc_settings.get_default_experiment_dir() neuron.experiment_filename];
 expr       = ScExperiment.load_experiment(expr_fname);
 
 file       = get_item(expr.list, neuron.file_tag);

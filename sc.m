@@ -77,18 +77,37 @@ if ~nargin && isfile(experiment_path)
   args = {experiment_path};
 end
 
-if ~numel(args) || strcmpi(args{1}, '-loadnew')
+if isempty(args)
   
-  %Ignore previous experiment
-  args = loadnew(args);
+  filepath = sc_file_loader.get_experiment_file();
   
-  if ~isempty(args)
-    viewer = load_file(args);
+  if ~isempty(filepath)
+    viewer = load_file({filepath});
   else
     viewer = [];
   end
   
-  return
+  return;
+  
+end
+
+if strcmpi(args{1}, '-loadnew')
+  %Ignore previous experiment
+  
+  [str_file, str_dir] = uigetfile('*_sc.mat', 'Select experiment file', ...
+    sc_settings.get_last_experiment());
+  
+  if ~ischar(str_file)
+    return
+  end
+  
+  filepath = sc_file_loader.get_filepath(str_file, str_dir, 1);
+  
+  if ~isempty(filepath)
+    viewer = load_file({filepath});
+  else
+    viewer = [];
+  end
   
 end
 
@@ -98,28 +117,28 @@ if strcmpi(args{1}, '-help')
   return
   
 end
-  
+
 if strcmpi(args{1}, '-what')
   
   print_experiments_in_dir();
   return
   
 end
-  
+
 if strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
   
   viewer = create_new_experiment(args);
   return
   
 end
-  
+
 if strcmpi(args{1}, '-version')
   
   fprintf('See <a href="%s">GitHub</a> for additional information.\n', github_url);
   return
   
 end
-  
+
 if strcmpi(args{1}, '-amplitude')
   
   args = args(2:end);
@@ -133,10 +152,10 @@ if numel(args{1}) && args{1}(1) == '-'
   
   fprintf(['Illegal command : ' args{1}]);
   return
-
-end
   
-viewer = load_file(args);  
+end
+
+viewer = load_file(args);
 
 end
 
@@ -144,29 +163,6 @@ end
 function val = file_is_experiment(str)
 
 val = numel(str)>7 && strcmpi(str(end-6:end), '_sc.mat');
-
-end
-
-
-function args = loadnew(args)
-
-[fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file', ...
-  sc_settings.get_default_experiment_dir());
-
-filename = fullfile(pname, fname);
-
-if isfile(filename)
-  
-  args = {filename};
-  sc_settings.set_default_experiment_dir(pname);
-  sc_settings.set_last_experiment(fname);
-  
-else
-  
-  fprintf('Could not detect file\n');
-  return
-  
-end
 
 end
 
@@ -287,7 +283,6 @@ end
 
 viewer = GuiManager();
 
-sc_settings.set_default_experiment_dir(filename);
 viewer.experiment = ScExperiment.load_experiment(filename);
 viewer.show;
 

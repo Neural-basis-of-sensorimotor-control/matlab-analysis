@@ -12,7 +12,7 @@ signal.sc_save(true);
 
 end
 
-function signal = add_amplitudes_subfct(experiment_file, file_tag, channel_str, varargin)
+function signal = add_amplitudes_subfct(experiment_filename, file_tag, channel_str, varargin)
 tmin = 0; tmax = inf;
 
 for i=1:2:length(varargin)

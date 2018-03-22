@@ -20,26 +20,18 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     
     function obj = PlotManager()
       
-      [~, filename] = sc_settings.get_last_experiment();
-      
-      if ~isfile(filename)
+      filepath = sc_file_loader.get_experiment_file();
+
+      if isempty(filepath)
         
-        [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file');
-        filename       = fullfile(pname, fname);
-        
-        if ~isfile(filename)
-          
           fprintf('Could not detect file\n');
           return;
-          
-        end
-        
+    
       end
       
       obj.plot_window = figure('ToolBar', 'none', 'Color', 'k');
       set(obj.plot_window, 'SizeChangedFcn', @(~,~) update_axes_position(obj));
-      sc_settings.set_default_experiment_dir(filename);
-      obj.experiment = ScExperiment.load_experiment(filename);
+      obj.experiment = ScExperiment.load_experiment(filepath);
       
     end
     

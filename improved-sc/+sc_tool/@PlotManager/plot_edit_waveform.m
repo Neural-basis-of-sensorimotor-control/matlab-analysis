@@ -20,7 +20,7 @@ if isempty(obj.modify_waveform)
       
     else
       
-      waveform = ScWaveform(signal, tag, []);
+      waveform = ScWaveform(obj.signal1, tag, []);
       obj.signal1.waveforms.add(waveform);
       obj.waveform = waveform;
       obj.has_unsaved_changes = true;

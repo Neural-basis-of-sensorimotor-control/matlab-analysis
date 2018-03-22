@@ -9,7 +9,7 @@ end
 
 obj.reset_axes(obj.trigger_axes, []);
 obj.reset_axes(obj.signal1_axes, obj.signal1.tag);
-obj.reset_axes(obj.signal2_axes, obj.signal2.tag);
+obj.reset_axes(obj.signal2_axes, nmpty(obj.signal2));
 
 if obj.plot_mode == sc_tool.PlotModeEnum.plot_sweep
   

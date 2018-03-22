@@ -121,8 +121,8 @@ for i_neuron=1:length(neurons)
   hold on
   title([neuron.file_tag]);
   xlabel('height')
-  ylabel('latency - 4 ms')
-  zlabel('time to peak')  
+  ylabel('latency ms')
+  zlabel('time to peak ms')  
   
   for i_single=1:length(str_single)
     
@@ -135,8 +135,8 @@ for i_neuron=1:length(neurons)
     end
     
     height  = amplitude.height;
-    latency = amplitude.latency - 4e-3;
-    width   = amplitude.width;
+    latency = 1e3*amplitude.latency;
+    width   = 1e3*amplitude.width;
     
     [str_electrode, electrode_indx] = get_electrode(amplitude);
     
@@ -193,7 +193,7 @@ for i_subplot=1:nbr_of_subplots
   if i_subplot == 1
     
     xlabel('height')
-    ylabel('latency - 4 ms')
+    ylabel('latency')
     zlabel('time to peak')
     
   end

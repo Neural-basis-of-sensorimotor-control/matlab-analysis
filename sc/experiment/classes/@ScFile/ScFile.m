@@ -133,28 +133,11 @@ classdef ScFile < ScList & ScDynamicClass
     %Check that raw data file exists on hard drive
     function success = prompt_for_raw_data_dir(obj)
       
-      success = true;
+      tmp_filepath = sc_file_loader.get_raw_data_file(obj.filepath);
+      success  = ~isempty(tmp_filepath);
       
-      while ~exist(obj.filepath, 'file')
-        answer = questdlg(['File ' obj.filename ' could not be ' ...
-          'found in current directory. Abort program?'],'',...
-          'Yes, abort', 'No, choose new directory',...
-          'No, choose new directory');
-        
-        if strcmp(answer, 'Yes, abort')
-          
-          success = false;
-          return
-          
-        end
-        
-        dname = uigetdir(obj.parent.fdir, ...
-          ['Choose load directory for ' obj.tag]);
-        
-        if ~isnumeric(dname)
-          obj.parent.set_fdir(dname);
-        end
-        
+      if success
+        obj.filepath = tmp_filepath;
       end
       
     end

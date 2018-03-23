@@ -81,6 +81,24 @@ fprintf('Height vs latency\t%f\t%f\n', mean(all_r2_height_latency), std(all_r2_h
 fprintf('Height vs time to peak\t%f\t%f\n', mean(all_r2_height_t2p), std(all_r2_height_t2p));
 fprintf('Latency vs time to peak\t%f\t%f\n', mean(all_r2_latency_t2p), std(all_r2_latency_t2p));
 
+h_cov = [];
+l_cov = [];
+w_cov = [];
+
+for i=1:nbr_of_electrodes
+  for j=1:nbr_of_neurons
+    
+    h_cov = add_to_list(h_cov, std(enc_heights{i, j})/mean(enc_heights{i, j}));
+    l_cov = add_to_list(l_cov, std(enc_latency{i, j})/mean(enc_latency{i, j}));
+    w_cov = add_to_list(w_cov, std(enc_width{i, j})/mean(enc_width{i, j}));
+  
+  end
+end
+
+fprintf('%g\t%g\n', mean(h_cov), std(h_cov));
+fprintf('%g\t%g\n', mean(l_cov), std(l_cov));
+fprintf('%g\t%g\n', mean(w_cov), std(w_cov));
+
 end
 
 function plot_disparity(x, y, str_x, str_y, tags)

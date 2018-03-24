@@ -1,7 +1,6 @@
 Spikeviewer
-=========================
 
-spikeviewer Graphical user interface to analyze data imported from Spike2
+Graphical user interface to analyze data imported from Spike2
 Created 2013-2018 by Hannes Mogensen, Neural Basis of Sensorimotor Control
 Free to use or modify with due acknowledgement
 

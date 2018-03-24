@@ -6,6 +6,7 @@ classdef GuiManager < sc_tool.GuiWrapper
   
   methods (Static)
     varargout = get_panels(varargin)
+    varargout = create_ui_object(varargin)
   end
   
   methods

@@ -1,16 +1,22 @@
 function [titles, components] = get_panels()
 
-titles      = {};
-components  = {};
+titles = {'Reset', 'Experiment'};
 
-titles = add_to_list(titles, 'Experiment');
-
-components = add_to_list(components, {
-  'text'      'Experiment'                []      []       []
-  'text'      @(x) x.experiment.save_name []      []       []
-  'text'      'File'                      []      []       []
-  'popupmenu' @(x) x.experiment.list @(x) x.file  @st_file 'm_file'
-  });
-
+components = {
+  {
+  {'pushbutton', [], 'Update', [], @(x, ~, ~) x.update()}
+  {}
+  {'text', 'm_file', @(x) x.help_text, 2,  @st_help_txt, sc_tool.UiControl.default_width, 2*sc_tool.UiControl.default_height}
+  {}
+  }
+  
+  {{'text', [], 'Experiment'}
+  {'text', 'm_experiment', @(x) x.experiment.save_name}
+  {}
+  {'text', [], 'File'}
+  {'popupmenu', 'm_file', @(x) x.experiment.list, @(x) x.file,  @st_file}
+  {}
+  }
+  };
 
 end

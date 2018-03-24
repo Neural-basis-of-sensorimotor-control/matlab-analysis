@@ -1,5 +1,10 @@
 classdef UiControl < handle
   
+  properties (Constant)
+    default_width = 200
+    default_height = 20
+  end
+  
   properties
     
     viewer
@@ -9,26 +14,37 @@ classdef UiControl < handle
     fcn_get_string
     fcn_get_value
     fcn_callback
-    
     viewer_property
-    
+    width
+    height
+
   end
   
   methods
     
-    function obj = UiControl(viewer, style, get_string, get_value, ...
-        fcn_callback, viewer_property)
+    function obj = UiControl(viewer, style, fcn_get_string, fcn_get_value, ...
+        fcn_callback, viewer_property, width, height)
       
-      obj.viewer           = viewer;
-      obj.style            = style;
-      obj.fcn_get_string   = get_string;
-      obj.fcn_get_value    = get_value;
-      obj.fcn_callback     = fcn_callback;
-      obj.viewer_property  = viewer_property;
+      if nargin < 3,  fcn_get_string = [];          end
+      if nargin < 4,  fcn_get_value  = [];          end
+      if nargin < 5,  fcn_callback  = [];           end
+      if nargin < 6,  viewer_property  = [];        end
+      if nargin < 7,  width  = obj.default_width;   end
+      if nargin < 8,  height = obj.default_height;  end
+      
+      obj.viewer          = viewer;
+      obj.style           = style;
+      obj.fcn_get_string  = fcn_get_string;
+      obj.fcn_get_value   = fcn_get_value;
+      obj.fcn_callback    = fcn_callback;
+      obj.viewer_property = viewer_property;
+      obj.width           = width;
+      obj.height          = height;
       
       obj.ui_object = uicontrol('style', obj.style, ...
         'callback', @(~,~) control_callback(obj), ...
         'Visible', 'off');
+      setheight(obj.ui_object, obj.height);
       
       if strcmpi(obj.style, 'text')
         set(obj.ui_object, 'HorizontalAlignment', 'left');
@@ -38,7 +54,7 @@ classdef UiControl < handle
         
         obj.listener_callback();
         sc_addlistener(obj.viewer, obj.viewer_property, ...
-          @(~,~) listener_callback(obj), obj.ui_object);
+          obj.listener_callback, obj.ui_object);
         
       else
         
@@ -109,7 +125,7 @@ classdef UiControl < handle
         
       end
       
-      if ~isempty(indx)
+      if ~isempty(indx) && ~isnumeric(indx)
         
         if ischar(indx)
           indx = find(cellfun(@(x) strcmp(x, indx), str));

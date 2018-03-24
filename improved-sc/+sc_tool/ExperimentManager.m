@@ -34,33 +34,44 @@ classdef ExperimentManager < sc_tool.SignalManager & ...
       
       obj.m_file = val;
       
-      obj.sequence = get_set_val(obj.file.list, obj.sequence, 'full');
-            
-      obj.signal1 = get_set_val(obj.file.signals.list, obj.signal1, 'patch');
-      
-      if isempty(obj.signal2)
-        obj.signal2 = get_set_val(obj.file.signals.list, obj.signal2, 'patch2');
-      else
+      if isempty(obj.m_file)
+        
+        obj.sequence = [];
+        obj.signal1 = [];
         obj.signal2 = [];
-      end
-      
-      tmin = obj.sequence.tmin;
-      tmax = obj.sequence.tmax;
-      
-      triggerparents = obj.sequence.gettriggerparents(tmin, tmax);
-      triggerparents = triggerparents.cell_list;
-      triggerparents = concat_list({sc_tool.EmptyClass()}, triggerparents);
-      
-      if ~isempty(obj.signal1.amplitudes.list)
+        obj.triggerparents = [];
         
-        amplitude_token = sc_tool.EmptyClass();
-        amplitude_token.source = obj.signal1;
-        triggerparents = add_to_list(triggerparents, amplitude_token);
+      else
+        
+        obj.sequence = get_set_val(obj.file.list, obj.sequence, 'full');
+        
+        obj.signal1 = get_set_val(obj.file.signals.list, obj.signal1, 'patch');
+        
+        if isempty(obj.signal2)
+          obj.signal2 = get_set_val(obj.file.signals.list, obj.signal2, 'patch2');
+        else
+          obj.signal2 = [];
+        end
+        
+        tmin = obj.sequence.tmin;
+        tmax = obj.sequence.tmax;
+        
+        triggerparents = obj.sequence.gettriggerparents(tmin, tmax);
+        triggerparents = triggerparents.cell_list;
+        triggerparents = concat_list({sc_tool.EmptyClass()}, triggerparents);
+        
+        if ~isempty(obj.signal1.amplitudes.list)
+          
+          amplitude_token = sc_tool.EmptyClass();
+          amplitude_token.source = obj.signal1;
+          triggerparents = add_to_list(triggerparents, amplitude_token);
+          
+        end
+        
+        obj.trigger_parent = get_set_val(triggerparents, obj.trigger_parent, ...
+          sc_tool.EmptyClass());
         
       end
-      
-      obj.trigger_parent = get_set_val(triggerparents, obj.trigger_parent, ...
-        sc_tool.EmptyClass());
       
     end
     

@@ -1,8 +1,9 @@
 function show(obj)
 
-fig_mgr = sc_layout.FigureLayoutManager(obj.button_window);
 
 [titles, components] = sc_tool.GuiManager.get_panels();
+
+fig_mgr = sc_layout.FigureLayoutManager(gcf);
 
 for i=1:length(titles)
   
@@ -10,24 +11,43 @@ for i=1:length(titles)
   comp      = components{i};
   panel_mgr = sc_layout.PanelLayoutManager(panel);
   
-  for j=1:2:size(comp, 1)
+  for j=1:length(comp)
     
-    for k=j:j+1
+    args   = comp{j};
+    
+    if isempty(args)
       
-      args   = comp(k, :);
-      uictrl = sc_tool.UiControl(obj, args{:});
+      panel_mgr.newline();
     
-      panel_mgr.add(uictrl.ui_object, 100);
+    else
+      
+      indx = 1:length(args);
+      indx = find(indx == 1 | indx >= 8);
+      tmp_args = args(indx);
+      ui_object = sc_tool.GuiManager.create_ui_object(tmp_args{:});
+      
+      indx = 1:length(args);
+      indx = find(indx > 1 & indx < 6);
+      tmp_args = args(indx); %#ok<*FNDSB>
+      sc_tool.ViewerListener(obj, ui_object, tmp_args{:});
+      
+      if length(args) >= 6 && ~isempty(args{6})
+        setwidth(ui_object, args{6});
+      end
+
+      if length(args) >= 7 && ~isempty(args{7})
+        setheight(ui_object, args{7});
+      end
+      
+      panel_mgr.add(ui_object, getwidth(ui_object));
       
     end
-    
-    panel_mgr.newline();
     
   end
   
   panel_mgr.trim();
   
-  fig_mgr.add(panel, 200);
+  fig_mgr.add(panel, 2*sc_tool.UiControl.default_width);
     
 end
 

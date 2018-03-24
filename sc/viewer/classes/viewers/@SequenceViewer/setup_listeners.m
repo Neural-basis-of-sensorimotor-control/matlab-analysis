@@ -13,6 +13,7 @@ addlistener(obj,'main_channel','PostSet',@(~,~) main_channel_listener(obj));
 		addlistener(objh.main_channel,'ax_pr','PostSet',@(~,~) main_channel_ax_listener(objh));
 		
 		function main_channel_ax_listener(objh)
+      
 			if ~isempty(objh.main_axes)
 				z = zoom(objh.main_axes);
 				set(z,'ActionPostCallback',@(~,~) xaxis_listener(objh));

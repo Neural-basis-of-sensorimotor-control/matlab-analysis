@@ -4,6 +4,9 @@ if isempty(h_axes) || ~ishandle(h_axes)
   return
 end
 
+cla(h_axes);
+hold(h_axes, 'on');
+
 xlim(h_axes, [obj.pretrigger obj.posttrigger]);
 xlabel(h_axes, 'Time [s]');
 ylabel(h_axes, str_ylabel);

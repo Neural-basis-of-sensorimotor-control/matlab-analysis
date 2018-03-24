@@ -1,9 +1,6 @@
 function update_plots(obj)
 
-cla(obj.signal1_axes);
-hold(obj.signal1_axes, 'on');
-
-if isempty(obj.signal1)
+if isempty(obj.signal1) || isempty(obj.plot_mode)
   return
 end
 
@@ -15,9 +12,9 @@ if obj.plot_mode == sc_tool.PlotModeEnum.plot_sweep
   
   obj.plot_sweep();
   
-elseif obj.plot_mode == sc_tool.PlotModeEnum.plot_amplitude
-  
-  obj.plot_amplitude();
+% elseif obj.plot_mode == sc_tool.PlotModeEnum.plot_amplitude
+%   
+%   obj.plot_amplitude();
   
 elseif obj.plot_mode == sc_tool.PlotModeEnum.edit_threshold
   

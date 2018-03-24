@@ -1,4 +1,4 @@
-classdef AxesManager < handle
+classdef AxesManager_dummy < handle
   
   properties (Dependent)
     trigger_axes

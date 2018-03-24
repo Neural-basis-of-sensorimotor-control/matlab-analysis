@@ -2,7 +2,7 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     sc_tool.AxesHeightManager & sc_tool.TimeRangeManager & ...
     sc_tool.ZoomManager & sc_tool.UnsavedChangesManager & ...
     sc_tool.HelpTextManager & sc_tool.WaveformManager & ...
-    sc_tool.AmplitudeManager
+    sc_tool.AmplitudeManager & sc_tool.HistogramManager
   
   properties
     plot_window
@@ -10,10 +10,14 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
   
   properties (Dependent)
     plot_mode
+    v_zero_for_t
+    plot_stims
   end
   
   properties (SetAccess = 'private', SetObservable)
-    m_plot_mode = sc_tool.PlotModeEnum.plot_sweep
+    m_plot_mode
+    m_v_zero_for_t
+    m_plot_stims
   end
   
   methods
@@ -21,16 +25,25 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     function obj = PlotManager()
       
       filepath = sc_file_loader.get_experiment_file();
-
+      
       if isempty(filepath)
         
-          fprintf('Could not detect file\n');
-          return;
-    
+        fprintf('Could not detect file\n');
+        return;
+        
       end
       
-      obj.plot_window = figure('ToolBar', 'none', 'Color', 'k');
-      set(obj.plot_window, 'SizeChangedFcn', @(~,~) update_axes_position(obj));
+      obj.plot_window = figure('ToolBar', 'none', 'Color', 'k', ...
+        'Tag', SequenceViewer.figure_tag, 'MenuBar', 'none');
+      
+      set(obj.plot_window, 'SizeChangedFcn', ...
+        @(~,~) update_axes_position(obj), ...
+        'CloseRequestFcn', @(~, ~) obj.close_request(), ...
+        'DeleteFcn', @(~, ~) obj.save_plot_window_pos());
+      
+      obj.plot_stims = 1;
+      obj.plot_mode = sc_tool.PlotModeEnum.plot_sweep;
+      
       obj.experiment = ScExperiment.load_experiment(filepath);
       
     end
@@ -46,43 +59,62 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     
     function set.plot_mode(obj, val)
       
-      if val == sc_tool.PlotModeEnum.plot_amplitude && ...
-          isempty(obj.amplitude)
+      if ~isempty(val)
         
-        warning('No amplitudes available. Cannot use amplitude plot mode.')
-        val = sc_tool.PlotModeEnum.plot_sweep;
+%         if val == sc_tool.PlotModeEnum.plot_amplitude && ...
+%             isempty(obj.amplitude)
+%           
+%           warning('No amplitudes available. Cannot use amplitude plot mode.')
+%           val = sc_tool.PlotModeEnum.plot_sweep;
+%           
+%         end
         
-      end
-      
-      if obj.m_plot_mode == sc_tool.PlotModeEnum.edit_threshold && ...
-          ~isempty(obj.modify_waveform) && ...
-          val ~= sc_tool.PlotModeEnum.edit_threshold
-        
-        if obj.modify_waveform.has_unsaved_changes
+        if val == sc_tool.PlotModeEnum.edit_threshold && ...
+            ~isempty(obj.modify_waveform) && ...
+            val ~= sc_tool.PlotModeEnum.edit_threshold
           
-          answ = questdlg('Do you want to save waveform edits?');
-          
-          if strcmpi(answ, 'Yes')
+          if obj.modify_waveform.has_unsaved_changes
             
-            obj.sc_save();
-            obj.modify_waveform = [];
+            answ = questdlg('Do you want to save waveform edits?');
             
-          elseif strcmpi(answ, 'No')
-            
-            obj.modify_waveform = [];
-            
-          else
-            
-            obj.m_plot_mode = sc_tool.PlotModeEnum.edit_threshold;
+            if strcmpi(answ, 'Yes')
+              
+              obj.sc_save();
+              obj.modify_waveform = [];
+              
+            elseif strcmpi(answ, 'No')
+              
+              obj.modify_waveform = [];
+              
+            else
+              
+              obj.m_plot_mode = sc_tool.PlotModeEnum.edit_threshold;
+              
+            end
             
           end
-          
         end
       end
       
       obj.m_plot_mode = val;
       obj.update_plots();
       
+    end
+    
+    function val = get.v_zero_for_t(obj)
+      val = obj.m_v_zero_for_t;
+    end
+    
+    function set.v_zero_for_t(obj, val)
+      obj.m_v_zero_for_t = val;
+    end
+    
+    function val = get.plot_stims(obj)
+      val = obj.m_plot_stims;
+    end
+    
+    function set.plot_stims(obj, val)
+      obj.m_plot_stims = val;
     end
     
   end

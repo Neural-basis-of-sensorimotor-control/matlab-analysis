@@ -1,7 +1,7 @@
 classdef UiControl < handle
   
   properties (Constant)
-    default_width = 200
+    default_width = 100
     default_height = 20
   end
   

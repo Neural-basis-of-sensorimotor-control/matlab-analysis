@@ -2,12 +2,12 @@ function close_viewer()
 
 f = get_all_figures();
 
-indx = arrayfun(@(x) strcmp(get(x, 'Tag'), SequenceViewer.figure_tag), f);
+indx = find(arrayfun(@(x) strcmp(get(x, 'Tag'), SequenceViewer.figure_tag), f), 1);
 
 f = f(indx);
 
-for i=1:length(f)
-  close(f(i));
+if ~isempty(f)
+  close(f);
 end
 
 end

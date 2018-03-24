@@ -1,5 +1,9 @@
 classdef TimeRangeManager < handle
   
+  properties (Constant)
+    max_time_range = 100
+  end
+  
   properties (Dependent)
     pretrigger
     posttrigger
@@ -14,37 +18,68 @@ classdef TimeRangeManager < handle
     varargout = update_plots(varargin)
   end
   
+  properties (Abstract)
+    help_text
+  end
+  
   methods
     
-    function val = get.pretrigger(~)
-      val = sc_settings.get_pretrigger();
+    function obj = TimeRangeManager()
+      
+      obj.m_pretrigger  = sc_settings.get_pretrigger();
+      obj.m_posttrigger = sc_settings.get_posttrigger();
+      
     end
     
-    function set.pretrigger(obj, val)
+    
+    function update_plot_if_within_range(obj)
       
-      sc_settings.set_pretrigger(val);
-      obj.m_pretrigger = val;
-      
-      if obj.m_pretrigger < obj.m_posttrigger
+      if obj.m_pretrigger < obj.m_posttrigger && ...
+          obj.m_posttrigger - obj.m_pretrigger < obj.max_time_range
+        
         obj.update_plots;
+        
+      else
+        
+        obj.help_text = sprintf('Time range must be > 0 and < %g.\nPlot aborted', obj.max_time_range);
+        
       end
-      
     end
     
-    function val = get.posttrigger(~)
-      val = sc_settings.get_posttrigger();
-    end
-    
-    function set.posttrigger(obj, val)
+    function delete(obj)
       
-      sc_settings.set_posttrigger(val);
-      obj.m_posttrigger = val;
-      
-      if obj.m_pretrigger < obj.m_posttrigger
-        obj.update_plots;
-      end
+      sc_settings.set_pretrigger(obj.pretrigger);
+      sc_settings.set_posttrigger(obj.posttrigger);
       
     end
     
   end
+  
+  methods
+    %Getters and Setters
+    
+    function val = get.pretrigger(obj)
+      val = obj.m_pretrigger;
+    end
+    
+    function set.pretrigger(obj, val)
+      
+      obj.m_pretrigger = val;
+      obj.update_plot_if_within_range();
+      
+    end
+    
+    function val = get.posttrigger(obj)
+      val = obj.m_posttrigger;
+    end
+    
+    function set.posttrigger(obj, val)
+      
+      obj.m_posttrigger = val;
+      obj.update_plot_if_within_range();
+      
+    end
+    
+  end
+  
 end

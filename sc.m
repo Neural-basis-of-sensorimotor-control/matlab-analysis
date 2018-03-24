@@ -67,10 +67,6 @@ end
 
 args = varargin;
 
-if ~isfile(sc_settings.get_settings_filename())
-  sc_settings.clear_file();
-end
-
 [~, experiment_path] = sc_settings.get_last_experiment();
 
 if ~nargin && isfile(experiment_path)

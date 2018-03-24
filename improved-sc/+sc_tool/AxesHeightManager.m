@@ -10,18 +10,28 @@ classdef AxesHeightManager < sc_tool.AxesManager
   end
   
   properties (Constant)
-    upper_margin  = 100
-    middle_margin = 100
-    lower_margin  = 100
-    left_margin = 100
-    right_margin = 100
+    upper_margin  = 10
+    middle_margin = 40
+    lower_margin  = 40
+    left_margin = 120
+    right_margin = 40
   end
   
   methods
     
+    function obj = AxesHeightManager()
+      obj.axes_height = sc_settings.get_axes_height();
+    end
+    
+    
     function update_axes_position(obj)
       
+      if isempty(obj.plot_window) || ~ishandle(obj.plot_window)
+        return
+      end
+      
       tile_height = obj.axes_height;
+      
       x = obj.left_margin;
       y = getheight(obj.plot_window) - obj.upper_margin - tile_height(1);
       tile_width = getwidth(obj.plot_window) - obj.left_margin - ...
@@ -60,6 +70,24 @@ classdef AxesHeightManager < sc_tool.AxesManager
       
     end
     
+    
+    function val = get.nbr_of_axes(obj)
+      
+      if isempty(obj.signal2_axes) || isa(obj.signal2_axes, 'sc_tool.EmptyClass')
+        val = 2;
+      else
+        val = 3;
+      end
+      
+    end
+    
+    
+    function delete(obj)
+      
+      sc_settings.set_axes_height(obj.m_axes_height);
+      
+    end
+    
   end
   
   methods
@@ -67,52 +95,36 @@ classdef AxesHeightManager < sc_tool.AxesManager
     
     function val = get.axes_height(obj)
       
-      height = sc_settings.get_axes_height();
-      
-      if (ischar(height) && strcmpi(height, 'auto'))
+      if ischar(obj.m_axes_height) || ...
+          length(obj.m_axes_height) < obj.nbr_of_axes
         
         val = obj.get_auto_height();
-
+      
       else
         
-        if ischar(height)
-          height = str2num(height);
-        end
-        
-        if length(height)>obj.nbr_of_axes
-          
-          val = height(1:obj.nbr_of_axes);
-          
-        elseif length(height)<obj.nbr_of_axes
-          
-          sc_settings.set_axes_height('auto');
-          val = obj.get_auto_height();
-          
-        else
-          
-          val = height;
-          
-        end
-        
+        val = obj.m_axes_height;
+      
       end
+      
     end
-    
     
     function set.axes_height(obj, val)
       
-      sc_settings.set_axes_height(val);
-      obj.m_axes_height = val;
-      
-    end
-    
-    
-    function val = get.nbr_of_axes(obj)
-      
-      if isempty(obj.signal2)
-       val = 2;
+      if ischar(val)
+        
+        if strcmpi(val, 'auto')
+          obj.m_axes_height = val;
+        else
+          obj.m_axes_height = str2num(val);
+        end
+        
       else
-       val = 3;
+        
+        obj.m_axes_height = val;
+        
       end
+      
+      obj.update_axes_position();
       
     end
     

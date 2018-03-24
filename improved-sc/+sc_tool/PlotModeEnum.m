@@ -3,7 +3,7 @@ classdef PlotModeEnum
   enumeration
     
     plot_sweep
-    plot_amplitude
+%    plot_amplitude
     edit_threshold
     plot_all
     plot_avg_all

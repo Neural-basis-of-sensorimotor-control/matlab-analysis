@@ -9,6 +9,8 @@ if strcmpi(style, 'text')
   set(ui_object, 'HorizontalAlignment', 'left');
 end
 
-set(ui_object, varargin{:});
+if ~isempty(varargin)
+  set(ui_object, varargin{:});
+end
 
 end

@@ -20,7 +20,16 @@ classdef SignalManager < handle
     waveform
   end
   
+  methods (Abstract)
+    varargout = clear_unused_axes(varargin)
+  end
+  
   methods
+
+    function obj = SignalManager()
+      obj.m_signal2 = sc_tool.EmptyClass();
+    end
+    
     
     function val = get.signal1(obj)
       val = obj.m_signal1;
@@ -51,13 +60,20 @@ classdef SignalManager < handle
     end
     
     function set.signal2(obj, val)
+      
       obj.m_signal2 = val;
       
-      if isempty(obj.m_signal2)
+      if isempty(obj.m_signal2) || isa(obj.m_signal2, 'sc_tool.EmptyClass')
+        
         obj.v2 = [];
+        obj.clear_unused_axes();
+        
       else
+        
         obj.v2 = obj.m_signal1.get_v(true, true, true, true);
+      
       end
+      
     end
     
   end

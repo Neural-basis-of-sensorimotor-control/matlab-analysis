@@ -1,5 +1,9 @@
 classdef SignalManager < handle
   
+  properties (Abstract)
+    signal2_axes
+  end
+  
   properties
     v1
     v2
@@ -48,12 +52,24 @@ classdef SignalManager < handle
     end
     
     function set.signal2(obj, val)
+      
       obj.m_signal2 = val;
       
       if isempty(obj.m_signal2)
+      
         obj.v2 = [];
+        
+        if ~isempty(obj.signal2_axes)
+          
+          cla(obj.signal2_axes);
+          obj.signal2_axes = [];
+        
+        end
+        
       else
+        
         obj.v2 = obj.m_signal1.get_v(true, true, true, true);
+      
       end
     end
     

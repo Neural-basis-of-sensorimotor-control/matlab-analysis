@@ -4,19 +4,23 @@ if isempty(obj.modify_waveform)
   
   while isempty(obj.waveform)
     
-    tag = input('Name for new waveform:', 's');
+    obj.help_text = sprintf(['Write waveform tag in command prompt\n' ...
+      'Leave blank to abort']);
+    tag = input(': ', 's');
     
     if isempty(tag)
       
+      obj.help_text = '';
       obj.modify_waveform = [];
       obj.plot_mode = sc_tool.PlotModeEnum.plot_sweep;
+      
       return
       
     end
     
     if any(cellfun(@(x) strcmp(x, tag), obj.signal1.waveforms.values('tag')))
       
-      disp('Name already exist')
+      obj.help_text = 'Name already exists';
       
     else
       

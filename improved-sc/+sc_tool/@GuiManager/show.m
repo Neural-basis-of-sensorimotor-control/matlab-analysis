@@ -1,24 +1,23 @@
 function show(obj)
 
-
-[titles, components] = sc_tool.GuiManager.get_panels();
+str_panels = sc_tool.GuiManager.get_panels();
 
 fig_mgr = sc_layout.FigureLayoutManager(gcf);
 
-for i=1:length(titles)
+for i=1:length(str_panels)
   
-  panel     = uipanel('Title', titles{i});
-  comp      = components{i};
-  panel_mgr = sc_layout.PanelLayoutManager(panel);
+  tmp_components = str_panels{i};
+  panel          = uipanel('Title', tmp_components{1});
+  panel_mgr      = sc_layout.PanelLayoutManager(panel, 'lower_margin', 5);
   
-  for j=1:length(comp)
+  for j=2:length(tmp_components)
     
-    args   = comp{j};
+    args   = tmp_components{j};
     
     if isempty(args)
       
       panel_mgr.newline();
-    
+      
     else
       
       indx = 1:length(args);
@@ -47,7 +46,8 @@ for i=1:length(titles)
   
   panel_mgr.trim();
   
-  fig_mgr.add(panel, 2*sc_tool.UiControl.default_width);
+  fig_mgr.add(panel, 2*sc_tool.UiControl.default_width + 5);
+  fig_mgr.newline();
     
 end
 

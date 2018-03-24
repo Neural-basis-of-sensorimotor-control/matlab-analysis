@@ -1,4 +1,4 @@
-classdef ExperimentWrapper < handle
+classdef ExperimentWrapper < CloseRequestFigure
   
   properties (SetObservable, SetAccess = 'protected')
     experiment          %ScExperiment

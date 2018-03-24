@@ -4,6 +4,7 @@ classdef LayoutManager < handle
     
     parent
     upper_margin = 15
+    lower_margin = 0
     x0
     y0
     x
@@ -58,9 +59,9 @@ classdef LayoutManager < handle
       all_y = arrayfun(@gety, obj.tiles);
       same_y_as_previous_tile = [false all_y(1:end-1) == all_y(2:end)];
       
-      if ~strcmp(get(obj.parent, 'Type'), 'figure')
+      if ~strcmpi(get(obj.parent, 'Type'), 'figure')
         setheight(obj.parent, sum(arrayfun(@getheight, obj.tiles(~same_y_as_previous_tile))) + ...
-          obj.upper_margin);
+          obj.upper_margin + obj.lower_margin);
       end
       
       x_column = obj.x0;

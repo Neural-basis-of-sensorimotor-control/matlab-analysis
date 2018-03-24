@@ -18,7 +18,7 @@ classdef ScThreshold < handle
     
     n
     width
-  
+    
   end
   
   methods

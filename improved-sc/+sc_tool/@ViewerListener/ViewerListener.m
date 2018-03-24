@@ -26,13 +26,10 @@ classdef ViewerListener < handle
       obj.fcn_get_value  = fcn_get_value;
       obj.fcn_callback   = fcn_callback;
       
-      if isempty(obj.property)
+      obj.listener_callback();
+      
+      if ~isempty(obj.property)
         
-        set(obj.ui_object, 'Visible', 'on')
-        
-      else
-        
-        obj.listener_callback();
         sc_addlistener(viewer, obj.property, @(~,~) obj.listener_callback(), ...
           obj.ui_object);
         
@@ -45,40 +42,13 @@ classdef ViewerListener < handle
     
     function listener_callback(obj)
       
-      if isempty(obj.property)
-        
-        set(obj.ui_object, 'Visible', 'on')
-        
-      elseif isempty(obj.viewer.(obj.property))
+      if ~isempty(obj.property) && isempty(obj.viewer.(obj.property))
         
         set(obj.ui_object, 'Visible', 'off')
         
       else
         
-        if isempty(obj.fcn_get_string)
-          str = '';
-        elseif ischar(obj.fcn_get_string)
-          str = obj.fcn_get_string;
-        elseif isfunction(obj.fcn_get_string)
-          str = obj.fcn_get_string(obj.viewer);
-        end
-        
-        if isempty(obj.fcn_get_value)
-          val = [];
-        elseif isnumeric(obj.fcn_get_value)
-          val = obj.fcn_get_value;
-        elseif isfunction(obj.fcn_get_value)
-          val = obj.fcn_get_value(obj.viewer);
-        end
-        
-        if ~isnumeric(val)
-          val = find(equals(str, val));
-        end
-        
-        if ~isempty(str) && ~ischar(str)
-          str = get_values(str, 'tag');
-        end
-        
+        [str, val] = obj.get_str_val();
         set(obj.ui_object, 'String', str, 'Value', val, 'Visible', 'on');
         
       end
@@ -88,13 +58,50 @@ classdef ViewerListener < handle
       
       if ~isempty(obj.fcn_callback)
         
-        obj.fcn_callback(obj.viewer, obj.fcn_get_string(), obj.fcn_get_value());
+        obj.fcn_callback(obj.viewer, get(obj.ui_object, 'String'), ...
+          get(obj.ui_object, 'Value'));
         
       end
       
     end
     
     
+    function [str, val] = get_str_val(obj)
+      
+      if isempty(obj.fcn_get_string)
+        str = '';
+      elseif ischar(obj.fcn_get_string)
+        str = obj.fcn_get_string;
+      elseif isfunction(obj.fcn_get_string)
+        str = obj.fcn_get_string(obj.viewer);
+      end
+      
+      if isempty(obj.fcn_get_value)
+        val = [];
+      elseif isnumeric(obj.fcn_get_value)
+        val = obj.fcn_get_value;
+      elseif isfunction(obj.fcn_get_value)
+        val = obj.fcn_get_value(obj.viewer);
+      end
+      
+      if ~isnumeric(val) && ~isempty(val)
+        
+        if isa(val, 'sc_tool.EmptyClass')
+          val = find(equals(get_values(str, 'tag'), val.tag));
+        else
+          val = find(equals(str, val));
+        end
+        
+      end
+      
+      if ~isempty(str) && ~ischar(str) && ~isnumeric(str) && ...
+           ~(iscell(str) && ischar(str{1}))
+         
+        str = get_values(str, 'tag');
+      
+      end
+      
+    end
   end
   
 end

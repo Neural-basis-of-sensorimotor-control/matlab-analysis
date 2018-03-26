@@ -2,7 +2,8 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     sc_tool.AxesHeightManager & sc_tool.TimeRangeManager & ...
     sc_tool.ZoomManager & sc_tool.UnsavedChangesManager & ...
     sc_tool.HelpTextManager & sc_tool.WaveformManager & ...
-    sc_tool.AmplitudeManager & sc_tool.HistogramManager
+    sc_tool.AmplitudeManager & sc_tool.HistogramManager & ...
+    sc_tool.InteractivePlotManager
   
   properties
     plot_window
@@ -59,41 +60,8 @@ classdef PlotManager < sc_tool.ExperimentManager & ...
     
     function set.plot_mode(obj, val)
       
-      if ~isempty(val)
-        
-%         if val == sc_tool.PlotModeEnum.plot_amplitude && ...
-%             isempty(obj.amplitude)
-%           
-%           warning('No amplitudes available. Cannot use amplitude plot mode.')
-%           val = sc_tool.PlotModeEnum.plot_sweep;
-%           
-%         end
-        
-        if val == sc_tool.PlotModeEnum.edit_threshold && ...
-            ~isempty(obj.modify_waveform) && ...
-            val ~= sc_tool.PlotModeEnum.edit_threshold
-          
-          if obj.modify_waveform.has_unsaved_changes
-            
-            answ = questdlg('Do you want to save waveform edits?');
-            
-            if strcmpi(answ, 'Yes')
-              
-              obj.sc_save();
-              obj.modify_waveform = [];
-              
-            elseif strcmpi(answ, 'No')
-              
-              obj.modify_waveform = [];
-              
-            else
-              
-              obj.m_plot_mode = sc_tool.PlotModeEnum.edit_threshold;
-              
-            end
-            
-          end
-        end
+      if obj.interactive_mode  
+        obj.interactive_mode = false;
       end
       
       obj.m_plot_mode = val;

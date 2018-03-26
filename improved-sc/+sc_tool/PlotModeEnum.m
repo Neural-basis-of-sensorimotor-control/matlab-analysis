@@ -4,7 +4,7 @@ classdef PlotModeEnum
     
     plot_sweep
 %    plot_amplitude
-    edit_threshold
+%    edit_threshold
     plot_all
     plot_avg_all
     plot_avg_std_all

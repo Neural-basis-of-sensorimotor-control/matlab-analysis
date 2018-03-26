@@ -12,10 +12,6 @@ if obj.plot_mode == sc_tool.PlotModeEnum.plot_sweep
   
   obj.plot_sweep();
   
-% elseif obj.plot_mode == sc_tool.PlotModeEnum.plot_amplitude
-%   
-%   obj.plot_amplitude();
-  
 elseif obj.plot_mode == sc_tool.PlotModeEnum.edit_threshold
   
   obj.plot_edit_waveform();
@@ -63,6 +59,12 @@ if (obj.plot_mode == sc_tool.PlotModeEnum.plot_avg_std_all || ...
   plot(obj.signal1_axes, time, avg - stddev, 'Color', [0 0 1], ...
     'LineWidth', 2);
   
+end
+
+if obj.interactive_mode
+
+  obj.modify_waveform.init_plot();
+
 end
 
 end

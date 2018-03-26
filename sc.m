@@ -197,7 +197,6 @@ function viewer = create_new_experiment(args)
 viewer = [];
 
 %Create new *_sc.mat file
-experiment = ScExperiment();
 
 if strcmpi(args{1}, '-newsp2')
   ending = '*.mat';
@@ -211,12 +210,16 @@ end
   'Select all files with analog channels to be included', ...
   sc_settings.get_raw_data_dir(), 'MultiSelect', 'on');
 
+if ~iscell(rawdatafiles) && ~ischar(rawdatafiles)
+  return
+end
+
 if ~iscell(rawdatafiles)
   rawdatafiles = {rawdatafiles};
 end
 
-sc_settings.set_raw_data_dir(raw_data_folder);
-experiment.set_fdir(raw_data_folder);
+experiment = ScExperiment('fdir', raw_data_folder);
+
 rawdatafiles = rawdatafiles(cellfun(@(x) ~isempty(x), rawdatafiles));
 
 for i=1:numel(rawdatafiles)
@@ -234,7 +237,7 @@ if ~experiment.n
   return;
   
 else
-  
+
   viewer = GuiManager();
   
   viewer.experiment    = experiment;

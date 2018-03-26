@@ -40,7 +40,7 @@ else
         return
       end
       
-      save_path = fullfile(fname, pname);
+      save_path = fullfile(pname, fname);
       
     end
     

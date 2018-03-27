@@ -7,17 +7,19 @@ classdef ViewerListener < handle
     fcn_get_string
     fcn_get_value
     fcn_callback
+    fcn_ui_object
   end
   
   methods
     
     function obj = ViewerListener(viewer, ui_object, property, fcn_get_string, ...
-        fcn_get_value, fcn_callback)
+        fcn_get_value, fcn_callback, fcn_ui_object)
       
-      if nargin < 3, property       = []; end
-      if nargin < 4, fcn_get_string = []; end
-      if nargin < 5, fcn_get_value  = []; end
-      if nargin < 6, fcn_callback   = []; end
+      if nargin < 3, property       = [];  end
+      if nargin < 4, fcn_get_string = [];  end
+      if nargin < 5, fcn_get_value  = [];  end
+      if nargin < 6, fcn_callback   = [];  end
+      if nargin < 7, fcn_ui_object   = []; end
       
       obj.viewer         = viewer;
       obj.ui_object      = ui_object;
@@ -25,6 +27,7 @@ classdef ViewerListener < handle
       obj.fcn_get_string = fcn_get_string;
       obj.fcn_get_value  = fcn_get_value;
       obj.fcn_callback   = fcn_callback;
+      obj.fcn_ui_object  = fcn_ui_object;
       
       obj.listener_callback();
       
@@ -50,6 +53,10 @@ classdef ViewerListener < handle
         
         [str, val] = obj.get_str_val();
         set(obj.ui_object, 'String', str, 'Value', val, 'Visible', 'on');
+        
+        if ~isempty(obj.fcn_ui_object)
+          obj.fcn_ui_object(obj.viewer, obj.ui_object);
+        end
         
       end
     end

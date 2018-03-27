@@ -8,11 +8,13 @@ classdef SignalManager < handle
   properties (Dependent)
     signal1
     signal2
+    remove_waveform
   end
   
   properties (SetAccess = 'private', SetObservable)
     m_signal1
     m_signal2
+    m_remove_waveform
   end
   
   properties (Abstract)
@@ -70,7 +72,7 @@ classdef SignalManager < handle
         
       else
         
-        obj.v2 = obj.m_signal1.get_v(true, true, true, true);
+        obj.v2 = obj.m_signal2.get_v(true, true, true, true);
       
       end
       

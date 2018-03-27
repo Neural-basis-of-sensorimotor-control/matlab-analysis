@@ -1,39 +1,36 @@
-function [v_out, t_out] = plot_sweep(obj, btn_dwn_fcn)
+function [v_sweep, t] = plot_sweep(obj, h_axes, signal, v, btn_dwn_fcn)
 
-if nargin == 1
+v_sweep = [];
+t = [];
+
+if isempty(h_axes)
+  return
+end
+
+if nargin < 5
   btn_dwn_fcn = [];
 end
 
-if ~isempty(obj.signal1)
+
+[v_sweep, t] = sc_get_sweeps(v, 0, obj.trigger_time, obj.pretrigger, ...
+  obj.posttrigger, signal.dt);
+
+if ~isempty(obj.v_zero_for_t)
   
-  [v, t] = sc_get_sweeps(obj.v1, 0, obj.trigger_time, obj.pretrigger, ...
-    obj.posttrigger, obj.signal1.dt);
+  [~, indx_t0] = min(abs(t - obj.v_zero_for_t));
   
-  if ~isempty(obj.v_zero_for_t)
-    
-    [~, indx_t0] = min(abs(t - obj.v_zero_for_t));
-    
-    for i=1:size(v, 2)
-      v(:, i) = v(:, i) - v(indx_t0, i);
-    end
-    
-  end
-  
-  for i=1:size(v, 2)
-    
-    plot(obj.signal1_axes, t, v(:,i), 'Color', 'r', ...
-      'ButtonDownFcn', btn_dwn_fcn);
-    
+  for i=1:size(v_sweep, 2)
+    v_sweep(:, i) = v_sweep(:, i) - v_sweep(indx_t0, i);
   end
   
 end
 
-if nargout
-  v_out = v;
+for i=1:size(v_sweep, 2)
+  
+  plot(h_axes, t, v_sweep(:,i), 'Color', 'r', ...
+    'ButtonDownFcn', btn_dwn_fcn);
+  
 end
 
-if nargout >= 2
-  t_out = t;
-end
 
 end

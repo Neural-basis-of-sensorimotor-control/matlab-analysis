@@ -18,24 +18,28 @@ for i=1:length(str_panels)
       
       panel_mgr.newline();
       
+    elseif length(args) == 1 && isnumeric(args{1})
+      
+      panel_mgr.newline(args{1});
+      
     else
       
       indx = 1:length(args);
-      indx = find(indx == 1 | indx >= 8);
+      indx = find(indx == 1 | indx >= 9);
       tmp_args = args(indx);
       ui_object = sc_tool.GuiManager.create_ui_object(tmp_args{:});
       
       indx = 1:length(args);
-      indx = find(indx > 1 & indx < 6);
+      indx = find(indx > 1 & indx < 7);
       tmp_args = args(indx); %#ok<*FNDSB>
       sc_tool.ViewerListener(obj, ui_object, tmp_args{:});
       
-      if length(args) >= 6 && ~isempty(args{6})
-        setwidth(ui_object, args{6});
+      if length(args) >= 7 && ~isempty(args{7})
+        setwidth(ui_object, args{7});
       end
 
-      if length(args) >= 7 && ~isempty(args{7})
-        setheight(ui_object, args{7});
+      if length(args) >= 8 && ~isempty(args{8})
+        setheight(ui_object, args{8});
       end
       
       panel_mgr.add(ui_object, getwidth(ui_object));

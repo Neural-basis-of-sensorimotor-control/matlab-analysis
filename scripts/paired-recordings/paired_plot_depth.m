@@ -92,7 +92,6 @@ end
 if length(neuron) ~= 1
   
   vectorize_fcn(@paired_plot_depth, neuron, false, h_figures);
-  %add_legend(h_figures, true);
   
   return
   
@@ -110,7 +109,7 @@ end
 
 for i_neuron_pair_indx=1:2
   
-  tag = neuron.file_tag;%[neuron.file_tag ' - ' neuron.template_tag{i_neuron_pair_indx}];
+  tag = neuron.file_tag;
     
   for i_property=1:length(str_properties)
     

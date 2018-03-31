@@ -1,8 +1,8 @@
-function [indx, lowpass_freq, lowpass_t, highpass_freq, highpass_t] = ...
+function [indx, lowpass_freq, lowpass_t, highpass_freq, highpass_t, avg_freq] = ...
   paired_get_automatic_detection(t1, t2)
 
-pretrigger  = -2;%-1;
-posttrigger = 2;%1;
+pretrigger  = -2;
+posttrigger = 2;
 kernelwidth = 1e-3;
 binwidth    = 1e-3;
 

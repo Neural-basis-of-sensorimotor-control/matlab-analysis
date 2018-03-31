@@ -5,6 +5,9 @@ clc
 clear
 reset_fig_indx
 
+sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_debug.set_mode(true);
+
 xxx1();
 xxx2();
 
@@ -12,9 +15,6 @@ end
 
 
 function xxx1()
-
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
-sc_debug.set_mode(true);
 
 nbr_of_electrodes = 1;
 str_stims         = get_intra_motifs();
@@ -68,9 +68,6 @@ plot_disparity(enc_width, enc_heights, ...
 end
 
 function xxx2()
-
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
-sc_debug.set_mode(true);
 
 neurons = intra_get_neurons(7);
 

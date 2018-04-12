@@ -1,6 +1,6 @@
 clear
 
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
 sc_debug.set_mode(true);
 
 intra_load_settings
@@ -50,5 +50,5 @@ return
 save multinomial_v2_2_1e6.mat
 %figs = get_all_figures();
 
-sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT);
 

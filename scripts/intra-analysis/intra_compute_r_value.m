@@ -1,6 +1,6 @@
 function intra_compute_r_value(neuron_indx)
 
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
 sc_debug.set_mode(true);
 
 latency_offset    = 4e-3;

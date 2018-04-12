@@ -3,7 +3,7 @@ close all
 clear classes
 reset_fig_indx();
 
-sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag())
+sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT)
 sc_debug.set_mode(true);
 plot_only_final_figures = true;
 ec_pretrigger         = -1;

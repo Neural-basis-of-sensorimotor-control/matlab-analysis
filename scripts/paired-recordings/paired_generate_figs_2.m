@@ -2,7 +2,7 @@ clc
 % close all
 % clear classes
 % 
-% sc_settings.set_current_settings_tag(sc_settings.get_default_settings_tag());
+% sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT);
 % sc_debug.set_mode(true);
 % 
 % ec_neurons = paired_get_extra_neurons();

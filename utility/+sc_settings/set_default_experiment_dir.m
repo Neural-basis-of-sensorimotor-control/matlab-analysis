@@ -11,6 +11,6 @@ if ~nargin
   
 end
 
-sc_settings.write_settings('intra_experiment_dir', val);
+sc_settings.write_settings(sc_settings.tags.EXPERIMENT_DIR, val);
 
 end

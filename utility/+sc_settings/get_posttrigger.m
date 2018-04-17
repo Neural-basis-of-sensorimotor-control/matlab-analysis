@@ -1,6 +1,6 @@
 function val = get_posttrigger()
 
-val = sc_settings.read_settings('posttrigger');
+val = sc_settings.read_settings(sc_settings.tags.POSTTRIGGER);
 
 if isempty(val)
   val = 1;

@@ -32,7 +32,7 @@ while isempty(filepath)
   
 end
 
-sc_settings.set_default_experiment_dir(last_dir);
-sc_settings.set_last_experiment(last_file);
+sc_settings.write_settings(sc_settings.tags.EXPERIMENT_DIR,  last_dir);
+sc_settings.write_settings(sc_settings.tags.LAST_EXPERIMENT, last_file);
 
 end

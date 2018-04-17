@@ -1,6 +1,6 @@
 function val = get_axes_height()
 
-val = sc_settings.read_settings('axes_height');
+val = sc_settings.read_settings(sc_settings.tags.AXES_HEIGHT);
 
 if isempty(val)
   val = 'auto';

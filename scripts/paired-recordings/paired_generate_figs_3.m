@@ -1,10 +1,10 @@
 % 'bintimes'                2001 x 1 vektor med tider för korrelationsgrafen
 %
-% 'freq_spont_triggered'    autokorrelation när man triggar den ena cellen på det andra cellens spikar, vid spontanaktivtet. 2001 x 28 matris, där varje rad motsvarar en cell och varje kolumn motsvarar en tidpunkt enligt bintimes ovan
+% 'freq_spont_triggered'    autokorrelation när man triggar den ena cellen på det andra cellens spikar, vid spontanaktivtet. 2001 x 28 matris, där varje rad motsvarar ett cellpar och varje kolumn motsvarar en tidpunkt enligt bintimes ovan
 % 'freq_stim_triggered'     autokorrelation när man triggar den ena cellen på det andra cellens spikar, under stimulering.
 % 'freq_total'              autokorrelation när man triggar den ena cellen på det andra cellens spikar, för all aktivitet. 
 %
-% 'nbr_of_all_spikes'       antal triggerpunkter för all aktivitet. 2 x 28 matris där varje rad motsvarar en cell och varje kolumn triggningar av cell 1 respektive cell 2
+% 'nbr_of_all_spikes'       antal triggerpunkter för all aktivitet. 2 x 28 matris där varje rad motsvarar ett cellpar och varje kolumn triggningar av cell 1 respektive cell 2
 % 'nbr_of_spont_spikes'     antal triggerpunkter för spontan aktivitet
 % 'nbr_of_stim_spikes'      antal triggerpunkter under stimulering
 %

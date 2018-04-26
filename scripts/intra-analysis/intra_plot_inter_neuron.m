@@ -1,10 +1,27 @@
 function all_p_values = intra_plot_inter_neuron ...
-  (neurons, str_stims, height_limit, min_nbr_epsp, use_final_labels)
+  (neurons, str_stims, height_limit, min_nbr_epsp, use_final_labels, modality, ...
+  plot_on)
 
-amplitude_heights = intra_get_values(str_stims, neurons, height_limit, ...
-  min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
+if ~exist('plot_on', 'var')
+  plot_on = true;
+end
 
-all_p_values      = [];
+switch modality
+  
+  case 'height'
+    fcn = @(x, varargin) x.get_amplitude_height(varargin{:});
+  case 'width'
+    fcn = @(x, varargin) x.get_amplitude_width(varargin{:});
+  case 'latency'
+    fcn = @(x, varargin) x.get_amplitude_latency(varargin{:});
+  otherwise
+    error('Unknown command: %s', modality);
+end
+    
+amplitude_values = intra_get_values(str_stims, neurons, height_limit, ...
+  min_nbr_epsp, fcn);
+
+all_p_values = [];
 
 for i_stim=1:length(str_stims)
   
@@ -13,8 +30,8 @@ for i_stim=1:length(str_stims)
   indx_multcmp      = 1:length(neurons);
   indx_is_nonempty  = true(size(indx_multcmp));
   
-  tmp_str_stim = str_stims{i_stim};
-  enc_values   = amplitude_heights(i_stim, :);
+  tmp_str_stim = sprintf('%s %s P value comparison', str_stims{i_stim}, modality);
+  enc_values   = amplitude_values(i_stim, :);
   
   for i_neuron=1:length(enc_values)
     
@@ -40,11 +57,15 @@ for i_stim=1:length(str_stims)
   
   p = p(indx_is_nonempty, :);
   p = p(:, indx_is_nonempty);
-    
+  
   all_p_values = concat_list(all_p_values, p(p ~= 0));
   
+  if ~plot_on
+    continue
+  end
+  
   incr_fig_indx
-  clf
+  clf reset
   fill_matrix(p);
   hold on
   

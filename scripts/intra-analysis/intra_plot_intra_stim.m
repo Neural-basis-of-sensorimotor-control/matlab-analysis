@@ -1,18 +1,22 @@
 function all_p_values = intra_plot_intra_stim(neurons, str_stims, ...
-  height_limit, min_nbr_epsp, use_threshold, modality)
+  height_limit, min_nbr_epsp, use_threshold, modality, plot_on)
 
 if ~exist('use_threshold', 'var')
   use_threshold = true;
 end
 
+if ~exist('plot_on', 'var')
+  plot_on = true;
+end
+
 if use_threshold
   
-  amplitude_heights = intra_get_values(str_stims, neurons, height_limit, ...
+  amplitude_values = intra_get_values(str_stims, neurons, height_limit, ...
     min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
 
 else
   
-  amplitude_heights = intra_get_values_no_thresholding(str_stims, neurons, ...
+  amplitude_values = intra_get_values_no_thresholding(str_stims, neurons, ...
     @(x) x.(modality));
   
 end
@@ -27,7 +31,7 @@ for i_neuron=1:length(neurons)
   indx_is_nonempty = true(size(indx_multcmp));
   
   tmp_neuron       = neurons(i_neuron);
-  enc_values       = amplitude_heights(:, i_neuron);
+  enc_values       = amplitude_values(:, i_neuron);
   
   for i_stim=1:length(enc_values)
     
@@ -55,6 +59,10 @@ for i_neuron=1:length(neurons)
   p_ranksum = p_ranksum(:, indx_is_nonempty);
   
   all_p_values = concat_list(all_p_values, p_ranksum(p_ranksum ~= 0));
+  
+  if ~plot_on
+    continue
+  end
   
   incr_fig_indx();
   clf

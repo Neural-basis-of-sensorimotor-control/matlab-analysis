@@ -1,25 +1,26 @@
 function all_p_values = intra_plot_intra_stim(neurons, str_stims, ...
-  height_limit, min_nbr_epsp, use_threshold, modality, plot_on)
-
-if ~exist('use_threshold', 'var')
-  use_threshold = true;
-end
+  height_limit, min_nbr_epsp, modality, plot_on)
 
 if ~exist('plot_on', 'var')
   plot_on = true;
 end
 
-if use_threshold
+switch modality
   
-  amplitude_values = intra_get_values(str_stims, neurons, height_limit, ...
-    min_nbr_epsp, @(x, varargin) x.get_amplitude_height(varargin{:}));
-
-else
-  
-  amplitude_values = intra_get_values_no_thresholding(str_stims, neurons, ...
-    @(x) x.(modality));
-  
+  case 'height'
+    fcn = @(x, varargin) x.get_amplitude_height(varargin{:});
+  case 'width'
+    fcn = @(x, varargin) x.get_amplitude_width(varargin{:});
+  case 'latency'
+    fcn = @(x, varargin) x.get_amplitude_latency(varargin{:});
+  otherwise
+    error('Unknown command: %s', modality);
 end
+
+ 
+amplitude_values = intra_get_values(str_stims, neurons, height_limit, ...
+  min_nbr_epsp, fcn);
+
 
 all_p_values = [];
 

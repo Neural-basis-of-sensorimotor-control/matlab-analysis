@@ -8,5 +8,6 @@ struct2xml(data, sc_settings.get_settings_filename());
 
 sc_settings.clear_settings(sc_settings.tags.DEFAULT);
 sc_settings.clear_settings(sc_settings.tags.TEST);
+sc_settings.clear_settings(sc_settings.tags.INTRA);
 
 end

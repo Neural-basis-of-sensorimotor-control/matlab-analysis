@@ -1,4 +1,13 @@
-function params = paired_automatic_deflection_detection(neuron)
+function params = paired_automatic_deflection_detection(neuron, rectify)
+% function params = paired_automatic_deflection_detection(neuron)
+% params
+% 1-4: prespike deflection (negative)
+% 5-8: perispike deflection (positive)
+% 9-12: postspike deflection (negative)
+% 1 t start deflection
+% 2 width deflection
+% 3 width leading flank deflection
+% 4 height deflection
 
 if length(neuron) ~= 1
   
@@ -43,8 +52,7 @@ if length(neuron) ~= 1
   grid on
   xlabel('Normalized frequency')
   
-  params = vectorize_fcn(@paired_automatic_deflection_detection, neuron);
-  
+  params = vectorize_fcn(@paired_automatic_deflection_detection, neuron, rectify);
   add_legend(fig, true, false);
   
   return
@@ -53,15 +61,19 @@ end
 
 [t1, t2] = paired_get_neuron_spiketime(neuron);
 
-params    = cell(2,1);
-params(1) = {plot_result(neuron, t1, t2)};
-params(2) = {plot_result(neuron, t2, t1)};
+if rectify
+  params    = cell(2,1);
+  params(1) = {plot_result(neuron, t1, t2, false)};
+  params(2) = {plot_result(neuron, t2, t1, false)};
+else
+  params = plot_result(neuron, t1, t2, true);
+end
 
 end
 
-function params = plot_result(neuron, t1, t2)
+function params = plot_result(neuron, t1, t2, rectify)
 
-[indx, lowpass_freq, lowpass_t, highpass_freq, ~, avg_freq] = paired_get_automatic_detection(t1, t2);
+[indx, lowpass_freq, lowpass_t, highpass_freq, ~, avg_freq, mean_data] = paired_get_automatic_detection(t1, t2, true, rectify);
 
 depths = paired_parse_for_subcortical_depth(neuron);
 
@@ -74,29 +86,28 @@ else
 end
 
 subplot(2, 3, 1)
-plot(lowpass_t(indx(2)), -depth, '+', 'Tag', neuron.file_tag, ...
+plot(mean_data.pre.peak_time, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
   'LineWidth', 2, 'MarkerSize', 12)
 
 subplot(2, 3, 2)
-plot(lowpass_t(indx(4)), -depth, '+', 'Tag', neuron.file_tag, ...
+plot(mean_data.peri.peak_time, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
   'LineWidth', 2, 'MarkerSize', 12)
 
 subplot(2, 3, 3)
-plot(lowpass_t(indx(6)), -depth, '+', 'Tag', neuron.file_tag, ...
+plot(mean_data.post.peak_time, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
   'LineWidth', 2, 'MarkerSize', 12)
 
 subplot(2, 3, 4)
-plot(.5*(2*lowpass_freq(indx(2)) - lowpass_freq(indx(1)) - lowpass_freq(indx(3)))/avg_freq, ...
-  -depth, '+', 'Tag', neuron.file_tag, 'LineWidth', 2, 'MarkerSize', 12)
+plot(mean_data.pre.peak_value, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
+  'LineWidth', 2, 'MarkerSize', 12)
 
 subplot(2, 3, 5)
-plot(.5*(2*highpass_freq(indx(4)) - lowpass_freq(indx(3)) - lowpass_freq(indx(5)))/avg_freq, ...
-  -depth, '+', 'Tag', neuron.file_tag, 'LineWidth', 2, 'MarkerSize', 12)
+plot(mean_data.peri.peak_value, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
+  'LineWidth', 2, 'MarkerSize', 12)
 
 subplot(2, 3, 6)
-plot(.5*(2*lowpass_freq(indx(6)) - lowpass_freq(indx(5)) - lowpass_freq(indx(7)))/avg_freq, ...
-  -depth, '+', 'Tag', neuron.file_tag, 'LineWidth', 2, 'MarkerSize', 12)
-
+plot(mean_data.post.peak_value, -depth*[1 1], 'LineStyle', '-', 'Marker', '+', 'Tag', neuron.file_tag, ...
+  'LineWidth', 2, 'MarkerSize', 12)
 
 params = [
   lowpass_t(indx(1)) 

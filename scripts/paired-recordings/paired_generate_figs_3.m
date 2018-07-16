@@ -24,21 +24,21 @@ min_stim_latency    = 5e-4;
 max_stim_latency    = .2;
 max_trigger_latency = .01;
 neurons             = paired_get_extra_neurons();
-
-binwidth = 1e-4;
-
-[~, bintimes] = sc_kernelfreq([], [], pretrigger, ...
+binwidth            = 1e-4;
+[~, bintimes]       = sc_kernelfreq([], [], pretrigger, ...
   posttrigger, kernelwidth, binwidth);
-
-dim = [length(bintimes) length(neurons)];
+nbr_of_neurons      = length(neurons);
+nbr_of_bins         = length(bintimes);
+dim = [length(bintimes) nbr_of_neurons];
 
 freq_total = nan(dim);
+rectified_freq = nan(dim);
 freq_stim_triggered = nan(dim);
 freq_spont_triggered = nan(dim);
 
-nbr_of_stim_spikes = nan(2, dim(2));
-nbr_of_spont_spikes = nan(2, dim(2));
-nbr_of_all_spikes = nan(2, dim(2));
+nbr_of_stim_spikes = nan(2, nbr_of_neurons);
+nbr_of_spont_spikes = nan(2, nbr_of_neurons);
+nbr_of_all_spikes   = nan(2, nbr_of_neurons);
 
 for i=1:length(neurons)
   
@@ -56,6 +56,16 @@ for i=1:length(neurons)
     paired_single_out_spont_spikes(spiketimes2,  stim_times, ...
     min_stim_latency, max_stim_latency);
   
+  freq_total(:, i) = sc_kernelfreq(spiketimes1, spiketimes2, pretrigger, ...
+    posttrigger, kernelwidth, binwidth)';
+  
+  if sum(freq_total(bintimes<0, i)) < sum(freq_total(bintimes>0, i))
+    rectified_freq(:, i) = freq_total(:, i);
+  else
+    rectified_freq(:, i) = sc_kernelfreq(spiketimes2, spiketimes1, pretrigger, ...
+    posttrigger, kernelwidth, binwidth)';
+  end
+    
   freq_total(:, i) = sc_kernelfreq(spiketimes1, spiketimes2, pretrigger, ...
     posttrigger, kernelwidth, binwidth)';
   

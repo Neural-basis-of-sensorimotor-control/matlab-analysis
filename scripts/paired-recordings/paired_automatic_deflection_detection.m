@@ -61,7 +61,7 @@ end
 
 [t1, t2] = paired_get_neuron_spiketime(neuron);
 
-if rectify
+if ~rectify
   params    = cell(2,1);
   params(1) = {plot_result(neuron, t1, t2, false)};
   params(2) = {plot_result(neuron, t2, t1, false)};

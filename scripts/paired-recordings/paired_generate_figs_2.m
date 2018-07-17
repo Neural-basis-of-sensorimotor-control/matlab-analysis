@@ -5,8 +5,8 @@ clear classes
 sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT);
 sc_debug.set_mode(true);
 
-ec_neurons = paired_get_extra_neurons();
-params = paired_automatic_deflection_detection(ec_neurons);
+neurons = paired_get_extra_neurons();
+params = paired_automatic_deflection_detection(neurons, false);
 
 post_synaptic_activity = nan(size(neurons));
 for i=1:length(neurons)
@@ -17,7 +17,7 @@ for i=1:length(neurons)
   pre_synaptic_activity(i) = mean(lowpass_freq(lowpass_t<0));
   tot_synaptic_activity(i) = mean(lowpass_freq());
 end
-
+return
 incr_fig_indx
 subplot(2,3,1)
 plot(params(1)+params(3), post_synaptic_activity, '+');

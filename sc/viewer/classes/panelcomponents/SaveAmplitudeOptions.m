@@ -22,9 +22,6 @@ classdef SaveAmplitudeOptions < PanelComponent
       mgr.add(sc_ctrl('pushbutton','Save amplitudes to .dat',...
         @(~,~) obj.save_ampl_callback()), 200);
       mgr.newline(20);
-      
-      mgr.add(sc_ctrl('pushbutton', 'Save automated analysis to .dat', ...
-        @(~,~) obj.save_automated_analysis_callback()), 200);
     end
     
     
@@ -39,12 +36,6 @@ classdef SaveAmplitudeOptions < PanelComponent
     
     function save_ampl_callback(obj)
       obj.gui.download_amplitude_data();
-      set(obj.ui_filenbr, 'string', obj.gui.download_amplitude_fileindex);
-    end
-    
-    
-    function save_automated_analysis_callback(obj)
-      obj.gui.download_automated_amplitude_analysis();
       set(obj.ui_filenbr, 'string', obj.gui.download_amplitude_fileindex);
     end
     

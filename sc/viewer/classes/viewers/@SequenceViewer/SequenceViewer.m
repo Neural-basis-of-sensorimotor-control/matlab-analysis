@@ -181,7 +181,7 @@ classdef SequenceViewer < ExperimentWrapper
         
         obj.plot_window_pr = figure();
         clf(obj.plot_window_pr,'reset');
-        set(obj.plot_window, 'Tag', SequenceViewer.figure_tag)
+        set(obj.plot_window_pr, 'Tag', SequenceViewer.figure_tag)
         set(obj.plot_window_pr,'ToolBar','None','MenuBar','none');
         set(obj.plot_window_pr,'Color',[0 0 0]);
         set(obj.plot_window_pr,'SizeChangedFcn',@(~,~) obj.resize_plot_window());

@@ -108,6 +108,7 @@ if strcmpi(args{1}, '-loadnew')
   else
     viewer = [];
   end
+  return
   
 end
 

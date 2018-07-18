@@ -35,3 +35,22 @@ for i=1:length(tags)
   end
 end
 add_legend(gcf, true);
+%% Labelling:
+% title('Pretrigger peak time')
+% xlabel('Time (s)')
+% ylabel('Cortical depth (mm)')
+% title('Pretrigger peak deflection')
+% xlabel('Normalized deflection (vs avg)')
+% ylabel('Cortical depth (mm)')
+% title('Peritrigger peak time')
+% xlabel('Time (s)')
+% ylabel('Cortical depth (mm)')
+% title('Peritrigger peak deflection')
+% xlabel('Normalized deflection (vs avg)')
+% ylabel('Cortical depth (mm)')
+% title('Posttrigger peak time')
+% ylabel('Cortical depth (mm)')
+% xlabel('Time (s)')
+% title('Posttrigger peak deflection')
+% ylabel('Cortical depth (mm)')
+% xlabel('Normalized deflection (vs avg)')

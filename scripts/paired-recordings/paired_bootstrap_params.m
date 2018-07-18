@@ -26,7 +26,7 @@ end
 ts = tinv([0.025  0.975], nbr_of_bootstrap_iterations-1);
 params_ci = nan(size(params, 1), 2);
 for i=1:length(params_ci)
-  params_ci(i, :) = mean(params(i, :)) + std(params(i, :))/nbr_of_bootstrap_iterations * ts;
+  params_ci(i, :) = mean(params(i, :)) + std(params(i, :))/sqrt(nbr_of_bootstrap_iterations) * ts;
 end
 
 end

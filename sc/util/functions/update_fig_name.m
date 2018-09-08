@@ -39,7 +39,7 @@ filename = strrep(filename, ':', '_');
 filename = strrep(filename, '''', '_');
 filename = strrep(filename, '*', '_');
 
-while endsWith(filename, ending)
+while endswith(filename, ending)
   filename = filename(1:end-length(ending));
 end
 

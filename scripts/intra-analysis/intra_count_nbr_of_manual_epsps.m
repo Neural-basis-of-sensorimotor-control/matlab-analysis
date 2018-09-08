@@ -84,7 +84,7 @@ return
 clear
 close all
 reset_fig_indx()
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
 
 intra_load_constants
 stims = get_intra_motifs();

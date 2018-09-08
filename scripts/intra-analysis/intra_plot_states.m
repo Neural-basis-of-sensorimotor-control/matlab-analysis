@@ -1,6 +1,6 @@
 function intra_plot_states()
 
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
 sc_debug.set_mode(true);
 
 intra_load_settings

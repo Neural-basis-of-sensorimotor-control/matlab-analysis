@@ -10,7 +10,8 @@ str_dir = sc_settings.get_default_experiment_dir();
 
 while isempty(filepath)
   
-  [str_file, str_dir] = uigetfile('*_sc.mat', 'Select experiment file', str_dir);
+  [str_file, str_dir] = uigetfile('*_sc.mat', ...
+    sprintf('Select experiment file %s', str_file), str_dir);
   
   if ~ischar(str_file)
     return
@@ -31,7 +32,7 @@ while isempty(filepath)
   
 end
 
-sc_settings.set_default_experiment_dir(last_dir);
-sc_settings.set_last_experiment(last_file);
+sc_settings.write_settings(sc_settings.tags.EXPERIMENT_DIR,  last_dir);
+sc_settings.write_settings(sc_settings.tags.LAST_EXPERIMENT, last_file);
 
 end

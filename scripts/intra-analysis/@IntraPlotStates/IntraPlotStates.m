@@ -26,7 +26,7 @@ classdef IntraPlotStates < handle
         obj.(varargin{i}) = varargin{i+1};
       end
       
-      sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+      sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
       sc_debug.set_mode(true);
       
       obj.str_stims = get_intra_motifs();

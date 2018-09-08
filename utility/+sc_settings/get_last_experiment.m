@@ -1,6 +1,6 @@
 function [file, full_file_path] = get_last_experiment()
 
-file = sc_settings.read_settings('last_experiment');
+file = sc_settings.read_settings(sc_settings.tags.LAST_EXPERIMENT);
 
 if nargout >= 2
   

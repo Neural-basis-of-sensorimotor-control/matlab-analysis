@@ -1,6 +1,6 @@
 function p = intra_check_single_pulses(modality, neuron_indx)
 
-sc_settings.set_current_settings_tag(sc_settings.get_intra_analysis_tag());
+sc_settings.set_current_settings_tag(sc_settings.tags.INTRA);
 sc_debug.set_mode(true);
 
 height_limit      = 2;

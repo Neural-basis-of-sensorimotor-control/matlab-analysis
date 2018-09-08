@@ -4,7 +4,7 @@ if nargin<2
   str_stim = {'V1', 'V2', 'V3', 'V4', '1000'};
 end
 
-expr       = ScExperiment.load_experiment(expr_fname);
+expr       = ScExperiment.load_experiment(neuron.experiment_filename);
 
 file       = get_item(expr.list, neuron.file_tag);
 triggers   = file.gettriggers(0, inf);

@@ -39,7 +39,7 @@ stim_times = cell2mat(stim_times');
   paired_ec_double_spikes(spiketimes2, max_double_spike_isi);
 
 f = incr_fig_indx();
-clf
+clf reset
 
 title_str = [neuron.file_tag ' ' neuron.template_tag{1} ' ' neuron.template_tag{2}];
 
@@ -119,7 +119,7 @@ spont_max = plot_perispike(spiketimes1_spont, spiketimes2, pretrigger, posttrigg
   kernelwidth, binwidth, [], 'spont');
 add_legend();
 
-title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{2} ' triggered: ' neuron.template_tag{1}];
+title_str = [neuron.file_tag ' trigger: ' neuron.template_tag{1} ' triggered: ' neuron.template_tag{2}];
 title(gca, title_str);
 
 if stim_max > spont_max

@@ -54,7 +54,7 @@ save(save_path, 'obj')
 experiment.save_name = str_file;
 
 sc_settings.set_last_experiment(str_file);
-sc_settings.set_default_experiment_dir(str_dir);
+sc_settings.write_settings(sc_settings.tags.LAST_EXPERIMENT, str_dir);
 
 saved = true;
 

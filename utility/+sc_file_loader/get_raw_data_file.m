@@ -25,6 +25,6 @@ while isempty(filepath)
   
 end
 
-sc_settings.set_raw_data_dir(last_dir);
+sc_settings.write_settings(sc_settings.tags.RAW_DATA_DIR, last_dir);
 
 end

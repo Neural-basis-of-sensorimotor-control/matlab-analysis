@@ -2,7 +2,7 @@ clc
 close all
 clear
 
-sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT);
+sc_settings.set_current_settings_tag(sc_settings.tags.HANNES);
 sc_debug.set_mode(true);
 
 neurons = paired_get_extra_neurons();
@@ -33,7 +33,6 @@ for i=1:length(neurons)
     paired_single_out_spont_spikes(t2, start_times, 0, stim_duration);
   stim_freq(i*2)  = length(stim_spike_times_2)/tot_stim_duration;
   spont_freq(i*2) = length(spont_spike_times_2)/tot_spont_duration;
-  
 end
 
 incr_fig_indx

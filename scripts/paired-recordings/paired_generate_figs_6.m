@@ -1,6 +1,6 @@
 close all
 clear
-sc_settings.set_current_settings_tag('temporary')
+sc_settings.set_current_settings_tag(sc_settings.tags.TEMPORARY)
 paired_load_settings();
 paired_load_constants();
 

@@ -1,4 +1,4 @@
-function plot_mda(y, neuron_tags, markers, right_click_fcns)
+function plot_mda(y, neuron_tags, markers, right_click_fcns, msgs)
 
 dummy_cell = cell(size(y,1), 1);
 
@@ -56,6 +56,9 @@ elseif size(y,2) == 2
     
     if nargin >= 4
       set(h_plot, 'UiContextMenu', get_right_click_menu(right_click_fcns{i}));
+    end
+    if nargin >= 5 && ~isempty(msgs{i})
+      text(y(i,1), y(i,2), msgs{i});
     end
     
   end

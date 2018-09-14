@@ -34,7 +34,8 @@ end
 file           = sc_load_file(neuron);
 experiment_tag = file.tag(1:4);
 file_index     = str2num(file.tag(5:8));
-str_files      = ls(file.parent.fdir);
+[~, tmp] = fileparts(file.parent.fdir);
+str_files      = ls([sc_settings.get_raw_data_dir tmp]);
 
 for tmp_file_index=file_index:100
   

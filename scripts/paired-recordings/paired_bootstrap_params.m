@@ -4,6 +4,7 @@ nbr_of_bootstrap_iterations = 100;
 
 tag = {neuron.file_tag};
 depths = paired_parse_for_subcortical_depth(neuron);
+
 if strcmp(neuron.protocol_signal_tag, 'patch') || strcmp(neuron.protocol_signal_tag, 'patch1')
   depth = depths.depth1;
 elseif strcmp(neuron.protocol_signal_tag, 'patch2')

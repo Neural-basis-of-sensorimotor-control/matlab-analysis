@@ -13,7 +13,7 @@
 clc
 clear
 reset_fig_indx
-sc_settings.set_current_settings_tag(sc_settings.tags.DEFAULT)
+sc_settings.set_current_settings_tag(sc_settings.tags.HANNES)
 sc_settings.get_default_experiment_dir()
 sc_debug.set_mode(true)
 
@@ -41,6 +41,7 @@ nbr_of_spont_spikes = nan(2, nbr_of_neurons);
 nbr_of_all_spikes   = nan(2, nbr_of_neurons);
 
 for i=1:length(neurons)
+  sc_debug.print(i, length(neurons));
   
   neuron = neurons(i);
   
@@ -81,6 +82,14 @@ for i=1:length(neurons)
   
 end
 tags = {neurons.file_tag};
+
+pearson = nan(size(neurons));
+for i=1:length(pearson)
+  pearson(i) = corr(freq_stim_triggered(:,i), freq_spont_triggered(:,i));
+end
+
+
+corr(freq_stim_triggered(:, i), freq_spont_triggered(:, i))
 
 fprintf('              Total         Stim           Spont\n');
 fprintf('Cell         N1     N2      N1  N2       N1    N2\n\n')

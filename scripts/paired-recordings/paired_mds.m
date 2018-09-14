@@ -1,4 +1,4 @@
-function paired_mds(neurons)
+function stress = paired_mds(neurons)
 
 nbr_of_params  = 12;
 nbr_of_neurons = 2*length(neurons);
@@ -17,7 +17,7 @@ for i_paired_neuron=1:length(neurons)
     
     col_indx             = i_paired_neuron * 2 + i_neuron - 2;
     legend_str(col_indx) = {tmp_paired_neuron.file_tag};
-    
+   
     layer = paired_get_layer(tmp_paired_neuron);
     
     switch find(cellfun(@(x) strcmp(layer, x), layer_enumeration))
@@ -69,12 +69,20 @@ mean_values = mean(abs(values), 2);
 values      = values ./ repmat(mean_values, 1, nbr_of_neurons);
 
 d = pdist(values');
-y = cmdscale(d, 2);
+[y, stress] = mdscale(d, 2);
 
 incr_fig_indx()
 
+msgs = cell(2*length(neurons), 1);
+for i=1:length(neurons)
+  msg = paired_get_cell_msg(neurons(i));
+  msgs(2*i-1) = {msg};
+  msgs(2*i)   = {msg};
+end
+
 clf
-plot_mda(y, legend_str, markers, right_click_fcns);
+plot_mda(y, legend_str, markers, right_click_fcns, msgs);
+add_legend();
 
 end
 

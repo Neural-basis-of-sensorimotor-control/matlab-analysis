@@ -5,6 +5,7 @@ classdef tags
     DEFAULT           = 'sc_default'
     INTRA             = 'sc_intra'
     TEST              = 'sc_test'
+    HANNES            = 'sc_hmogensen'
     
     LAST_EXPERIMENT   = 'last_experiment'
     EXPERIMENT_DIR    = 'intra_experiment_dir'

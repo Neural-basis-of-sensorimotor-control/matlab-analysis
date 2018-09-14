@@ -1,5 +1,5 @@
 function [freq_out, edges_out, plot_out] = sc_kernelhist(varargin)
-%SC_KERNELHIST(stimtimes, spiketimes, pretrigger, posttrigger, kernelwidth, binwidth)
+%[freq_out, edges_out, plot_out] =  SC_KERNELHIST(stimtimes, spiketimes, pretrigger, posttrigger, kernelwidth, binwidth)
 %SC_KERNELHIST(axeshandle, ...)
 %SC_KERNELHIST(suppress_plot, axeshandle, ...)
 %SC_KERNELHIST(...,ksdensityargs)
@@ -35,6 +35,7 @@ ksdensityargs = varargin(6:end);
   kernelwidth, ksdensityargs{:});
 
 if ~suppress_plot
+  if isempty(freq), freq = zeros(size(edges)); end
   plothandle = plot(axeshandle,edges,freq);
 else
   plothandle = [];

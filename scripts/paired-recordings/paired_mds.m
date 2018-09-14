@@ -1,6 +1,6 @@
 function stress = paired_mds(neurons)
 
-nbr_of_params  = 12;
+nbr_of_params  = 9;
 nbr_of_neurons = 2*length(neurons);
 
 values            = nan(nbr_of_params, nbr_of_neurons);
@@ -33,24 +33,24 @@ for i_paired_neuron=1:length(neurons)
     
     counter = 0;
     
-    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [onset, ~, leading_flank_width, ~, trailing_flank_width, ~, peak_position] ...
       = tmp_paired_neuron.compute_all_distances('indx_prespike_response', i_neuron);
     
-    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
+    tmp_values = [onset; leading_flank_width+trailing_flank_width; peak_position];%[normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [onset, ~, leading_flank_width, ~, trailing_flank_width, ~, ~, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_perispike_response', i_neuron);
     
-    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
+    tmp_values = [onset; leading_flank_width+trailing_flank_width; normalized_height];%[normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     
-    [onset, ~, ~, ~, trailing_flank_width, ~, peak_position, normalized_height] ...
+    [~, ~, leading_flank_width, ~, trailing_flank_width, ~, ~, normalized_height] ...
       = tmp_paired_neuron.compute_all_distances('indx_postspike_response', i_neuron);
     
-    tmp_values = [normalized_height; onset; trailing_flank_width; peak_position];
+    tmp_values = [leading_flank_width+trailing_flank_width; leading_flank_width; normalized_height];%[normalized_height; onset; trailing_flank_width; peak_position];
     values(counter + (1:length(tmp_values)), col_indx) = tmp_values;
     counter = counter + length(tmp_values);
     

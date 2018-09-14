@@ -63,7 +63,6 @@ for tmp_file_index=file_index:100
   
 end
 
-
 error('Could not parse neuron %s', neuron.file_tag)
 
 end

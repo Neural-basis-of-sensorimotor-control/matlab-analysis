@@ -77,7 +77,13 @@ function [enc_str, n_enc] = separate_str(str)
 str = strrep(str, '/', filesep);
 str = strrep(str, '\', filesep);
 
+initialFileSep = ~isempty(str) && str(1) == filesep;
+
 enc_str = strsplit(str, filesep);
+if initialFileSep
+  enc_str(2:end+1) = enc_str;
+  enc_str(1) = {filesep};
+end
 
 for i=length(enc_str):-1:1
   

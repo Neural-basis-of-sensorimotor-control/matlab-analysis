@@ -33,7 +33,7 @@ function viewer = sc(varargin)
 %   SC -WHAT print all available information about experiment files in
 %   chosen directory
 %
-%   Copyright 2015 Neural Basis of Sensorimotor Control, Lund University
+%   Copyright 2015-2019 Neural Basis of Sensorimotor Control, Lund University
 %   hannes.mogensen@med.lu.se
 
 github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';

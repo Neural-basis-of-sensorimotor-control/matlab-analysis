@@ -11,6 +11,10 @@ if ~nargin
   
 end
 
+if isunix && ~startsWith(val, '/')
+  val = ['/' val];
+end
+
 sc_settings.write_settings(sc_settings.tags.EXPERIMENT_DIR, val);
 
 end

@@ -25,7 +25,7 @@ classdef ConvTemplate < handle
       localMax = localMax & ...
         vConv(2:end-1) > obj.lowerThreshold & ...
         vConv(2:end-1) < obj.upperThreshold;
-      indx = find(localMax) - length(obj.v);
+      indx = find(localMax) - round(length(obj.v)/2);
     end
     
     function val = getTriggerTimes(obj, dt)

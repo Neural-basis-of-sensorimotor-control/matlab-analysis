@@ -47,7 +47,7 @@ classdef DefineTemplate < handle
       if nargin==1
         time = obj.time;
         sweep = obj.sweep;
-        triggerTime = obj.triggerTime
+        triggerTime = obj.triggerTime;
       else
         obj.time = time;
         obj.sweep = sweep;
@@ -74,6 +74,8 @@ classdef DefineTemplate < handle
       if strcmpi(obj.plotMode, 'defineEpsp')
         obj.axes22.ButtonDownFcn = @(~, ~) clickToDefineTemplate(obj);
       else
+        obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);
+        
         template = obj.templates(obj.indxSelectedTemplate);
         cla(obj.axes31)
         hold(obj.axes31, 'on')
@@ -85,8 +87,8 @@ classdef DefineTemplate < handle
         grid(obj.axes32, 'on')
         hold(obj.axes32, 'on')
         plot(obj.axes32, time, vConv);
-        line(obj.axes32, xlim(obj.axes32), template.lowerThreshold*[1 1]);
-        line(obj.axes32, xlim(obj.axes32), template.upperThreshold*[1 1]);
+        line(obj.axes32, [time(1) time(end)], template.lowerThreshold*[1 1]);
+        line(obj.axes32, [time(1) time(end)], template.upperThreshold*[1 1]);
         ylim(obj.axes32, [0 2]);
         title(obj.axes32, sprintf('template #%d', obj.indxSelectedTemplate));
       end
@@ -100,7 +102,7 @@ classdef DefineTemplate < handle
     end
     
     function clickToDefineTemplate(obj)
-      currentPoint = obj.axes12.CurrentPoint;
+      currentPoint = obj.axes22.CurrentPoint;
       if isempty(obj.tLeft)
         obj.tLeft = currentPoint(1);
       elseif isempty(obj.tRight)
@@ -112,6 +114,14 @@ classdef DefineTemplate < handle
         obj.tLeft  = [];
         obj.tRight = [];
       end
+    end
+    
+    function clickToDrawTemplate(obj)
+      currentPoint = obj.axes22.CurrentPoint;
+      x = currentPoint(1);
+      template = obj.templates(obj.indxSelectedTemplate);
+      plot(obj.axes22, x+(1:length(template.v))*obj.dt, template.v, ...
+        'HitTest', 'off');
     end
     
     function updateTemplates(obj, v)

@@ -1,15 +1,15 @@
-% % % clear
-% % neurons = intra_get_neurons();
-% % patterns = get_intra_motifs();
-% % neuronIndx = 3;
-% % 
+% % clear
+% neurons = intra_get_neurons();
+% patterns = get_intra_motifs();
+% neuronIndx = 3;
+% 
 % signal = hamo.intra.loadSignal(neurons(neuronIndx));
-% %
-% % v = signal.get_v(true, true, true, true);
-% % a = .001;
-% % v = filter([1-a a-1], [1 a-1], v);
+% 
+%v = signal.get_v(true, true, true, true);
+% a = .001;
+% v = filter([1-a a-1], [1 a-1], v);
 % defineTemplate = hamo.gui.DefineTemplate(signal, gcf);
-% % 
+% 
 % dt = 1e-5;
 % pretrigger = 4e-3;
 % posttrigger = 18e-3;
@@ -23,13 +23,13 @@
 % epspTemplate.responseHeight = responseHeights;
 % signal.addTemplate(epspTemplate)
 % 
-
+% 
 
 respStims = find(epspResponses);
-stimIndx = respStims(35);
+stimIndx = respStims(45);
 [sweep, time] = sc_get_sweeps(v, 0, stimTimes(stimIndx), pretrigger, ...
  posttrigger + 10e-3, dt);
-
+epspTemplate.isEditable = true;
 defineTemplate.plotSweep(time, sweep, stimTimes(stimIndx));
 axes(defineTemplate.axes12);
 if epspResponses(stimIndx)

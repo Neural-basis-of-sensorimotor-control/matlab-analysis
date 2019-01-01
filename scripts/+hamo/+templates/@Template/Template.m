@@ -29,7 +29,7 @@ classdef Template < handle
     %   hAxes   Axes handle
     %   time    Time relative to trigger point
     %   sweep   Signal value corresponding to time values
-    function plotSweep(obj, hAxes, time, sweep) %#ok<INUSL>
+    function plotSweep(obj, hAxes, time, sweep, triggerTime) %#ok<INUSL,INUSD>
       plot(hAxes, time, sweep, 'b-');
     end
     
@@ -37,7 +37,7 @@ classdef Template < handle
     %   obj hamo.templates.Template subclass
     %   t0  Time point (x coordinate)
     %   v0  Signal value (y coordinate)
-    function plotHandles = plotShape(obj, t0, v0) %#ok<INUSD>
+    function plotHandles = plotShape(obj, hAxes, t0, v0) %#ok<INUSD>
       plotHandles = [];
     end
     

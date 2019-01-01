@@ -40,6 +40,17 @@ classdef ManualTemplate < hamo.templates.Template
       plot(hAxes, [pretrigger posttrigger], y*[1 1], 'b-');
     end
     
+    % Overriding hamo.templates.Template method
+    function plotSweep(obj, hAxes, time, sweep, triggerTime)
+      plotSweep@hamo.templates.Template(obj, hAxes, time, sweep);
+      [~, tmp] = min(abs(triggerTime-obj.stimTimes));
+      if all(isfinite(obj.responseTime(:, tmp)))
+        plot(hAxes, obj.responseTime(1, tmp), obj.responseHeight(1, tmp), '^');
+        plot(hAxes, obj.responseTime(2, tmp), obj.responseHeight(2, tmp), 'v');
+      end
+    end
+    
+    
     function addStimResponse(obj, stimTime, time, height)
       [~, tmp] = min(abs(stimTime-obj.stimTimes));
       obj.responseTime(:, tmp)   = time;

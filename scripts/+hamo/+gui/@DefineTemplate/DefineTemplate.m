@@ -40,6 +40,7 @@ classdef DefineTemplate < handle
     end
     
     function set.indxSelectedTemplate(obj, val)
+      val = min(obj.getEditableTemplates(), val);
       obj.m_indxSelectedTemplate = val;
       obj.plotSweep;
     end
@@ -86,7 +87,7 @@ classdef DefineTemplate < handle
         cla(obj.axes32)
         grid(obj.axes32, 'on')
         hold(obj.axes32, 'on')
-        template.plotSweep(obj.axes32, time, sweep);
+        template.plotSweep(obj.axes32, time, sweep, triggerTime);
         title(obj.axes32, sprintf('template #%d', obj.indxSelectedTemplate));
       end
       linkaxes([obj.axes12 obj.axes22 obj.axes32], 'x');

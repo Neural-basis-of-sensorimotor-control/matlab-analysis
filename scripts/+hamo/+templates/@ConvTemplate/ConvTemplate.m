@@ -55,7 +55,7 @@ classdef ConvTemplate < hamo.templates.Template
     end
     
     % Overriding hamo.templates.Template method
-    function plotSweep(obj, hAxes, time, sweep)
+    function plotSweep(obj, hAxes, time, sweep, ~)
       vCross = obj.crossCorrelate(sweep);
       plot(hAxes, time, vCross);
       line(hAxes, [time(1) time(end)], obj.lowerThreshold*[1 1]);

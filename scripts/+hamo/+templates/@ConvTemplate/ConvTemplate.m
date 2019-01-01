@@ -35,6 +35,10 @@ classdef ConvTemplate < hamo.templates.Template
       obj.isUpdated = false;
     end
     
+    function val = get.upperThreshold(obj)
+      val = obj.m_upperThreshold;
+    end
+    
     function set.upperThreshold(obj, val)
       obj.m_upperThreshold = val;
       obj.isUpdated = false;

@@ -6,13 +6,14 @@ classdef DefineTemplate < handle
     time
     sweep
     triggerTime
-    plotMode = 'defineEpsp'
+    plotMode = 'defineConvTemplate'
     axes12
     axes22
     axes32
     axes31
-    templates
     dt = 1e-5
+    ephemeralPlots
+    signal
   end
   
   properties (Dependent)
@@ -25,7 +26,8 @@ classdef DefineTemplate < handle
   
   methods
     
-    function obj = DefineTemplate(fig)
+    function obj = DefineTemplate(signal, fig)
+      obj.signal = signal;
       clf(fig);
       obj.axes12 = subplot(3, 5, 2:5);
       obj.axes22 = subplot(3, 5, 5+(2:5));
@@ -57,47 +59,51 @@ classdef DefineTemplate < handle
       cla(obj.axes12)
       hold(obj.axes12, 'on')
       grid(obj.axes12, 'on')
-      for i=1:length(obj.templates)
-        t = obj.templates(i).getTriggerTimes(obj.dt);
+      triggableTemplates = obj.getTriggableTemplates();
+      for i=1:length(triggableTemplates)
+        template = triggableTemplates{i};
+        t = template.getTriggerTimes();
         t = t(t>time(1)+triggerTime & t<time(end)+triggerTime);
         t = t - triggerTime;
         plot(obj.axes12, t, i*ones(size(t)), 'k+')
         plot(obj.axes12, [time(1) time(end)], i*[1 1], 'b-');
       end
-      ylim(obj.axes12, [0 length(obj.templates)+1]);
-      %obj.axes12.YTick = 1:length(obj.templates);
+      ylim(obj.axes12, [0 length(obj.getTriggableTemplates())+1]);
+      obj.axes12.YTick = 1:length(obj.getTriggableTemplates());
+      obj.axes12.YTickLabel = cellfun(@(x) getFormattedTag(x, '*'), ...
+        obj.getTriggableTemplates(), 'UniformOutput', false);
       
       cla(obj.axes22);
       grid(obj.axes22, 'on')
       hold(obj.axes22, 'on')
       plot(obj.axes22, time, sweep, 'HitTest', 'off')
-      if strcmpi(obj.plotMode, 'defineEpsp')
+      if strcmpi(obj.plotMode, 'defineConvTemplate') ||...
+          strcmpi(obj.plotMode, 'defineAutoThreshold')
         obj.axes22.ButtonDownFcn = @(~, ~) clickToDefineTemplate(obj);
       else
-        obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);
-        
-        template = obj.templates(obj.indxSelectedTemplate);
+        obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);        
+        template = obj.getSelectedTemplate();
         cla(obj.axes31)
-        hold(obj.axes31, 'on')
+        template.plotShape(obj.axes31, 0, 0);
         grid(obj.axes31, 'on')
-        plot(obj.axes31, (1:length(template.v))*obj.dt, template.v)
         
-        vConv = template.convolute(obj.sweep);
         cla(obj.axes32)
         grid(obj.axes32, 'on')
         hold(obj.axes32, 'on')
-        plot(obj.axes32, time, vConv);
-        line(obj.axes32, [time(1) time(end)], template.lowerThreshold*[1 1]);
-        line(obj.axes32, [time(1) time(end)], template.upperThreshold*[1 1]);
-        ylim(obj.axes32, [0 2]);
+        template.plotSweep(obj.axes32, time, sweep);
         title(obj.axes32, sprintf('template #%d', obj.indxSelectedTemplate));
       end
       linkaxes([obj.axes12 obj.axes22 obj.axes32], 'x');
       xlim(obj.axes12, [time(1) time(end)])
     end
     
-    function addTemplate(obj)
-      obj.plotMode = 'defineEpsp';
+    function addConvTemplate(obj)
+      obj.plotMode = 'defineConvTemplate';
+      obj.plotSweep();
+    end
+    
+    function addAutoThresholdTemplate(obj)
+      obj.plotMode = 'defineAutoThreshold';
       obj.plotSweep();
     end
     
@@ -107,29 +113,76 @@ classdef DefineTemplate < handle
         obj.tLeft = currentPoint(1);
       elseif isempty(obj.tRight)
         obj.tRight = currentPoint(1);
-        obj.templates = add_to_list(obj.templates, ...
-          hamo.templates.ConvTemplate(obj.sweep(obj.time >= obj.tLeft & obj.time <= obj.tRight)));
+        v = obj.sweep(obj.time >= obj.tLeft & obj.time <= obj.tRight);
+        if strcmpi(obj.plotMode, 'defineConvTemplate')
+          template = hamo.templates.ConvTemplate(v);
+        elseif strcmpi(obj.plotMode, 'defineAutoThreshold')
+          template = hamo.templates.AutoThresholdTemplate(v);
+        else
+          error('Illegal command: %s', obj.plotMode);
+        end
+        obj.addTemplate(template);
         obj.plotMode = 'plotSweep';
-        obj.indxSelectedTemplate = length(obj.templates);
+        obj.indxSelectedTemplate = length(obj.getEditableTemplates());
         obj.tLeft  = [];
         obj.tRight = [];
       end
     end
     
     function clickToDrawTemplate(obj)
+      for i=1:length(obj.ephemeralPlots)
+        if ishandle(obj.ephemeralPlots(i))
+          delete(obj.ephemeralPlots(i));
+        end
+      end
+      obj.ephemeralPlots = [];
+          
       currentPoint = obj.axes22.CurrentPoint;
-      x = currentPoint(1);
-      template = obj.templates(obj.indxSelectedTemplate);
-      plot(obj.axes22, x+(1:length(template.v))*obj.dt, template.v, ...
-        'HitTest', 'off');
+      x = currentPoint(1, 1);
+      y = currentPoint(1, 2);
+      template = obj.getSelectedTemplate();
+      obj.ephemeralPlots = template.plotShape(obj.axes22, x, y);
     end
     
     function updateTemplates(obj, v)
-      for i=1:length(obj.templates)
-        obj.templates(i).indxDetected = ...
-          obj.templates(i).match(v);
-        obj.templates(i).isUpdated = true;
+      triggableTemplates = obj.getTriggableTemplates();
+      for i=1:length(triggableTemplates)
+        template = triggableTemplates{i};
+        if ~template.isUpdated
+          template.triggerIndx = ...
+            template.match_v(v);
+          template.isUpdated = true;
+        end
       end
+    end
+    
+    function val = getEditableTemplates(obj)
+      if isempty(obj.signal)
+        val = {};
+      else
+        tmpl = obj.signal.templates;
+        indx = cellfun(@(x) x.isEditable, tmpl);
+        val  = tmpl(indx);
+      end
+    end
+    
+    function val = getTriggableTemplates(obj)
+      if isempty(obj.signal)
+        val = {};
+      else
+        tmpl = obj.signal.templates;
+        indx = cellfun(@(x) x.isTriggable, tmpl);
+        val  = tmpl(indx);
+      end
+    end
+    
+    function addTemplate(obj, template)
+      obj.signal.addTemplate(template);
+    end
+    
+    function val = getSelectedTemplate(obj)
+      templates  = obj.getEditableTemplates();
+      val        = templates{obj.indxSelectedTemplate};
     end
     
   end

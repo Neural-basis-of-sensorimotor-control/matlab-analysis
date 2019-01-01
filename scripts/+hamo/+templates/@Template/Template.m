@@ -1,7 +1,7 @@
 classdef Template < handle
   
   properties
-    isUpdated   = false % true if getTriggerTimes() function return 
+    isUpdated   = false % true if getTriggerTimes() function return
                         % accurately detected triggers
     isTriggable = true  % true to make template visible as trigger in GUI
     isEditable  = true  % true to make template editable in GUI
@@ -46,6 +46,21 @@ classdef Template < handle
     %   t0  Time point (x coordinate)
     %   v0  Signal value (y coordinate)
     function plotEditableShape(obj, t0, v0) %#ok<INUSD>
+      % Override in subclass to add implementation
+    end
+    
+    % Plot trigger time at plot axes position y
+    %   obj          hamo.templates.Template subclass
+    %   y            Axes y position (preferably an integer value)
+    %   triggerTime  Trigger time offset
+    %   pretrigger   Min time value
+    %   posttrigger  Max time value
+    function plotTriggerTimes(obj, hAxes, y, triggerTime, pretrigger, posttrigger)
+      t = obj.getTriggerTimes();
+      t = t(t>pretrigger+triggerTime & t<posttrigger+triggerTime);
+      t = t - triggerTime;
+      plot(hAxes, t, y*ones(size(t)), 'k+')
+      plot(hAxes, [pretrigger posttrigger], y*[1 1], 'b-');
     end
     
     function val = get.dt(obj)

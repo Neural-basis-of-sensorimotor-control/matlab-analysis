@@ -30,6 +30,16 @@ classdef ManualTemplate < hamo.templates.Template
       times = obj.stimTimes(validData) + obj.responseTime(1, validData);
     end
     
+    % Overriding hamo.templates.Template method
+    function plotTriggerTimes(obj, hAxes, y, triggerTime, pretrigger, posttrigger)
+      [~, tmp] = min(abs(triggerTime-obj.stimTimes));
+      if all(isfinite(obj.responseTime(:, tmp)))
+        plot(hAxes, obj.responseTime(1, tmp), y, '^');
+        plot(hAxes, obj.responseTime(2, tmp), y, 'v');
+      end
+      plot(hAxes, [pretrigger posttrigger], y*[1 1], 'b-');
+    end
+    
     function addStimResponse(obj, stimTime, time, height)
       [~, tmp] = min(abs(stimTime-obj.stimTimes));
       obj.responseTime(:, tmp)   = time;

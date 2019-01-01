@@ -26,7 +26,7 @@
 
 
 respStims = find(epspResponses);
-stimIndx = respStims(1);
+stimIndx = respStims(35);
 [sweep, time] = sc_get_sweeps(v, 0, stimTimes(stimIndx), pretrigger, ...
  posttrigger + 10e-3, dt);
 

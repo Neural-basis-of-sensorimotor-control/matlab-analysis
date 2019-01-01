@@ -62,11 +62,7 @@ classdef DefineTemplate < handle
       triggableTemplates = obj.getTriggableTemplates();
       for i=1:length(triggableTemplates)
         template = triggableTemplates{i};
-        t = template.getTriggerTimes();
-        t = t(t>time(1)+triggerTime & t<time(end)+triggerTime);
-        t = t - triggerTime;
-        plot(obj.axes12, t, i*ones(size(t)), 'k+')
-        plot(obj.axes12, [time(1) time(end)], i*[1 1], 'b-');
+        template.plotTriggerTimes(obj.axes12, i, triggerTime, time(1), time(end));
       end
       ylim(obj.axes12, [0 length(obj.getTriggableTemplates())+1]);
       obj.axes12.YTick = 1:length(obj.getTriggableTemplates());

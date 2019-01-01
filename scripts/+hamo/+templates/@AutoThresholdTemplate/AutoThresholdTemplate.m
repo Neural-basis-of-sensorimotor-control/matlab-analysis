@@ -3,12 +3,7 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
   
   properties
     shape
-  end
-  
-  properties 
-    %Inherited from hamo.templates.Template class
-    isTriggable    = true
-    isEditable     = true
+    triggerIndx
   end
   
   methods
@@ -49,6 +44,12 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
       if ~holdIsOn
         hold(hAxes, 'off');
       end
+    end
+    
+    % Get trigger times, converted from array indices to continuous time
+    %   obj hamo.templates.Template subclass
+    function val = getTriggerTimes(obj)
+      val = obj.triggerIndx*obj.dt;
     end
     
   end

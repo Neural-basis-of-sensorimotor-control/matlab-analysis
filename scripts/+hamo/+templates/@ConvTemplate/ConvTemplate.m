@@ -2,6 +2,7 @@ classdef ConvTemplate < hamo.templates.Template
   
   properties
     shape
+    triggerIndx
   end
   
   properties (Dependent)
@@ -13,13 +14,7 @@ classdef ConvTemplate < hamo.templates.Template
     m_lowerThreshold  = .9
     m_upperThreshold  = 1.11
   end
-  
-  properties 
-    %Inherited from hamo.templates.Template class
-    isTriggable    = true
-    isEditable     = true
-  end
-  
+    
   methods
     
     function obj = ConvTemplate(shape, tag)
@@ -76,6 +71,12 @@ classdef ConvTemplate < hamo.templates.Template
       if ~holdIsOn
         hold(hAxes, 'off');
       end
+    end
+    
+    % Get trigger times, converted from array indices to continuous time
+    %   obj hamo.templates.Template subclass
+    function val = getTriggerTimes(obj)
+      val = obj.triggerIndx*obj.dt;
     end
     
   end

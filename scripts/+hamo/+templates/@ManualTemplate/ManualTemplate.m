@@ -1,43 +1,39 @@
 classdef ManualTemplate < hamo.templates.Template
   
   properties
-    xData
-    yData
-  end
-  
-  properties
-    %Inherited from hamo.templates.Template class
-    isTriggable    = true
-    isEditable     = false
+    stimTimes
+    responseTime
+    responseHeight
   end
   
   methods
     
-    function obj = ManualTemplate(parent, triggerTimes, tag)
-      obj.parent      = parent;
-      obj.triggerIndx = round(triggerTimes/obj.dt);
-      dim             = [2, length(obj.triggerIndx)];
-      obj.xData       = nan(dim);
-      obj.yData       = nan(dim);
-      obj.isUpdated   = true;
-      obj.tag         = tag;
+    function obj = ManualTemplate(stimTimes, tag)
+      obj.stimTimes      = stimTimes;
+      dim                = [2, length(stimTimes)];
+      obj.responseTime   = nan(dim);
+      obj.responseHeight = nan(dim);
+      obj.isUpdated      = true;
+      obj.tag            = tag;
+      obj.isTriggable    = true;
+      obj.isEditable     = false;
     end
     
-    % Overriding hamo.templates.Template method
+    % Implementing hamo.templates.Template abstract method
     function indx = match_v(obj, ~, varargin)
-      indx = obj.triggerIndx;
+      indx = round(obj.triggerTimes/obj.dt);
     end
-    
-    % Overriding hamo.templates.Template method
+ 
+    % Implementing hamo.templates.Template abstract method
     function times = getTriggerTimes(obj)
-      validData = all(isfinite(obj.xData), 1);
-      times = obj.dt*(obj.triggerIndx(validData) + obj.xData(1, validData));
+      validData = all(isfinite(obj.responseTime), 1);
+      times = obj.stimTimes(validData) + obj.responseTime(1, validData);
     end
     
-    function addTriggerResponse(obj, triggerTime, responseTime, responseAmplitude)
-      [~, tmp] = min(abs(round(triggerTime/obj.dt)-obj.triggerIndx));
-      obj.xData(tmp, :) = round(responseTime/obj.dt);
-      obj.yData(tmp, :) = responseAmplitude;
+    function addStimResponse(obj, stimTime, time, height)
+      [~, tmp] = min(abs(stimTime-obj.stimTimes));
+      obj.responseTime(:, tmp)   = time;
+      obj.responseHeight(:, tmp) = height;
     end
     
     

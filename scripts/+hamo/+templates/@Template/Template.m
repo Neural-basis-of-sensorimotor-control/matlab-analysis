@@ -1,17 +1,15 @@
 classdef Template < handle
   
   properties
-    isUpdated = false
-    triggerIndx
-  end
-  
-  properties (Abstract)
-    isTriggable   % true to make template visible as trigger in GUI
-    isEditable    % true to make template editable in GUI
+    isUpdated   = false % true if getTriggerTimes() function return 
+                        % accurately detected triggers
+    isTriggable = true  % true to make template visible as trigger in GUI
+    isEditable  = true  % true to make template editable in GUI
   end
   
   methods (Abstract)
     indx = match_v(obj, vInput, varargin)
+    val = getTriggerTimes(obj)
   end
   
   properties (Dependent)
@@ -48,12 +46,6 @@ classdef Template < handle
     %   t0  Time point (x coordinate)
     %   v0  Signal value (y coordinate)
     function plotEditableShape(obj, t0, v0) %#ok<INUSD>
-    end
-    
-    % Get trigger times, converted from array indices to continuous time
-    %   obj hamo.templates.Template subclass
-    function val = getTriggerTimes(obj)
-      val = obj.triggerIndx*obj.dt;
     end
     
     function val = get.dt(obj)

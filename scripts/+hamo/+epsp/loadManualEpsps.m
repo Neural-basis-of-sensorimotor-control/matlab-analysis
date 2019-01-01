@@ -16,7 +16,7 @@ epspResponses = epspResponses(indx);
 v = signal.get_v(true, true, true, true);
 a = .001;
 v = filter([1-a a-1], [1 a-1], v);
-defineTemplate = hamo.epsp.DefineTemplate(signal, gcf);
+defineTemplate = hamo.gui.DefineTemplate(signal, gcf);
 
 stimIndx = 57
 [sweep, time] = sc_get_sweeps(v, 0, stimTimes(stimIndx), pretrigger, ...

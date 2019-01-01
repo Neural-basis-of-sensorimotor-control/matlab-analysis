@@ -22,8 +22,9 @@ classdef ConvTemplate < hamo.templates.Template
   
   methods
     
-    function obj = ConvTemplate(shape)
+    function obj = ConvTemplate(shape, tag)
       obj.shape = shape;
+      obj.tag   = tag;
     end
     
     function val = get.lowerThreshold(obj)

@@ -13,7 +13,7 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
   
   methods
     
-    function obj = AutoThresholdTemplate(shape)
+    function obj = AutoThresholdTemplate(shape, tag)
       shape = shape - shape(1);
       [~, ind] = max(abs(shape));
       
@@ -32,6 +32,7 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
       tolerance(tmpIndx) = percentageTolerance(tmpIndx) .* abs(shape(indx(tmpIndx)));
       obj@ScThreshold(indx, shape(indx), shape(indx)-tolerance, shape(indx)+tolerance);
       obj.shape = shape;
+      obj.tag   = tag;
     end
     
     % Overriding hamo.templates.Template method

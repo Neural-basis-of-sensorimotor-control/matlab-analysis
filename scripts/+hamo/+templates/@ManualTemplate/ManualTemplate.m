@@ -13,12 +13,14 @@ classdef ManualTemplate < hamo.templates.Template
   
   methods
     
-    function obj = ManualTemplate(triggerTimes, dt)
-      obj.triggerIndx = round(triggerTimes/dt);
+    function obj = ManualTemplate(parent, triggerTimes, tag)
+      obj.parent      = parent;
+      obj.triggerIndx = round(triggerTimes/obj.dt);
       dim             = [2, length(obj.triggerIndx)];
       obj.xData       = nan(dim);
       obj.yData       = nan(dim);
       obj.isUpdated   = true;
+      obj.tag         = tag;
     end
     
     % Overriding hamo.templates.Template method

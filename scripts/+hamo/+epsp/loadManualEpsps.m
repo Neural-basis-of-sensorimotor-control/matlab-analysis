@@ -9,7 +9,7 @@ posttrigger = 18e-3;
 
 validEpsps = arrayfun(@(x) any(strcmp(get_intra_motifs(), x.tag)), signal.amplitudes.list);
 [stimTimes, epspResponses] = hamo.epsp.getEpspResponses(signal.amplitudes.list(validEpsps), ...
-  pretrigger, posttrigger, 0);
+  pretrigger, posttrigger, 2);
 [stimTimes, indx] = sort(stimTimes);
 epspResponses = epspResponses(indx);
 

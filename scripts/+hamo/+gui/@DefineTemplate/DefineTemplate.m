@@ -115,9 +115,11 @@ classdef DefineTemplate < handle
         obj.tRight = currentPoint(1);
         v = obj.sweep(obj.time >= obj.tLeft & obj.time <= obj.tRight);
         if strcmpi(obj.plotMode, 'defineConvTemplate')
-          template = hamo.templates.ConvTemplate(v);
+          tag = hamo.util.findUniqueName({obj.signal.templates.tag}, 'convTemplate', 0);
+          template = hamo.templates.ConvTemplate(v, tag);
         elseif strcmpi(obj.plotMode, 'defineAutoThreshold')
-          template = hamo.templates.AutoThresholdTemplate(v);
+          tag = hamo.util.findUniqueName({obj.signal.templates.tag}, 'convTemplate', 0);
+          template = hamo.templates.AutoThresholdTemplate(v, tag);
         else
           error('Illegal command: %s', obj.plotMode);
         end

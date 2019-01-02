@@ -1,7 +1,7 @@
 clear
 neurons = intra_get_neurons();
 patterns = get_intra_motifs();
-neuronIndx = 9;
+neuronIndx = 11;
 
 signal = hamo.intra.loadSignal(neurons(neuronIndx));
 
@@ -23,17 +23,17 @@ for i=1:length(signal.templates)
   signal.rmTemplate(signal.templates{i});
 end
 signal.addTemplate(epspTemplate)
-epspTemplate.isEditable=true;
+%epspTemplate.isEditable=true;
 % %
 %
 %
 respStims = find(epspResponses);
-epspTemplate.isEditable = true;
 
 defineTemplate.pretrigger = -5e-3;
-defineTemplate.trigger = epspTemplate;
-defineTemplate.rectificationPoint = 0;
-
+defineTemplate.trigger = stimTimes(respStims);%epspTemplate;
+%defineTemplate.rectificationPoint = 0;
+defineTemplate.plotSweep
+return
 n = 202;
 defineTemplate.triggerIndx=respStims();%n:n+10);
 defineTemplate.plotSweep();

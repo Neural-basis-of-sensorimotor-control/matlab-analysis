@@ -108,7 +108,7 @@ classdef DefineTemplate < handle
     end
     
     function set.indxSelectedTemplate(obj, val)
-      val = min(obj.getEditableTemplates(), val);
+      val = min(length(obj.getEditableTemplates()), val);
       obj.m_indxSelectedTemplate = val;
       obj.plotSweep;
     end
@@ -203,12 +203,17 @@ classdef DefineTemplate < handle
         obj.tLeft = currentPoint(1);
       elseif isempty(obj.tRight)
         obj.tRight = currentPoint(1);
-        vShape = obj.sweep(obj.time >= obj.tLeft & obj.time <= obj.tRight);
+        triggerTime = obj.getTriggerTime();
+        triggerTime = triggerTime(1);
+        [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
+          obj.pretrigger, obj.posttrigger, obj.dt);
+        vShape = sweep(time >= obj.tLeft & time <= obj.tRight);
+        names = cellfun(@(x) x.tag, obj.signal.templates, 'UniformOutput', false);
         if strcmpi(obj.plotMode, 'defineConvTemplate')
-          tag = hamo.util.findUniqueName({obj.signal.templates.tag}, 'convTemplate', 0);
+          tag = hamo.util.findUniqueName(names, 'convTemplate', 0);
           template = hamo.templates.ConvTemplate(vShape, tag);
         elseif strcmpi(obj.plotMode, 'defineAutoThreshold')
-          tag = hamo.util.findUniqueName({obj.signal.templates.tag}, 'convTemplate', 0);
+          tag = hamo.util.findUniqueName(names, 'convTemplate', 0);
           template = hamo.templates.AutoThresholdTemplate(vShape, tag);
         else
           error('Illegal command: %s', obj.plotMode);
@@ -236,13 +241,13 @@ classdef DefineTemplate < handle
       obj.ephemeralPlots = template.plotShape(obj.axes22, x, y);
     end
     
-    function updateTemplates(obj, v)
+    function updateTemplates(obj)
       triggableTemplates = obj.getTriggableTemplates();
       for i=1:length(triggableTemplates)
         template = triggableTemplates{i};
         if ~template.isUpdated
           template.triggerIndx = ...
-            template.match_v(v);
+            template.match_v(obj.v);
           template.isUpdated = true;
         end
       end

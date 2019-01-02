@@ -23,7 +23,7 @@ classdef ManualTemplate < hamo.templates.Template
     function indx = match_v(obj, ~, varargin)
       indx = round(obj.triggerTimes/obj.dt);
     end
- 
+    
     % Implementing hamo.templates.Template abstract method
     function times = getTriggerTimes(obj)
       validData = all(isfinite(obj.responseTime), 1);
@@ -31,22 +31,27 @@ classdef ManualTemplate < hamo.templates.Template
     end
     
     % Overriding hamo.templates.Template method
-    function plotTriggerTimes(obj, hAxes, y, triggerTime, pretrigger, posttrigger)
-      [~, tmp] = min(abs(triggerTime-obj.stimTimes));
-      if all(isfinite(obj.responseTime(:, tmp)))
-        plot(hAxes, obj.responseTime(1, tmp), y, '^');
-        plot(hAxes, obj.responseTime(2, tmp), y, 'v');
+    function plotTriggerTimes(obj, hAxes, y, triggerTimes, pretrigger, posttrigger)
+      for i=1:length(triggerTimes)
+        [~, tmp] = min(abs(triggerTimes(i)-obj.stimTimes));
+        if all(isfinite(obj.responseTime(:, tmp)))
+          offset = -triggerTimes(i) + obj.stimTimes(tmp);
+          plot(hAxes, obj.responseTime(1, tmp) + offset, y, '^');
+          plot(hAxes, obj.responseTime(2, tmp) + offset, y, 'v');
+        end
       end
       plot(hAxes, [pretrigger posttrigger], y*[1 1], 'b-');
     end
     
     % Overriding hamo.templates.Template method
-    function plotSweep(obj, hAxes, time, sweep, triggerTime)
+    function plotSweep(obj, hAxes, time, sweep, triggerTimes)
       plotSweep@hamo.templates.Template(obj, hAxes, time, sweep);
-      [~, tmp] = min(abs(triggerTime-obj.stimTimes));
-      if all(isfinite(obj.responseTime(:, tmp)))
-        plot(hAxes, obj.responseTime(1, tmp), obj.responseHeight(1, tmp), '^');
-        plot(hAxes, obj.responseTime(2, tmp), obj.responseHeight(2, tmp), 'v');
+      for i=1:size(sweep, 2)
+        [~, tmp] = min(abs(triggerTimes(i)-obj.stimTimes));
+        if all(isfinite(obj.responseTime(:, tmp)))
+          plot(hAxes, obj.responseTime(1, tmp), obj.responseHeight(1, tmp), '^');
+          plot(hAxes, obj.responseTime(2, tmp), obj.responseHeight(2, tmp), 'v');
+        end
       end
     end
     

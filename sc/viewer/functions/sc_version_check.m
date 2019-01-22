@@ -7,5 +7,5 @@ success = str2double(v.Version)>=str2double(desired_version);
 if ~success
   msgbox(sprintf(...
     'You are using Matlab version %s. You need to update to version %s.\n',...
-    v.Version,desired_version));
+    v.Version, desired_version));
 end

@@ -45,7 +45,7 @@ classdef DefineTemplate < handle
       obj.axes32 = subplot(3, 5, 10+(2:5));
       obj.axes31 = subplot(3, 5, 11);
     end
-
+    
     function val = get.rectificationPoint(obj)
       val = obj.m_rectificationPoint;
     end
@@ -104,7 +104,7 @@ classdef DefineTemplate < handle
     end
     
     function val = get.indxSelectedTemplate(obj)
-      val = obj.m_indxSelectedTemplate;
+      val = min(length(obj.getEditableTemplates()), obj.m_indxSelectedTemplate);
     end
     
     function set.indxSelectedTemplate(obj, val)
@@ -141,7 +141,7 @@ classdef DefineTemplate < handle
       triggerTime = obj.getTriggerTime();
       [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
         obj.pretrigger, obj.posttrigger, obj.dt);
-            
+      
       cla(obj.axes12)
       hold(obj.axes12, 'on')
       grid(obj.axes12, 'on')
@@ -171,17 +171,19 @@ classdef DefineTemplate < handle
           strcmpi(obj.plotMode, 'defineAutoThreshold')
         obj.axes22.ButtonDownFcn = @(~, ~) clickToDefineTemplate(obj);
       else
-        obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);        
-        template = obj.getSelectedTemplate();
+        obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);
         cla(obj.axes31)
-        template.plotShape(obj.axes31, 0, 0);
-        grid(obj.axes31, 'on')
-        
-        cla(obj.axes32)
-        grid(obj.axes32, 'on')
-        hold(obj.axes32, 'on')
-        template.plotSweep(obj.axes32, time, sweep, triggerTime);
-        title(obj.axes32, sprintf('template #%d', obj.indxSelectedTemplate));
+        template = obj.getSelectedTemplate();
+        if ~isempty(template)
+          template.plotShape(obj.axes31, 0, 0);
+          grid(obj.axes31, 'on')
+          
+          cla(obj.axes32)
+          grid(obj.axes32, 'on')
+          hold(obj.axes32, 'on')
+          template.plotSweep(obj.axes32, time, sweep, triggerTime);
+          title(obj.axes32, sprintf('template #%d', obj.indxSelectedTemplate));
+        end
       end
       linkaxes([obj.axes12 obj.axes22 obj.axes32], 'x');
       xlim(obj.axes12, [time(1) time(end)])
@@ -233,7 +235,7 @@ classdef DefineTemplate < handle
         end
       end
       obj.ephemeralPlots = [];
-          
+      
       currentPoint = obj.axes22.CurrentPoint;
       x = currentPoint(1, 1);
       y = currentPoint(1, 2);
@@ -278,8 +280,13 @@ classdef DefineTemplate < handle
     end
     
     function val = getSelectedTemplate(obj)
-      templates  = obj.getEditableTemplates();
-      val        = templates{obj.indxSelectedTemplate};
+      indx = obj.indxSelectedTemplate;
+      if indx > 0
+        templates  = obj.getEditableTemplates();
+        val        = templates{indx};
+      else
+        val = [];
+      end
     end
     
   end

@@ -1,4 +1,4 @@
-classdef Template < hamo.util.IsSaveable
+classdef Template < hamo.util.Saveable
   
   properties
     isUpdated   = false % true if getTriggerTimes() function return

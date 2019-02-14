@@ -5,6 +5,11 @@ classdef Signal < ScSignal
   end
   
   methods
+    
+    function obj = Signal(varargin)
+      obj@ScSignal(varargin{:});
+    end
+    
     function addTemplate(obj, template)
       obj.templates = add_to_list(obj.templates, template);
       template.parent = obj;

@@ -22,6 +22,7 @@ classdef DefineTemplate < handle
     triggerTimes
     triggerIndx
     rectificationPoint
+    triggerIncr
   end
   
   properties (SetAccess = 'private')
@@ -33,6 +34,7 @@ classdef DefineTemplate < handle
     m_triggerTimes = 1
     m_triggerIndx  = 1
     m_rectificationPoint = []
+    m_triggerIncr = 1
   end
   
   methods
@@ -44,9 +46,17 @@ classdef DefineTemplate < handle
       obj.axes22 = subplot(3, 5, 5+(2:5));
       obj.axes32 = subplot(3, 5, 10+(2:5));
       obj.axes31 = subplot(3, 5, 11);
+      linkaxes([obj.axes12 obj.axes22], 'x');
     end
     
     % Getters and setters
+    function val = get.triggerIncr(obj)
+      val = obj.m_triggerIncr;
+    end
+    
+    function set.triggerIncr(obj, val)
+      obj.m_triggerIncr = val;
+    end
     
     function val = get.rectificationPoint(obj)
       val = obj.m_rectificationPoint;
@@ -102,7 +112,11 @@ classdef DefineTemplate < handle
     
     function set.triggerIndx(obj, val)
       val = unique(mod(val-1, length(obj.triggerTimes))+1);
+      if length(obj.triggerIndx) ~= length(val)
+        obj.triggerIncr = length(val);
+      end
       obj.m_triggerIndx = val;
+      obj.plotSweep();
     end
     
     function val = get.indxSelectedTemplate(obj)

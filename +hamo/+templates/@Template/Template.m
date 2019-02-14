@@ -1,4 +1,4 @@
-classdef Template < handle
+classdef Template < hamo.util.IsSaveable
   
   properties
     isUpdated   = false % true if getTriggerTimes() function return
@@ -91,8 +91,11 @@ classdef Template < handle
     function val = getFormattedTag(obj, mode)
       val = obj.tag;
       if nargin > 1
-        if any(mode == '*') && ~obj.isUpdated
-          val = ['*' val];
+        if any(mode == '!') && ~obj.isUpdated
+          val = ['!' val];
+        end
+        if any(mode == '*') && ~obj.isSaved
+          val = [val '*'];
         end
       end
     end

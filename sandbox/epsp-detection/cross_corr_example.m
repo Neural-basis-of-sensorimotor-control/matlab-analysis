@@ -1,35 +1,35 @@
 n = 1000000;
-m = 1000;
+spikeWidth = 1000;
 dt = 1e-5;
 n2 = 10;
-spike = 20*sin((1:m)'/m * 2*pi);%3*rand(m, 1);%
-fakeSpike1 = 10*sin((1:m)'/m * 4*pi);
-fakeSpike2 = 70*sin((1:m)'/m * 2*pi);
+spike = 20*sin((1:spikeWidth)'/spikeWidth * 2*pi);%3*rand(m, 1);%
+fakeSpike1 = 10*sin((1:spikeWidth)'/spikeWidth * 4*pi);
+fakeSpike2 = 70*sin((1:spikeWidth)'/spikeWidth * 2*pi);
 v = randn(n, 1);
 k = 2;
-real_spike_indx = randi(n-m, n2, 1);
+real_spike_indx = randi(n-spikeWidth, n2, 1);
 for i=1:n2
-    localMax = real_spike_indx(i):(real_spike_indx(i)+m-1);
+    localMax = real_spike_indx(i):(real_spike_indx(i)+spikeWidth-1);
     v(localMax) = v(localMax) + spike;
 end
-indx2 = randi(n-m, n2);
+indx2 = randi(n-spikeWidth, n2);
 for i=1:n2
-    localMax = indx2(i):(indx2(i)+m-1);
+    localMax = indx2(i):(indx2(i)+spikeWidth-1);
     v(localMax) = v(localMax) + fakeSpike1;
 end
-indx3 = randi(n-m, n2);
+indx3 = randi(n-spikeWidth, n2);
 for i=1:n2
-    localMax = indx3(i):(indx3(i)+m-1);
+    localMax = indx3(i):(indx3(i)+spikeWidth-1);
     v(localMax) = v(localMax) + fakeSpike2;
 end
 
-movingAvgNormalization = movmean(sqrt(v.^2), m);
+movingAvgNormalization = movmean(sqrt(v.^2), spikeWidth);
 spikeSumNormalization = sum(spike.^2)*ones(size(v));
 
 vConvoluted = conv(v, spike(length(spike):-1:1), 'same');
 t = (1:n)'*dt;
 
-fig1 = figure(1)
+fig1 = figure(1);
 clf
 subplot(411)
 title('raw data')
@@ -84,10 +84,10 @@ margin = 40;
 fig2 = figure(2);
 clf
 h2 = copyobj(h1, fig2);
-setheight(h2, getheight(fig2)-2*margin);
-setwidth(h2, getwidth(fig2)-2*margin);
-setx(h2, margin);
-sety(h2, margin);
+
+hamo.graphics.fill_space(fig2, h2);
+fig2.SizeChangedFcn = @(x, ~) hamo.graphics.fill_space(x, h2);
+
 add_legend(h2);
 
 linkaxes(get_axes([fig1 fig2]), 'x');

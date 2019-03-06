@@ -1,6 +1,7 @@
 *.asv
 *.zip
 *.mat
+*.m~
 !./claras-project/intra_data.mat
 sc.xml
 

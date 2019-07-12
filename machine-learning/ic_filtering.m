@@ -81,7 +81,9 @@ for i=1:10
     indx_min = epsp_indx(i)-10000;
     indx_max = indx_min+1e5;
     
-    v_filtered = bandpass(signal.v(indx_min:indx_max), [25 75], 1/signal.dt);
+    %v_filtered = highpass(signal.v(indx_min:indx_max), 15, 1/signal.dt);
+    v_filtered = bandpass(signal.v(indx_min:indx_max), [15 200], 1/signal.dt);
+    
     figure(i+10)
     clf
     hold on
@@ -101,9 +103,9 @@ for i=1:10
     end
     plot((epsp_detected-indx_min)*signal.dt, zeros(size(epsp_detected)), 's');
     plot((epsp_detected-indx_min+w)*signal.dt, zeros(size(epsp_detected)), 's');
-    
+    add_legend(gcf)
+
 end
-add_legend(gcf)
 % 2. in the background of plot, plot median power spectrum for EPSP +/- std
 % dev, and compare to median baseline power spectrum +/- std
 % 4. Construct band-pass filter to highlight EPSPs

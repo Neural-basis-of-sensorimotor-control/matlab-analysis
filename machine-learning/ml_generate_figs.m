@@ -1,5 +1,5 @@
-clc
 %first run define template module and define EPSP
+clc
 waveform = defineTemplate.signal.waveforms.get(1);
 all_templates = defineTemplate.getTriggableTemplates();
 template = all_templates{1};

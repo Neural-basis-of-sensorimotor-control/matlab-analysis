@@ -1,0 +1,9 @@
+TODO
+
+- Add optional bp filter to ScSignal or to DefineTemplate, whatever makes more sense
+- Enable raw data comparison in DefineTemplate
+- Change AutoEpspTemplate accordingly
+
+/HM
+
+

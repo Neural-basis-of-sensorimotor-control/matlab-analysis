@@ -4,6 +4,8 @@
 % CONSTANTS:
 %   pretrigger
 %   posttrigger
+%   xlimits
+%   ylimits
 %   lower_cutoff
 %   upper_cutoff
 %
@@ -17,3 +19,7 @@
 %   4. Plot t, v 
 %   5. Plot t, v_filtered
 %   6. Plot detected EPSPs
+%   7. Zoom with xlimits, ylimits
+%   8. If new EPSPs are detected, add thresholds
+%
+% Plot detected EPSPs on top of each other, cluster manually

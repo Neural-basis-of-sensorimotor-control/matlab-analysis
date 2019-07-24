@@ -8,9 +8,9 @@ end
 obj.ephemeralPlots = [];
 
 currentPoint = obj.axes22.CurrentPoint;
-x = currentPoint(1, 1);
-y = currentPoint(1, 2);
-template = obj.getSelectedTemplate();
+x            = currentPoint(1, 1);
+y            = currentPoint(1, 2);
+template     = obj.getSelectedTemplate();
 obj.ephemeralPlots = template.plotShape(obj.axes22, x, y);
 
 end

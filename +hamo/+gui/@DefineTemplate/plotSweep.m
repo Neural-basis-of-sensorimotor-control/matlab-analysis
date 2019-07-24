@@ -8,10 +8,12 @@ cla(obj.axes12)
 hold(obj.axes12, 'on')
 grid(obj.axes12, 'on')
 triggableTemplates = obj.getTriggableTemplates();
+
 for i=1:length(triggableTemplates)
   template = triggableTemplates{i};
   template.plotTriggerTimes(obj.axes12, i, triggerTime, time(1), time(end));
 end
+
 ylim(obj.axes12, [0 length(obj.getTriggableTemplates())+1]);
 obj.axes12.YTick = 1:length(obj.getTriggableTemplates());
 obj.axes12.YTickLabel = cellfun(@(x) getFormattedTag(x, '*'), ...
@@ -24,20 +26,28 @@ hold(obj.axes22, 'on')
 if isempty(obj.rectificationPoint)
   plot(obj.axes22, time, sweep, 'HitTest', 'off')
 else
+  
   for i=1:size(sweep, 2)
     [~, tmp] = min(abs(time - obj.rectificationPoint));
     plot(obj.axes22, time, sweep(:, i) - sweep(tmp, i), 'HitTest', 'off');
   end
 end
-if strcmpi(obj.plotMode, 'defineConvTemplate') ||   ...
-    strcmpi(obj.plotMode, 'defineAutoThreshold') || ...
-    strcmpi(obj.plotMode, 'defineGenericTemplate')
+
+if strcmpi(obj.plotMode,  'defineConvTemplate')    || ...
+    strcmpi(obj.plotMode, 'defineAutoThreshold')   || ...
+    strcmpi(obj.plotMode, 'defineGenericTemplate') || ...
+    strcmpi(obj.plotMode, 'defineAutoEpspTemplate')
+  
   obj.axes22.ButtonDownFcn = @(~, ~) clickToDefineTemplate(obj);
+  
 else
+  
   obj.axes22.ButtonDownFcn = @(~, ~) clickToDrawTemplate(obj);
   cla(obj.axes31)
   template = obj.getSelectedTemplate();
+  
   if ~isempty(template)
+    
     template.plotShape(obj.axes31, 0, 0);
     grid(obj.axes31, 'on')
     

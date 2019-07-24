@@ -7,7 +7,7 @@ hist_function = @periodogram;
 nbr_of_baseline_examples = 10;
 nbr_of_epsp_examples     = 10;
 
-% w = EPSP wisignal.dth
+% w = EPSP signal width
 w = max(threshold_template.indx_offset);
 % for all detected EPSPs, generate power spectrum
 epsp_indx = hamo.detection.detect_threshold_template(signal.v, threshold_template);

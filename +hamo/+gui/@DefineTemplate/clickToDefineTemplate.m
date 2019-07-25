@@ -45,11 +45,6 @@ elseif isempty(obj.tRight)
     tag      = hamo.util.findUniqueName(names, 'emptyTemplate', 0);
     template = hamo.templates.EmptyTemplate(vShape, tag, obj.tLeft, obj.tRight);
     
-  elseif strcmpi(obj.plotMode, 'defineAutoEpspTemplate')
-    
-    tag      = hamo.util.findUniqueName(names, 'autoEpspTemplate', 0);
-    template = hamo.templates.AutoEpspTemplate(vShape, tag);
-    
   else
     error('Illegal command: %s', obj.plotMode);
   end

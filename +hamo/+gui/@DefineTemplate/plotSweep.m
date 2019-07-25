@@ -1,8 +1,8 @@
 function plotSweep(obj)
 
-triggerTime = obj.getTriggerTime();
-[sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
-  obj.pretrigger, obj.posttrigger, obj.dt);
+triggerTime   = obj.getTriggerTime();
+[sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, obj.pretrigger, ...
+  obj.posttrigger, obj.dt);
 
 cla(obj.axes12)
 hold(obj.axes12, 'on')
@@ -35,8 +35,7 @@ end
 
 if strcmpi(obj.plotMode,  'defineConvTemplate')    || ...
     strcmpi(obj.plotMode, 'defineAutoThreshold')   || ...
-    strcmpi(obj.plotMode, 'defineGenericTemplate') || ...
-    strcmpi(obj.plotMode, 'defineAutoEpspTemplate')
+    strcmpi(obj.plotMode, 'defineGenericTemplate')
   
   obj.axes22.ButtonDownFcn = @(~, ~) clickToDefineTemplate(obj);
   

@@ -9,27 +9,39 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
   methods
     
     function obj = AutoThresholdTemplate(shape, tag)
-      shape = shape - shape(1);
-      [~, ind] = max(abs(shape));
       
-      N = length(shape);
-      if ind<0.2*N || ind>.8*N
-        indx = round((1:7)'*(N/7));
-        indx = [ind; indx];
+      
+      nbr_of_thresholds    = 7;
+      min_tolerance_ratio  = .1;
+      max_tolerance_ratio  = .3;
+      
+      tolerance_ratio_to_peak_value = min_tolerance_ratio + ...
+        (max_tolerance_ratio - min_tolerance_ratio) * ...
+        (0:(nbr_of_thresholds-1));
+      
+      
+      shape_width  = length(shape);
+      
+      shape        = shape - shape(1);
+      [max_deviation, ind_max] = max(abs(shape));
+      
+      if nbr_of_thresholds > 1
+        pos_offset_step = round(shape_width/(nbr_of_thresholds-1));
+        pos_offset      = (1:(nbr_of_thresholds-1))'*pos_offset_step;
       else
-        indx = ind;
-        indx = concat_list(indx, round((1:3)*ind/4));
-        indx = concat_list(indx, ind + round((1:3)*(N-ind)/4));
+        pos_offset      = [];
       end
-      %indx = indx(3:end);
-      percentageTolerance = .35 + .05 * (0:(length(indx)-1))'/(length(indx)-1);
-      [~, tmpIndx] = sort(indx);
-      tolerance = percentageTolerance;
-      tolerance(tmpIndx) = percentageTolerance(tmpIndx) .* abs(shape(indx(tmpIndx)));
-      obj@ScThreshold(indx, shape(indx), shape(indx)-tolerance, shape(indx)+tolerance);
+      pos_offset(end+1) = ind_max;
+      tolerance         = abs(max_deviation) * tolerance_ratio_to_peak_value;
+      
+      
+      obj@ScThreshold(indx, shape(pos_offset), shape(pos_offset)-tolerance, ...
+        shape(pos_offset)+tolerance);
       obj.shape = shape;
       obj.tag   = tag;
+    
     end
+    
     
     % Overriding hamo.templates.Template method
     function plotHandles = plotShape(obj, hAxes, t0, v0)

@@ -1,6 +1,6 @@
 function addAutoThresholdTemplate(obj)
 
 obj.plotMode = 'defineAutoThreshold';
-obj.plotSweep();
+obj.updatePlots();
 
 end

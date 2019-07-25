@@ -1,6 +1,6 @@
 function addConvTemplate(obj)
 
 obj.plotMode = 'defineConvTemplate';
-obj.plotSweep();
+obj.updatePlots();
 
 end

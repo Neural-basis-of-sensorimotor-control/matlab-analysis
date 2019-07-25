@@ -1,6 +1,6 @@
 function addEmptyTemplate(obj)
 
 obj.plotMode = 'defineEmptyTemplate';
-obj.plotSweep();
+obj.updatePlots();
 
 end

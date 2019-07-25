@@ -1,7 +1,7 @@
 function addGenericTemplate(obj)
 
 obj.plotMode = 'defineGenericTemplate';
-obj.plotSweep()
+obj.updatePlots();
 
 end
 

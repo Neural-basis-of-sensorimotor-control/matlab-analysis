@@ -1,5 +1,9 @@
 classdef DefineTemplate < handle
   
+  methods (Access = 'protected')
+    varargout = plotSweep(varargin)
+  end
+  
   properties (Transient)
     axes12
     axes22
@@ -7,7 +11,7 @@ classdef DefineTemplate < handle
     axes31
     ephemeralPlots
     v
-    v_raw
+    vRaw
   end
   
   properties
@@ -125,7 +129,7 @@ classdef DefineTemplate < handle
         obj.triggerIncr = length(val);
       end
       obj.m_triggerIndx = val;
-      obj.plotSweep();
+      obj.updatePlots();
     end
     
     function val = get.indxSelectedTemplate(obj)
@@ -133,9 +137,11 @@ classdef DefineTemplate < handle
     end
     
     function set.indxSelectedTemplate(obj, val)
+      
       val = min(length(obj.getEditableTemplates()), val);
       obj.m_indxSelectedTemplate = val;
-      obj.plotSweep;
+      obj.updatePlots();
+    
     end
     
     function val = get.signal(obj)
@@ -144,13 +150,40 @@ classdef DefineTemplate < handle
     
     function set.signal(obj, val)
       obj.m_signal = val;
+      
       if isempty(val)
-        obj.v = [];
+      
+        obj.v     = [];
+        obj.vRaw = [];
+      
       else
-        obj.v = obj.signal.get_v(true, true, true, true);
-        a = .001;
-        obj.v = filter([1-a a-1], [1 a-1], obj.v);
+        
+        obj.v = obj.signal.getV();%get_v(true, true, true, true);
+        
+        if obj.plotRawData
+          obj.vRaw = obj.signal.getVRaw();
+        else
+          obj.vRaw = [];
+        end
+        %a = .001;
+        %obj.v = filter([1-a a-1], [1 a-1], obj.v);
+      
       end
+    end
+    
+    function val = get.plotRawData(obj)
+      val = obj.m_plotRawData;
+    end
+    
+    function set.plotRawData(obj, val)
+      
+      stateChanged      = xor(val, obj.plotRawData);
+      obj.m_plotRawData = val;
+      
+      if stateChanged
+        obj.updatePlots();
+      end
+        
     end
     
   end

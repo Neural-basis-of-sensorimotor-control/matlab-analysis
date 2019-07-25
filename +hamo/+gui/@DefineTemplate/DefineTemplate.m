@@ -77,6 +77,7 @@ classdef DefineTemplate < handle
     
     function set.rectificationPoint(obj, val)
       obj.m_rectificationPoint = val;
+      obj.updatePlots();
     end
     
     function val = get.trigger(obj)

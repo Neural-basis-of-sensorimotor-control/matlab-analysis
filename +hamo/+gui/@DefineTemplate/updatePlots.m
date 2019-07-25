@@ -3,8 +3,13 @@ function updatePlots(obj)
 triggerTime   = obj.getSelectedTriggerTimes();
 [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, obj.pretrigger, ...
   obj.posttrigger, obj.signal.dt);
-rawSweep      = sc_get_sweeps(obj.vRaw, 0, triggerTime, obj.pretrigger, ...
-  obj.posttrigger, obj.signal.dt);
+
+if ~isempty(obj.vRaw)
+  rawSweep      = sc_get_sweeps(obj.vRaw, 0, triggerTime, obj.pretrigger, ...
+    obj.posttrigger, obj.signal.dt);
+else
+  rawSweep = [];
+end
 
 cla(obj.axes12)
 hold(obj.axes12, 'on')

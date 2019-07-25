@@ -5,8 +5,17 @@ classdef PreFilteredSignal < hamo.intra.Signal
   end
   
   properties
+    isUpdated = false
+  end
+  
+  properties (Dependent)
     lower_cutoff
     upper_cutoff
+  end
+  
+  properties (SetAccess = 'private', GetAccess = 'private')
+    m_lower_cutoff = 15
+    m_upper_cutoff = 1e4
   end
   
   methods
@@ -30,10 +39,7 @@ classdef PreFilteredSignal < hamo.intra.Signal
       val = [sc_settings.get_modified_raw_data_dir() expr_name '_' obj.parent.tag '_' obj.tag '.mat'];
     end
     
-    function filterData(obj, lower_cutoff, upper_cutoff)
-      
-      obj.lower_cutoff = lower_cutoff;
-      obj.upper_cutoff = upper_cutoff;
+    function filterData(obj)
       
       [b, a] = butter(2, 2*[obj.lower_cutoff obj.upper_cutoff]/1e5, 'bandpass');
       v = filter(b, a, obj.getVRaw());
@@ -43,7 +49,34 @@ classdef PreFilteredSignal < hamo.intra.Signal
       end
       
       save(obj.filtered_channel_path, 'v');
+      obj.isUpdated = true;
       
+    end
+    
+    function val = get.lower_cutoff(obj)
+      val = obj.m_lower_cutoff;
+    end
+    
+    function set.lower_cutoff(obj, val)
+      is_changed = obj.lower_cutoff ~= val;
+      obj.m_lower_cutoff = val;
+      
+      if is_changed
+        obj.isUpdated = false;
+      end
+    end
+    
+    function val = get.upper_cutoff(obj)
+      val = obj.m_upper_cutoff;
+    end
+    
+    function set.upper_cutoff(obj, val)
+      is_changed = obj.upper_cutoff ~= val;
+      obj.m_upper_cutoff = val;
+      
+      if is_changed
+        obj.isUpdated = false;
+      end
     end
     
   end

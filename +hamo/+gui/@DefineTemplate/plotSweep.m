@@ -1,6 +1,6 @@
 function plotSweep(obj)
 
-triggerTime   = obj.getTriggerTime();
+triggerTime   = obj.getSelectedTriggerTimes();
 [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, obj.pretrigger, ...
   obj.posttrigger, obj.signal.dt);
 

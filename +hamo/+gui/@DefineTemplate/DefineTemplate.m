@@ -7,6 +7,7 @@ classdef DefineTemplate < handle
     axes31
     ephemeralPlots
     v
+    v_raw
   end
   
   properties
@@ -27,6 +28,7 @@ classdef DefineTemplate < handle
     triggerIndx
     rectificationPoint
     triggerIncr
+    plotRawData = false
   end
   
   % Private member variables, to be accessed only through getter and setter
@@ -41,6 +43,7 @@ classdef DefineTemplate < handle
     m_triggerIndx  = 1
     m_rectificationPoint = []
     m_triggerIncr = 1
+    m_plotRawData
   end
   
   methods
@@ -147,14 +150,6 @@ classdef DefineTemplate < handle
         obj.v = obj.signal.get_v(true, true, true, true);
         a = .001;
         obj.v = filter([1-a a-1], [1 a-1], obj.v);
-      end
-    end
-    
-    function val = getTriggerTime(obj)
-      if isempty(obj.triggerTimes)
-        val = [];
-      else
-        val = obj.triggerTimes(obj.triggerIndx);
       end
     end
     

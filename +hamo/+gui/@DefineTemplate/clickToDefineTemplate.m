@@ -17,7 +17,7 @@ elseif isempty(obj.tRight)
   obj.ephemeralPlots = add_to_list(obj.ephemeralPlots, ...
     line(obj.axes22, obj.tRight*[1 1], ylim(obj.axes22)));
   
-  triggerTime   = obj.getTriggerTime();
+  triggerTime   = obj.getSelectedTriggerTimes();
   triggerTime   = triggerTime(1);
   [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
     obj.pretrigger, obj.posttrigger, obj.signal.dt);

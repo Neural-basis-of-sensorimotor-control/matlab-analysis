@@ -9,6 +9,7 @@ classdef DefineTemplate < handle
     axes22
     axes32
     axes31
+    fig
     ephemeralPlots
     v
     vRaw
@@ -33,6 +34,8 @@ classdef DefineTemplate < handle
     rectificationPoint
     triggerIncr
     plotRawData
+    x_limits 
+   % y_limits
   end
   
   % Private member variables, to be accessed only through getter and setter
@@ -48,13 +51,16 @@ classdef DefineTemplate < handle
     m_rectificationPoint = []
     m_triggerIncr        = 1
     m_plotRawData        = false
+    m_x_limits
+%    m_y_limits
   end
   
   methods
     
     function obj = DefineTemplate(signal, fig)
       obj.signal = signal;
-      clf(fig);
+      obj.fig = fig;
+      clf(obj.fig);
       obj.axes12 = subplot(3, 5, 2:5);
       obj.axes22 = subplot(3, 5, 5+(2:5));
       obj.axes32 = subplot(3, 5, 10+(2:5));
@@ -186,6 +192,20 @@ classdef DefineTemplate < handle
         obj.updatePlots();
       end
         
+    end
+    
+    function val = get.x_limits(obj)
+      val = obj.m_x_limits;
+    end
+    
+    function set.x_limits(obj, val)
+      obj.m_x_limits = val;
+      if isempty(val)
+        zoom(obj.fig, 'reset');
+      else
+        zoom(obj.fig, 'on');
+        xlim(obj.axes12, val);
+      end
     end
     
   end

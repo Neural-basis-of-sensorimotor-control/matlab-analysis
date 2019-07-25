@@ -1,6 +1,7 @@
 TODO
 - TBD, + DONE
 
+- Create rudimentary data structure for signals (implement Saveable)
 - Fix automatic thresholding in AutoThresholdTemplate
 
 + Implement getV and getVRaw functions for signal objects

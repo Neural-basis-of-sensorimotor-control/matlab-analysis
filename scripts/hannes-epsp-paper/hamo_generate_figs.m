@@ -1,11 +1,11 @@
 % clc
 % close all
 % clear
-% 
-% % Constants
-% pretrigger = 4e-3;
-% posttrigger = 18e-3;
-% minEpspAmplitude = 5;
+
+% Constants
+pretrigger = 4e-3;
+posttrigger = 18e-3;
+minEpspAmplitude = 5;
 % 
 % % Load neurons
 % neurons = intra_get_neurons();
@@ -22,10 +22,10 @@
 % % end
 % % 
 % % obj = signalList.list;
-% 
-% d = load([sc_settings.get_default_experiment_dir() 'EPSP_detection_sc.mat']);
-% signals = d.obj;
-% clear d;
+
+d = load([sc_settings.get_default_experiment_dir() 'EPSP_detection_sc.mat']);
+signals = d.obj;
+clear d;
 
 %% Params
 neuronIndx = 1;
@@ -49,8 +49,7 @@ respStims = find(epspResponses);
 h.pretrigger = -5e-3;
 h.trigger = stimTimes(respStims);
 % Update defineTemplate
-h.updatePlots
-
+h.plotRawData = true;
 
 
 

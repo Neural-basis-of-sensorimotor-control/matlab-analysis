@@ -1,20 +1,32 @@
 clc
 clear
+
 % Constants
-dt = 1e-5;
 pretrigger = 4e-3;
 posttrigger = 18e-3;
 minEpspAmplitude = 5;
-
-% Params
-neuronIndx = 11;
 
 % Load neurons
 neurons = intra_get_neurons();
 patterns = get_intra_motifs();
 
+lower_cutoff = 15;
+upper_cutoff = 1e4;
+
+for i=1:length(neurons)
+  fprintf('%d out of %d\n', i, length(neurons));
+  % Load signal
+  signal = hamo.intra.loadSignal(neurons(i));
+  % Save with filtered channel
+  signal = hamo.signals.PreFilteredSignal.clone(signal);
+  signal.filterData(lower_cutoff, upper_cutoff);
+end
+return
+
+% Params
+neuronIndx = 11;
 % Load signal
-signal = hamo.intra.loadSignal(neurons(neuronIndx));
+signal = hamo.signals.PreFilteredSignal.loadFromScNeuron(neurons(neuronIndx));
 
 % Extract manually detected EPSPs
 validEpsps = arrayfun(@(x) any(strcmp(get_intra_motifs(), x.tag)), signal.amplitudes.list);
@@ -36,13 +48,6 @@ defineTemplate.trigger = stimTimes(respStims);
 % Update defineTemplate
 defineTemplate.updatePlots
 
-% Step through stimulation responses, identify EPSP:s
 
-% Extract templates for each method, detect in file
 
-% Compare results
 
-% Evaluate, compare to manual EPSPs ?
-
-% Make table: false positives, false negatives, true positives
-%   ... identification time, computation time, (precision)

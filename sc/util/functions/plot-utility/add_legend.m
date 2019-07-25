@@ -76,6 +76,7 @@ else
     if ~ischar(add_only_one_legend) && add_only_one_legend
       
       h = legend(unique_ax_handles(end), sample_plots, unique_tags{:});
+      h.AutoUpdate = 'off';
       
       if ~isempty(varargin)
         set(h, varargin{:});
@@ -86,6 +87,7 @@ else
       for i=1:length(unique_ax_handles)
         
         h(i) = legend(unique_ax_handles(i), sample_plots, unique_tags{:}); %#ok<AGROW>
+        h(i).AutoUpdate = 'off';                                           %#ok<AGROW>
         
         if ~isempty(varargin)
           set(h(i), varargin{:});

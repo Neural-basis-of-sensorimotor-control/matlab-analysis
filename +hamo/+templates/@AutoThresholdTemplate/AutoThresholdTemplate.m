@@ -21,8 +21,8 @@ classdef AutoThresholdTemplate < ScThreshold & hamo.templates.Template
         indx = concat_list(indx, round((1:3)*ind/4));
         indx = concat_list(indx, ind + round((1:3)*(N-ind)/4));
       end
-      indx = indx(3:end);
-      percentageTolerance = .25 + .1 * (0:(length(indx)-1))'/(length(indx)-1);
+      %indx = indx(3:end);
+      percentageTolerance = .35 + .05 * (0:(length(indx)-1))'/(length(indx)-1);
       [~, tmpIndx] = sort(indx);
       tolerance = percentageTolerance;
       tolerance(tmpIndx) = percentageTolerance(tmpIndx) .* abs(shape(indx(tmpIndx)));

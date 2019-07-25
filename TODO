@@ -1,13 +1,16 @@
 TODO
+- TBD, + DONE
 
-- Implement getV and getVRaw functions for signal objects
-- Create a ScSignal subclass that will have prefiltered signal that can be loaded from disc
+- Fix automatic thresholding in AutoThresholdTemplate
+
++ Implement getV and getVRaw functions for signal objects
++ Create a ScSignal subclass that will have prefiltered signal that can be loaded from disc
 
 - Remove axes32 - use separate figure if needed for specific templates
 
-- Add optional bp filter to ScSignal or to DefineTemplate, whatever makes more sense
-- Enable raw data comparison in DefineTemplate
-- Change AutoEpspTemplate accordingly
++ Add optional bp filter to ScSignal or to DefineTemplate, whatever makes more sense
++ Enable raw data comparison in DefineTemplate
++ Change AutoEpspTemplate accordingly
 
 /HM
 

@@ -32,7 +32,7 @@ elseif isempty(obj.tRight)
     
   elseif strcmpi(obj.plotMode, 'defineAutoThreshold')
     
-    tag      = hamo.util.findUniqueName(names, 'convTemplate', 0);
+    tag      = hamo.util.findUniqueName(names, 'autoThreshold', 0);
     template = hamo.templates.AutoThresholdTemplate(vShape, tag);
     
   elseif strcmpi(obj.plotMode, 'defineGenericTemplate')

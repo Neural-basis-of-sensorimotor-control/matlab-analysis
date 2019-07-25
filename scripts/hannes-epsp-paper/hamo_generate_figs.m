@@ -1,5 +1,6 @@
 clc
-clear
+close all
+clear all
 
 % Constants
 pretrigger = 4e-3;
@@ -24,7 +25,7 @@ end
 return
 
 % Params
-neuronIndx = 11;
+neuronIndx = 1;
 % Load signal
 signal = hamo.signals.PreFilteredSignal.loadFromScNeuron(neurons(neuronIndx));
 

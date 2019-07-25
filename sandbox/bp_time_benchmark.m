@@ -11,8 +11,8 @@ order  = 4;
 for i=1:length(N)
   x = rand(N(i), 1);
   tic
-  %v = bandpass(x, [low_cutoff high_cutoff], frequency);
-  [b,a] = butter(order, [low_cutoff high_cutoff]/(frequency/2), 'bandpass');
-  v = filter(b, a, x);
+  v = bandpass(x, [low_cutoff high_cutoff], frequency);
+  %[b,a] = butter(order, [low_cutoff high_cutoff]/(frequency/2), 'bandpass');
+  %v = filter(b, a, x);
   fprintf('Time elapsed for n = %d: %g seconds\n', N(i), toc);
 end

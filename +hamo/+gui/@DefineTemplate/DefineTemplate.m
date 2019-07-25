@@ -1,18 +1,22 @@
 classdef DefineTemplate < handle
   
-  properties
-    tLeft
-    tRight
-    plotMode = 'plotSweep'
+  properties (Transient)
     axes12
     axes22
     axes32
     axes31
-    dt = 1e-5
     ephemeralPlots
     v
   end
   
+  properties
+    tLeft
+    tRight
+    plotMode = 'plotSweep'
+  end
+  
+  % Public properties with getters and setters and corresponding private
+  % member variables
   properties (Dependent)
     signal
     indxSelectedTemplate
@@ -25,6 +29,8 @@ classdef DefineTemplate < handle
     triggerIncr
   end
   
+  % Private member variables, to be accessed only through getter and setter
+  % functions for Dependent properties
   properties (SetAccess = 'private')
     m_indxSelectedTemplate = 1
     m_signal

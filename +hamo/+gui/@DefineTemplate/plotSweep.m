@@ -2,7 +2,7 @@ function plotSweep(obj)
 
 triggerTime   = obj.getTriggerTime();
 [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, obj.pretrigger, ...
-  obj.posttrigger, obj.dt);
+  obj.posttrigger, obj.signal.dt);
 
 cla(obj.axes12)
 hold(obj.axes12, 'on')

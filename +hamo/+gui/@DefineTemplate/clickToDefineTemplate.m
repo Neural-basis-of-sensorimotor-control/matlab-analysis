@@ -20,7 +20,7 @@ elseif isempty(obj.tRight)
   triggerTime   = obj.getTriggerTime();
   triggerTime   = triggerTime(1);
   [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
-    obj.pretrigger, obj.posttrigger, obj.dt);
+    obj.pretrigger, obj.posttrigger, obj.signal.dt);
   
   vShape = sweep(time >= obj.tLeft & time <= obj.tRight);
   names  = cellfun(@(x) x.tag, obj.signal.templates, 'UniformOutput', false);

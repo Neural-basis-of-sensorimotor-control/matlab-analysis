@@ -1,8 +1,11 @@
 TODO
 - TBD, + DONE
 
+!- Discrepancy between what is plotted as sweep and what is used as input to AutoThresholdTemplate
+
+
 - Create rudimentary data structure for signals (implement Saveable)
-- Fix automatic thresholding in AutoThresholdTemplate
++ Fix automatic thresholding in AutoThresholdTemplate
 
 + Implement getV and getVRaw functions for signal objects
 + Create a ScSignal subclass that will have prefiltered signal that can be loaded from disc

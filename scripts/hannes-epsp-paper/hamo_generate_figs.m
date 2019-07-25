@@ -1,6 +1,6 @@
 clc
 close all
-clear all
+clear
 
 % Constants
 pretrigger = 4e-3;
@@ -24,21 +24,39 @@ for i=1:length(neurons)
 end
 return
 
-% Params
-neuronIndx = 1;
-% Load signal
-signal = hamo.signals.PreFilteredSignal.loadFromScNeuron(neurons(neuronIndx));
-
-% Extract manually detected EPSPs
-validEpsps = arrayfun(@(x) any(strcmp(get_intra_motifs(), x.tag)), signal.amplitudes.list);
-
-[stimTimes, epspResponses, responseTimes, responseHeights] ...
-  = hamo.epsp.getEpspResponses(signal.amplitudes.list(validEpsps), ...
-  pretrigger, posttrigger, minEpspAmplitude, inf);
-epspTemplate = hamo.templates.ManualTemplate(stimTimes, 'manual');
-epspTemplate.responseTime   = responseTimes;
-epspTemplate.responseHeight = responseHeights;
-
+%% Params
+%neuronIndx = 1;
+%% Load signal
+%signal = hamo.signals.PreFilteredSignal.loadFromScNeuron(neurons(neuronIndx));
+%v = signal.getVRaw();
+% 
+% % Extract manually detected EPSPs
+% validEpsps = arrayfun(@(x) any(strcmp(get_intra_motifs(), x.tag)), signal.amplitudes.list);
+% 
+% [stimTimes, epspResponses, responseTimes, responseHeights] ...
+%   = hamo.epsp.getEpspResponses(signal.amplitudes.list(validEpsps), ...
+%   pretrigger, posttrigger, minEpspAmplitude, inf);
+% epspTemplate = hamo.templates.ManualTemplate(stimTimes, 'manual');
+% epspTemplate.responseTime   = responseTimes;
+% epspTemplate.responseHeight = responseHeights;
+figure(1)
+clf
+figure(2)
+clf
+indMin = 1e3*1e5; 
+indMax = indMin + 1e7;
+v_ = v(indMin:indMax);
+order = 2;
+[b, a] = butter(order, 2*[15 1e4]/1e5, 'bandpass');
+figure(1);
+clf
+hold on
+grid on
+plot(v_)
+plot(filter(b, a, v_));
+%figure(2)
+%bandpass(v_, 2*[15 1e4]/1e5)
+return
 defineTemplate = hamo.gui.DefineTemplate(signal, gcf);
 
 % Set manual responses as trigger for defineTemplate

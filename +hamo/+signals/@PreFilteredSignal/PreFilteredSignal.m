@@ -16,6 +16,7 @@ classdef PreFilteredSignal < hamo.intra.Signal
     end
     
     function vRaw = getVRaw(obj)
+      %vRaw = obj.get_v(false, true, false, false);
       vRaw = obj.get_v(false, true, false, false);
     end
     
@@ -34,11 +35,8 @@ classdef PreFilteredSignal < hamo.intra.Signal
       obj.lower_cutoff = lower_cutoff;
       obj.upper_cutoff = upper_cutoff;
       
-      % [b,a] = butter(4, [obj.lower_cutoff obj.upper_cutoff]/(1/(2*obj.dt)), 'bandpass');
-      % v = filter(b, a, obj.getVRaw());
-      
-      v = bandpass(obj.getVRaw(), [obj.lower_cutoff obj.upper_cutoff], ...
-        1/obj.dt);
+      [b, a] = butter(2, 2*[obj.lower_cutoff obj.upper_cutoff]/1e5, 'bandpass');
+      v = filter(b, a, obj.getVRaw());
       
       if ~isfolder(fileparts(obj.filtered_channel_path))
         sc_settings.set_modified_raw_data_dir();

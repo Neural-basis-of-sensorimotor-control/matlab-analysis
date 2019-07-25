@@ -66,34 +66,6 @@ classdef ScSignal < ScChannel & ScDynamicClass
       
     end
     
-    
-    %Load transient properties (only)
-    function v_raw = sc_loadsignal(obj)
-      
-      if ~obj.parent.prompt_for_raw_data_dir()
-        error('Could not find file');
-      end
-      
-      if obj.is_adq_file
-        
-        fid = fopen(obj.parent.filepath);
-        fread(fid,obj.channelname,'uint16');
-        v_raw = fread(fid,obj.N,'bit12',4);
-        fclose(fid);
-        
-      else
-        
-        d = load(obj.parent.filepath,obj.channelname);
-        
-        obj.dt = d.(obj.channelname).interval;
-        obj.N = d.(obj.channelname).length;
-        v_raw = d.(obj.channelname).values;
-        
-      end
-      
-    end
-    
-    
     %Recalculate all waveform times with correct order vs filtering
     function recalculate_all_waveforms(obj)
       

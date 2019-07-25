@@ -7,12 +7,13 @@ classdef tags
     TEST              = 'sc_test'
     HANNES            = 'sc_hmogensen'
     
-    LAST_EXPERIMENT   = 'last_experiment'
-    EXPERIMENT_DIR    = 'intra_experiment_dir'
-    RAW_DATA_DIR      = 'raw_data_dir'
-    PRETRIGGER        = 'pretrigger'
-    POSTTRIGGER       = 'posttrigger'
-    AXES_HEIGHT       = 'axes_height'
+    LAST_EXPERIMENT       = 'last_experiment'
+    EXPERIMENT_DIR        = 'intra_experiment_dir'
+    RAW_DATA_DIR          = 'raw_data_dir'
+    MODIFIED_RAW_DATA_DIR = 'modified_raw_data_dir'
+    PRETRIGGER            = 'pretrigger'
+    POSTTRIGGER           = 'posttrigger'
+    AXES_HEIGHT           = 'axes_height'
     
     SETTINGS_FILENAME = 'sc.xml';
     

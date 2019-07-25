@@ -1,4 +1,4 @@
-function signal =loadSignal(neuron)
+function signal = loadSignal(neuron)
 
 oldSignal = sc_load_signal(neuron);
 signal = hamo.intra.Signal(oldSignal.parent, oldSignal.channelname);

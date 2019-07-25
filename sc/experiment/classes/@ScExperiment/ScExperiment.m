@@ -1,7 +1,6 @@
 classdef ScExperiment < ScList
   
-  %Children: ScFile
-  
+  % Children: ScFile  
   properties
     
     save_name         %for saving this class, ends with _sc.mat
@@ -11,7 +10,7 @@ classdef ScExperiment < ScList
   
   properties (SetAccess = protected)
     
-    fdir          %directory containing .mat / .adq files
+    fdir % directory containing .mat / .adq files
     
   end
   

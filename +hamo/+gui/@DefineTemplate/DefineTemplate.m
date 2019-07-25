@@ -32,22 +32,22 @@ classdef DefineTemplate < handle
     triggerIndx
     rectificationPoint
     triggerIncr
-    plotRawData = false
+    plotRawData
   end
   
   % Private member variables, to be accessed only through getter and setter
   % functions for Dependent properties
-  properties (SetAccess = 'private')
+  properties (SetAccess = 'private', GetAccess = 'private')
     m_indxSelectedTemplate = 1
     m_signal
     m_trigger
-    m_pretrigger   = -5e-3
-    m_posttrigger  = 3e-2
-    m_triggerTimes = 1
-    m_triggerIndx  = 1
+    m_pretrigger         = -5e-3
+    m_posttrigger        = 3e-2
+    m_triggerTimes       = 1
+    m_triggerIndx        = 1
     m_rectificationPoint = []
-    m_triggerIncr = 1
-    m_plotRawData
+    m_triggerIncr        = 1
+    m_plotRawData        = false
   end
   
   methods
@@ -181,6 +181,7 @@ classdef DefineTemplate < handle
       obj.m_plotRawData = val;
       
       if stateChanged
+        obj.signal = obj.m_signal; % Run through setter function again
         obj.updatePlots();
       end
         

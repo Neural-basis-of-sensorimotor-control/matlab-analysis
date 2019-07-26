@@ -17,12 +17,10 @@ elseif isempty(obj.tRight)
   obj.ephemeralPlots = add_to_list(obj.ephemeralPlots, ...
     line(obj.axes22, obj.tRight*[1 1], ylim(obj.axes22)));
   
-  triggerTime   = obj.getSelectedTriggerTimes();
-  triggerTime   = triggerTime(1);
-  [sweep, time] = sc_get_sweeps(obj.v, 0, triggerTime, ...
-    obj.pretrigger, obj.posttrigger, obj.signal.dt);
-  
-  vShape = sweep(time >= obj.tLeft & time <= obj.tRight);
+  [sweep, time] = obj.getSweep();
+  sweep         = sweep(:, 1);
+  vShape        = sweep(time >= obj.tLeft & time <= obj.tRight);
+   
   names  = cellfun(@(x) x.tag, obj.signal.templates, 'UniformOutput', false);
   
   if strcmpi(obj.plotMode, 'defineConvTemplate')

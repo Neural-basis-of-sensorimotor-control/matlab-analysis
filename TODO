@@ -1,7 +1,7 @@
 TODO
 - TBD, + DONE
 
-!- Discrepancy between what is plotted as sweep and what is used as input to AutoThresholdTemplate
++ Discrepancy between what is plotted as sweep and what is used as input to AutoThresholdTemplate
 
 
 - Create rudimentary data structure for signals (implement Saveable)

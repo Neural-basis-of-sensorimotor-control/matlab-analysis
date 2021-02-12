@@ -1,5 +1,13 @@
 function neurons = thp_get_extra_neurons()
 
+% Struktur:
+%   EXPERIMENT (sc.mat) FILNAMN (utan ändelse) KANAL 
+%   MÄTSTART (minuter sedan start på filen, -Inf för att start från
+%       början) MÄTSTOPP (Inf för att läsa tills filen är slut)
+%   {NAMN PÅ NEURON 1, NAMN PÅ NEURON 2}
+%   EV MANUELL KOMMENTAR (default = '')
+%   EV KANAL MED KOMMENTAR SOM ANGER PATCH-PIPETT DJUP
+
 data = {
   
 'BKNR_SSSA_sc.mat'    'BKNR0000'    'patch'    ...

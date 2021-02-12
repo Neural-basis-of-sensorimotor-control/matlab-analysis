@@ -1,3 +1,5 @@
+% Uppdatera thp_get_extra_neurons
+
 reset_fig_indx()
 close all
 sc_settings.set_current_settings_tag(sc_settings.tags.HANNES)

@@ -6,7 +6,7 @@ sc_settings.set_current_settings_tag(sc_settings.tags.HANNES)
 paired_load_settings();
 thp_load_constants();
 
-stress = paired_mds(ec_neurons);
+stress = thp_mds(ec_neurons);
 
 params_ci = nan(6, 2, 2*length(ec_neurons));
 depth     = nan(2*length(ec_neurons), 1);

@@ -3,7 +3,12 @@ function [params_ci, depth, tag] = paired_bootstrap_params(neuron, reverse)
 nbr_of_bootstrap_iterations = 100;
 
 tag = {neuron.file_tag};
-depths = paired_parse_for_subcortical_depth(neuron);
+try
+    depths = paired_parse_for_subcortical_depth(neuron);
+catch exc
+    depths = struct('depth1', 0, 'depth2', 0);
+    disp(exc.message)
+end
 
 if strcmp(neuron.protocol_signal_tag, 'patch') || strcmp(neuron.protocol_signal_tag, 'patch1')
   depth = depths.depth1;

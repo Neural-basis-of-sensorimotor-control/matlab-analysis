@@ -1,12 +1,18 @@
 function neurons = thp_get_extra_neurons()
 
 % Struktur:
-%   EXPERIMENT (sc.mat) FILNAMN (utan ändelse) KANAL 
-%   MÄTSTART (minuter sedan start på filen, -Inf för att start från
-%       början) MÄTSTOPP (Inf för att läsa tills filen är slut)
-%   {NAMN PÅ NEURON 1, NAMN PÅ NEURON 2}
-%   EV MANUELL KOMMENTAR (default = '')
-%   EV KANAL MED KOMMENTAR SOM ANGER PATCH-PIPETT DJUP
+% 1. EXPERIMENT (sc.mat) 
+% 2. FILNAMN (utan ändelse) 
+% 3. KANAL 
+% 4. MÄTSTART (minuter sedan start på filen, -Inf för att start från
+%       början) 
+% 5. MÄTSTOPP (Inf för att läsa tills filen är slut)
+% 6. X POSITION FÖR PEAKS AND VALLEYS
+% 7. Y POSITION FÖR PEAKS AND VALLEYS
+% 8. {NAMN_PÅ_NEURON_1, NAMN_PÅ_NEURON_2}
+% 9. EV MANUELL KOMMENTAR (default = '')
+% 10. EV KANAL MED KOMMENTAR SOM ANGER PATCH-PIPETT DJUP (default='')
+% 11. INDEX FÖR X & Y KOORDINATER
 
 x_dummy = {[-0.31922 -0.204973 -0.125672 0.00873656 0.15793 0.278898 0.395833 ]...
 [-0.397177 -0.284274 -0.170027 -0.00873656 0.145833 0.19422 0.31922 ]};

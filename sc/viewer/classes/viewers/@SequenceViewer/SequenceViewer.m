@@ -16,8 +16,6 @@ classdef SequenceViewer < ExperimentWrapper
     %Delete deletable panels
     delete_dynamic_panels(obj)
     
-    set_main_signal(obj, signal)
-    
   end
   
   properties (Dependent, Abstract)

@@ -22,7 +22,9 @@ classdef ScFile < ScList & ScDynamicClass
     signals           % List of analog channels (ScSignal)
     stims             % List of digital channels (ScStim / ScAdqTriggerParent)
     textchannels      % TextMark / Keyboard channel in Spike2 (ScTextMark)
-    discrete_signals  % ScList of any type of triggers
+    discrete_signals  % ScCellList for any type of digital signal (cannot be triggered on)
+    imported_triggers % empty or ScTriggerParent for all imported signals
+    
     
     user_comment
     
@@ -168,7 +170,7 @@ classdef ScFile < ScList & ScDynamicClass
       
     end
     
-    %Triggers = objects that can be triggered on
+    %Triggers = objects containing a tag and timestamps
     %Implement function gettimes, and property istrigger returns true
     %Only returns objects where numel(times)>0
     function triggers = gettriggers(obj, tmin, tmax)
@@ -199,7 +201,7 @@ classdef ScFile < ScList & ScDynamicClass
         
         stim = obj.stims.get(i);
         
-        if stim.istrigger && ... 
+        if stim.istrigger && ...
             (nargin == 1 || ~isempty(stim.gettimes(tmin,tmax)))
           
           triggers.add(stim);
@@ -226,6 +228,12 @@ classdef ScFile < ScList & ScDynamicClass
           triggers.add(obj.discrete_signals.get(i));
         end
         
+      end
+      
+      if ~isempty(obj.imported_triggers)
+        for i=1:obj.imported_triggers.triggers.n
+          triggers.add(obj.imported_triggers.triggers.get(i))
+        end
       end
       
     end
@@ -310,6 +318,15 @@ classdef ScFile < ScList & ScDynamicClass
         
       end
       
+      if ~isempty(obj.imported_triggers)
+        for i=1:obj.imported_triggers.triggers.n
+          if ~isempty(obj.imported_triggers.triggers.get(i).gettimes(tmin, tmax))
+            triggerparents.add(obj.imported_triggers)
+            break
+          end
+        end
+      end
+      
     end
     
     
@@ -383,13 +400,15 @@ classdef ScFile < ScList & ScDynamicClass
           
           if ~obj.stims.has('tag',channelname)
             obj.stims.add(ScStim(obj,channelname,'tag',channelname));
+            endi
+            
+          else
+            
+            msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes if you think this channel should be viewable.', channelname, obj.tag, mfilename);
+            msgbox(msg);
+            fprintf('%s\n', msg);
+            
           end
-          
-        else
-          
-          msg = sprintf('Warning: Channel %s in file %s did not meet any criteria in %s.\n Go find Hannes if you think this channel should be viewable.', channelname, obj.tag, mfilename);
-          msgbox(msg);
-          fprintf('%s\n', msg);
           
         end
         
@@ -398,6 +417,5 @@ classdef ScFile < ScList & ScDynamicClass
     end
     
   end
-  
 end
 

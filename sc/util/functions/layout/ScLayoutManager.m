@@ -45,7 +45,7 @@ classdef ScLayoutManager < handle
     end
     
     
-    function tile = add(obj, tile, width)
+    function out_tile = add(obj, tile, width)
       
       if nargin>2
         setwidth(tile,width);
@@ -56,6 +56,10 @@ classdef ScLayoutManager < handle
       setx(tile,obj.xpos);
       sety(tile,obj.ypos);
       obj.xpos = obj.xpos + getwidth(tile);
+      
+      if nargout
+        out_tile = tile;
+      end
       
     end
     

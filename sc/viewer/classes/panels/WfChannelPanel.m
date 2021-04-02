@@ -15,6 +15,7 @@ classdef WfChannelPanel < ChannelPanel
       obj.gui_components.add(PlotOptions(obj));
       obj.gui_components.add(WaveformSelection(obj));
       obj.gui_components.add(SpikeRemovalSelection(obj));
+      obj.gui_components.add(ImportTrigger(obj));
       setup_components@UpdatablePanel(obj);
     end
 

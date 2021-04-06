@@ -4,7 +4,7 @@ Graphical user interface to analyze data imported from Spike2
 Created 2013-2019 by Hannes Mogensen, Neural Basis of Sensorimotor Control
 Free to use or modify with due acknowledgement
 
-## Release notes (4 April 2021)
+## Release notes (6 April 2021)
 
 To import trigger data from another system, save the data as a CSV file. Currently the name of the trigger equals the file name and the file must contain only contain numbers that are either comma-separated or separated with newline characters. The numbers correspond to timestamps in seconds since the start of the recording of the file in question.
 

@@ -8,7 +8,7 @@ Free to use or modify with due acknowledgement
 
 ## Release notes (6 April 2021)
 
-To import trigger data from another system, save the data as a CSV file. Currently the filename becomes the name of the imported trigger. The file must only contain numbers that are either comma-separated or separated with newline characters. The numbers in the file should correspond to timestamps in seconds since the start of the recording for the file in question.
+To import trigger data from another system, save the data as a CSV file. The filename becomes the name of the imported trigger. The file must only contain numbers that are either comma-separated or separated with newline characters. The numbers in the file should correspond to timestamps in seconds since the start of the recording for the file in question.
 
 Use the "Import triggers" button and select the file:
 

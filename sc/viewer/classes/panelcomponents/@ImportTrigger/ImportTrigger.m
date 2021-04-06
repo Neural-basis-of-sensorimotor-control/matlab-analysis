@@ -65,6 +65,7 @@ classdef ImportTrigger < PanelComponent
         scfile.imported_triggers.triggers.add(Trigger(tag, times))
         obj.gui.set_file(obj.gui.file)
         obj.file_listener()
+        obj.gui.plot_channels();
       end
     end
     
@@ -95,6 +96,7 @@ classdef ImportTrigger < PanelComponent
       close(fig)
       obj.gui.set_file(obj.gui.file)
       obj.file_listener()
+      obj.gui.plot_channels();
     end
     
   end

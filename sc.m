@@ -67,13 +67,13 @@ end
 
 args = varargin;
 
-if ~isfile(sc_settings.get_settings_filename())
+if ~is_file(sc_settings.get_settings_filename())
   sc_settings.clear_file();
 end
 
 [~, experiment_path] = sc_settings.get_last_experiment();
 
-if ~nargin && isfile(experiment_path)
+if ~nargin && is_file(experiment_path)
   args = {experiment_path};
 end
 
@@ -267,7 +267,7 @@ function viewer = load_file(args)
 
 viewer = [];
 
-if isfile(args{1})
+if is_file(args{1})
   
   filename = args{1};
   
@@ -276,7 +276,7 @@ else
   [fname, pname] = uigetfile('*_sc.mat', 'Choose experiment file');
   filename       = fullfile(pname, fname);
   
-  if ~isfile(filename)
+  if ~is_file(filename)
     
     fprintf('Could not detect file\n');
     return;

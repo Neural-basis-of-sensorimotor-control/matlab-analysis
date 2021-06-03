@@ -151,7 +151,7 @@ classdef ScSpikeTrainCluster < ScNeuron
     
     function guess_experiment_filename(obj)
       
-      if isfile(obj.experiment_filename)
+      if is_file(obj.experiment_filename)
         return
       end
       
@@ -159,13 +159,13 @@ classdef ScSpikeTrainCluster < ScNeuron
       
       tmp_filename = [obj.tag(1:4) '_SSSA_sc.mat'];
       
-      if isfile([sc_dir tmp_filename])
+      if is_file([sc_dir tmp_filename])
         obj.experiment_filename = tmp_filename;
         
       else
         tmp_filename = [obj.tag(1:4) '_sc.mat'];
         
-        if isfile([sc_dir tmp_filename])
+        if is_file([sc_dir tmp_filename])
           
           obj.experiment_filename = tmp_filename;
         end

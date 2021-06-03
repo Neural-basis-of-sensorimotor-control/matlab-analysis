@@ -43,10 +43,10 @@ while endswith(filename, ending)
   filename = filename(1:end-length(ending));
 end
 
-if isfile([filename ending])
+if is_file([filename ending])
   indx = 1;
   
-  while isfile([filename '_' num2str(indx) ending])
+  while is_file([filename '_' num2str(indx) ending])
     indx = indx + 1;
   end
   

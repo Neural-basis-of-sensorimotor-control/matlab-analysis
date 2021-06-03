@@ -118,7 +118,7 @@ classdef SaveSpikeTimesOptions < SavePlotOptions
         obj.filenbr = str2double(get(obj.ui_filenbr,'string'));
         savename = sprintf('%s%.3i.dat',obj.filename, obj.filenbr);
         
-        if isfile(savename)
+        if is_file(savename)
           
           answer = questdlg('File already exists. Overwrite?', 'Overwrite',...
             'Yes', 'No', 'Yes');

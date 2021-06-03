@@ -2,7 +2,7 @@ function val = update_raw_data_path(raw_data_file)
 
 val = raw_data_file;
 
-if isfile(val)
+if is_file(val)
   return
 elseif ~isempty(val)
   [folder, file, ext] = fileparts(raw_data_file);
@@ -16,7 +16,7 @@ elseif ~isempty(val)
   val = [sc_settings.get_raw_data_dir() folder filesep file ext];
 end
 
-if ~isfile(val)
+if ~is_file(val)
   folder = uigetdir(sc_settings.get_raw_data_dir(), ...
     ['Choose raw data directory for ' raw_data_file]);
   

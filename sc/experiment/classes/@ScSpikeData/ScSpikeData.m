@@ -32,10 +32,10 @@ classdef ScSpikeData < ScNeuron & ScTrigger
         
       else
         
-        if isfile(obj.raw_data_file) && ...
+        if is_file(obj.raw_data_file) && ...
             length(obj.raw_data_file) > length(base_dir) && ...
             startsWith(obj.raw_data_file, base_dir) && ...
-            ~isfile([base_dir obj.raw_data_file])
+            ~is_file([base_dir obj.raw_data_file])
           
           warning('Warning: Appears to be absolute path to raw data file');
           obj.raw_data_file = obj.raw_data_file(length(base_dir)+1:end);
@@ -46,11 +46,11 @@ classdef ScSpikeData < ScNeuron & ScTrigger
         
       end
       
-      if ~isfile(filepath)
+      if ~is_file(filepath)
         
         tmp_filepath = [sc_settings.get_default_experiment_dir() filepath];
         
-        if isfile(tmp_filepath)
+        if is_file(tmp_filepath)
           
           filepath = tmp_filepath;
           

@@ -22,12 +22,12 @@ if prompt_before_saving
   
 else
   
-  if ~isfile(save_path)
+  if ~is_file(save_path)
     
     tmp_filename = sc_file_loader.get_filepath(save_path, ...
       sc_settings.get_default_experiment_dir(), 1);
     
-    if isfile(tmp_filename)
+    if is_file(tmp_filename)
       
       save_path = tmp_filename;
       

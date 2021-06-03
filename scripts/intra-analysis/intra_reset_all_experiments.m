@@ -18,9 +18,9 @@ for i=1:length(neurons)
   file = signal.parent;
   experiment = signal.parent.parent;
   
-  if ~isfile(file.filepath)
+  if ~is_file(file.filepath)
     s1 = fileparts(file.filepath);
-    if isfile(s1)
+    if is_file(s1)
       file.filepath = s1;
     end
   end
@@ -43,7 +43,7 @@ for i=1:length(neurons)
   
   signal = sc_load_signal(neuron);
   
-  if ~isfile(signal.parent.filepath)
+  if ~is_file(signal.parent.filepath)
     
     if signal.parent.prompt_for_raw_data_dir()
       signal.sc_save(false);

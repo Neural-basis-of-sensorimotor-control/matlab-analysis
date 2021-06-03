@@ -5,7 +5,7 @@ val        = '';
 filename   = sc_settings.get_settings_filename();
 domain_tag = sc_settings.get_current_settings_tag();
 
-if isfile(filename)
+if is_file(filename)
   
   try
     

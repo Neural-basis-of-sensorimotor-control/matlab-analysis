@@ -14,7 +14,7 @@ for i_file=n_file:-1:1
     
     tmp_filepath = concat_filepath(enc_file, i_file, enc_dir, i_dir);
     
-    if isfile(tmp_filepath)
+    if is_file(tmp_filepath)
       
       filepath                   = tmp_filepath;
       [enc_filepath, n_filepath] = separate_str(filepath);

@@ -1,4 +1,4 @@
-function viewer = sc(varargin)
+function viewer_out = sc(varargin)
 %SC View Spike2 or binary files from experiment
 %   SC (without arguments) opens file dialog to load experiment file
 %   (i.e. 'ABCD_sc.mat').
@@ -36,23 +36,14 @@ function viewer = sc(varargin)
 % Created 2013-2021 by Hannes Mogensen, Neural Basis of Sensorimotor Control
 % Free to use or modify with due acknowledgement
 
-github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
-
 if nargout
-  viewer = [];
+  viewer_out = [];
 end
 
 addpath(genpath(fileparts(mfilename('fullpath'))));
 
 if ~isempty(varargin) && strcmpi(varargin{1}, '-addpath')
   return
-end
-
-if numel(varargin) && strcmpi(varargin{1}, '-eeg')
-  
-  viewer = Eeg;
-  return
-  
 end
 
 if ~sc_version_check()
@@ -65,7 +56,28 @@ if viewer_is_running()
   return
 end
 
-args = varargin;
+
+if numel(varargin) && strcmpi(varargin{1}, '-eeg')
+
+  viewer = Eeg;
+  
+else
+  
+  viewer = open_viewer(varargin);
+  
+end
+
+if nargout
+  viewer_out = viewer;
+end
+
+end
+
+
+function viewer = open_viewer(args)
+
+github_url = 'https://github.com/Neural-basis-of-sensorimotor-control/matlab-analysis/releases';
+viewer = [];
 
 if ~is_file(sc_settings.get_settings_filename())
   sc_settings.clear_file();
@@ -87,11 +99,7 @@ if isempty(args)
     viewer = [];
   end
   
-  return;
-  
-end
-
-if strcmpi(args{1}, '-loadnew')
+elseif strcmpi(args{1}, '-loadnew')
   %Ignore previous experiment
   
   [str_file, str_dir] = uigetfile('*_sc.mat', 'Select experiment file', ...
@@ -108,55 +116,38 @@ if strcmpi(args{1}, '-loadnew')
   else
     viewer = [];
   end
-  return
   
-end
-
-if strcmpi(args{1}, '-help')
+elseif strcmpi(args{1}, '-help')
   
   help(mfilename)
-  return
   
-end
-
-if strcmpi(args{1}, '-what')
+elseif strcmpi(args{1}, '-what')
   
   print_experiments_in_dir();
-  return
   
-end
-
-if strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
+elseif strcmpi(args{1}, '-newsp2') || strcmpi(args{1}, '-newadq')
   
   viewer = create_new_experiment(args);
-  return
   
-end
-
-if strcmpi(args{1}, '-version')
+elseif strcmpi(args{1}, '-version')
   
-  fprintf('See <a href="%s">GitHub</a> for additional information.\n', github_url);
-  return
+  fprintf('See <a href="%s">GitHub</a> for versioning history.\n', github_url);
   
-end
-
-if strcmpi(args{1}, '-amplitude')
+elseif strcmpi(args{1}, '-amplitude')
   
   args = args(2:end);
   viewer = sc(args{:});
   viewer.mode = ScGuiState.ampl_analysis;
-  return
   
-end
-
-if numel(args{1}) && args{1}(1) == '-'
+elseif numel(args{1}) && args{1}(1) == '-'
   
   fprintf(['Illegal command : ' args{1}]);
-  return
+  
+else
+  
+  viewer = load_file(args);
   
 end
-
-viewer = load_file(args);
 
 end
 
@@ -238,7 +229,7 @@ if ~experiment.n
   return;
   
 else
-
+  
   viewer = GuiManager();
   
   viewer.experiment    = experiment;

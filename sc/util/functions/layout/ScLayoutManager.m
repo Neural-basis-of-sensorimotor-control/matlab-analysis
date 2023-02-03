@@ -135,13 +135,18 @@ classdef ScLayoutManager < handle
         set(obj.panel,'position',pos);
         tiles = get(obj.panel,'children');
         
+        pwidth = 0;
         for i=1:numel(tiles)
           
           set(tiles(i),'unit','pixel');
           pos = get(tiles(i),'position');
           pos(2) = pos(2)-obj.ypos;
           set(tiles(i),'position',pos);
-          
+          pwidth = max(pwidth, getx(tiles(i))+getwidth(tiles(i))-getx(obj.panel));
+        end
+        if pwidth
+            obj.panelwidth = pwidth;
+            setwidth(obj.panel, obj.panelwidth + 5);
         end
         
       end
